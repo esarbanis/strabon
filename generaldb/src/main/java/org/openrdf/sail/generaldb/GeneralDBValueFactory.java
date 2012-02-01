@@ -5,11 +5,11 @@
  */
 package org.openrdf.sail.generaldb;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.WritePrefReadWriteLockManager;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
@@ -18,23 +18,26 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryBase;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
-import org.openrdf.sail.rdbms.exceptions.RdbmsException;
-import org.openrdf.sail.rdbms.exceptions.RdbmsRuntimeException;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.managers.BNodeManager;
 import org.openrdf.sail.generaldb.managers.LiteralManager;
 import org.openrdf.sail.generaldb.managers.PredicateManager;
 import org.openrdf.sail.generaldb.managers.UriManager;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.sail.generaldb.schema.IdSequence;
+import org.openrdf.sail.generaldb.schema.LiteralTable;
+import org.openrdf.sail.generaldb.schema.ValueTable;
+import org.openrdf.sail.rdbms.exceptions.RdbmsException;
+import org.openrdf.sail.rdbms.exceptions.RdbmsRuntimeException;
 import org.openrdf.sail.rdbms.model.RdbmsBNode;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsStatement;
 import org.openrdf.sail.rdbms.model.RdbmsURI;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
-import org.openrdf.sail.generaldb.schema.IdSequence;
-import org.openrdf.sail.generaldb.schema.LiteralTable;
-import org.openrdf.sail.generaldb.schema.ValueTable;
 
 import com.vividsolutions.jts.io.ParseException;
 
@@ -224,9 +227,60 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 			return null;
 		if (value instanceof Literal)
 			return asRdbmsLiteral((Literal)value);
+        /*****************************************/
+        if (value instanceof GeneralDBPolyhedron)
+                return asRdbmsLiteral((GeneralDBPolyhedron)value);
+        if (value instanceof StrabonPolyhedron)
+            return asRdbmsLiteral((StrabonPolyhedron)value);
+        /****************************************/
 		return asRdbmsResource((Resource)value);
 	}
 
+    /****************************************************/
+    public RdbmsLiteral asRdbmsLiteral(GeneralDBPolyhedron polyhedron) {
+            try {
+                    URI wkt = new URIImpl(StrabonPolyhedron.ogcGeometry);
+                    RdbmsLiteral literal = new RdbmsLiteral(new LiteralImpl(polyhedron.stringValue(), wkt));
+
+                    if (polyhedron instanceof GeneralDBPolyhedron) {
+                            literals.cache(literal);
+                            return (RdbmsLiteral)literal;
+                    }
+                    RdbmsLiteral lit = literals.findInCache(literal);
+                    if (lit == null) {
+                            lit = new RdbmsLiteral(literal);
+                            literals.cache(lit);
+                    }
+                    return lit;
+            }
+            catch (InterruptedException e) {
+                    throw new RdbmsRuntimeException(e);
+            }
+    }
+    
+    public RdbmsLiteral asRdbmsLiteral(StrabonPolyhedron polyhedron) {
+        try {
+                URI wkt = new URIImpl(StrabonPolyhedron.ogcGeometry);
+                RdbmsLiteral literal = new RdbmsLiteral(new LiteralImpl(polyhedron.stringValue(), wkt));
+
+                if (polyhedron instanceof StrabonPolyhedron) {
+                        literals.cache(literal);
+                        return (RdbmsLiteral)literal;
+                }
+                RdbmsLiteral lit = literals.findInCache(literal);
+                if (lit == null) {
+                        lit = new RdbmsLiteral(literal);
+                        literals.cache(lit);
+                }
+                return lit;
+        }
+        catch (InterruptedException e) {
+                throw new RdbmsRuntimeException(e);
+        }
+}
+    /****************************************************/
+
+	
 	public RdbmsLiteral asRdbmsLiteral(Literal literal) {
 		try {
 			if (literal instanceof RdbmsLiteral) {

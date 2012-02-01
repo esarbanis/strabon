@@ -252,6 +252,7 @@ public class LiteralTable {
 		bool |= datatypes.expunge(condition);
 		bool |= numeric.expunge(condition);
 		bool |= dateTime.expunge(condition);
+		bool |= geoSpatialTable.expunge(condition);
 		return bool;
 	}
 }

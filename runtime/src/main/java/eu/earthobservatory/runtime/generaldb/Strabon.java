@@ -1,13 +1,14 @@
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -16,7 +17,9 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -31,6 +34,8 @@ import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriter;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.helpers.SailBase;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -178,7 +183,7 @@ public abstract class Strabon {
 			
 				while (result.hasNext()) {
 					BindingSet bindingSet = result.next();			
-					//System.out.println(bindingSet.toString());
+					System.out.println(bindingSet.toString());
 	
 					ret.add(bindingSet.toString());
 				}
@@ -474,7 +479,8 @@ public abstract class Strabon {
 			e.printStackTrace();
 		}
 		
-		//System.out.println(retStream.toString());
+		// Print results.
+		System.out.println(retStream.toString());
 
 		//return ret;
 		return retStream.toString();
@@ -491,18 +497,136 @@ public abstract class Strabon {
 			e.printStackTrace();
 		}
 		
-		//System.out.println("Placemark0");
+		System.out.println("Placemark0");
 		System.out.println("\n\n\nGot query: " + updateString + "\n\n\n");
 
 		try {
 			update.execute();
-		} catch (UpdateExecutionException e) {
-			e.printStackTrace();
+		} catch (UpdateExecutionException e) {			e.printStackTrace();
 		}
 
-		//System.out.println("-------------------------------------------");
+		System.out.println("-------------------------------------------");
 		System.out.println("-            UPDATE EXECUTED              -");
-		//System.out.println("-------------------------------------------");
+		System.out.println("-------------------------------------------");
+	}
+
+	private void store(File file, String baseURI, RDFFormat format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault {
+		con1.add(file, baseURI, format);
+	}
+	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault
+	{
+		storeInRepo(src, null, null, format);
+	}
+	
+	public void storeInRepo(Object src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault
+	{
+		RDFFormat realFormat = null;
+
+		if ((baseURI != null) && (baseURI.equals("")))
+			baseURI = null;
+
+		URI uriContext;
+
+		if ((context == null) || (context.equals(""))) {
+			uriContext  = null; 
+		} else {
+			ValueFactory f = repo1.getValueFactory();
+			uriContext = f.createURI(context);
+		}
+
+
+		if(format.equalsIgnoreCase("N3"))
+		{
+			realFormat =  RDFFormat.N3;
+		}
+		else if(format.equalsIgnoreCase("NTRIPLES"))
+		{
+			realFormat =  RDFFormat.NTRIPLES;
+		}
+		else if(format.equalsIgnoreCase("RDFXML"))
+		{
+			realFormat =  RDFFormat.RDFXML;
+		}
+		else if(format.equalsIgnoreCase("TURTLE"))
+		{
+			realFormat =  RDFFormat.TURTLE;
+		}
+		else
+		{
+			throw new InvalidDatasetFormatFault();
+		}
+
+		try
+		{
+			if(File.class.isInstance(src))
+			{
+				storeFile((File)src, baseURI, uriContext, realFormat);
+			}
+			else if(URL.class.isInstance(src))
+			{
+				storeURL((URL)src, baseURI, uriContext, realFormat);
+			}
+			else if(String.class.isInstance(src))
+			{
+				storeString((String)src, baseURI, uriContext, realFormat);
+			}
+		}
+		catch(NullPointerException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	{
+		System.out.println("File     : " + file.getName());
+		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		System.out.println("Context  : " + ((context == null) ? "null" : context));
+		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+
+		if (context == null) {
+			System.out.println("[1]");
+			con1.add(file, baseURI, format);
+		} else {
+			System.out.println("[2]");
+			con1.add(file, baseURI, format, context);
+		}
+	}
+
+	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	{
+		System.out.println("URL      : " + url.toString());
+		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		System.out.println("Context  : " + ((context == null) ? "null" : context));
+		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+
+		if (context == null) {
+			System.out.println("[3]");
+			con1.add(url, baseURI, format);
+		} else {
+			System.out.println("[4]");
+			con1.add(url, baseURI, format, context);
+		}
+	}
+
+	private void storeString(String text, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	{
+		if (baseURI == null)
+			baseURI = "";
+
+		System.out.println("Text     : " + text);
+		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		System.out.println("Context  : " + ((context == null) ? "null" : context));
+		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+
+		StringReader reader = new StringReader(text);
+		if (context == null) {
+			System.out.println("[5]");
+			con1.add(reader, baseURI, format);
+		} else {
+			System.out.println("[6]");
+			con1.add(reader, baseURI, format, context);
+		}
 	}
 
 }
