@@ -95,6 +95,32 @@
 			<artifactId>sesame-repository-sail</artifactId>
 		</dependency>
 
+		<!-- rio API -->
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-rdfxml</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-ntriples</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-turtle</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-trig</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+		<!-- rio API -->
+
 		<!-- GeoTools -->
 			<dependency>
 				<groupId>org.geotools.xsd</groupId>
