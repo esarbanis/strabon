@@ -2,7 +2,10 @@ package eu.earthobservatory.runtime.generaldb;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.URL;
@@ -22,6 +25,7 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
+import org.openrdf.query.GraphQuery;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
@@ -35,7 +39,10 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandler;
+import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.ntriples.NTriplesWriter;
 import org.openrdf.sail.helpers.SailBase;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -510,9 +517,11 @@ public abstract class Strabon {
 		System.out.println("-------------------------------------------");
 	}
 
+	@SuppressWarnings("unused")
 	private void store(File file, String baseURI, RDFFormat format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault {
 		con1.add(file, baseURI, format);
 	}
+	
 	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault
 	{
 		storeInRepo(src, null, null, format);
@@ -629,4 +638,41 @@ public abstract class Strabon {
 		}
 	}
 
+	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException
+	{
+		GraphQuery  graphQuery = null;
+		
+		try {
+			graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, describeString);
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Placemark0");
+		System.out.println("\n\n\nGot query: " + describeString + "\n\n\n");
+
+		try {
+			OutputStream out = new FileOutputStream(outFile);
+			RDFHandler rdfHandler = new NTriplesWriter(out);
+			graphQuery.evaluate(rdfHandler);
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RDFHandlerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.println("Output: "+outFile);
+		System.out.println("---------------------------------------------");
+		System.out.println("-            DESCRIBE EXECUTED              -");
+		System.out.println("---------------------------------------------");
+	}
 }

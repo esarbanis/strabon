@@ -292,9 +292,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 
 
-		if(!(function instanceof EnvelopeFunc) 
-				&& !(function instanceof ConvexHullFunc) 
-				&& !(function instanceof BoundaryFunc))
+//		if(!(function instanceof EnvelopeFunc) 
+//				&& !(function instanceof ConvexHullFunc) 
+//				&& !(function instanceof BoundaryFunc))
+		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
 			try {
@@ -304,8 +305,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			} catch (QueryEvaluationException e) {
 				e.printStackTrace();
 			}
-
 		}
+		
 		try {
 			if ( function instanceof SpatialConstructFunc ) 
 				return spatialConstructPicker(function, leftResult, rightResult);

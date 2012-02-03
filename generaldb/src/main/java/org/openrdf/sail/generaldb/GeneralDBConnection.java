@@ -113,7 +113,7 @@ public class GeneralDBConnection extends SailConnectionBase {
 	{
 		removeStatementsInternal(null, null, null, contexts);
 		//XXX our code
-		triples.clearGeoValues();
+//		triples.clearGeoValues();
 	}
 
 	@Override
