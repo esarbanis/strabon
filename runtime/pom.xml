@@ -119,6 +119,24 @@
 		    <artifactId>sesame-rio-trig</artifactId>
 		    <version>${sesame.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-trix</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-n3</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.openrdf.sesame</groupId>
+		    <artifactId>sesame-rio-binary</artifactId>
+		    <version>${sesame.version}</version>
+		</dependency>
 		<!-- rio API -->
 
 		<!-- GeoTools -->
