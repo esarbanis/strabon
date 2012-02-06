@@ -414,7 +414,7 @@
                         <snapshots>
                                 <enabled>true</enabled>
                         </snapshots>
-                        <id>strabon</id>
+                        <id>strabon.snapshot</id>
                         <name>Strabon - maven repository - snapshots</name>
                         <url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
                 </repository>
