@@ -390,8 +390,8 @@
 		<releases> <enabled>true</enabled> </releases> </pluginRepository> </pluginRepositories> -->
 
 	<scm>
-		<connection>scm:hg:http://hg.strabon.di.uoa.gr/Strabon/</connection>
-		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr///opt/hg/Strabon/</developerConnection>
+		<connection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</connection>
+		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</developerConnection>
 		<url>http://hg.strabon.di.uoa.gr/Strabon/</url>
 	</scm>
 
