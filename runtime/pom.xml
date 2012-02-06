@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.1.2</version>
+		<version>3.1.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eu.earthobservatory</groupId>
@@ -14,7 +14,7 @@
 	<name>Strabon: Runtime</name>
 	<description>Runtime dependencies for Strabon</description>
 	<packaging>jar</packaging>
-	<version>3.1.2</version>
+	<version>3.1.3-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
