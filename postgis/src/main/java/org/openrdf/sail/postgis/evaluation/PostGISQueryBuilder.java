@@ -167,7 +167,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	public PostGISQueryBuilder() {
 		super();
 	}
-	
+
 	public PostGISQueryBuilder(GeneralDBSqlQueryBuilder builder) {
 		super(builder);
 		this.query = builder;
@@ -177,7 +177,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlNull expr, GeneralDBSqlExprBuilder filter) {
 		filter.appendNull();
 	}
-	
+
 	@Override
 	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter)
 	throws UnsupportedRdbmsOperatorException
@@ -185,7 +185,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		dispatch(expr.getArg(), filter);
 		filter.isNull();
 	}
-	
+
 	@Override
 	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter)
 	throws UnsupportedRdbmsOperatorException
@@ -201,7 +201,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			open.close();
 		}
 	}
-	
+
 	@Override
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
 		if (var.getRdbmsVar().isResource()) {
@@ -210,12 +210,20 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		else {
 			if(var.isSpatial())
 			{
-//				filter.appendFunction("ST_AsBinary");
-				filter.appendFunction("ST_AsEWKB");
+				filter.appendFunction("ST_AsBinary");
 				filter.openBracket();
+				//XXX SRID
+				filter.appendFunction("ST_Transform");
+				filter.openBracket();
+				//
 				String alias = getLabelAlias(var.getRdbmsVar());
 
 				filter.column(alias, "strdfgeo");
+				//XXX SRID
+				filter.appendComma();
+				filter.column(alias, "srid");
+				filter.closeBracket();
+				//
 				filter.closeBracket();
 
 			}
@@ -272,7 +280,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		return query;
 	}
-	
+
 	//FIXME my addition from here on
 	@Override
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr)
@@ -283,8 +291,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty))
 		{
-//			query.select().appendFunction("ST_AsBinary");
-			query.select().appendFunction("ST_AsEWKB");
+			query.select().appendFunction("ST_AsBinary");
 		}
 		else
 		{
@@ -514,7 +521,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Overlap);
 	}
-	
+
 	//RCC8
 	@Override
 	protected void append(GeneralDBSqlRCC8_Dc expr, GeneralDBSqlExprBuilder filter)
@@ -666,11 +673,105 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsText);
 	}
 
+	//	@Override
+	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
+	//	throws UnsupportedRdbmsOperatorException
+	//	{
+	//		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_SRID);
+	//	}
+
+	/**
+	 * Special Case because I need to retrieve a single different column from geo_values when this function occurs
+	 * in the select clause
+	 */
 	@Override
 	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
 	throws UnsupportedRdbmsOperatorException
 	{
-		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_SRID);
+		filter.openBracket();
+
+		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = false;
+		if(expr.getArg() instanceof GeneralDBLabelColumn)
+		{
+			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
+			{
+				check2 = true;
+			}
+		}
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getArg(), filter);
+
+		}
+		else if (check2)
+		{
+			appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
+		}
+		else
+		{
+			//XXX Incorporating SRID
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp.getParentNode() == null)
+			{
+				String sridExpr;
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+						alias=alias+".srid";
+						sridExpr = alias;
+						filter.append(sridExpr);
+						filter.closeBracket();
+						return;
+						//break;
+					}
+
+				}
+			}
+
+			filter.appendFunction("ST_SRID");
+			filter.openBracket();
+			if(expr.getArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getArg(),filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
+			}
+
+			filter.closeBracket();
+		}
+
+		filter.closeBracket();
 	}
 
 	@Override
@@ -711,93 +812,93 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	//Used in all the generaldb boolean spatial functions of the form ?GEO1 ~ ?GEO2 
-//	protected void appendStSPARQLSpatialOperand(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialOperandsPostGIS operand) throws UnsupportedRdbmsOperatorException
-//	{
-//		filter.openBracket();
-//
-//		boolean check1a = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//		//boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//
-//		if(check1a)
-//		{
-//			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
-//
-//		}
-////		else if(check2a)
-////		{
-////			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-////		}
-//		else
-//		{
-//			if(expr.getLeftArg() instanceof GeneralDBSqlCase)
-//			{
-//				this.append((GeneralDBSqlCase)expr.getLeftArg(), filter);
-//			}
-//			else if(expr.getLeftArg() instanceof GeneralDBStringValue)
-//			{
-//				appendWKT(expr.getLeftArg(),filter);
-//			}
-//			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
-//			{
-//				appendConstructFunction(expr.getLeftArg(), filter);
-//			}
-//			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
-//			{
-//				appendConstructFunction(expr.getLeftArg(), filter);
-//			}
-//			else
-//			{
-//				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
-//			}
-//
-//			switch(operand)
-//			{
-//			case anyInteract: filter.anyInteract(); break;
-//			case equals: filter.equals(); break;
-//			case contains: filter.contains(); break;
-//			case inside: filter.inside(); break;
-//			case left: filter.left(); break;
-//			case right: filter.right(); break;
-//			case above: filter.above(); break;
-//			case below: filter.below(); break;
-//			}
-//
-//			boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//
-//			if(check2a)
-//			{
-//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-//			}
-//			else
-//			{
-//
-//				if(expr.getRightArg() instanceof GeneralDBSqlCase)
-//				{
-//					this.append((GeneralDBSqlCase)expr.getRightArg(), filter);
-//				}
-//				else if(expr.getRightArg() instanceof GeneralDBStringValue)
-//				{
-//					appendWKT(expr.getRightArg(),filter);
-//				}
-//				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
-//				{
-//					appendConstructFunction(expr.getRightArg(), filter);
-//				}
-//				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
-//				{
-//					appendConstructFunction(expr.getRightArg(), filter);
-//				}
-//				else
-//				{
-//					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
-//				}
-//
-//			}
-//		}
-//		filter.closeBracket();
-//	}
+	//	protected void appendStSPARQLSpatialOperand(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialOperandsPostGIS operand) throws UnsupportedRdbmsOperatorException
+	//	{
+	//		filter.openBracket();
+	//
+	//		boolean check1a = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+	//		//boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+	//
+	//		if(check1a)
+	//		{
+	//			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+	//
+	//		}
+	////		else if(check2a)
+	////		{
+	////			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+	////		}
+	//		else
+	//		{
+	//			if(expr.getLeftArg() instanceof GeneralDBSqlCase)
+	//			{
+	//				this.append((GeneralDBSqlCase)expr.getLeftArg(), filter);
+	//			}
+	//			else if(expr.getLeftArg() instanceof GeneralDBStringValue)
+	//			{
+	//				appendWKT(expr.getLeftArg(),filter);
+	//			}
+	//			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
+	//			{
+	//				appendConstructFunction(expr.getLeftArg(), filter);
+	//			}
+	//			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+	//			{
+	//				appendConstructFunction(expr.getLeftArg(), filter);
+	//			}
+	//			else
+	//			{
+	//				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+	//			}
+	//
+	//			switch(operand)
+	//			{
+	//			case anyInteract: filter.anyInteract(); break;
+	//			case equals: filter.equals(); break;
+	//			case contains: filter.contains(); break;
+	//			case inside: filter.inside(); break;
+	//			case left: filter.left(); break;
+	//			case right: filter.right(); break;
+	//			case above: filter.above(); break;
+	//			case below: filter.below(); break;
+	//			}
+	//
+	//			boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+	//
+	//			if(check2a)
+	//			{
+	//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+	//			}
+	//			else
+	//			{
+	//
+	//				if(expr.getRightArg() instanceof GeneralDBSqlCase)
+	//				{
+	//					this.append((GeneralDBSqlCase)expr.getRightArg(), filter);
+	//				}
+	//				else if(expr.getRightArg() instanceof GeneralDBStringValue)
+	//				{
+	//					appendWKT(expr.getRightArg(),filter);
+	//				}
+	//				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+	//				{
+	//					appendConstructFunction(expr.getRightArg(), filter);
+	//				}
+	//				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+	//				{
+	//					appendConstructFunction(expr.getRightArg(), filter);
+	//				}
+	//				else
+	//				{
+	//					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+	//				}
+	//
+	//			}
+	//		}
+	//		filter.closeBracket();
+	//	}
 
-	
+
 	protected void appendStSPARQLSpatialOperand(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialOperandsPostGIS operand) throws UnsupportedRdbmsOperatorException
 	{
 		filter.openBracket();
@@ -849,41 +950,41 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case below: filter.below(); break;
 			}
 
-//			boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//
-//			if(check2a)
-//			{
-//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-//			}
-//			else
-//			{
+			//			boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+			//
+			//			if(check2a)
+			//			{
+			//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+			//			}
+			//			else
+			//			{
 
-				if(expr.getRightArg() instanceof GeneralDBSqlCase)
-				{
-					this.append((GeneralDBSqlCase)expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getRightArg(),filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
-				}
+			if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				this.append((GeneralDBSqlCase)expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
 
 			//}
 		}
 		filter.closeBracket();
 	}
-//	
+	//	
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendGeneralDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
 	throws UnsupportedRdbmsOperatorException
@@ -892,7 +993,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-		
+
 		if(check1)
 		{
 			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
@@ -904,6 +1005,43 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
+			//XXX Incorporating SRID
+			String sridExpr = null;
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+						alias=alias+".srid";
+						sridExpr = alias;
+//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
+						break;
+					}
+
+				}
+				filter.appendFunction("ST_Transform");
+				filter.openBracket();
+			}
+			/////
+
+
+
 			switch(func)
 			{
 			case ST_Difference: filter.appendFunction("ST_Difference"); break;
@@ -918,7 +1056,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_CoveredBy: filter.appendFunction("ST_CoveredBy"); break;
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
 			}
-			//filter.appendFunction("ST_Union");
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
@@ -942,57 +1079,65 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 			filter.appendComma();
-			
-			
-				if(expr.getRightArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getRightArg(),filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlCase)
-				{
-					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter);					 
-				}
-				else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
-				{
-					append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-				{
-					append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-				}
-				//case met in buffer when in select -> buffer(?spatial,?thematic)
-				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
-				{
-					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-					appendCastToDouble(filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
-				}
 
-			
-			filter.closeBracket();
+
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
 			}
-		//}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);					 
+			}
+			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
 
+
+			filter.closeBracket();
+			//SRID Support
+			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+			///
+		}
+		//}
 		filter.closeBracket();
 	}
 
@@ -1022,6 +1167,41 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
+			//XXX Incorporating SRID
+			String sridExpr = null;
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructUnary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+						alias=alias+".srid";
+//						((GeneralDBSqlSpatialConstructUnary)expr).setSrid(alias);
+						sridExpr = alias;
+						break;
+					}
+
+				}
+				filter.appendFunction("ST_Transform");
+				filter.openBracket();
+			}
+			/////
+
 			switch(func)
 			{
 			case ST_Envelope: filter.appendFunction("ST_Envelope"); break;
@@ -1035,7 +1215,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_IsEmpty: filter.appendFunction("ST_IsEmpty"); break;
 			case ST_IsSimple: filter.appendFunction("ST_IsSimple"); break;
 			}
-			//filter.appendFunction("ST_Union");
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
@@ -1060,10 +1239,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			filter.closeBracket();
+			//SRID Support
+			if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+//				filter.append(((GeneralDBSqlSpatialConstructUnary)expr).getSrid());
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+			///
 		}
 
 		filter.closeBracket();
 	}
+
+
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendGeneralDBSpatialFunctionTriple(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
@@ -1074,7 +1264,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		boolean check1a = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check2a = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check3 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-		
+
 		if(check1a)
 		{
 			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
@@ -1117,92 +1307,92 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 			filter.appendComma();
-//			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//			if(check2)
-//			{
-//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-//			}
-//			else
-//			{
-				if(expr.getRightArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getRightArg(),filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlCase)
-				{
-					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter);					 
-				}
-				else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
-				{
-					append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-				{
-					append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-				}
-				//case met in buffer when in select -> buffer(?spatial,?thematic)
-				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
-				{
-					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-					appendCastToDouble(filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
-				}
+			//			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+			//			if(check2)
+			//			{
+			//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+			//			}
+			//			else
+			//			{
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);					 
+			}
+			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
 
-//			}
+			//			}
 			//3rd arg
 			filter.appendComma();
-//			boolean check3 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-//			if(check3)
-//			{
-//				this.append((GeneralDBSqlNull)expr.getThirdArg(), filter);
-//			}
-//			else
-//			{
+			//			boolean check3 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+			//			if(check3)
+			//			{
+			//				this.append((GeneralDBSqlNull)expr.getThirdArg(), filter);
+			//			}
+			//			else
+			//			{
 
-				if(expr.getThirdArg() instanceof GeneralDBStringValue)
-				{
-					append(((GeneralDBStringValue)expr.getThirdArg()),filter);	
-				}
-				else if(expr.getThirdArg() instanceof GeneralDBSqlCase)
-				{
-					append(((GeneralDBSqlCase)expr.getThirdArg()),filter);				 
-				}
-				//case met in buffer when in select -> buffer(?spatial,?thematic)
-				else if(expr.getThirdArg() instanceof GeneralDBLabelColumn )//&& !((GeneralDBLabelColumn)expr.getThirdArg()).isSpatial())
-				{
+			if(expr.getThirdArg() instanceof GeneralDBStringValue)
+			{
+				append(((GeneralDBStringValue)expr.getThirdArg()),filter);	
+			}
+			else if(expr.getThirdArg() instanceof GeneralDBSqlCase)
+			{
+				append(((GeneralDBSqlCase)expr.getThirdArg()),filter);				 
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getThirdArg() instanceof GeneralDBLabelColumn )//&& !((GeneralDBLabelColumn)expr.getThirdArg()).isSpatial())
+			{
 
-					append(((GeneralDBLabelColumn)expr.getThirdArg()),filter);
-				}
+				append(((GeneralDBLabelColumn)expr.getThirdArg()),filter);
+			}
 
 
-//			}
+			//			}
 			filter.closeBracket();
 		}
 
 		filter.closeBracket();
 	}
 
-	
+
 	//GeoSPARQL
 	//XXX
 	protected void appendRelate(BinaryGeneralDBOperator expr, PostGISSqlExprBuilder filter, char[] intersectionPattern)
@@ -1212,7 +1402,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
 		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
-		
+
 		if(check1)
 		{
 			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
@@ -1250,58 +1440,58 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 			filter.appendComma();
-//			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
-//			if(check2)
-//			{
-//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-//			}
-//			else
-//			{
-				if(expr.getRightArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getRightArg(),filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlCase)
-				{
-					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter);					 
-				}
-				else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
-				{
-					append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-				{
-					append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-				}
-				//case met in buffer when in select -> buffer(?spatial,?thematic)
-				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
-				{
-					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-					appendCastToDouble(filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
-				{
-					appendMetricFunction(expr.getRightArg(), filter);
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
-				}
+			//			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
+			//			if(check2)
+			//			{
+			//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+			//			}
+			//			else
+			//			{
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);					 
+			}
+			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
 
-//			}
+			//			}
 			//3rd arg
 			filter.appendComma();
 
@@ -1318,8 +1508,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		filter.closeBracket();
 	}
-	
-	
+
+
 	protected void appendgeoSPARQLSpatialRelation(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
 	throws UnsupportedRdbmsOperatorException
 	{
@@ -1666,7 +1856,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	@Override
 	//GeoSPARQL
 	//XXX
-	
+
 	protected void appendRelate(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, char[] intersectionPattern)
 	throws UnsupportedRdbmsOperatorException
 	{
