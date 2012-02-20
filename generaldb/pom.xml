@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.1.3</version>
+		<version>3.1.4-SNAPSHOT</version>
 	</parent>
   
 	<groupId>org.openrdf.sesame</groupId>
@@ -14,7 +14,7 @@
 	<name>OpenRDF Sesame: GeneralDBStore </name>
 	<description>GeneralDB Store Support</description>
 	<packaging>jar</packaging>
-	<version>3.1.3</version>
+	<version>3.1.4-SNAPSHOT</version>
   
 	<url>http://maven.apache.org</url>
   
