@@ -24,6 +24,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -164,7 +165,7 @@ public class StrabonPolyhedron implements Value {
 		} catch (TransformException e) {
 			System.out.println("Transformation is not possible!!");
 			e.printStackTrace();
-		}
+		} 
 		return A;
 	}
 

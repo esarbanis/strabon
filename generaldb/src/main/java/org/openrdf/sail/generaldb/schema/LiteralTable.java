@@ -5,15 +5,12 @@
  */
 package org.openrdf.sail.generaldb.schema;
 
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
- 
-
+import java.lang.IllegalArgumentException;
 import org.openrdf.sail.generaldb.exceptions.conversionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
-
 
 /**
  * A Facade to the five literal value tables. Which are labels, languages,
@@ -180,7 +177,8 @@ public class LiteralTable {
 		}
 
 		//Removed 'value' field
-		geoSpatialTable.insert(id/*,start,end*/, geomWKB);
+		Integer srid= findSRID(label);
+		geoSpatialTable.insert(id,srid/*,start,end*/, geomWKB);
 
 		//XXX not needed currently because this method is called AFTER an insertDatatype()
 		//		insertSimple(id, label);
@@ -207,8 +205,8 @@ public class LiteralTable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		geoSpatialTable.insert(id,/* start,end,*/ geomWKB);
+		Integer srid= findSRID(label);
+		geoSpatialTable.insert(id,srid,/* start,end,*/ geomWKB);
 		
 		//XXX not needed currently because this method is called AFTER an insertDatatype()
 		//		insertSimple(id, label);
@@ -255,4 +253,26 @@ public class LiteralTable {
 		bool |= geoSpatialTable.expunge(condition);
 		return bool;
 	}
+	
+	public static Integer findSRID(String label){
+		String[] crs=label.split(";");
+		if((crs.length == 1))
+		{
+			System.out.println("srid not specified. 4326 will be used as default.");
+			return 4326; //use this as default
+		}
+		String prefix="http://www.opengis.net/def/crs/EPSG/0/";
+		if(crs[1].startsWith(prefix)){
+			int index=crs[1].lastIndexOf('/');
+			index++;
+			Integer srid = Integer.parseInt(crs[1].substring(index));
+			 System.out.println("The EPSG code: " + srid);
+					 
+			System.out.println("SRS FOUND:"+srid);
+			 return srid;
+		}else{
+			throw new IllegalArgumentException("MALFORMED URI FOR SRID!!!");
+		
+	   }
+}
 }

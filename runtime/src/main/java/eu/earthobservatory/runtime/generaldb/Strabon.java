@@ -240,7 +240,9 @@ public abstract class Strabon {
 	
 						try {
 							Geometry geom = reader.read(corrResult);
-							geom.setSRID(4326);
+							//Integer s = new Integer(4326);
+							//geom.setSRID(4326);
+							
 							//geom.setSRID(32630);
 							
 							//CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:32630");

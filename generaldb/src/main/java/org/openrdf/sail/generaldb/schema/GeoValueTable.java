@@ -136,7 +136,7 @@ public class GeoValueTable {
 		//Normal One sb.append(" (id, interval_start, interval_end, strdfgeo) VALUES (?,?,?,?)");
 		//sb.append(" (id, interval_start, interval_end, strdfgeo) VALUES (?,?,?,ST_GeomFromWKB(?,4326))");
 		//sb.append(" (id, strdfgeo) VALUES (?,ST_GeomFromWKB(?,32630))");
-		sb.append(" (id, strdfgeo) VALUES (?,ST_GeomFromWKB(?,4326))");
+		sb.append(" (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),4326),?)"); 
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");
@@ -222,7 +222,7 @@ public class GeoValueTable {
 	//			PreparedStatement insertStmt = conn.prepareStatement(psqlInsertLine);
 	//			
 	//			System.out.println("//////////////////////// INCONSISTENT" + geom);
-	//			
+	//			[B@62f4739
 	//			insertStmt.setLong(1, id.longValue());
 	//			//insertStmt.setString(2, constraint);
 	//			//insertStmt.setBytes(2, constraint);
@@ -258,9 +258,11 @@ public class GeoValueTable {
 	//	}
 
 
-	public synchronized void insert(Number id, /*String constraint, Timestamp interval_start, Timestamp interval_end,*/ byte[] geom)
+	public synchronized void insert(Number id, Integer srid,/*String constraint, Timestamp interval_start, Timestamp interval_end,*/ byte[] geom)
 	throws SQLException, InterruptedException, NullPointerException
 	{
+
+	
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -273,13 +275,14 @@ public class GeoValueTable {
 
 		if(geom.length==0)
 		{
-			batch.setObject(2,null);
+			batch.setObject(2,null); 
 		}
 		else
 		{
 			batch.setBytes(2,geom);
 		}
-
+		batch.setObject(3, srid); //adding original srid-constant
+		batch.setObject(4, srid);
 		batch.addBatch();
 		queue(batch);
 
@@ -477,7 +480,8 @@ public class GeoValueTable {
 	throws SQLException
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL\n");
+		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,");
+		sb.append("  srid ").append(sql(Types.INTEGER, 20)).append(" NOT NULL\n"); //constant-SRID
 		//sb.append("  original ").append(sql(sqlType, length)).append(" NOT NULL,\n");
 
 		//FIXME very careful about these changes!!
@@ -516,7 +520,8 @@ public class GeoValueTable {
 	throws SQLException
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL\n");
+		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,");
+		sb.append("  srid ").append(sql(Types.INTEGER, 20)).append(" NOT NULL\n"); //constant-SRID
 		//sb.append("  original ").append(sql(sqlType, length));
 		//sb.append(" NOT NULL,\n");
 		//sb.append("  value ").append(sql(Types.VARCHAR, length));
@@ -536,5 +541,7 @@ public class GeoValueTable {
 		String extension = "SELECT AddGeometryColumn('','geo_values','value',4326,'GEOMETRY',2)";
 		table.execute(extension);
 	}
+	
+
 }
 
