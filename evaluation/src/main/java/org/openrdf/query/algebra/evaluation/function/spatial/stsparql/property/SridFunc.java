@@ -29,7 +29,7 @@ public class SridFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.srid;
+		return StrabonPolyhedron.srid.toString(); //changed this-constant
 	}
 
 	 

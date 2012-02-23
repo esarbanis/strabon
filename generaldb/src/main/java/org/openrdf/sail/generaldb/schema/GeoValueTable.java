@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 
 
 /**
@@ -136,7 +137,8 @@ public class GeoValueTable {
 		//Normal One sb.append(" (id, interval_start, interval_end, strdfgeo) VALUES (?,?,?,?)");
 		//sb.append(" (id, interval_start, interval_end, strdfgeo) VALUES (?,?,?,ST_GeomFromWKB(?,4326))");
 		//sb.append(" (id, strdfgeo) VALUES (?,ST_GeomFromWKB(?,32630))");
-		sb.append(" (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),4326),?)"); 
+		Integer srid=  StrabonPolyhedron.srid;
+		sb.append(" (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),").append(srid).append("),?)"); 
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");

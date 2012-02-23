@@ -75,7 +75,8 @@ public class StrabonPolyhedron implements Value {
 	public static final String dimension="http://strdf.di.uoa.gr/ontology#dimension";
 	public static final String geometryType="http://strdf.di.uoa.gr/ontology#geometryType";
 	public static final String asText="http://strdf.di.uoa.gr/ontology#asText";
-	public static final String srid="http://strdf.di.uoa.gr/ontology#srid";
+	//public static final String srid="http://strdf.di.uoa.gr/ontology#srid";\
+	public static final Integer srid=4326; //default srid. chainged this-constant
 	public static final String isEmpty="http://strdf.di.uoa.gr/ontology#isEmpty";
 	public static final String isSimple="http://strdf.di.uoa.gr/ontology#isSimple";
 	//Spatial Aggregate Functions
