@@ -198,6 +198,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	public Value evaluate(Var var, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
 		boolean groupBy = false;
+//		//Case met when ORDER BY involved (?)
+//		if(var.getName().startsWith("-mbbVar-"))
+//		{
+//			var.setName(var.getName().replace("-mbbVar-",""));
+//		}
+		
 		//Case met when evaluating a construct function inside an aggregate 
 		if(var.getName().endsWith("?spatial"))
 		{
@@ -751,7 +757,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			//					var = reference;
 			//				}
 			//			}
-			String name = ((GeneralDBLongLabelColumn) expr).getVarName();
+			String name = ((GeneralDBLongLabelColumn) expr).getVarName().replace("?spatial","");
 
 			for(GeneralDBColumnVar reference: allKnown)
 			{
@@ -765,7 +771,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBLabelColumn)//ColumnVar at least
 		{
-			String name = ((GeneralDBLabelColumn) expr).getVarName();
+			String name = ((GeneralDBLabelColumn) expr).getVarName().replace("?spatial","");;
 
 			for(GeneralDBColumnVar reference: allKnown)
 			{

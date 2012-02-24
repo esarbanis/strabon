@@ -1173,7 +1173,7 @@ QueryOptimizer
 	throws RuntimeException
 	{
 		int mbbCounter = 0;
-		super.meet(node);
+//		super.meet(node);
 		if (!(node.getArg() instanceof GeneralDBSelectQuery))
 			//In other words, I have encountered having/groupby
 		{
@@ -1196,13 +1196,24 @@ QueryOptimizer
 							//XXX volatile - using an extra arg to 'hang' the name I need
 							fc.addArg(new Var("-mbb-"+originalName));
 							ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+originalName);
-							if(node.getParentNode() instanceof Projection)
+							if(node.getArg() instanceof Extension)
 							{
 								Extension ext = new Extension();
 								ext.addElement(extElem);
-								((Projection)(node.getParentNode())).setArg(ext);
-								ext.setArg(node);
+//								((Projection)(node.getParentNode())).setArg(ext);
+//								ext.setArg(node);
+								Extension tmpExt = (Extension) node.getArg();
+								node.setArg(ext);
+								ext.setArg(tmpExt);
+								
 							}
+//							else if(node.getParentNode() instanceof Projection)
+//							{
+//								Extension ext = new Extension();
+//								ext.addElement(extElem);
+//								((Projection)(node.getParentNode())).setArg(ext);
+//								ext.setArg(node);
+//							}
 							else if(node.getParentNode() instanceof Extension)
 							{
 								((Extension)node.getParentNode()).addElement(extElem);
@@ -1220,13 +1231,23 @@ QueryOptimizer
 
 					fc.addArg(new Var("-mbb-"+(++mbbCounter)));
 					ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+(mbbCounter));
-					if(node.getParentNode() instanceof Projection)
+					if(node.getArg() instanceof Extension)
 					{
 						Extension ext = new Extension();
 						ext.addElement(extElem);
-						((Projection)(node.getParentNode())).setArg(ext);
-						ext.setArg(node);
+//						((Projection)(node.getParentNode())).setArg(ext);
+//						ext.setArg(node);
+						Extension tmpExt = (Extension) node.getArg();
+						node.setArg(ext);
+						ext.setArg(tmpExt);
 					}
+//					else if(node.getParentNode() instanceof Projection)
+//					{
+//						Extension ext = new Extension();
+//						ext.addElement(extElem);
+//						((Projection)(node.getParentNode())).setArg(ext);
+//						ext.setArg(node);
+//					}
 					else if(node.getParentNode() instanceof Extension)
 					{
 						((Extension)node.getParentNode()).addElement(extElem);
@@ -1235,8 +1256,10 @@ QueryOptimizer
 				}
 
 			}
+			super.meet(node);
 			return;
 		}
+		super.meet(node);
 		GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 		try {
 			for (OrderElem e : node.getElements()) {

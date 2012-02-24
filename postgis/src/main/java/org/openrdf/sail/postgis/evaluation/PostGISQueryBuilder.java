@@ -180,16 +180,16 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		dispatch(expr.getArg(), filter);
 		filter.isNull();
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if (expr.getArg() instanceof GeneralDBSqlIsNull) {
 			GeneralDBSqlIsNull arg = (GeneralDBSqlIsNull)expr.getArg();
 			dispatch(arg.getArg(), filter);
@@ -200,7 +200,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr.getArg(), (GeneralDBSqlExprBuilder) open);
 			open.close();
 		}
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
@@ -238,16 +238,16 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlAnd expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		dispatch(expr.getLeftArg(), filter);
 		filter.and();
 		dispatch(expr.getRightArg(), filter);
-	}
+			}
 
 	protected GeneralDBSqlJoinBuilder subJoinAndFilter(GeneralDBSqlJoinBuilder query, GeneralDBFromItem from)
-	throws RdbmsException, UnsupportedRdbmsOperatorException
-	{
+			throws RdbmsException, UnsupportedRdbmsOperatorException
+			{
 		if (from instanceof GeneralDBUnionItem) {
 			GeneralDBUnionItem union = (GeneralDBUnionItem)from;
 			List<String> names = union.getSelectVarNames();
@@ -279,13 +279,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr, query.on().and());
 		}
 		return query;
-	}
+			}
 
 	//FIXME my addition from here on
 	@Override
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
@@ -306,372 +306,372 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, query.select);
 		}
 		return this;
-	}
+			}
 
 	//Spatial Relationship Functions
 	@Override
 	protected void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.anyInteract);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.contains);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.equals);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Covers);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_CoveredBy);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlTouch expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Touches);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlOverlap expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Overlaps);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlDisjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Disjoint);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlRelate expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionTriple(expr, filter, SpatialFunctionsPostGIS.ST_Relate);
-	}
+			}
 
 	@Override	
 	protected void append(GeneralDBSqlLeft expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.left);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.right);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.above);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.below);
-	}
+			}
 
 	//GeoSPARQL - Spatial Relationship Functions 
 	//Simple Features
 	@Override
 	protected void append(GeneralDBSqlSF_Contains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Contains);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Crosses expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Crosses);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Disjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Disjoint);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Equals expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Equals);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Intersects expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Intersects);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Overlaps expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Overlaps);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Touches expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Touches);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Within expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Within);
-	}
+			}
 
 	//Egenhofer
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_CoveredBy expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_CoveredBy);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Covers expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Covers);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Contains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Contains);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Disjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Disjoint);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Equals expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Equals);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Inside expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Inside);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Meet expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Meet);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Overlap expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Overlap);
-	}
+			}
 
 	//RCC8
 	@Override
 	protected void append(GeneralDBSqlRCC8_Dc expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Dc);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Eq expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Eq);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ec expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Ec);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Po expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Po);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Tppi expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Tppi);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Tpp expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Tpp);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ntpp expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Ntpp);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ntppi expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.RCC8_Ntppi);
-	}
+			}
 
 	//Spatial Construct Functions
 	@Override
 	protected void append(GeneralDBSqlGeoUnion expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Union);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Buffer);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoEnvelope expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Envelope);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoConvexHull expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_ConvexHull);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoBoundary expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Boundary);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersection);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Difference);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_SymDifference);
-	}
+			}
 
 	//Spatial Metric Functions
 	@Override
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoArea expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Area);
-	}
+			}
 
 	//Spatial Property Functions
 	@Override
 	protected void append(GeneralDBSqlGeoDimension expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Dimension);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoGeometryType expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_GeometryType);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoAsText expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsText);
-	}
+			}
 
 	//	@Override
 	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
@@ -686,8 +686,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 */
 	@Override
 	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
+		boolean sridNeeded = true;
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -717,15 +718,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				String sridExpr;
 				while(true)
 				{
-					GeneralDBSqlExpr child;
+					GeneralDBSqlExpr child = null;
 
 					if(tmp instanceof BinaryGeneralDBOperator)
 					{
 						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
 					}
-					else //(tmp instanceof UnaryGeneralDBOperator)
+					else if(tmp instanceof UnaryGeneralDBOperator)
 					{
 						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						//Constant!!
+						sridNeeded  = false;
+						break;
 					}
 
 					tmp = child;
@@ -740,10 +747,18 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						return;
 						//break;
 					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						//Constant!!
+						sridNeeded  = false;
+						break;
+					}
 
 				}
 			}
 
+			if(sridNeeded)
+			{
 			filter.appendFunction("ST_SRID");
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
@@ -769,24 +784,30 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			filter.closeBracket();
+			}
+			else
+			{
+				//4326 by default - Software House additions
+				filter.append("4326");
+			}
 		}
 
 		filter.closeBracket();
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsSimple);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsEmpty expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
-	}
+			}
 
 
 	/**
@@ -987,8 +1008,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	//	
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendGeneralDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1030,7 +1051,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
 						alias=alias+".srid";
 						sridExpr = alias;
-//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
+						//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
 						break;
 					}
 
@@ -1139,12 +1160,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		//}
 		filter.closeBracket();
-	}
+			}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
 	protected void appendGeneralDBSpatialFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1170,19 +1193,26 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			//XXX Incorporating SRID
 			String sridExpr = null;
 			GeneralDBSqlExpr tmp = expr;
+
+
 			if(tmp instanceof GeneralDBSqlSpatialConstructUnary && tmp.getParentNode() == null)
 			{
 				while(true)
 				{
-					GeneralDBSqlExpr child;
+					GeneralDBSqlExpr child = null;
 
 					if(tmp instanceof BinaryGeneralDBOperator)
 					{
 						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
 					}
-					else //(tmp instanceof UnaryGeneralDBOperator)
+					else if(tmp instanceof UnaryGeneralDBOperator)
 					{
 						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						sridNeeded  = false;
+						break;
 					}
 
 					tmp = child;
@@ -1191,14 +1221,22 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						//Reached the innermost left var -> need to capture its SRID
 						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
 						alias=alias+".srid";
-//						((GeneralDBSqlSpatialConstructUnary)expr).setSrid(alias);
+						//((GeneralDBSqlSpatialConstructUnary)expr).setSrid(alias);
 						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
 						break;
 					}
 
 				}
-				filter.appendFunction("ST_Transform");
-				filter.openBracket();
+				if(sridNeeded)
+				{
+					filter.appendFunction("ST_Transform");
+					filter.openBracket();
+				}
 			}
 			/////
 
@@ -1240,25 +1278,29 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 			filter.closeBracket();
 			//SRID Support
-			if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+			if(sridNeeded)
 			{
-				filter.appendComma();
-//				filter.append(((GeneralDBSqlSpatialConstructUnary)expr).getSrid());
-				filter.append(sridExpr);
-				filter.closeBracket();
+				if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+				{
+					filter.appendComma();
+					//				filter.append(((GeneralDBSqlSpatialConstructUnary)expr).getSrid());
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
 			}
 			///
 		}
 
 		filter.closeBracket();
-	}
+
+			}
 
 
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendGeneralDBSpatialFunctionTriple(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1a = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1390,14 +1432,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
+			}
 
 
 	//GeoSPARQL
 	//XXX
 	protected void appendRelate(BinaryGeneralDBOperator expr, PostGISSqlExprBuilder filter, char[] intersectionPattern)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
@@ -1507,12 +1549,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
+			}
 
 
 	protected void appendgeoSPARQLSpatialRelation(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
 		if(check1)
@@ -1851,15 +1893,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			//			filter.closeBracket();
 		}
 		filter.closeBracket();
-	}
+			}
 
 	@Override
 	//GeoSPARQL
 	//XXX
 
 	protected void appendRelate(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, char[] intersectionPattern)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
@@ -1963,5 +2005,5 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
+			}
 }
