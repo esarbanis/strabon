@@ -41,7 +41,7 @@ public class TripleTableManager {
 	private static final String OTHER_TRIPLES_TABLE = "TRIPLES";
 
 	private static final boolean USE_THREAD = true;
-
+	
 	public static int MAX_TABLES = Integer.MAX_VALUE;// 1000;
 
 	public static final boolean INDEX_TRIPLES = true;

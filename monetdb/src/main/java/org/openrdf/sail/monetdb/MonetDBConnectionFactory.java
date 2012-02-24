@@ -6,6 +6,7 @@
 package org.openrdf.sail.monetdb;
 
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
+import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 import info.aduna.concurrent.locks.Lock;
 
 import java.sql.Connection;
@@ -71,9 +72,15 @@ public class MonetDBConnectionFactory extends GeneralDBConnectionFactory {
 		try {
 			Connection db = getConnection();
 			db.setAutoCommit(true);
-			if (db.getTransactionIsolation() != TRANSACTION_READ_COMMITTED) {
-				db.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+			/**************************/
+//			if (db.getTransactionIsolation() != TRANSACTION_READ_COMMITTED) {
+//				db.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+//			}
+			// giorgos
+			if (db.getTransactionIsolation() != TRANSACTION_SERIALIZABLE) {
+				db.setTransactionIsolation(TRANSACTION_SERIALIZABLE);
 			}
+			/***********************/
 			TripleManager tripleManager = new TripleManager();
 			GeneralDBTripleRepository s = new MonetDBTripleRepository();
 			s.setTripleManager(tripleManager);
@@ -121,6 +128,7 @@ public class MonetDBConnectionFactory extends GeneralDBConnectionFactory {
 			optimizer.setHashTable(hashTable);
 			conn.setRdbmsQueryOptimizer(optimizer);
 			conn.setLockManager(lock);
+			
 			return conn;
 		}
 		catch (SQLException e) {

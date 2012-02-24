@@ -32,7 +32,45 @@ public class MonetDBSqlTable extends GeneralDBSqlTable {
 	@Override
 	protected String buildClear() {
 //		return "TRUNCATE " + getName();
-		return null; // TODO vacuum analyze in monetdb
+		return "DELETE FROM "+ getName();
 	}
 
+	@Override
+	public String buildGeometryCollumn() {
+		return "ALTER TABLE geo_values ADD strdfgeo GEOMETRY";
+	}
+	
+	@Override
+	public String buildIndexOnGeometryCollumn() {
+		return "CREATE INDEX geoindex ON geo_values (strdfgeo)";
+	}
+	
+	@Override
+	public String buildInsertGeometryValue() { // FIXME for srid
+		return " (id, strdfgeo) VALUES (CAST(? AS INTEGER),GeomFromWKB(?))";
+	}
+	
+	@Override
+	public String buildInsertValue(String type) {
+		return " (id, value) VALUES (CAST(? AS INTEGER), CAST( ? AS "+type+"))";
+	}
+	
+	@Override
+	protected String buildCreateTemporaryTable(CharSequence columns) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CREATE TEMPORARY TABLE ").append(getName());
+		sb.append(" (\n").append(columns).append(")");
+		sb.append(" ON COMMIT PRESERVE ROWS ");
+		return sb.toString();
+	}
+	
+	@Override
+	public String buildDummyFromAndWhere(String fromDummy) {
+		return "";
+	}
+	
+	@Override
+	public String buildDynamicParameterInteger() {
+			return "CAST( ? AS INTEGER)";
+	}
 }

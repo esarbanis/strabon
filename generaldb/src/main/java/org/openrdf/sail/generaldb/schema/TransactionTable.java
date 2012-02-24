@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.concurrent.BlockingQueue;
 
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
+import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.helpers.DefaultSailChangedEvent;
 
 /**
@@ -232,6 +233,9 @@ public class TransactionTable {
 	protected String buildInsert(String tableName, boolean predColumnPresent)
 		throws SQLException
 	{
+		GeneralDBSqlTable temp = (GeneralDBSqlTable)temporary;
+		String dynVarInt = temp.buildDynamicParameterInteger();
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ").append(tableName);
 		sb.append(" (ctx, subj, ");
@@ -241,9 +245,10 @@ public class TransactionTable {
 		//FIXME edit to accommodate temporal
 		sb.append("obj, expl)\n");
 //		sb.append("obj, expl,interval_start,interval_end)\n");
-		sb.append("VALUES (?, ?, ");
+		 
+		sb.append("VALUES ( "+dynVarInt+", "+dynVarInt+", ");
 		if (predColumnPresent) {
-			sb.append("?, ");
+			sb.append(dynVarInt+", ");
 		}
 		sb.append("?, ?)");
 //		sb.append("?, ?, ?, ?)");

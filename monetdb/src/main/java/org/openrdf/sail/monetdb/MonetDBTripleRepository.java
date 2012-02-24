@@ -5,17 +5,19 @@
  */
 package org.openrdf.sail.monetdb;
 
+import info.aduna.concurrent.locks.Lock;
+
 import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBTripleRepository;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
-import org.openrdf.sail.rdbms.managers.TransTableManager;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsURI;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
-import org.openrdf.sail.rdbms.schema.BNodeTable;
-import org.openrdf.sail.rdbms.schema.LiteralTable;
-import org.openrdf.sail.rdbms.schema.URITable;
+import org.openrdf.sail.generaldb.schema.BNodeTable;
+import org.openrdf.sail.generaldb.schema.LiteralTable;
+import org.openrdf.sail.generaldb.schema.URITable;
+
 
 /**
  * Facade to {@link GeneralDBTransTableManager}, {@link URITable}, {@link BNodeTable} and
@@ -44,7 +46,7 @@ public class MonetDBTripleRepository extends GeneralDBTripleRepository {
 		if (ctxs != null && ctxs.length > 0) {
 			sb.append(" (");
 			for (int i = 0; i < ctxs.length; i++) {
-				sb.append("ctx = ?");
+				sb.append("ctx = CAST( ? AS INTEGER) ");
 				if (i < ctxs.length - 1) {
 					sb.append(" OR ");
 				}
@@ -52,18 +54,64 @@ public class MonetDBTripleRepository extends GeneralDBTripleRepository {
 			sb.append(") AND ");
 		}
 		if (subj != null) {
-			sb.append("subj = ? ");
+			sb.append("subj = CAST( ? AS INTEGER) ");
 			sb.append(" AND ");
 		}
 		if (pred != null) {
-			sb.append("pred = ? ");
+			sb.append("pred = CAST( ? AS INTEGER) ");
 			sb.append(" AND ");
 		}
 		if (obj != null) {
-			sb.append("obj = ?");
+			sb.append("obj = CAST( ? AS INTEGER) ");
 			sb.append(" AND ");
 		}
 		sb.append(" 1=1 ");
+		return sb.toString();
+	}
+	
+	@Override
+	public synchronized void commit()
+		throws SQLException, RdbmsException, InterruptedException
+	{
+		synchronized (queue) {
+			while (!queue.isEmpty()) {
+				insert(queue.removeFirst());
+			}
+		}
+		manager.flush();
+		if ( !conn.getAutoCommit() )
+			conn.commit();
+		conn.setAutoCommit(true);
+		releaseLock();
+		Lock writeLock = vf.tryIdWriteLock();
+		try {
+			vf.flush();
+			statements.committed(writeLock != null);
+		}
+		finally {
+			if (writeLock != null) {
+				writeLock.release();
+			}
+		}
+	}
+
+	@Override
+	protected String buildCountQuery(RdbmsResource... ctxs)
+		throws SQLException
+	{
+		String tableName = statements.getCombinedTableName();
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT COUNT(*) FROM ");
+		sb.append(tableName).append(" t");
+		if (ctxs != null && ctxs.length > 0) {
+			sb.append("\nWHERE ");
+			for (int i = 0; i < ctxs.length; i++) {
+				sb.append("t.ctx = CAST( ? AS INTEGER) ");
+				if (i < ctxs.length - 1) {
+					sb.append(" OR ");
+				}
+			}
+		}
 		return sb.toString();
 	}
 	

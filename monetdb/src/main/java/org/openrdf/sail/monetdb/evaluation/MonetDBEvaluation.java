@@ -18,12 +18,13 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
-import org.openrdf.sail.monetdb.iteration.MonetDBBindingIteration;
 import org.openrdf.sail.generaldb.GeneralDBTripleRepository;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilderFactory;
+import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
+import org.openrdf.sail.monetdb.iteration.MonetDBBindingIteration;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
@@ -56,6 +57,9 @@ public class MonetDBEvaluation extends GeneralDBEvaluation {
 		try {
 			QueryBindingSet bindings = new QueryBindingSet(b);
 			String query = toQueryString(qb, bindings, parameters);
+			// FIXME MonetDB doesn't handle outer joins correctly so I replace them with inner
+			query = query.replace("LEFT", "INNER");
+			
 			try {
 				Connection conn = triples.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
@@ -69,7 +73,7 @@ public class MonetDBEvaluation extends GeneralDBEvaluation {
 					}
 				}
 				Collection<GeneralDBColumnVar> proj = qb.getProjections();
-				MonetDBBindingIteration result = new MonetDBBindingIteration(stmt);
+				GeneralDBBindingIteration result = new MonetDBBindingIteration(stmt);
 				result.setProjections(proj);
 				result.setBindings(bindings);
 				result.setValueFactory(vf);

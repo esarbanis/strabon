@@ -2,6 +2,7 @@
 package org.openrdf.sail.generaldb.schema;
 
 
+import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -224,6 +225,7 @@ public class GeoValueTable {
 	//			PreparedStatement insertStmt = conn.prepareStatement(psqlInsertLine);
 	//			
 	//			System.out.println("//////////////////////// INCONSISTENT" + geom);
+	//			
 	//			[B@62f4739
 	//			insertStmt.setLong(1, id.longValue());
 	//			//insertStmt.setString(2, constraint);
@@ -261,7 +263,7 @@ public class GeoValueTable {
 
 
 	public synchronized void insert(Number id, Integer srid,/*String constraint, Timestamp interval_start, Timestamp interval_end,*/ byte[] geom)
-	throws SQLException, InterruptedException, NullPointerException
+		throws SQLException, InterruptedException, NullPointerException
 	{
 
 	
@@ -285,6 +287,7 @@ public class GeoValueTable {
 		}
 		batch.setObject(3, srid); //adding original srid-constant
 		batch.setObject(4, srid);
+		
 		batch.addBatch();
 		queue(batch);
 
@@ -479,7 +482,7 @@ public class GeoValueTable {
 	 * CURRENT FIELDS: id, value (byte[] form of Polyhedron, strdfgeo(wkt version of Polyhedron)
 	 */
 	protected void createTable(RdbmsTable table)
-	throws SQLException
+		throws SQLException
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,");
@@ -500,19 +503,12 @@ public class GeoValueTable {
 
 		//sb.append("  constr ").append("BYTEA");
 		table.createTable(sb);
-		// george 
-		//refixed - Manos. Do not alter
-//		String extension = "SELECT AddGeometryColumn('','geo_values','strdfgeo',32630,'GEOMETRY',2)";
-		String extension = "SELECT AddGeometryColumn('','geo_values','strdfgeo',4326,'GEOMETRY',2)";
-//		String extension = "ALTER TABLE geo_values ADD strdfgeo GEOMETRY";
+		
+		String extension = ((GeneralDBSqlTable)table).buildGeometryCollumn();
 		table.execute(extension);
-		// george
-		//refixed - Manos. Do not alter
-		table.execute("CREATE INDEX geoindex ON geo_values USING GIST (strdfgeo)");
-//		table.execute("CREATE INDEX geoindex ON geo_values (strdfgeo)");
-		//System.out.println("------------------------");
-		//System.out.println(sb);
-		//System.out.println("------------------------");
+		
+		String index = ((GeneralDBSqlTable)table).buildIndexOnGeometryCollumn();
+		table.execute(index);
 	}
 
 	/**
@@ -540,10 +536,8 @@ public class GeoValueTable {
 
 		table.createTemporaryTable(sb);
 //		String extension = "SELECT AddGeometryColumn('','geo_values','value',32630,'GEOMETRY',2)";
-		String extension = "SELECT AddGeometryColumn('','geo_values','value',4326,'GEOMETRY',2)";
+		String extension = ((GeneralDBSqlTable)table).buildGeometryCollumn();
 		table.execute(extension);
 	}
-	
-
 }
 

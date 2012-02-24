@@ -95,17 +95,18 @@
 	      <version>4.7</version>
 	      <scope>test</scope>
 	    </dependency>
+	    
 	    <dependency>
 	    	<groupId>monetdb</groupId>
 	    	<artifactId>jdbcclient</artifactId>
-	    	<version>3.1.0</version>
+	    	<version>3.2.0</version>
 	    </dependency>
-	<!--
+
 	    <dependency>
 	    	<groupId>net.sf</groupId>
 	    	<artifactId>log4jdbc3</artifactId>
 	    	<version>1.2beta2</version>
 	    </dependency>
-	-->
+	
 	</dependencies>
 </project>

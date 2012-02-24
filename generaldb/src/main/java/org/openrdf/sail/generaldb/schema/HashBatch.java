@@ -5,6 +5,7 @@
  */
 package org.openrdf.sail.generaldb.schema;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

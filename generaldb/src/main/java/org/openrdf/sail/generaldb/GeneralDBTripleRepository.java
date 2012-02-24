@@ -169,27 +169,9 @@ public abstract class GeneralDBTripleRepository {
 	}
 
 	public synchronized void commit()
-		throws SQLException, RdbmsException, InterruptedException
+		throws SQLException, RdbmsException, InterruptedException 
 	{
-		synchronized (queue) {
-			while (!queue.isEmpty()) {
-				insert(queue.removeFirst());
-			}
-		}
-		manager.flush();
-		conn.commit();
-		conn.setAutoCommit(true);
-		releaseLock();
-		Lock writeLock = vf.tryIdWriteLock();
-		try {
-			vf.flush();
-			statements.committed(writeLock != null);
-		}
-		finally {
-			if (writeLock != null) {
-				writeLock.release();
-			}
-		}
+	
 	}
 
 	public void rollback()
@@ -389,24 +371,8 @@ public abstract class GeneralDBTripleRepository {
 		return query.toString();
 	}
 
-	protected String buildCountQuery(RdbmsResource... ctxs)
-		throws SQLException
-	{
-		String tableName = statements.getCombinedTableName();
-		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT COUNT(*) FROM ");
-		sb.append(tableName).append(" t");
-		if (ctxs != null && ctxs.length > 0) {
-			sb.append("\nWHERE ");
-			for (int i = 0; i < ctxs.length; i++) {
-				sb.append("t.ctx = ?");
-				if (i < ctxs.length - 1) {
-					sb.append(" OR ");
-				}
-			}
-		}
-		return sb.toString();
-	}
+	protected abstract String buildCountQuery(RdbmsResource... ctxs)
+		throws SQLException;
 
 	protected abstract String buildDeleteQuery(String tableName, RdbmsResource subj, RdbmsURI pred, RdbmsValue obj,
 			RdbmsResource... ctxs)

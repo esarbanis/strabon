@@ -1,10 +1,14 @@
 package eu.earthobservatory.runtime.monetdb;
 
+import info.aduna.concurrent.locks.Properties;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.openrdf.sail.monetdb.MonetDBSqlStore;
 
 public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
@@ -18,6 +22,10 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		db_store = new MonetDBSqlStore();
 
 		MonetDBSqlStore monetDB_store = (MonetDBSqlStore)db_store;
+		
+//		Map<String, String> properties = new HashedMap();
+//		properties.put("debug", "true");
+//		monetDB_store.setProperties(properties);
 		
 		monetDB_store.setDatabaseName(databaseName);
 		monetDB_store.setUser(user);
@@ -40,9 +48,9 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 			Connection conn = DriverManager.getConnection(url);
 			java.sql.Statement st = conn.createStatement();
 			// change
-			ResultSet resultSet = st.executeQuery("SELECT true FROM sys._tables WHERE name='locked' AND system=false;");
+			ResultSet resultSet = st.executeQuery("SELECT true FROM sys._tables WHERE name='locked' AND system=false");
 			if ( resultSet.next() )
-				st.execute("DROP TABLE \"locked\";");
+				st.execute("DROP TABLE \"locked\"");
 			st.close();
 			conn.close();
 		} catch (SQLException e) {

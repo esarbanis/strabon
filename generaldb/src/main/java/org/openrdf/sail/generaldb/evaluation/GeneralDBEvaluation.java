@@ -587,8 +587,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			throws UnsupportedRdbmsOperatorException, RdbmsQueryEvaluationException;
 
 	protected String toQueryString(GeneralDBSelectQuery qb, QueryBindingSet bindings, List<Object> parameters)
-			throws RdbmsException, UnsupportedRdbmsOperatorException
-			{
+		throws RdbmsException, UnsupportedRdbmsOperatorException
+	{
 		GeneralDBQueryBuilder query = factory.createQueryBuilder();
 		if (qb.isDistinct()) {
 			query.distinct();
@@ -712,7 +712,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			logger.debug(parameters.toString());
 		}
 		return query.toString();
-			}
+	}
 
 	/**
 	 * Function used to locate all ColumnVars from the select's spatial constructs so that they can later 

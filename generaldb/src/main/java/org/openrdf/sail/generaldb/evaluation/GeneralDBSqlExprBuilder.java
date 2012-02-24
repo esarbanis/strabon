@@ -91,11 +91,7 @@ public abstract class GeneralDBSqlExprBuilder {
 		where.append(" AS ").append(column);
 	}
 
-	public GeneralDBSqlExprBuilder number(Number time) {
-		where.append(" ? ");
-		parameters.add(time);
-		return this;
-	}
+	public abstract GeneralDBSqlExprBuilder number(Number time) ;
 
 	public GeneralDBSqlCaseBuilder caseBegin() {
 		return new GeneralDBSqlCaseBuilder(this);
@@ -226,16 +222,7 @@ public abstract class GeneralDBSqlExprBuilder {
 		return where.toString();
 	}
 
-	public GeneralDBSqlExprBuilder varchar(String stringValue) {
-		if (stringValue == null) {
-			appendNull();
-		}
-		else {
-			where.append(" ? ");
-			parameters.add(stringValue);
-		}
-		return this;
-	}
+	public abstract GeneralDBSqlExprBuilder varchar(String stringValue) ;
 
 	public void addParameters(List<Object> params) {
 		parameters.addAll(params);

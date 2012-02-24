@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
+import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
 
@@ -125,8 +126,13 @@ public class ValueTable  {
 		throws SQLException
 	{
 		StringBuilder sb = new StringBuilder();
+		/****************/
+//		sb.append("INSERT INTO ").append(getInsertTable().getName());
+//		sb.append(" (id, value) VALUES (?, ?)");
 		sb.append("INSERT INTO ").append(getInsertTable().getName());
-		sb.append(" (id, value) VALUES (?, ?)");
+		GeneralDBSqlTable table = (GeneralDBSqlTable)getInsertTable();
+		sb.append(table.buildInsertValue(sql(sqlType, length)));
+		/*******************/
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");

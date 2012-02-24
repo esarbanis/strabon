@@ -26,7 +26,7 @@ public abstract class ManagerBase {
 	public static int MAX_QUEUE = 96 * 1024;
 
 	private static final boolean USE_THREAD = true;
-
+	
 	Exception exc;
 
 	private Logger logger = LoggerFactory.getLogger(ManagerBase.class);

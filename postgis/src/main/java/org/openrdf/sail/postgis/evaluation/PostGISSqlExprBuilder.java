@@ -39,13 +39,25 @@ public class PostGISSqlExprBuilder extends GeneralDBSqlExprBuilder {
 		return this;
 	}
 
-// TODO should this be overriden ??
-//	public MonetDBSqlExprBuilder number(Number time) {
-//		where.append(" ? ");
-//		parameters.add(time);
-//		return this;
-//	}
-
+	@Override
+	public GeneralDBSqlExprBuilder number(Number time) {
+		where.append(" ? ");
+		parameters.add(time);
+		return this;
+	}
+	
+	@Override
+	public GeneralDBSqlExprBuilder varchar(String stringValue) {
+		if (stringValue == null) {
+			appendNull();
+		}
+		else {
+			where.append(" ? ");
+			parameters.add(stringValue);
+		}
+		return this;
+	}
+	
 //	// TODO should this be overriden ??
 //	protected String getSqlNull() {
 ////		return "false"; // FIXME

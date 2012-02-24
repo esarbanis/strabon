@@ -759,31 +759,31 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 			if(sridNeeded)
 			{
-			filter.appendFunction("ST_SRID");
-			filter.openBracket();
-			if(expr.getArg() instanceof GeneralDBStringValue)
-			{
-				appendWKT(expr.getArg(),filter);
-			}
-			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
-			{
-				appendConstructFunction(expr.getArg(), filter);
-			}
-			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
-			{
-				appendConstructFunction(expr.getArg(), filter);
-			}
-			else if(expr.getArg() instanceof GeneralDBSqlCase)
-			{
-				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
-				appendMBB(onlyLabel,filter); 
-			}
-			else
-			{
-				appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
-			}
-
-			filter.closeBracket();
+				filter.appendFunction("ST_SRID");
+				filter.openBracket();
+				if(expr.getArg() instanceof GeneralDBStringValue)
+				{
+					appendWKT(expr.getArg(),filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
+				{
+					appendConstructFunction(expr.getArg(), filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+				{
+					appendConstructFunction(expr.getArg(), filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlCase)
+				{
+					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
+					appendMBB(onlyLabel,filter); 
+				}
+				else
+				{
+					appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
+				}
+	
+				filter.closeBracket();
 			}
 			else
 			{
@@ -793,7 +793,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
@@ -1009,7 +1009,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendGeneralDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
 			throws UnsupportedRdbmsOperatorException
-			{
+	{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
+		
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1054,10 +1057,18 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
 						break;
 					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
 
 				}
-				filter.appendFunction("ST_Transform");
-				filter.openBracket();
+				if(sridNeeded)
+				{
+					filter.appendFunction("ST_Transform");
+					filter.openBracket();
+				}
 			}
 			/////
 

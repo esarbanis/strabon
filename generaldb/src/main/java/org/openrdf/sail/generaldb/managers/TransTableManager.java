@@ -7,20 +7,20 @@ package org.openrdf.sail.generaldb.managers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-import org.openrdf.sail.helpers.DefaultSailChangedEvent;
+import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.generaldb.schema.Batch;
 import org.openrdf.sail.generaldb.schema.IdSequence;
-import org.openrdf.sail.rdbms.schema.RdbmsTable;
-import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.generaldb.schema.TransactionTable;
 import org.openrdf.sail.generaldb.schema.TripleTable;
 import org.openrdf.sail.generaldb.schema.ValueTable;
+import org.openrdf.sail.helpers.DefaultSailChangedEvent;
+import org.openrdf.sail.rdbms.schema.RdbmsTable;
+import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.rdbms.schema.ValueTypes;
 
 /**
@@ -306,14 +306,14 @@ public class TransTableManager {
 
 	private String getEmptyTableName() {
 		StringBuilder sb = new StringBuilder(256);
+		GeneralDBSqlTable temp = (GeneralDBSqlTable)temporaryTable;
 		sb.append("(");
 		sb.append("SELECT ");
 		sb.append(getZeroBigInt()).append(" AS ctx, ");
 		sb.append(getZeroBigInt()).append(" AS subj, ");
 		sb.append(getZeroBigInt()).append(" AS pred, ");
 		sb.append(getZeroBigInt()).append(" AS obj ");
-		sb.append(fromDummy);
-		sb.append("\nWHERE 1=0");
+		sb.append(temp.buildDummyFromAndWhere(fromDummy));
 		sb.append(")");
 		return sb.toString();
 	}

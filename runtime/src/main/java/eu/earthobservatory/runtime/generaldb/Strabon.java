@@ -74,7 +74,9 @@ public abstract class Strabon {
 
 	}
 
-	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws SQLException, ClassNotFoundException {
+	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
+		throws SQLException, ClassNotFoundException 
+	{
 		if (checkForLockTable == true) {
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
 		}
@@ -171,8 +173,6 @@ public abstract class Strabon {
 			TupleQueryResult result = tupleQuery.evaluate();
 			long t2 = System.nanoTime();
 			while (result.hasNext()) {
-				BindingSet bindingSet = result.next();				
-				String test = bindingSet.toString();
 				results++;
 			}
 			long t3 = System.nanoTime();
@@ -725,7 +725,8 @@ public abstract class Strabon {
 
 		try {
 			update.execute();
-		} catch (UpdateExecutionException e) {			e.printStackTrace();
+		} catch (UpdateExecutionException e) {
+			e.printStackTrace();
 		}
 
 		System.out.println("-------------------------------------------");

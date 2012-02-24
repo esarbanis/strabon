@@ -23,12 +23,12 @@ import org.openrdf.sail.generaldb.optimizers.GeneralDBSelectQueryOptimizerFactor
 import org.openrdf.sail.helpers.DefaultSailChangedEvent;
 import org.openrdf.sail.postgis.evaluation.PostGISEvaluationFactory;
 import org.openrdf.sail.postgis.evaluation.PostGISQueryBuilderFactory;
+import org.openrdf.sail.rdbms.util.DatabaseLockManager;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.generaldb.managers.TransTableManager;
 import org.openrdf.sail.generaldb.managers.TripleManager;
 import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.generaldb.schema.ValueTableFactory;
-import org.openrdf.sail.rdbms.util.DatabaseLockManager;
 
 /**
  * Responsible to initialise and wire all components together that will be

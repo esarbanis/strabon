@@ -34,4 +34,18 @@ public abstract class GeneralDBSqlTable extends RdbmsTable {
 	@Override
 	protected abstract String buildClear();
 
+	public abstract String buildGeometryCollumn();
+	
+	public abstract String buildIndexOnGeometryCollumn();
+
+	public abstract String buildInsertGeometryValue();
+	
+	public abstract String buildInsertValue(String type);
+	
+	@Override
+	protected abstract String buildCreateTemporaryTable(CharSequence columns) ;
+	
+	public abstract String buildDummyFromAndWhere(String fromDummy);
+	
+	public abstract String buildDynamicParameterInteger();
 }

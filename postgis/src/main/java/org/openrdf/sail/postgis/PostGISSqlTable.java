@@ -32,4 +32,45 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	protected String buildClear() {
 		return "TRUNCATE " + getName();
 	}
+	
+	@Override
+	public String buildGeometryCollumn() {
+		return "SELECT AddGeometryColumn('','geo_values','strdfgeo',4326,'GEOMETRY',2)";
+	}
+	
+	@Override
+	public String buildIndexOnGeometryCollumn() {
+		return "CREATE INDEX geoindex ON geo_values USING GIST (strdfgeo)";
+	}
+	
+	@Override
+	public String buildInsertGeometryValue() {
+		return " (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),4326),?)";
+	}
+	
+	@Override
+	public String buildInsertValue(String type) {
+		return " (id, value) VALUES ( ?, ?) ";
+	}
+	
+	@Override
+	protected String buildCreateTemporaryTable(CharSequence columns) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CREATE TEMPORARY TABLE ").append(getName());
+		sb.append(" (\n").append(columns).append(")");
+		return sb.toString();
+	}
+	
+	@Override
+	public String buildDummyFromAndWhere(String fromDummy) {
+		StringBuilder sb = new StringBuilder(256);
+		sb.append(fromDummy); 
+		sb.append("\nWHERE 1=0");
+		return sb.toString();
+	}
+	
+	@Override
+	public String buildDynamicParameterInteger() {
+			return "?";
+	}
 }

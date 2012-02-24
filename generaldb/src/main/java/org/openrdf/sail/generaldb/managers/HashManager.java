@@ -44,9 +44,9 @@ import org.openrdf.sail.generaldb.schema.IdSequence;
 public class HashManager extends ManagerBase {
 
 	public static HashManager instance;
-
+	
 	private static final boolean USE_THREAD = true;
-
+	
 	private Logger logger = LoggerFactory.getLogger(HashManager.class);
 
 	private HashTable table;
@@ -122,7 +122,6 @@ public class HashManager extends ManagerBase {
 				public void run()  {
 					try {
 						lookupThread(working, assignIds);
-
 					}
 					catch (Exception e) {
 						exc = e;

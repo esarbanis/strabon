@@ -62,13 +62,47 @@ public class MonetDBSqlExprBuilder extends GeneralDBSqlExprBuilder {
 		return this;
 	}
 
-// TODO should this be overriden ??
-//	public MonetDBSqlExprBuilder number(Number time) {
-//		where.append(" ? ");
-//		parameters.add(time);
-//		return this;
-//	}
-
+	public GeneralDBSqlExprBuilder number(Number time) {
+		String dataType = null;
+		
+		if ( time instanceof Integer ){
+			dataType = "INTEGER";
+		} else if (time instanceof Long ) {
+			dataType = "BIGINT";
+		} else if ( time instanceof BigDecimal ) {
+			int precision = ((BigDecimal)time).precision();
+			int scale = ((BigDecimal)time).scale();
+			dataType = "DECIMAL(,"+precision+","+scale+")";
+		} else if ( time instanceof Byte ) {
+			dataType = "TINYINT";
+		} else if ( time instanceof Double ) {
+			dataType = "DOUBLE";
+		} else if ( time instanceof Float ) {
+			dataType = "REAL";
+		} else if ( time instanceof Short ) {
+			dataType = "SMALLINT";
+		} else {
+			where.append(" ? ");
+			parameters.add(time);
+			return this;
+		}
+		
+		where.append(" CAST( ? AS "+dataType+") ");
+		parameters.add(time);
+		return this;
+	}
+ 
+	public GeneralDBSqlExprBuilder varchar(String stringValue) {
+		if (stringValue == null) {
+			appendNull();
+		}
+		else {
+			where.append(" CAST( ? AS STRING) ");
+			parameters.add(stringValue);
+		}
+		return this;
+	}
+	
 //	// TODO should this be overriden ??
 //	protected String getSqlNull() {
 ////		return "false"; // FIXME

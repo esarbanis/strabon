@@ -1,9 +1,10 @@
 
 package org.openrdf.sail.generaldb.schema;
 
-import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
 
 
@@ -59,7 +60,7 @@ public class Batch {
 	public void setObject(int parameterIndex, Object x)
 		throws SQLException
 	{
-		insertBatch.setObject(parameterIndex, x);
+			insertBatch.setObject(parameterIndex, x);
 	}
 
 	public void setString(int parameterIndex, String x)
@@ -69,14 +70,14 @@ public class Batch {
 	}
 	
 	public void setBytes(int parameterIndex, byte[] x)
-	throws SQLException
+		throws SQLException
 	{
 //		byte[] part1 = "ST_GeomFromWKB(".getBytes();
 //		byte[] part3 = ")".getBytes();
 //		byte[] all = ArrayUtils.addAll(ArrayUtils.addAll(part1,x),part3);
 		insertBatch.setBytes(parameterIndex, x);
 	}
-
+	
 	public void addBatch()
 		throws SQLException
 	{

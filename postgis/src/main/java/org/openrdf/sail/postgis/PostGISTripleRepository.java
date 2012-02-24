@@ -6,8 +6,9 @@
 package org.openrdf.sail.postgis;
 
 
-import java.sql.SQLException;
+import info.aduna.concurrent.locks.Lock;
 
+import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBTripleRepository;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
@@ -65,8 +66,48 @@ public class PostGISTripleRepository extends GeneralDBTripleRepository {
 		return sb.toString();
 	}	
 	
-
+	@Override
+	public synchronized void commit()
+		throws SQLException, RdbmsException, InterruptedException
+	{
+		synchronized (queue) {
+			while (!queue.isEmpty()) {
+				insert(queue.removeFirst());
+			}
+		}
+		manager.flush();
+		conn.commit();
+		conn.setAutoCommit(true);
+		releaseLock();
+		Lock writeLock = vf.tryIdWriteLock();
+		try {
+			vf.flush();
+			statements.committed(writeLock != null);
+		}
+		finally {
+			if (writeLock != null) {
+				writeLock.release();
+			}
+		}
+	}
 	
-	
-
+	@Override
+	protected String buildCountQuery(RdbmsResource... ctxs)
+		throws SQLException
+	{
+		String tableName = statements.getCombinedTableName();
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT COUNT(*) FROM ");
+		sb.append(tableName).append(" t");
+		if (ctxs != null && ctxs.length > 0) {
+			sb.append("\nWHERE ");
+			for (int i = 0; i < ctxs.length; i++) {
+				sb.append("t.ctx = ?");
+				if (i < ctxs.length - 1) {
+					sb.append(" OR ");
+				}
+			}
+		}
+		return sb.toString();
+	}
 }

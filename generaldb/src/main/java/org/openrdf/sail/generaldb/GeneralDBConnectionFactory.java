@@ -117,8 +117,7 @@ public abstract class GeneralDBConnectionFactory {
 	public void setDataSource(DataSource ds) {
 		if (Tracer.isTraceEnabled()) {
 			this.ds = Tracer.traceDataSource(ds);
-		}
-		else {
+		} else {
 			this.ds = ds;
 		}
 	}
@@ -157,12 +156,10 @@ public abstract class GeneralDBConnectionFactory {
 			try {
 				if (triplesIndexed) {
 					tripleTableManager.createTripleIndexes();
-				}
-				else {
+				} else {
 					tripleTableManager.dropTripleIndexes();
 				}
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				throw new RdbmsException(e);
 			}
 		}
@@ -203,8 +200,7 @@ public abstract class GeneralDBConnectionFactory {
 				hashManager.setUriManager(uriManager);
 				hashManager.setIdSequence(ids);
 				hashManager.init();
-			}
-			else {
+			} else {
 				ids = new LongIdSequence();
 				ids.init();
 				tables.setIdSequence(ids);
@@ -245,8 +241,7 @@ public abstract class GeneralDBConnectionFactory {
 			tripleTableManager.initialize();
 			if (triplesIndexed) {
 				tripleTableManager.createTripleIndexes();
-			}
-			else {
+			} else {
 				tripleTableManager.dropTripleIndexes();
 			}
 			bnodeManager.setTable(bnodeTable);
@@ -257,29 +252,22 @@ public abstract class GeneralDBConnectionFactory {
 			literalManager.init();
 			vf.setLiteralManager(literalManager);
 			vf.setPredicateManager(predicateManager);
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new RdbmsException(e);
 		}
 	}
 
-	public boolean isWritable()
-		throws SailException
-	{
+	public boolean isWritable() throws SailException {
 		try {
 			return !nsAndTableIndexes.isReadOnly();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new RdbmsException(e);
 		}
 	}
 
-	public abstract SailConnection createConnection()
-		throws SailException;
+	public abstract SailConnection createConnection() throws SailException;
 
-	public void shutDown()
-		throws SailException
-	{
+	public void shutDown() throws SailException {
 		try {
 			if (tripleTableManager != null) {
 				tripleTableManager.close();
@@ -312,19 +300,16 @@ public abstract class GeneralDBConnectionFactory {
 				nsAndTableIndexes.close();
 				nsAndTableIndexes = null;
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new RdbmsException(e);
-		}
-		finally {
+		} finally {
 			if (databaseLock != null) {
 				databaseLock.release();
 			}
 		}
 	}
 
-	protected abstract Lock createDatabaseLock()
-		throws SailException;
+	protected abstract Lock createDatabaseLock() throws SailException;
 
 	protected abstract GeneralDBQueryBuilderFactory createQueryBuilderFactory();
 
@@ -354,7 +339,7 @@ public abstract class GeneralDBConnectionFactory {
 	}
 
 	protected Connection getConnection()
-		throws SQLException
+		throws SQLException 
 	{
 		Connection conn;
 		if (user == null)
@@ -365,7 +350,7 @@ public abstract class GeneralDBConnectionFactory {
 			conn = ds.getConnection(user, password);
 
 		return conn;
-		//return new net.sf.log4jdbc.ConnectionSpy(conn);
+//		return new net.sf.log4jdbc.ConnectionSpy(conn);
 	}
 
 }

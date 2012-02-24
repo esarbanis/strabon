@@ -17,7 +17,7 @@ public class QueryOp {
 			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
 			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
 			System.err.println("             <QUERY>      is the stSPARQL query to evaluate.");
-			System.err.println("             [<FORMAT>]     is the format of your results (XML)");
+			System.err.println("             [<FORMAT>]   is the format of your results (default: XML)");
 			System.exit(0);
 		}
 
