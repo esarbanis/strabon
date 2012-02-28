@@ -189,10 +189,14 @@ public abstract class Strabon {
 	
 			
 				while (result.hasNext()) {
-					BindingSet bindingSet = result.next();			
-					System.out.println(bindingSet.toString());
-	
-					ret.add(bindingSet.toString());
+					
+					BindingSet bindingSet = result.next();
+//					try {
+						System.out.println(bindingSet.toString());
+						ret.add(bindingSet.toString());
+//					} catch (NullPointerException e) {
+//						 System.err.println("Null pointer");
+//					}
 				}
 			
 			//System.out.println("-------------------------------------------");

@@ -58,7 +58,7 @@ public class MonetDBEvaluation extends GeneralDBEvaluation {
 			QueryBindingSet bindings = new QueryBindingSet(b);
 			String query = toQueryString(qb, bindings, parameters);
 			// FIXME MonetDB doesn't handle outer joins correctly so I replace them with inner
-			query = query.replace("LEFT", "INNER");
+//			query = query.replace("LEFT", "INNER");
 			
 			try {
 				Connection conn = triples.getConnection();
