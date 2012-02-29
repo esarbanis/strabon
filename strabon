@@ -1,0 +1,27 @@
+#! /bin/bash
+
+dbName=$1
+dirs=$2
+
+# Evaluates a query using Strabon that is stored in $dir
+#dir='/home/ggarbis/workspaces/Strabon-workspace/Strabon/jars/target'
+dir='/home/kkyzir/teleios/nkua/Strabon/jars/target'
+
+# Arguments for QueryDir
+HOST='localhost'
+PORT='50000'
+DATABASE=$dbName
+USERNAME='monetdb'
+PASSWORD='monetdb'
+FORMAT=''
+DIRS=$2
+
+# Construct classpath with dependencies
+cd $dir &&
+for file in `ls -1 *.jar`;
+do 
+	myVar=$myVar./$file":";
+done;
+
+# Evaluate a query
+java -Xmx5000M -cp $myVar eu.earthobservatory.runtime.monetdb.QueryDir $HOST $PORT $DATABASE $USERNAME $PASSWORD "$DIRS" $FORMAT
