@@ -15,6 +15,7 @@ USERNAME='monetdb'
 PASSWORD='monetdb'
 FORMAT=''
 DIRS=$2
+EXT=$3
 
 # Construct classpath with dependencies
 cd $dir &&
@@ -24,4 +25,4 @@ do
 done;
 
 # Evaluate a query
-java -Xmx5000M -cp $myVar eu.earthobservatory.runtime.monetdb.QueryDir $HOST $PORT $DATABASE $USERNAME $PASSWORD "$DIRS" $FORMAT
+java -Xmx5000M -cp $myVar eu.earthobservatory.runtime.monetdb.QueryDir $HOST $PORT $DATABASE $USERNAME $PASSWORD "$DIRS" "$EXT" $FORMAT

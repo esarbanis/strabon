@@ -3,6 +3,7 @@ package eu.earthobservatory.runtime.monetdb;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 
@@ -14,15 +15,16 @@ public class QueryDir {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		if (args.length < 6) {
+		if (args.length < 7) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <PATH> [<FORMAT>]");
 			System.err.println("       where <HOST>       is the postgis database host to connect to");
 			System.err.println("             <PORT>       is the port to connect to on the database host");		
 			System.err.println("             <DATABASE>   is the spatially enabled postgis database that Strabon will use as a backend, ");
 			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
 			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
-			System.err.println("             <PATH>      is the path containing all stSPARQL queries to evaluate.");
-			System.err.println("             [<FORMAT>]     is the format of your results (XML)");
+			System.err.println("             <PATH>       is the path containing all stSPARQL queries to evaluate.");
+			System.err.println("             <EXTENSION>  is the extention of the files that contain the stSPARQL queries. (e.g., '.rq')");
+			System.err.println("             [<FORMAT>]   is the format of your results (XML)");
 			System.exit(0);
 		}
 
@@ -32,18 +34,23 @@ public class QueryDir {
 		String user = args[3];
 		String passwd = args[4];		
 		String path = args[5];
+		final String extension = args[6];
 		String resultsFormat = "";
-		if ( args.length == 7 ) {
-			resultsFormat = args[6];
+		if ( args.length == 8 ) {
+			resultsFormat = args[7];
 		}
-
-
-
 
 		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
 
 		File dir = new File(path);
-		String[] children = dir.list();
+
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(extension);
+			}
+		};
+
+		String[] children = dir.list(filter);
 		if (children != null) {
 			for (int i=0; i<children.length; i++) {
 				String filename = children[i];
