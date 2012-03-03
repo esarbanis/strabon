@@ -8,12 +8,11 @@ package org.openrdf.sail.generaldb.schema;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.concurrent.BlockingQueue;
 
-import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.helpers.DefaultSailChangedEvent;
+import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
 /**
  * Manages a temporary table used when uploading new statements with the same
@@ -175,7 +174,7 @@ public class TransactionTable {
 		sb.append("INSERT INTO ").append(tableName).append(" "); //sb.append("INSERT INTO ").append(tableName).append("\n");
 		columns.append(" ctx, subj, "); //sb.append("SELECT DISTINCT ctx, subj, ");
 		if (triples.isPredColumnPresent()) {
-			columns.append("pred");//sb.append("pred, ");
+			columns.append("pred, ");//sb.append("pred, ");
 		}
 		
 		//FIXME change due to need to accommodate temporals
