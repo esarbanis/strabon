@@ -472,4 +472,32 @@ public class TripleTableManager {
 	{
 		return hashes;
 	}
+	
+	/**
+	 * @author charnik
+	 * This method should be used only for flushing prepared statements 
+	 * related to hash values. Introduced to avoid exceptions in MonetDB
+	 * when a new predicate has to be inserted and the underlying relational
+	 * table does not exist. In such a case, the prepared statement for the
+	 * creation of the table was making MonetDB to release all prepared statements
+	 * that have already been created but not executed.
+	 * 
+	 * FIXME: Should it throw those exceptions? 
+	 */
+	public void flushManagers() {
+		try {
+			hashes.flush();
+			uris.flush();
+			literals.flush();
+			bnodes.flush();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

@@ -238,13 +238,14 @@ public class TransTableManager {
 	protected String getZeroBigInt() {
 		return "0";
 	}
-
+	
 	protected TransactionTable getTable(Number pred)
 	throws SQLException
 	{
 		synchronized (tables) {
 			TransactionTable table = tables.get(pred);
 			if (table == null) {
+				triples.flushManagers();// charnik's addition (see flushManagers() method for details)
 				TripleTable predicate = triples.getPredicateTable(pred);
 				Number key = pred;
 				if (predicate.isPredColumnPresent()) {
