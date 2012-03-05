@@ -6,6 +6,7 @@
 package org.openrdf.sail.generaldb.managers;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -313,7 +314,8 @@ public class TransTableManager {
 		sb.append(getZeroBigInt()).append(" AS subj, ");
 		sb.append(getZeroBigInt()).append(" AS pred, ");
 		sb.append(getZeroBigInt()).append(" AS obj ");
-		sb.append(temp.buildDummyFromAndWhere(fromDummy));
+		sb.append(fromDummy);
+	    sb.append("\nWHERE 1=0");
 		sb.append(")");
 		return sb.toString();
 	}
