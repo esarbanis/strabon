@@ -110,7 +110,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Touches, 
 		ST_Covers, 
 		ST_CoveredBy, 
-		ST_Overlaps, 
+		ST_Overlaps,
+		ST_Intersects,
 		ST_Relate, 
 		//Spatial Constructs - Binary
 		ST_Union, 
@@ -313,7 +314,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.anyInteract);
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersects);
 			}
 
 	@Override
@@ -1087,6 +1088,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Covers: filter.appendFunction("ST_Covers"); break;
 			case ST_CoveredBy: filter.appendFunction("ST_CoveredBy"); break;
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
+			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
 			}
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
