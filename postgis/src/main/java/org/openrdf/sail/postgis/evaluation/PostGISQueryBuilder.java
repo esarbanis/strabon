@@ -112,6 +112,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_CoveredBy, 
 		ST_Overlaps,
 		ST_Intersects,
+		ST_Equals,
 		ST_Relate, 
 		//Spatial Constructs - Binary
 		ST_Union, 
@@ -328,7 +329,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
-		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.equals);
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Equals);
 	}
 
 	@Override
@@ -1089,6 +1090,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_CoveredBy: filter.appendFunction("ST_CoveredBy"); break;
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
 			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
+			case ST_Equals: filter.appendFunction("ST_Equals"); break;
 			}
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
