@@ -35,6 +35,7 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.And;
 import org.openrdf.query.algebra.Avg;
+import org.openrdf.query.algebra.BinaryValueOperator;
 import org.openrdf.query.algebra.Compare;
 import org.openrdf.query.algebra.Distinct;
 import org.openrdf.query.algebra.Extension;
@@ -54,6 +55,7 @@ import org.openrdf.query.algebra.ProjectionElemList;
 import org.openrdf.query.algebra.Slice;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
+import org.openrdf.query.algebra.UnaryValueOperator;
 import org.openrdf.query.algebra.Union;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
@@ -87,10 +89,14 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
+import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
+import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.factories.GeneralDBSqlExprFactory;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsRuntimeException;
@@ -976,12 +982,20 @@ QueryOptimizer
 				}
 
 			}
+			//Issue: MathExpr is not exclusively met in spatial cases!
+			//Need to distinguish thematic and spatial!!
+
+			//One way to do it: Check for label column in children of expression. If none exists: No way sth spatial is involved!
 			else if(expr instanceof MathExpr)
 			{
 				try {
-					sqlExpr = sql.getNumericExprFactory().createNumericExpr(expr);
-					reference.getSpatialConstructs().put(name, sqlExpr);
-					iter.remove();
+					if(!thematicExpression(expr))
+					{
+						sqlExpr = sql.getNumericExprFactory().createNumericExpr(expr);
+
+						reference.getSpatialConstructs().put(name, sqlExpr);
+						iter.remove();
+					}
 				} catch (UnsupportedRdbmsOperatorException e) {
 					e.printStackTrace();
 				}
@@ -1015,6 +1029,33 @@ QueryOptimizer
 
 
 		}
+	}
+
+	//Checking that no spatial function exists in this metric expression
+	private boolean thematicExpression(ValueExpr expr)
+	{
+		if(expr instanceof UnaryValueOperator)
+		{
+			return thematicExpression(((UnaryValueOperator) expr).getArg());
+		}
+		else if(expr instanceof BinaryValueOperator)
+		{
+			return thematicExpression(((BinaryValueOperator) expr).getLeftArg()) &&
+				   thematicExpression(((BinaryValueOperator) expr).getRightArg());
+		}
+		else
+		{
+			if(expr instanceof FunctionCall)
+			{
+				Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
+				if(function instanceof SpatialMetricFunc)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 	}
 
 	/**
@@ -1173,7 +1214,7 @@ QueryOptimizer
 	throws RuntimeException
 	{
 		int mbbCounter = 0;
-//		super.meet(node);
+		//		super.meet(node);
 		if (!(node.getArg() instanceof GeneralDBSelectQuery))
 			//In other words, I have encountered having/groupby
 		{
@@ -1200,20 +1241,20 @@ QueryOptimizer
 							{
 								Extension ext = new Extension();
 								ext.addElement(extElem);
-//								((Projection)(node.getParentNode())).setArg(ext);
-//								ext.setArg(node);
+								//								((Projection)(node.getParentNode())).setArg(ext);
+								//								ext.setArg(node);
 								Extension tmpExt = (Extension) node.getArg();
 								node.setArg(ext);
 								ext.setArg(tmpExt);
-								
+
 							}
-//							else if(node.getParentNode() instanceof Projection)
-//							{
-//								Extension ext = new Extension();
-//								ext.addElement(extElem);
-//								((Projection)(node.getParentNode())).setArg(ext);
-//								ext.setArg(node);
-//							}
+							//							else if(node.getParentNode() instanceof Projection)
+							//							{
+							//								Extension ext = new Extension();
+							//								ext.addElement(extElem);
+							//								((Projection)(node.getParentNode())).setArg(ext);
+							//								ext.setArg(node);
+							//							}
 							else if(node.getParentNode() instanceof Extension)
 							{
 								((Extension)node.getParentNode()).addElement(extElem);
@@ -1235,19 +1276,19 @@ QueryOptimizer
 					{
 						Extension ext = new Extension();
 						ext.addElement(extElem);
-//						((Projection)(node.getParentNode())).setArg(ext);
-//						ext.setArg(node);
+						//						((Projection)(node.getParentNode())).setArg(ext);
+						//						ext.setArg(node);
 						Extension tmpExt = (Extension) node.getArg();
 						node.setArg(ext);
 						ext.setArg(tmpExt);
 					}
-//					else if(node.getParentNode() instanceof Projection)
-//					{
-//						Extension ext = new Extension();
-//						ext.addElement(extElem);
-//						((Projection)(node.getParentNode())).setArg(ext);
-//						ext.setArg(node);
-//					}
+					//					else if(node.getParentNode() instanceof Projection)
+					//					{
+					//						Extension ext = new Extension();
+					//						ext.addElement(extElem);
+					//						((Projection)(node.getParentNode())).setArg(ext);
+					//						ext.setArg(node);
+					//					}
 					else if(node.getParentNode() instanceof Extension)
 					{
 						((Extension)node.getParentNode()).addElement(extElem);

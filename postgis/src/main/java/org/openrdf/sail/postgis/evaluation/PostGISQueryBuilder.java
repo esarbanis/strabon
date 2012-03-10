@@ -284,9 +284,11 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	//FIXME my addition from here on
+	
+	//Issue with this function: crashes when MathExpr is present in Select but does not
+	//involve spatial variables! must escape this somehow
 	@Override
-	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr)
-			throws UnsupportedRdbmsOperatorException
+	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr) throws UnsupportedRdbmsOperatorException
 			{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)

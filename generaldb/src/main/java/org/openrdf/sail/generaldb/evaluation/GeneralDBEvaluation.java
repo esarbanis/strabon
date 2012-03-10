@@ -144,6 +144,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer,String>();
 
+	protected List<GeneralDBSqlExpr> thematicExpressions = new ArrayList<GeneralDBSqlExpr>(5);
+
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
 	//private HashMap<String, Integer> constructIndexesAndNames = new HashMap<String, Integer>();
@@ -166,8 +168,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr,
 			BindingSet bindings)
-	throws QueryEvaluationException
-	{
+			throws QueryEvaluationException
+			{
 		if (expr instanceof GeneralDBSelectQuery)
 			return evaluate((GeneralDBSelectQuery)expr, bindings);
 		else if (expr instanceof Group) {
@@ -177,11 +179,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((Order)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-	}
+			}
 	@Override
 	public Value evaluate(ValueExpr expr, BindingSet bindings)
-			throws ValueExprEvaluationException, QueryEvaluationException
-			{
+	throws ValueExprEvaluationException, QueryEvaluationException
+	{
 		if (expr instanceof Var) {
 			return evaluate((Var)expr, bindings);
 		}
@@ -189,7 +191,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((FunctionCall)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-			}
+	}
 
 	/**
 	 * Had to use it for the cases met in group by (Union as an aggregate)
@@ -198,12 +200,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	public Value evaluate(Var var, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
 		boolean groupBy = false;
-//		//Case met when ORDER BY involved (?)
-//		if(var.getName().startsWith("-mbbVar-"))
-//		{
-//			var.setName(var.getName().replace("-mbbVar-",""));
-//		}
-		
+		//		//Case met when ORDER BY involved (?)
+		//		if(var.getName().startsWith("-mbbVar-"))
+		//		{
+		//			var.setName(var.getName().replace("-mbbVar-",""));
+		//		}
+
 		//Case met when evaluating a construct function inside an aggregate 
 		if(var.getName().endsWith("?spatial"))
 		{
@@ -256,33 +258,33 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				}
 			}
 		}
-		
+
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
 
-//		if(fc.getParentNode() instanceof Filter)
-//		{
-//			//Traditional Behavior!
-//			try {
-//				if (function == null) {
-//					throw new QueryEvaluationException("Unknown function '" + fc.getURI() + "'");
-//				}
-//
-//				List<ValueExpr> args = fc.getArgs();
-//
-//				Value[] argValues = new Value[args.size()];
-//
-//				for (int i = 0; i < args.size(); i++) {
-//
-//					argValues[i] = evaluate(args.get(i), bindings);
-//
-//				}
-//
-//				return function.evaluate(tripleSource.getValueFactory(), argValues);} catch (ValueExprEvaluationException e) {
-//					e.printStackTrace();
-//				} catch (QueryEvaluationException e) {
-//					e.printStackTrace();
-//				}
-//		}
+		//		if(fc.getParentNode() instanceof Filter)
+		//		{
+		//			//Traditional Behavior!
+		//			try {
+		//				if (function == null) {
+		//					throw new QueryEvaluationException("Unknown function '" + fc.getURI() + "'");
+		//				}
+		//
+		//				List<ValueExpr> args = fc.getArgs();
+		//
+		//				Value[] argValues = new Value[args.size()];
+		//
+		//				for (int i = 0; i < args.size(); i++) {
+		//
+		//					argValues[i] = evaluate(args.get(i), bindings);
+		//
+		//				}
+		//
+		//				return function.evaluate(tripleSource.getValueFactory(), argValues);} catch (ValueExprEvaluationException e) {
+		//					e.printStackTrace();
+		//				} catch (QueryEvaluationException e) {
+		//					e.printStackTrace();
+		//				}
+		//		}
 		ValueExpr left = fc.getArgs().get(0);
 
 
@@ -298,9 +300,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 
 
-//		if(!(function instanceof EnvelopeFunc) 
-//				&& !(function instanceof ConvexHullFunc) 
-//				&& !(function instanceof BoundaryFunc))
+		//		if(!(function instanceof EnvelopeFunc) 
+		//				&& !(function instanceof ConvexHullFunc) 
+		//				&& !(function instanceof BoundaryFunc))
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
@@ -312,7 +314,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			if ( function instanceof SpatialConstructFunc ) 
 				return spatialConstructPicker(function, leftResult, rightResult);
@@ -335,7 +337,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{	//SHOULD NEVER REACH THIS CASE!
 					return null;
 				}
-				
+
 				if(rightResult instanceof StrabonPolyhedron)
 				{
 					rightGeom = ((StrabonPolyhedron) rightResult).getGeometry();
@@ -348,8 +350,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{	//SHOULD NEVER REACH THIS CASE!
 					return null;
 				}
-				
-				
+
+
 				if(function instanceof AboveFunc)
 				{
 					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightGeom.getEnvelopeInternal().getMaxY();
@@ -403,7 +405,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					funcResult = leftGeom.touches(rightGeom);
 				}
-				
+
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
 			}
 			else {
@@ -479,29 +481,29 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(Group node, BindingSet bindings)
-			throws QueryEvaluationException
-			{
-//		Set<String> tmp1 = node.getAggregateBindingNames();
-//		Set<String> tmp2 = node.getAssuredBindingNames();
-//		Set<String> tmp3 = node.getBindingNames();
-//		Set<String> tmp4 = node.getGroupBindingNames();
-//		for(String tmp : tmp4)
-//		{
-//			//System.out.println(node.g);
-//		}
+	throws QueryEvaluationException
+	{
+		//		Set<String> tmp1 = node.getAggregateBindingNames();
+		//		Set<String> tmp2 = node.getAssuredBindingNames();
+		//		Set<String> tmp3 = node.getBindingNames();
+		//		Set<String> tmp4 = node.getGroupBindingNames();
+		//		for(String tmp : tmp4)
+		//		{
+		//			//System.out.println(node.g);
+		//		}
 		return new StSPARQLGroupIterator(this, node, bindings);
-			}
+	}
 
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(Order node, BindingSet bindings)
-			throws QueryEvaluationException
-			{
+	throws QueryEvaluationException
+	{
 		StSPARQLValueComparator vcmp = new StSPARQLValueComparator();
 		StSPARQLOrderComparator cmp = new StSPARQLOrderComparator(this, node, vcmp);
 		boolean reduced = isReduced(node);
 		long limit = getLimit(node);
 		return new OrderIterator(evaluate(node.getArg(), bindings), cmp, limit, reduced);
-			}
+	}
 
 	//Duplicated from EvaluationStrategyImpl
 	private boolean isReduced(QueryModelNode node) {
@@ -584,10 +586,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	}
 
 	protected abstract CloseableIteration<BindingSet, QueryEvaluationException> evaluate(GeneralDBSelectQuery qb, BindingSet b)
-			throws UnsupportedRdbmsOperatorException, RdbmsQueryEvaluationException;
+	throws UnsupportedRdbmsOperatorException, RdbmsQueryEvaluationException;
 
 	protected String toQueryString(GeneralDBSelectQuery qb, QueryBindingSet bindings, List<Object> parameters)
-		throws RdbmsException, UnsupportedRdbmsOperatorException
+	throws RdbmsException, UnsupportedRdbmsOperatorException
 	{
 		GeneralDBQueryBuilder query = factory.createQueryBuilder();
 		if (qb.isDistinct()) {
@@ -662,35 +664,41 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			GeneralDBSqlExpr expr = (GeneralDBSqlExpr) pairs.getValue();
 			locateColumnVars(expr,qb.getVars());
 
-			query.construct(expr); 
-			GeneralDBSpatialFuncInfo info = null;
-			switch(constructReturnType(expr))
+			//Assuming thematic aggregates and spatial expressions won't be combined
+			if(!this.thematicExpressions.contains(expr))
 			{
-			case 1:
-				//Integer
-				info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Integer);
-				break;
-			case 2: 
-				//String
-				info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.String);
-				break;
-			case 3: 
-				//Boolean
-				info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Boolean);
-				break;
-			case 4: 
-				//WKB
-				info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.WKB);
-				break;
-			case 5: 
-				//DOUBLE
-				info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Double);
-				break;
-			default: throw new UnsupportedRdbmsOperatorException("No such spatial expression exists!");
-			}
+				query.construct(expr);
 
-			//constructIndexesAndNames.put((String) pairs.getKey(),index++);
-			constructIndexesAndNames.put(info,index++);
+
+				GeneralDBSpatialFuncInfo info = null;
+				switch(constructReturnType(expr))
+				{
+				case 1:
+					//Integer
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Integer);
+					break;
+				case 2: 
+					//String
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.String);
+					break;
+				case 3: 
+					//Boolean
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Boolean);
+					break;
+				case 4: 
+					//WKB
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.WKB);
+					break;
+				case 5: 
+					//DOUBLE
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Double);
+					break;
+				default: throw new UnsupportedRdbmsOperatorException("No such spatial expression exists!");
+				}
+
+				//constructIndexesAndNames.put((String) pairs.getKey(),index++);
+				constructIndexesAndNames.put(info,index++);
+			}
 		}
 		//
 
@@ -785,6 +793,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBNumericColumn)//ColumnVar at least
 		{
+			boolean found = false;
 			String name = ((GeneralDBNumericColumn) expr).getVarName();
 
 			//String alias =  ((GeneralDBNumericColumn) expr).getAlias();
@@ -797,7 +806,16 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 					GeneralDBSqlExpr exprCopy = new GeneralDBLabelColumn(reference,false);
 					expr.replaceWith(exprCopy);
+					found = true;
 				}
+			}
+
+			if(!found)
+			{
+				//Will keep non-spatial math expressions to avoid iterating through them 
+				//at QueryBuilder.construct. Otherwise, exception occurs. 
+				//This case probably only concerns thematic aggregates
+				this.thematicExpressions.add((GeneralDBSqlExpr)expr.getParentNode());
 			}
 			//System.out.println("stopper");
 		}
