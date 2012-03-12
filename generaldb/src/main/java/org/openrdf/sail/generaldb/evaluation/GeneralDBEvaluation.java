@@ -32,6 +32,7 @@ import info.aduna.iteration.CloseableIteration;
 import info.aduna.iteration.EmptyIteration;
 
 import org.opengis.filter.spatial.Disjoint;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
@@ -244,7 +245,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public Value evaluate(FunctionCall fc, BindingSet bindings)
 	{
-		System.out.println("FunctionCall placeholder");
+//		System.out.println("FunctionCall placeholder");
 
 		if(fc.getParentNode() instanceof Avg)
 		{
@@ -333,6 +334,15 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					leftGeom = ((GeneralDBPolyhedron) leftResult).getPolyhedron().getGeometry();
 				}
+				else if(leftResult instanceof Literal)
+				{	
+					/**
+					 * Duplicate work done here in order to retain the literal's datatype...
+					 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
+					 * in order to have them appear in Select Clause along with the appropriate datatype.
+					 */
+					leftGeom = new StrabonPolyhedron(((Literal) leftResult).getLabel()).getGeometry();
+				}
 				else
 				{	//SHOULD NEVER REACH THIS CASE!
 					return null;
@@ -345,6 +355,15 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				else if(rightResult instanceof GeneralDBPolyhedron)
 				{
 					rightGeom = ((GeneralDBPolyhedron) rightResult).getPolyhedron().getGeometry();
+				}
+				else if(rightResult instanceof Literal)
+				{	
+					/**
+					 * Duplicate work done here in order to retain the literal's datatype...
+					 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
+					 * in order to have them appear in Select Clause along with the appropriate datatype.
+					 */
+					rightGeom = new StrabonPolyhedron(((Literal) rightResult).getLabel()).getGeometry();
 				}
 				else
 				{	//SHOULD NEVER REACH THIS CASE!
@@ -409,6 +428,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
 			}
 			else {
+			//Default Sesame Behavior
 				List<ValueExpr> args = fc.getArgs();
 
 				Value[] argValues = new Value[args.size()];

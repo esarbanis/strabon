@@ -18,11 +18,13 @@ import info.aduna.iteration.CloseableIteration;
 import info.aduna.iteration.CloseableIteratorIteration;
 import info.aduna.lang.ObjectUtil;
 
+import org.openrdf.model.URI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.datatypes.XMLDatatypeUtil;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.NumericLiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.BindingSet;
@@ -349,11 +351,12 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				//LiteralImpl lit 
 				try {
 					val = evaluateConstruct(expr, this.prototype);
-				} catch (Exception e) {
+					} catch (Exception e) {
 					e.printStackTrace();
 				}
 				if (val != null) {
-					sol.setBinding(name,val);
+					Literal wkt = new LiteralImpl(val.toString(),new URIImpl(StrabonPolyhedron.ogcGeometry));
+					sol.setBinding(name,wkt);
 				}
 
 			}
