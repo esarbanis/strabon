@@ -240,13 +240,15 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
     public RdbmsLiteral asRdbmsLiteral(GeneralDBPolyhedron polyhedron) {
             try {
                     URI wkt = new URIImpl(StrabonPolyhedron.ogcGeometry);
-                    RdbmsLiteral literal = new RdbmsLiteral(new LiteralImpl(polyhedron.stringValue(), wkt));
+                    RdbmsLiteral literal = new RdbmsLiteral(polyhedron.getInternalId(), polyhedron.getVersion(),new LiteralImpl(polyhedron.stringValue(), wkt));
 
                     if (polyhedron instanceof GeneralDBPolyhedron) {
                             literals.cache(literal);
                             return (RdbmsLiteral)literal;
                     }
+
                     RdbmsLiteral lit = literals.findInCache(literal);
+                    
                     if (lit == null) {
                             lit = new RdbmsLiteral(literal);
                             literals.cache(lit);
