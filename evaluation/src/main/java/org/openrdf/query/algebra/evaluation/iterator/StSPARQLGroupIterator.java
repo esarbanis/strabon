@@ -94,21 +94,21 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 	 *--------------*/
 
 	public StSPARQLGroupIterator(EvaluationStrategy strategy, Group group, BindingSet parentBindings)
-			throws QueryEvaluationException
-			{
+		throws QueryEvaluationException
+	{
 		this.strategy = strategy;
 		this.group = group;
 		this.parentBindings = parentBindings;
 		super.setIterator(createIterator());
-			}
+	}
 
 	/*---------*
 	 * Methods *
 	 *---------*/
 
 	private Iterator<BindingSet> createIterator()
-			throws QueryEvaluationException
-			{
+		throws QueryEvaluationException
+	{
 		Collection<Entry> entries = buildEntries();
 		Collection<BindingSet> bindingSets = new LinkedList<BindingSet>();
 
@@ -141,11 +141,11 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 		}
 
 		return bindingSets.iterator();
-			}
+	}
 
 	private Collection<Entry> buildEntries()
-			throws QueryEvaluationException
-			{
+		throws QueryEvaluationException
+	{
 		CloseableIteration<BindingSet, QueryEvaluationException> iter;
 		iter = strategy.evaluate(group.getArg(), parentBindings);
 
@@ -183,7 +183,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 			iter.close();
 		}
 
-			}
+	}
 
 	/**
 	 * A unique key for a set of existing bindings.
@@ -244,8 +244,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 		private Map<FunctionCall, Geometry> spatialAggregatesResult;
 
 		public Entry(BindingSet prototype)
-				throws ValueExprEvaluationException, QueryEvaluationException
-				{
+			throws ValueExprEvaluationException, QueryEvaluationException
+		{
 			this.prototype = prototype;
 			this.aggregates = new LinkedHashMap<String, Aggregate>();
 			this.spatialAggregates = new LinkedHashMap<String, FunctionCall>();
@@ -286,15 +286,15 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					}
 				}
 			}
-				}
+		}
 
 		public BindingSet getPrototype() {
 			return prototype;
 		}
 
 		public void addSolution(BindingSet bindingSet)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			for (Aggregate aggregate : aggregates.values()) {
 				aggregate.processAggregate(bindingSet);
 			}
@@ -302,11 +302,11 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				processSpatialAggregate(spatialAggregate, bindingSet);
 				//spatialAggregates.processAggregate(bindingSet);
 			}
-				}
+		}
 
 		public void bindSolution(QueryBindingSet sol)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			for (String name : aggregates.keySet()) {
 				try {
 					Value value = aggregates.get(name).getValue();
@@ -364,7 +364,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 
 
-				}
+		}
 
 		/**
 		 * XXX addition
@@ -696,8 +696,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 		//		}
 
 		private Aggregate create(AggregateOperator operator)
-				throws ValueExprEvaluationException, QueryEvaluationException
-				{
+			throws ValueExprEvaluationException, QueryEvaluationException
+		{
 			if (operator instanceof Count) {
 				return new CountAggregate((Count)operator);
 			}
@@ -720,7 +720,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				return new ConcatAggregate((GroupConcat)operator);
 			}
 			return null;
-				}
+		}
 	}
 
 	private abstract class Aggregate {
@@ -754,15 +754,15 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 		}
 
 		protected Value evaluate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			try {
 				return strategy.evaluate(getArg(), s);
 			}
 			catch (ValueExprEvaluationException e) {
 				return null; // treat missing or invalid expressions as null
 			}
-				}
+		}
 	}
 
 	private class CountAggregate extends Aggregate {
@@ -775,8 +775,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			if (getArg() != null) {
 				Value value = evaluate(s);
 				if (value != null && distinct(value)) {
@@ -786,7 +786,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 			else {
 				count++;
 			}
-				}
+		}
 
 		@Override
 		public Value getValue() {
@@ -806,8 +806,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			Value v = evaluate(s);
 			if (distinct(v)) {
 				if (min == null) {
@@ -817,7 +817,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					min = v;
 				}
 			}
-				}
+		}
 
 		@Override
 		public Value getValue() {
@@ -837,8 +837,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			Value v = evaluate(s);
 			if (distinct(v)) {
 				if (max == null) {
@@ -848,7 +848,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					max = v;
 				}
 			}
-				}
+		}
 
 		@Override
 		public Value getValue() {
@@ -868,8 +868,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			if (typeError != null) {
 				// halt further processing if a type error has been raised
 				return;
@@ -892,18 +892,18 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					typeError = new ValueExprEvaluationException("not a number: " + v);
 				}
 			}
-				}
+		}
 
 		@Override
 		public Value getValue()
-				throws ValueExprEvaluationException
-				{
+			throws ValueExprEvaluationException
+		{
 			if (typeError != null) {
 				throw typeError;
 			}
 
 			return sum;
-				}
+		}
 	}
 
 	private class AvgAggregate extends Aggregate {
@@ -920,8 +920,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			if (typeError != null) {
 				// Prevent calculating the aggregate further if a type error has
 				// occured.
@@ -949,12 +949,12 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					typeError = new ValueExprEvaluationException("not a number: " + v);
 				}
 			}
-				}
+		}
 
 		@Override
 		public Value getValue()
-				throws ValueExprEvaluationException
-				{
+			throws ValueExprEvaluationException
+		{
 			if (typeError != null) {
 				// a type error occurred while processing the aggregate, throw it
 				// now.
@@ -967,7 +967,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 			Literal sizeLit = vf.createLiteral(count);
 			return MathUtil.compute(sum, sizeLit, MathOp.DIVIDE);
-				}
+		}
 	}
 
 	private class SampleAggregate extends Aggregate {
@@ -980,12 +980,12 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			if (sample == null) {
 				sample = evaluate(s);
 			}
-				}
+		}
 
 		@Override
 		public Value getValue() {
@@ -1001,25 +1001,25 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 
 		public ConcatAggregate(GroupConcat groupConcatOp)
 				throws ValueExprEvaluationException, QueryEvaluationException
-				{
+		{
 			super(groupConcatOp);
 			ValueExpr separatorExpr = groupConcatOp.getSeparator();
 			if (separatorExpr != null) {
 				Value separatorValue = strategy.evaluate(separatorExpr, parentBindings);
 				separator = separatorValue.stringValue();
 			}
-				}
+		}
 
 		@Override
 		public void processAggregate(BindingSet s)
-				throws QueryEvaluationException
-				{
+			throws QueryEvaluationException
+		{
 			Value v = evaluate(s);
 			if (v != null && distinct(v)) {
 				concatenated.append(v.stringValue());
 				concatenated.append(separator);
 			}
-				}
+		}
 
 		@Override
 		public Value getValue() {
