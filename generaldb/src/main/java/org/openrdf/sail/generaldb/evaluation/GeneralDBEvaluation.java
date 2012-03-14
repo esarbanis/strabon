@@ -373,56 +373,95 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 				if(function instanceof AboveFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightGeom.getEnvelopeInternal().getMaxY();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightConverted.getEnvelopeInternal().getMaxY();
 				}
 				else if(function instanceof AnyInteractFunc)
 				{
-					funcResult = leftGeom.intersects(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.intersects(rightConverted);
 				}
 				else if(function instanceof BelowFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMaxY() < rightGeom.getEnvelopeInternal().getMinY();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMaxY() < rightConverted.getEnvelopeInternal().getMinY();
 				}
 				else if(function instanceof ContainsFunc)
 				{
-					funcResult = leftGeom.contains(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.contains(rightConverted);
 				}
 				else if(function instanceof CoveredByFunc)
 				{
-					funcResult = leftGeom.coveredBy(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.coveredBy(rightConverted);
 				}
 				else if(function instanceof CoversFunc)
 				{
-					funcResult = leftGeom.covers(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.covers(rightConverted);
 				}
 				else if(function instanceof DisjointFunc)
 				{
-					funcResult = leftGeom.disjoint(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.disjoint(rightConverted);
 				}
 				else if(function instanceof EqualsFunc)
 				{
-					funcResult = leftGeom.equals(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.equals(rightConverted);
 				}
 				else if(function instanceof InsideFunc)
 				{
-					funcResult = leftGeom.within(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.within(rightConverted);
 				}
 				else if(function instanceof LeftFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightGeom.getEnvelopeInternal().getMinX();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightConverted.getEnvelopeInternal().getMinX();
 				}
 				else if(function instanceof OverlapFunc)
 				{
-					funcResult = leftGeom.overlaps(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					//System.out.println(rightConverted.toString());
+					funcResult = leftGeom.overlaps(rightConverted);
 				}
 				else if(function instanceof RightFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightGeom.getEnvelopeInternal().getMaxX();
-
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightConverted.getEnvelopeInternal().getMaxX();
 				}
 				else if(function instanceof TouchFunc)
 				{
-					funcResult = leftGeom.touches(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.touches(rightConverted);
 				}
 
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
@@ -451,49 +490,48 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		if(function.getURI().equals(StrabonPolyhedron.union))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-
-			return new StrabonPolyhedron(leftArg.getGeometry().union(rightArg.getGeometry()));
+			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.buffer))
 		{
 			if(right instanceof LiteralImpl)
 			{
 				LiteralImpl radius = (LiteralImpl) right;
-				return new StrabonPolyhedron(leftArg.getGeometry().buffer(radius.doubleValue()));
+				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
 			}
 			else if(right instanceof RdbmsLiteral)
 			{
 				RdbmsLiteral radius = (RdbmsLiteral) right;
-				return new StrabonPolyhedron(leftArg.getGeometry().buffer(radius.doubleValue()));
+				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
 			}
 
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.envelope))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().getEnvelope());
+			return StrabonPolyhedron.envelope(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.convexHull))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().convexHull());
+			return StrabonPolyhedron.convexHull(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.boundary))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().getBoundary());
+			return StrabonPolyhedron.boundary(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.intersection))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().intersection(rightArg.getGeometry()));
+			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.difference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().difference(rightArg.getGeometry()));
+			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.symDifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().symDifference(rightArg.getGeometry()));
+			return StrabonPolyhedron.symDifference(leftArg, rightArg);		
 		}
 		return null;
 

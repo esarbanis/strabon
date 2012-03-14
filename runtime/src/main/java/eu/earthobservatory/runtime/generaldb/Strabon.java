@@ -91,7 +91,8 @@ public abstract class Strabon {
 
 		//Setting up store
 
-
+		//Used for the conversions taking place involving JTS + WGS84 (4326)
+		System.setProperty("org.geotools.referencing.forceXY", "true");
 		//our repository
 		repo1 = new SailRepository(db_store);
 		 

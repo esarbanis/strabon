@@ -17,11 +17,11 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 	/**
 	 * CONSTRUCTOR
 	 */
-	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, byte[] polyhedron) throws IOException, ClassNotFoundException {
+	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, byte[] polyhedron, int srid) throws IOException, ClassNotFoundException {
 		super(id, version);
 
 		try {
-			this.polyhedron = new StrabonPolyhedron(polyhedron);
+			this.polyhedron = new StrabonPolyhedron(polyhedron, srid);
 		} catch (ParseException e) {
 
 			e.printStackTrace();
