@@ -289,6 +289,7 @@ public abstract class GeneralDBTripleRepository {
 				try {
 					setSelectQuery(stmt, s, p, o, c);
 					int count = stmt.executeUpdate();
+					System.err.println("statement: "+stmt.toString());
 					statements.removed(id, count);
 					total += count;
 				}

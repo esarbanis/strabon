@@ -41,6 +41,7 @@ public class TripleManager extends ManagerBase {
 		throws SQLException, InterruptedException
 	{
 		statements.insert(ctx, subj, pred, obj);//,intervalStart,intervalEnd);
+		System.err.println(subj+", "+pred+", "+obj);
 	}
 
 }
