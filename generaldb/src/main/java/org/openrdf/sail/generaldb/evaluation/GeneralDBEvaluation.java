@@ -243,7 +243,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Had to use it for the cases met in group by (Union as an aggregate)
 	 */
 	@Override
-	public Value evaluate(FunctionCall fc, BindingSet bindings)
+	public Value evaluate(FunctionCall fc, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
 		//		System.out.println("FunctionCall placeholder");
 
@@ -292,13 +292,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		Value leftResult = null;
 		Value rightResult = null;
 
-		try {
+//		try {
 			leftResult = evaluate(left,bindings);
-		} catch (ValueExprEvaluationException e) {
-			e.printStackTrace();
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
-		}
+//		} catch (ValueExprEvaluationException e) {
+//			e.printStackTrace();
+//		} catch (QueryEvaluationException e) {
+//			e.printStackTrace();
+//		}
 
 
 		//		if(!(function instanceof EnvelopeFunc) 
@@ -307,13 +307,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
-			try {
+//			try {
 				rightResult = evaluate(right,bindings);
-			} catch (ValueExprEvaluationException e) {
-				e.printStackTrace();
-			} catch (QueryEvaluationException e) {
-				e.printStackTrace();
-			}
+//			} catch (ValueExprEvaluationException e) {
+//				e.printStackTrace();
+//			} catch (QueryEvaluationException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		try {
