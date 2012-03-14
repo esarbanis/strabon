@@ -189,6 +189,7 @@ public class StrabonPolyhedron implements Value {
 
 	public StrabonPolyhedron(Geometry geo) throws Exception {
 		this.geometry = new StrabonPolyhedron(geo, 1).geometry;
+		this.geometry.setSRID(geo.getSRID());
 	}
 
 	public StrabonPolyhedron(Geometry geo, int algorithm) throws Exception {
@@ -715,7 +716,7 @@ public class StrabonPolyhedron implements Value {
 		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
 
 		poly.geometry = A.geometry.union(x);
-
+		poly.geometry.setSRID(targetSRID);
 		return poly;
 	}
 
@@ -753,7 +754,7 @@ public class StrabonPolyhedron implements Value {
 		int sourceSRID = B.getGeometry().getSRID();
 		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
 		Geometry geo = A.geometry.intersection(x);
-
+		geo.setSRID(targetSRID);
 		return new StrabonPolyhedron(geo);
 	}
 
@@ -765,7 +766,7 @@ public class StrabonPolyhedron implements Value {
 		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
 
 		poly.geometry = A.geometry.difference(x);
-
+		poly.geometry.setSRID(targetSRID);
 		return poly;
 	}
 
@@ -775,7 +776,7 @@ public class StrabonPolyhedron implements Value {
 		int sourceSRID = B.getGeometry().getSRID();
 		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
 		poly.geometry = A.geometry.symDifference(x);
-
+		poly.geometry.setSRID(targetSRID);
 		return poly;
 	}
 
