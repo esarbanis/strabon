@@ -169,8 +169,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr,
 			BindingSet bindings)
-			throws QueryEvaluationException
-			{
+					throws QueryEvaluationException
+					{
 		if (expr instanceof GeneralDBSelectQuery)
 			return evaluate((GeneralDBSelectQuery)expr, bindings);
 		else if (expr instanceof Group) {
@@ -180,11 +180,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((Order)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-			}
+					}
 	@Override
 	public Value evaluate(ValueExpr expr, BindingSet bindings)
-	throws ValueExprEvaluationException, QueryEvaluationException
-	{
+			throws ValueExprEvaluationException, QueryEvaluationException
+			{
 		if (expr instanceof Var) {
 			return evaluate((Var)expr, bindings);
 		}
@@ -192,7 +192,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((FunctionCall)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-	}
+			}
 
 	/**
 	 * Had to use it for the cases met in group by (Union as an aggregate)
@@ -245,7 +245,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public Value evaluate(FunctionCall fc, BindingSet bindings)
 	{
-//		System.out.println("FunctionCall placeholder");
+		//		System.out.println("FunctionCall placeholder");
 
 		if(fc.getParentNode() instanceof Avg)
 		{
@@ -373,62 +373,101 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 				if(function instanceof AboveFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightGeom.getEnvelopeInternal().getMaxY();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightConverted.getEnvelopeInternal().getMaxY();
 				}
 				else if(function instanceof AnyInteractFunc)
 				{
-					funcResult = leftGeom.intersects(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.intersects(rightConverted);
 				}
 				else if(function instanceof BelowFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMaxY() < rightGeom.getEnvelopeInternal().getMinY();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMaxY() < rightConverted.getEnvelopeInternal().getMinY();
 				}
 				else if(function instanceof ContainsFunc)
 				{
-					funcResult = leftGeom.contains(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.contains(rightConverted);
 				}
 				else if(function instanceof CoveredByFunc)
 				{
-					funcResult = leftGeom.coveredBy(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.coveredBy(rightConverted);
 				}
 				else if(function instanceof CoversFunc)
 				{
-					funcResult = leftGeom.covers(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.covers(rightConverted);
 				}
 				else if(function instanceof DisjointFunc)
 				{
-					funcResult = leftGeom.disjoint(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.disjoint(rightConverted);
 				}
 				else if(function instanceof EqualsFunc)
 				{
-					funcResult = leftGeom.equals(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.equals(rightConverted);
 				}
 				else if(function instanceof InsideFunc)
 				{
-					funcResult = leftGeom.within(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.within(rightConverted);
 				}
 				else if(function instanceof LeftFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightGeom.getEnvelopeInternal().getMinX();
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightConverted.getEnvelopeInternal().getMinX();
 				}
 				else if(function instanceof OverlapFunc)
 				{
-					funcResult = leftGeom.overlaps(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					//System.out.println(rightConverted.toString());
+					funcResult = leftGeom.overlaps(rightConverted);
 				}
 				else if(function instanceof RightFunc)
 				{
-					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightGeom.getEnvelopeInternal().getMaxX();
-
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightConverted.getEnvelopeInternal().getMaxX();
 				}
 				else if(function instanceof TouchFunc)
 				{
-					funcResult = leftGeom.touches(rightGeom);
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.touches(rightConverted);
 				}
 
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
 			}
 			else {
-			//Default Sesame Behavior
+				//Default Sesame Behavior
 				List<ValueExpr> args = fc.getArgs();
 
 				Value[] argValues = new Value[args.size()];
@@ -451,49 +490,48 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		if(function.getURI().equals(StrabonPolyhedron.union))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-
-			return new StrabonPolyhedron(leftArg.getGeometry().union(rightArg.getGeometry()));
+			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.buffer))
 		{
 			if(right instanceof LiteralImpl)
 			{
 				LiteralImpl radius = (LiteralImpl) right;
-				return new StrabonPolyhedron(leftArg.getGeometry().buffer(radius.doubleValue()));
+				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
 			}
 			else if(right instanceof RdbmsLiteral)
 			{
 				RdbmsLiteral radius = (RdbmsLiteral) right;
-				return new StrabonPolyhedron(leftArg.getGeometry().buffer(radius.doubleValue()));
+				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
 			}
 
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.envelope))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().getEnvelope());
+			return StrabonPolyhedron.envelope(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.convexHull))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().convexHull());
+			return StrabonPolyhedron.convexHull(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.boundary))
 		{
-			return new StrabonPolyhedron(leftArg.getGeometry().getBoundary());
+			return StrabonPolyhedron.boundary(leftArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.intersection))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().intersection(rightArg.getGeometry()));
+			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.difference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().difference(rightArg.getGeometry()));
+			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.symDifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
-			return new StrabonPolyhedron(leftArg.getGeometry().symDifference(rightArg.getGeometry()));
+			return StrabonPolyhedron.symDifference(leftArg, rightArg);		
 		}
 		return null;
 
@@ -501,8 +539,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(Group node, BindingSet bindings)
-	throws QueryEvaluationException
-	{
+			throws QueryEvaluationException
+			{
 		//		Set<String> tmp1 = node.getAggregateBindingNames();
 		//		Set<String> tmp2 = node.getAssuredBindingNames();
 		//		Set<String> tmp3 = node.getBindingNames();
@@ -512,18 +550,18 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		//			//System.out.println(node.g);
 		//		}
 		return new StSPARQLGroupIterator(this, node, bindings);
-	}
+			}
 
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(Order node, BindingSet bindings)
-	throws QueryEvaluationException
-	{
+			throws QueryEvaluationException
+			{
 		StSPARQLValueComparator vcmp = new StSPARQLValueComparator();
 		StSPARQLOrderComparator cmp = new StSPARQLOrderComparator(this, node, vcmp);
 		boolean reduced = isReduced(node);
 		long limit = getLimit(node);
 		return new OrderIterator(evaluate(node.getArg(), bindings), cmp, limit, reduced);
-	}
+			}
 
 	//Duplicated from EvaluationStrategyImpl
 	private boolean isReduced(QueryModelNode node) {
@@ -606,11 +644,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	}
 
 	protected abstract CloseableIteration<BindingSet, QueryEvaluationException> evaluate(GeneralDBSelectQuery qb, BindingSet b)
-	throws UnsupportedRdbmsOperatorException, RdbmsQueryEvaluationException;
+			throws UnsupportedRdbmsOperatorException, RdbmsQueryEvaluationException;
 
 	protected String toQueryString(GeneralDBSelectQuery qb, QueryBindingSet bindings, List<Object> parameters)
-	throws RdbmsException, UnsupportedRdbmsOperatorException
-	{
+			throws RdbmsException, UnsupportedRdbmsOperatorException
+			{
 		GeneralDBQueryBuilder query = factory.createQueryBuilder();
 		if (qb.isDistinct()) {
 			query.distinct();
@@ -642,6 +680,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 						if(var.isSpatial())
 						{
 							this.geoNames.put(var.getIndex()+2,var.getName());
+							//I am carrying SRID too! Therefore, shifting index one more position
+							index++;
 						}
 						query.select(proj.getId());
 						query.select(proj.getStringValue());
@@ -688,7 +728,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			if(!this.thematicExpressions.contains(expr))
 			{
 				query.construct(expr);
-
+				boolean increaseIndex = false;
 
 				GeneralDBSpatialFuncInfo info = null;
 				switch(constructReturnType(expr))
@@ -708,6 +748,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				case 4: 
 					//WKB
 					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.WKB);
+					increaseIndex = true;
 					break;
 				case 5: 
 					//DOUBLE
@@ -718,6 +759,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 				//constructIndexesAndNames.put((String) pairs.getKey(),index++);
 				constructIndexesAndNames.put(info,index++);
+				if(increaseIndex)
+				{
+					//Increasing index by one more because of SRID!
+					//However, only in the case when the result is some geometry (e.g. not for metrics)
+					index++;
+				}
 			}
 		}
 		//
@@ -740,7 +787,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			logger.debug(parameters.toString());
 		}
 		return query.toString();
-	}
+			}
 
 	/**
 	 * Function used to locate all ColumnVars from the select's spatial constructs so that they can later 

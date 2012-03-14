@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -34,7 +35,7 @@
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<spring.version>2.5.6</spring.version>
-		<geotools.version>2.6.6</geotools.version>
+		<geotools.version>2.7.4</geotools.version>
 	</properties>
 
 	<dependencyManagement>
@@ -142,13 +143,8 @@
 				<version>${sesame.version}</version>
 			</dependency>
 
-			<!--
-			<dependency>
-				<groupId>info.aduna.commons</groupId>
-				<artifactId>aduna-commons-lang</artifactId>
-				<version>2.10.0-SNAPSHOT</version>
-			</dependency>
-			-->
+			<!-- <dependency> <groupId>info.aduna.commons</groupId> <artifactId>aduna-commons-lang</artifactId> 
+				<version>2.10.0-SNAPSHOT</version> </dependency> -->
 
 			<!-- Aduna Commons -->
 			<!-- Note: other Aduna Commons dependencies are imported from appbase -->
@@ -298,18 +294,25 @@
 				<artifactId>gt-referencing</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-jts-wrapper</artifactId>
 				<version>${geotools.version}</version>
-		</dependency>
-			
+			</dependency>
+
+
 			<dependency>
-				<groupId>org.opengis</groupId>
-				<artifactId>geoapi</artifactId>
-				<version>2.2.0</version>
-  			</dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-opengis</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+
+			<!-- <dependency> -->
+			<!-- <groupId>org.opengis</groupId> -->
+			<!-- <artifactId>geoapi</artifactId> -->
+			<!-- <version>3.0.0</version> -->
+			<!-- </dependency> -->
 
 			<!-- Testing: JUnit -->
 			<dependency>
@@ -331,7 +334,7 @@
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -396,19 +399,19 @@
 	</scm>
 
 	<repositories>
-		
-       <repository>
-               <releases>
-                       <enabled>true</enabled>
-               </releases>
-               <snapshots>
-                       <enabled>false</enabled>
-               </snapshots>
-               <id>strabon.testing</id>
-               <name>Strabon - maven repository</name>
-               <url>http://maven.strabon.di.uoa.gr/content/repositories/testing</url>
-       </repository>
-		
+
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>strabon.testing</id>
+			<name>Strabon - maven repository</name>
+			<url>http://maven.strabon.di.uoa.gr/content/repositories/testing</url>
+		</repository>
+
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -420,17 +423,17 @@
 			<name>Strabon - maven repository</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/releases</url>
 		</repository>
-                <repository>
-                        <releases>
-                                <enabled>false</enabled>
-                        </releases>
-                        <snapshots>
-                                <enabled>true</enabled>
-                        </snapshots>
-                        <id>strabon.snapshot</id>
-                        <name>Strabon - maven repository - snapshots</name>
-                        <url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
-                </repository>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>strabon.snapshot</id>
+			<name>Strabon - maven repository - snapshots</name>
+			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
+		</repository>
 
 
 		<repository>

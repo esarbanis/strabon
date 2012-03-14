@@ -346,17 +346,23 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				//Must compute the spatial construct at this point
 				ValueExpr expr = spatialAggregates.get(name);
 
-				StrabonPolyhedron poly = null;
 				Value val = null;
-				//LiteralImpl lit 
 				try {
 					val = evaluateConstruct(expr, this.prototype);
 					} catch (Exception e) {
 					e.printStackTrace();
 				}
 				if (val != null) {
-					Literal wkt = new LiteralImpl(val.toString(),new URIImpl(StrabonPolyhedron.ogcGeometry));
-					sol.setBinding(name,wkt);
+					if(val instanceof StrabonPolyhedron)
+					{
+						String label = val.toString()+";http://www.opengis.net/def/crs/EPSG/0/"+((StrabonPolyhedron)val).getGeometry().getSRID();
+						Literal wkt = new LiteralImpl(label,new URIImpl(StrabonPolyhedron.ogcGeometry));
+						sol.setBinding(name,wkt);
+					}
+					else
+					{
+						sol.setBinding(name, val);
+					}
 				}
 
 			}
@@ -401,14 +407,6 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					{
 						leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
 						rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-
-						int leftSRID = leftArg.getGeometry().getSRID();
-						int rightSRID = rightArg.getGeometry().getSRID();
-						if(leftSRID != rightSRID)
-						{
-							//XXX Will have to express the second argument in the SRID of the first
-							rightArg.setGeometry(StrabonPolyhedron.convertSRID(rightArg.getGeometry(),leftSRID, rightSRID));
-						}
 						return StrabonPolyhedron.union(leftArg, rightArg);
 					}
 				}
@@ -444,39 +442,18 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				{
 					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
 					rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-					int leftSRID = leftArg.getGeometry().getSRID();
-					int rightSRID = rightArg.getGeometry().getSRID();
-					if(leftSRID != rightSRID)
-					{
-						//XXX Will have to express the second argument in the SRID of the first
-						rightArg.setGeometry(StrabonPolyhedron.convertSRID(rightArg.getGeometry(),leftSRID, rightSRID));
-					}
 					return StrabonPolyhedron.intersection(leftArg, rightArg);
 				}
 				else if(function instanceof DifferenceFunc)
 				{
 					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
 					rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-					int leftSRID = leftArg.getGeometry().getSRID();
-					int rightSRID = rightArg.getGeometry().getSRID();
-					if(leftSRID != rightSRID)
-					{
-						//XXX Will have to express the second argument in the SRID of the first
-						rightArg.setGeometry(StrabonPolyhedron.convertSRID(rightArg.getGeometry(),leftSRID, rightSRID));
-					}
 					return StrabonPolyhedron.difference(leftArg, rightArg);
 				}
 				else if(function instanceof SymDifferenceFunc)
 				{
 					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
 					rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-					int leftSRID = leftArg.getGeometry().getSRID();
-					int rightSRID = rightArg.getGeometry().getSRID();
-					if(leftSRID != rightSRID)
-					{
-						//XXX Will have to express the second argument in the SRID of the first
-						rightArg.setGeometry(StrabonPolyhedron.convertSRID(rightArg.getGeometry(),leftSRID, rightSRID));
-					}
 					return StrabonPolyhedron.symDifference(leftArg, rightArg);
 				}
 				//FOR HAVING!!
@@ -489,13 +466,6 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				{
 					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
 					rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-					int leftSRID = leftArg.getGeometry().getSRID();
-					int rightSRID = rightArg.getGeometry().getSRID();
-					if(leftSRID != rightSRID)
-					{
-						//XXX Will have to express the second argument in the SRID of the first
-						rightArg.setGeometry(StrabonPolyhedron.convertSRID(rightArg.getGeometry(),leftSRID, rightSRID));
-					}
 					return vf.createLiteral(""+StrabonPolyhedron.distance(leftArg, rightArg), XMLSchema.DOUBLE);
 				}
 				else

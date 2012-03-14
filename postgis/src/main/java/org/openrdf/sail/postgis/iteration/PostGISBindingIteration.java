@@ -45,8 +45,8 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		if (ids.isLiteral(id))
 		{
 			byte[] label = rs.getBytes(index + 1);
-
-			return vf.getRdbmsPolyhedron(id, StrabonPolyhedron.ogcGeometry, label);
+			int srid = rs.getInt(index + 2);
+			return vf.getRdbmsPolyhedron(id, StrabonPolyhedron.ogcGeometry, label, srid);
 
 		}
 
@@ -61,7 +61,8 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
-		return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label);
+		int srid = rs.getInt(index + 2);
+		return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
 
 	}
 }

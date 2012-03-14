@@ -228,6 +228,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				//
 				filter.closeBracket();
 
+				//Adding srid field explicitly for my StrabonPolyhedron constructor later on!
+				filter.appendComma();
+				filter.column(alias, "srid");
 			}
 			else
 			{
@@ -284,12 +287,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	//FIXME my addition from here on
-	
+
 	//Issue with this function: crashes when MathExpr is present in Select but does not
 	//involve spatial variables! must escape this somehow
 	@Override
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr) throws UnsupportedRdbmsOperatorException
-			{
+	{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
@@ -309,8 +312,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, query.select);
 		}
+		//SRID support must be explicitly added!
+
 		return this;
-			}
+	}
 
 	//Spatial Relationship Functions
 	@Override
@@ -786,7 +791,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				{
 					appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
 				}
-	
+
 				filter.closeBracket();
 			}
 			else
@@ -797,7 +802,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
@@ -1016,6 +1021,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
+		//XXX Incorporating SRID
+		String sridExpr = null;
 		
 		filter.openBracket();
 
@@ -1033,8 +1040,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
-			//XXX Incorporating SRID
-			String sridExpr = null;
+			
 			GeneralDBSqlExpr tmp = expr;
 			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
 			{
@@ -1175,8 +1181,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			///
 		}
-		//}
 		filter.closeBracket();
+		//Used to explicitly include SRID
+		if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
+		
 			}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
@@ -1185,6 +1197,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
+		String sridExpr = null;
+
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1207,8 +1221,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
-			//XXX Incorporating SRID
-			String sridExpr = null;
+
 			GeneralDBSqlExpr tmp = expr;
 
 
@@ -1294,7 +1307,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			filter.closeBracket();
-			//SRID Support
+//			//SRID Support
 			if(sridNeeded)
 			{
 				if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
@@ -1309,7 +1322,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-
+		//Used to explicitly include SRID
+		if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
+		
 			}
 
 
