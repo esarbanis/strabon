@@ -78,9 +78,10 @@ public class GeneralDBSqlExprFactory {
 		this.numeric = numeric;
 		//XXX don't like the way I get access to what I need, but it seems it is the only choice
 		//Extra note: This setter must FOLLOW the one for the LabelExprFactory!!! 
+		//* and the one of the URIExprFactory as well
 		//Otherwise an exception will be thrown 
 		numeric.setLabelsPeek(label);
-		
+		numeric.setUrisPeek(uri);
 	}
 
 	public void setTimeExprFactory(GeneralDBTimeExprFactory time) {

@@ -33,21 +33,21 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 		this.datatype = datatype;
 	}
 
-//	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, String polyhedron) throws IOException, ClassNotFoundException {
-//		super(id, version);
-//
-//		try {
-//			this.polyhedron = new StrabonPolyhedron(polyhedron);
-//		} catch (ParseException e) {
-//
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//		}
-//		setPolyhedronStringRep(this.polyhedron);
-//		this.datatype = datatype;
-//	}
+	//	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, String polyhedron) throws IOException, ClassNotFoundException {
+	//		super(id, version);
+	//
+	//		try {
+	//			this.polyhedron = new StrabonPolyhedron(polyhedron);
+	//		} catch (ParseException e) {
+	//
+	//			e.printStackTrace();
+	//		} catch (Exception e) {
+	//
+	//			e.printStackTrace();
+	//		}
+	//		setPolyhedronStringRep(this.polyhedron);
+	//		this.datatype = datatype;
+	//	}
 	/**
 	 * METHODS
 	 */
@@ -90,17 +90,18 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 
 	@Override
 	public String toString() {
-		return new String("\""+this.polyhedronStringRep+"\"" + "^^<" + 
+		return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
+				+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" + 
 				((StrabonPolyhedron.EnableConstraintRepresentation)  ? 
 						StrabonPolyhedron.stRDFSemiLinearPointset : StrabonPolyhedron.ogcGeometry)
 						+">");
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return polyhedronStringRep.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 
@@ -110,7 +111,7 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 			{
 				return true;
 			}
-			
+
 		}
 		return false;
 	}

@@ -28,6 +28,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value; 
 
 public class StrabonPolyhedron implements Value {
@@ -68,6 +69,7 @@ public class StrabonPolyhedron implements Value {
 	public static final String intersection="http://strdf.di.uoa.gr/ontology#intersection";
 	public static final String difference="http://strdf.di.uoa.gr/ontology#difference";
 	public static final String symDifference="http://strdf.di.uoa.gr/ontology#symDifference";
+	public static final String transform="http://strdf.di.uoa.gr/ontology#transform";
 	//Spatial Metric Functions
 	public static final String distance="http://strdf.di.uoa.gr/ontology#distance";
 	public static final String area="http://strdf.di.uoa.gr/ontology#area";
@@ -798,6 +800,13 @@ public class StrabonPolyhedron implements Value {
 		A.geometry.geometryChanged();
 		poly.geometry = A.geometry;
 		return poly;
+	}
+	
+	public static StrabonPolyhedron transform(StrabonPolyhedron A, URI srid) throws Exception {
+		
+		int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
+		Geometry converted = StrabonPolyhedron.convertSRID(A.getGeometry(),A.getGeometry().getSRID(), parsedSRID);
+		return new StrabonPolyhedron(converted);
 	}
 
 	/**

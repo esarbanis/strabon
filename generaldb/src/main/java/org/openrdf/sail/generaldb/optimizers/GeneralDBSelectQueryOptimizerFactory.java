@@ -59,11 +59,13 @@ public class GeneralDBSelectQueryOptimizerFactory {
 		sql.setDatatypeExprFactory(datatype);
 		sql.setLabelExprFactory(label);
 		sql.setLanguageExprFactory(language);
+		sql.setURIExprFactory(uri);
+		
 		sql.setNumericExprFactory(new GeneralDBNumericExprFactory());
 		sql.setTimeExprFactory(new GeneralDBTimeExprFactory());
 		sql.setZonedExprFactory(new GeneralDBZonedExprFactory(ids));
 		sql.setHashExprFactory(new GeneralDBHashExprFactory(vf));
-		sql.setURIExprFactory(uri);
+		
 		label.setSqlExprFactory(sql);
 		uri.setSqlExprFactory(sql);
 		bool.setSqlExprFactory(sql);

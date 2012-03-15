@@ -36,6 +36,7 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
@@ -82,7 +83,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.O
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
-import org.openrdf.query.algebra.evaluation.iterator.ExtensionIterator;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
 import org.openrdf.query.algebra.evaluation.util.StSPARQLOrderComparator;
@@ -114,12 +114,14 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
+import org.openrdf.sail.rdbms.model.RdbmsURI;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -292,13 +294,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		Value leftResult = null;
 		Value rightResult = null;
 
-//		try {
-			leftResult = evaluate(left,bindings);
-//		} catch (ValueExprEvaluationException e) {
-//			e.printStackTrace();
-//		} catch (QueryEvaluationException e) {
-//			e.printStackTrace();
-//		}
+		//		try {
+		leftResult = evaluate(left,bindings);
+		//		} catch (ValueExprEvaluationException e) {
+		//			e.printStackTrace();
+		//		} catch (QueryEvaluationException e) {
+		//			e.printStackTrace();
+		//		}
 
 
 		//		if(!(function instanceof EnvelopeFunc) 
@@ -307,13 +309,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
-//			try {
-				rightResult = evaluate(right,bindings);
-//			} catch (ValueExprEvaluationException e) {
-//				e.printStackTrace();
-//			} catch (QueryEvaluationException e) {
-//				e.printStackTrace();
-//			}
+			//			try {
+			rightResult = evaluate(right,bindings);
+			//			} catch (ValueExprEvaluationException e) {
+			//				e.printStackTrace();
+			//			} catch (QueryEvaluationException e) {
+			//				e.printStackTrace();
+			//			}
 		}
 
 		try {
@@ -503,6 +505,22 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			{
 				RdbmsLiteral radius = (RdbmsLiteral) right;
 				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
+			}
+
+		}
+		else if(function.getURI().equals(StrabonPolyhedron.transform))
+		{
+			if(right instanceof URIImpl)
+			{
+				URIImpl srid = (URIImpl) right;
+				return StrabonPolyhedron.transform(leftArg,srid);
+			}
+			else if(right instanceof RdbmsURI)
+			{
+				RdbmsURI srid = (RdbmsURI) right;
+				int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
+				Geometry converted = StrabonPolyhedron.convertSRID(leftArg.getGeometry(),leftArg.getGeometry().getSRID(), parsedSRID);
+				return new StrabonPolyhedron(converted);
 			}
 
 		}
@@ -885,6 +903,22 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				this.thematicExpressions.add((GeneralDBSqlExpr)expr.getParentNode());
 			}
 			//System.out.println("stopper");
+		}
+		else if(expr instanceof GeneralDBURIColumn)//Used for 2nd argument of Transform
+		{
+			boolean found = false;
+			String name = ((GeneralDBURIColumn) expr).getVarName();
+
+			for(GeneralDBColumnVar reference: allKnown)
+			{
+				if(name.equals(reference.getName()))
+				{
+					GeneralDBSqlExpr exprCopy = new GeneralDBURIColumn(reference);
+					expr.replaceWith(exprCopy);
+					found = true;
+				}
+			}
+
 		}
 		else if(expr instanceof GeneralDBSqlMathExpr)//Case when I have calculations in select
 		{

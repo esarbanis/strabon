@@ -60,6 +60,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.SymDifferenceFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
@@ -422,6 +423,13 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					Value radius = strategy.evaluate(((FunctionCall) expr).getArgs().get(1),prototype);
 					LiteralImpl lit = (LiteralImpl) radius;
 					return StrabonPolyhedron.buffer(leftArg,lit.doubleValue());
+				}
+				else if(function instanceof TransformFunc)
+				{
+					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
+					Value sridCoarse = strategy.evaluate(((FunctionCall) expr).getArgs().get(1),prototype);
+					URIImpl srid = (URIImpl) sridCoarse;
+					return StrabonPolyhedron.transform(leftArg,srid);
 				}
 				else if(function instanceof EnvelopeFunc)
 				{

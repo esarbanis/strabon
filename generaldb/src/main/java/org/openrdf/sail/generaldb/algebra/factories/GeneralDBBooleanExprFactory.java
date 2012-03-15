@@ -65,6 +65,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
@@ -123,6 +124,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehOve
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUnion;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoTransform;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
@@ -641,10 +643,15 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 						//Be it a Var or a Value Constant, 'numeric' is the way to go
 						rightArg = numeric(right);
 					}
-					//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
-					//thus the special treatment
+					else if(function.getURI().equals(StrabonPolyhedron.transform))
+					{
+						//Another special case -> Second argument of this function is a URI
+						rightArg = uri(right);
+					}
 					else 
 					{
+						//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
+						//thus the special treatment
 						rightArg = label(right);
 					}
 				}
@@ -854,10 +861,15 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = numeric(right);
 				}
-				//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
-				//thus the special treatment
+				else if(function.getURI().equals(StrabonPolyhedron.transform))
+				{
+					//Another special case -> Second argument of this function is a URI
+					rightArg = uri(right);
+				}
 				else 
 				{
+					//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
+					//thus the special treatment
 					rightArg = label(right);
 				}
 			}
@@ -1101,6 +1113,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(StrabonPolyhedron.buffer))
 		{
 			return geoBuffer(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(StrabonPolyhedron.transform))
+		{
+			return geoTransform(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.envelope))
 		{

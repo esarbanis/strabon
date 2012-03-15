@@ -39,6 +39,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
@@ -122,6 +123,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Intersection,
 		ST_Difference,
 		ST_Buffer,
+		ST_Transform,
 		ST_SymDifference,
 		//Spatial Constructs - Unary
 		ST_Envelope,
@@ -639,6 +641,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Buffer);
 	}
+	
+	@Override
+	protected void append(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
+	throws UnsupportedRdbmsOperatorException
+	{
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Transform);
+	}
 
 	@Override
 	protected void append(GeneralDBSqlGeoEnvelope expr, GeneralDBSqlExprBuilder filter)
@@ -764,6 +773,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
+	
 	protected void appendMonetDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
 	throws UnsupportedRdbmsOperatorException
 	{
@@ -779,6 +789,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			switch(func)
 			{
+			//XXX Careful: ST_Transform support MISSING!!!
 			case ST_Difference: filter.appendFunction("Difference"); break;
 			case ST_Intersection: filter.appendFunction("Intersection"); break;
 			case ST_Union: filter.appendFunction("\"Union\""); break;

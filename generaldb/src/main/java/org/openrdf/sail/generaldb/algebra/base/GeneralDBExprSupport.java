@@ -42,6 +42,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
@@ -335,6 +336,11 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr geoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
 		return new GeneralDBSqlGeoBuffer(left, right);
+	}
+	
+	public static GeneralDBSqlExpr geoTransform(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+
+		return new GeneralDBSqlGeoTransform(left, right);
 	}
 	
 	public static GeneralDBSqlExpr geoEnvelope(GeneralDBSqlExpr expr) {

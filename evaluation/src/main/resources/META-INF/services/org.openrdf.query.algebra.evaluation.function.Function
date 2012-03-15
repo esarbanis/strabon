@@ -20,6 +20,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFun
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc
+org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.DifferenceFunc

@@ -310,6 +310,18 @@ public abstract class GeneralDBSqlExprBuilder {
 	public void doubleCast() {
 		where.append(" :: DOUBLE PRECISION ");
 	}
+	
+	public void keepSRID_part1() {
+		where.append(" SUBSTRING(");
+	}
+	
+	public void keepSRID_part2() {
+		where.append(" , position('0' in ");
+	}
+	
+	public void keepSRID_part3() {
+		where.append(" ) + 2) ");
+	}
 
 	//	public void overlap() {
 	//

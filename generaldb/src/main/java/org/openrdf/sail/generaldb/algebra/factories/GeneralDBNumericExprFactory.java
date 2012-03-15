@@ -16,6 +16,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.equal
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoArea;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoTransform;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
@@ -82,8 +83,10 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	/**
 	 * Addition in order to be able to transform the metric expressions I need
+	 * I also needed to create uri expressions
 	 */
 	private GeneralDBLabelExprFactory labelsPeek;
+	private GeneralDBURIExprFactory urisPeek;
 
 	public GeneralDBLabelExprFactory getLabelsPeek() {
 		return labelsPeek;
@@ -92,13 +95,21 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	public void setLabelsPeek(GeneralDBLabelExprFactory labelsPeek) {
 		this.labelsPeek = labelsPeek;
 	}
+
+	public GeneralDBURIExprFactory getUrisPeek() {
+		return urisPeek;
+	}
+
+	public void setUrisPeek(GeneralDBURIExprFactory labelsPeek) {
+		this.urisPeek = urisPeek;
+	}
 	/**
 	 * 
 	 */
 
 	public GeneralDBSqlExpr createNumericExpr(ValueExpr expr)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = null;
 		if (expr == null)
 			return new GeneralDBSqlNull();
@@ -106,7 +117,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		if (result == null)
 			return new GeneralDBSqlNull();
 		return result;
-	}
+			}
 
 	@Override
 	public void meet(Datatype node) {
@@ -115,18 +126,18 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	@Override
 	public void meet(Lang node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = sqlNull();
-	}
+			}
 
 	/**
 	 * XXX changes here to enable more complicated metric expressions
 	 */
 	@Override
 	public void meet(MathExpr node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlExpr left;// = createNumericExpr(node.getLeftArg());
 		GeneralDBSqlExpr right;// = createNumericExpr(node.getRightArg());
 
@@ -161,7 +172,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 		MathOp op = node.getOperator();
 		result = new GeneralDBSqlMathExpr(left, op, right);
-	}
+			}
 
 	@Override
 	public void meet(Str node) {
@@ -185,10 +196,10 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	@Override
 	protected void meetNode(QueryModelNode arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		throw unsupported(arg);
-	}
+			}
 
 	private GeneralDBSqlExpr valueOf(Value value) {
 		if (value instanceof Literal) {
@@ -306,12 +317,21 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = this.createNumericExpr(right);
 				}
-				//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
-				//thus the special treatment
-				else 
+				else if(function.getURI().equals(StrabonPolyhedron.transform))
 				{
+					//Another special case -> Second argument of this function is a URI
+					rightArg = uri(right);
+				}
+				else 
+				{	
+					//DEFAULT behavior for constructs! buffer's second argument is a ValueConstant or a Var,
+					//thus the special treatment
 					rightArg = label(right);
 				}
+
+
+
+
 			}
 		}
 
@@ -385,6 +405,10 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(StrabonPolyhedron.buffer))
 		{
 			return geoBuffer(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(StrabonPolyhedron.transform))
+		{
+			return geoTransform(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(StrabonPolyhedron.envelope))
 		{
@@ -493,10 +517,16 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 	protected GeneralDBSqlExpr label(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return labelsPeek.createLabelExpr(arg);
-	}
+			}
+
+	protected GeneralDBSqlExpr uri(ValueExpr arg)
+			throws UnsupportedRdbmsOperatorException
+			{
+		return urisPeek.createUriExpr(arg);
+			}
 
 	//	protected GeneralDBSqlExpr numeric(ValueExpr arg)
 	//	throws UnsupportedRdbmsOperatorException

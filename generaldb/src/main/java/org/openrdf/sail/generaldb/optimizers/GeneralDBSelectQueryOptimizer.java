@@ -71,6 +71,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.iterator.SPARQLMinusIteration;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
@@ -891,7 +892,7 @@ QueryOptimizer
 				argNo++;
 				if(arg instanceof Var)
 				{
-					if(!(function instanceof BufferFunc) || argNo!=2 )
+					if((!(function instanceof BufferFunc)&&!(function instanceof TransformFunc)) || argNo!=2 )
 					{
 						//The variable's name is not in the list yet
 						if(!geoNames.contains(((Var) arg).getName()))
