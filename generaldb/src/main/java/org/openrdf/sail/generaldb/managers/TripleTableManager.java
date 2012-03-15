@@ -248,6 +248,7 @@ public class TripleTableManager {
 	public synchronized String getTableName(Number pred)
 		throws SQLException
 	{
+		flushManagers(); // charnik's addition
 		if (tables.containsKey(pred))
 			return tables.get(pred).getNameWhenReady();
 		if (tables.containsKey(OTHER_PRED))
@@ -486,10 +487,9 @@ public class TripleTableManager {
 	 */
 	public void flushManagers() {
 		try {
-			hashes.flush();
+			bnodes.flush();
 			uris.flush();
 			literals.flush();
-			bnodes.flush();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
