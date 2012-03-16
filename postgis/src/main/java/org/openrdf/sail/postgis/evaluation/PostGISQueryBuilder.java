@@ -1127,15 +1127,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			
 			filter.appendComma();
 
-			if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+			if(expr.getRightArg() instanceof GeneralDBSqlCase) //case met in transform!
 			{
+				GeneralDBURIColumn plainURI = (GeneralDBURIColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				
 				//XXX This case would be met if we recovered the SRID URI from the db!!!
 				//Need to set sridExpr to the value of this new URI, otherwise the appended uri
 				//to the spatial object will be the wrong one!!!! (Seee following case)
 				filter.keepSRID_part1();
-				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				append(plainURI, filter);
 				filter.keepSRID_part2();
-				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				append(plainURI, filter);
 				filter.keepSRID_part3();
 			}
 			else if(expr.getRightArg() instanceof GeneralDBStringValue)

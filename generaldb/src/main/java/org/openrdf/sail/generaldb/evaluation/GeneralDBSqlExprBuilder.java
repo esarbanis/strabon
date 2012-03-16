@@ -312,7 +312,7 @@ public abstract class GeneralDBSqlExprBuilder {
 	}
 	
 	public void keepSRID_part1() {
-		where.append(" SUBSTRING(");
+		where.append("CAST ( SUBSTRING(");
 	}
 	
 	public void keepSRID_part2() {
@@ -320,7 +320,7 @@ public abstract class GeneralDBSqlExprBuilder {
 	}
 	
 	public void keepSRID_part3() {
-		where.append(" ) + 2) ");
+		where.append(" ) + 2) AS integer) ) ");
 	}
 
 	//	public void overlap() {
