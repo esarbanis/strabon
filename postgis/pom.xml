@@ -84,29 +84,23 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		
- 		
-	    <dependency>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	      <version>4.7</version>
-	      <scope>test</scope>
-	    </dependency>
-	<!--
-	    <dependency>
-	    	<groupId>net.sf</groupId>
-	    	<artifactId>log4jdbc3</artifactId>
-	    	<version>1.2beta2</version>
-	    </dependency>
-	-->
+ 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!--
+		<dependency>
+			<groupId>net.sf</groupId>
+			<artifactId>log4jdbc3</artifactId>
+			<version>1.2beta2</version>
+		</dependency>
+		-->
 	</dependencies>
 </project>

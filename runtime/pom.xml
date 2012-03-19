@@ -165,13 +165,12 @@
 				<artifactId>gt-opengis</artifactId>
 			</dependency>
 
-		<!-- Aduna Appbase -->
+			<!-- Aduna Appbase -->
 			<dependency>
 				<groupId>info.aduna.appbase</groupId>
 				<artifactId>aduna-appbase</artifactId>
 				<version>${aduna.appbase.version}</version>
 				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 
 			<!-- Aduna Commons -->
