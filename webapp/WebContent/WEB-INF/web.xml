@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>StrabonEndpoint</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>WEB-INF/beans.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+		
+	<servlet>
+		<display-name>Query</display-name>
+		<servlet-name>Query</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.QueryBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Query</servlet-name>
+		<url-pattern>/Query</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>Store</display-name>
+		<servlet-name>Store</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.StoreBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Store</servlet-name>
+		<url-pattern>/Store</url-pattern>
+	</servlet-mapping>
+	
+<!-- 	<servlet> -->
+<!-- 		<display-name>QueryServlet</display-name> -->
+<!-- 		<servlet-name>QueryServlet</servlet-name> -->
+<!-- 		<servlet-class>eu.earthobservatory.QueryServlet</servlet-class> -->
+<!-- 		<load-on-startup>1</load-on-startup> -->
+<!-- 	</servlet> -->
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>QueryServlet</servlet-name> -->
+<!-- 		<url-pattern>/QueryServlet</url-pattern> -->
+<!-- 	</servlet-mapping> -->
+	
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>Query</welcome-file>
+	</welcome-file-list>
+</web-app>
