@@ -14,15 +14,8 @@
 	<name>OpenRDF Sesame: MonetDBStore </name>
 	<description>MonetDB Store Support</description>
 	<packaging>jar</packaging>
-	<version>3.1.8-SNAPSHOT</version>
   
-	<url>http://maven.apache.org</url>
-  
-	<properties>
-    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    		<sesame.version>2.6.3</sesame.version>
-	</properties>
-  
+	<url>http://maven.apache.org</url>  
 
 	<dependencies>
 		<dependency>
@@ -92,15 +85,7 @@
 		<dependency>
 			<groupId>monetdb</groupId>
 			<artifactId>jdbcclient</artifactId>
-			<version>3.4.0</version>
 		</dependency>
 
-		<!--
-		<dependency>
-		    	<groupId>net.sf</groupId>
-		    	<artifactId>log4jdbc3</artifactId>
-	    		<version>1.2beta2</version>
-		</dependency>
-		-->
 	</dependencies>
 </project>
