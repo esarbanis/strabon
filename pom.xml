@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -25,7 +26,7 @@
 		<module>monetdb</module>
 		<module>generaldb</module>
 		<module>resultio</module>
-		<module>webapp</module>
+		<module>endpoint</module>
 	</modules>
 
 	<properties>
@@ -34,13 +35,57 @@
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<spring.version>2.5.6</spring.version>
+		<jts.version>1.8</jts.version>
 		<geotools.version>2.7.4</geotools.version>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- Strabon dependencies -->
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-sparqlxml-spatial</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-sail-generaldb</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-sail-monetdb</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-sail-postgis</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>strabon-runtime</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>strabon-endpoint</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
 			<!-- Sesame dependencies -->
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
@@ -69,12 +114,6 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-sail-postgis</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-sail-monetdb</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
@@ -138,7 +177,20 @@
 				<version>${sesame.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-repository-sparql</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
 			<!-- Aduna Commons -->
+			<dependency>
+				<groupId>info.aduna.appbase</groupId>
+				<artifactId>aduna-appbase</artifactId>
+				<version>${aduna.appbase.version}</version>
+				<type>pom</type>
+			</dependency>
+			
 			<dependency>
 				<groupId>info.aduna.commons</groupId>
 				<artifactId>aduna-commons-collections</artifactId>
@@ -167,6 +219,49 @@
 				<groupId>info.aduna.commons</groupId>
 				<artifactId>aduna-commons-net-http-server-embedded</artifactId>
 				<version>2.5.0</version>
+			</dependency>
+
+			<!-- RIO -->
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-rdfxml</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-ntriples</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-turtle</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-trig</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-trix</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-n3</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-binary</artifactId>
+				<version>${sesame.version}</version>
 			</dependency>
 
 			<!-- GeoTools -->
@@ -205,35 +300,38 @@
 				<version>${geotools.version}</version>
 			</dependency>
 
-
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-opengis</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
 
-			<!-- 
-			<dependency> 
-				<groupId>org.opengis</groupId> 
-				<artifactId>geoapi</artifactId> 
-				<version>3.0.0</version> 
-			</dependency> 
-			-->
+			<!-- JTS -->
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>${jts.version}</version>
+				<type>jar</type>
+			</dependency>
 
 			<!-- JDBC Drivers -->
+			<dependency>
+				<groupId>monetdb</groupId>
+				<artifactId>jdbcclient</artifactId>
+				<version>3.4.0</version>
+			</dependency>
+
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>9.0-801.jdbc4</version>
 			</dependency>
 
-			<!--
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.15</version>
 			</dependency>
-			-->			
 
 			<!-- SLF4J -->
 			<dependency>
@@ -248,11 +346,11 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 
-	                <dependency>
-        	                <groupId>net.sf</groupId>
-                	        <artifactId>log4jdbc4</artifactId>
-                        	<version>1.2</version>
-	                </dependency>
+			<dependency>
+				<groupId>net.sf</groupId>
+				<artifactId>log4jdbc4</artifactId>
+				<version>1.2</version>
+			</dependency>
 
 			<!-- Apache Commons -->
 			<dependency>
@@ -374,7 +472,7 @@
 				<version>4.7</version>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<!-- Various -->
 			<dependency>
 				<groupId>cglib</groupId>

@@ -14,16 +14,9 @@
 	<name>OpenRDF Sesame: PostGISStore </name>
 	<description>PostGIS Store Support</description>
 	<packaging>jar</packaging>
-	<version>3.1.8-SNAPSHOT</version>
   
 	<url>http://maven.apache.org</url>
   
-	<properties>
-    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    		<sesame.version>2.6.3</sesame.version>
-	</properties>
-  
-
 	<dependencies>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
@@ -94,13 +87,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!--
-		<dependency>
-			<groupId>net.sf</groupId>
-			<artifactId>log4jdbc3</artifactId>
-			<version>1.2beta2</version>
-		</dependency>
-		-->
+		
 	</dependencies>
 </project>
