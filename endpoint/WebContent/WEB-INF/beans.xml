@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+						http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="strabonBean" class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper" destroy-method="destroy">
+		<constructor-arg type="java.lang.String">
+			<!-- Database name -->
+			<value>endpoint</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Username -->
+			<value>postgres</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Password -->
+			<value>p1r3as</value>
+		</constructor-arg>
+		<constructor-arg type="int">
+			<!-- Port -->
+			<value>5432</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Database server -->
+			<value>localhost</value>
+		</constructor-arg>
+		<constructor-arg type="boolean">
+			<!-- Check for locks and remove them (in case of a crash) -->
+			<value>true</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query1 -->
+			<value><![CDATA[%23+Get+all+hotspots+%0D%0A%23+-+in+Pelloponesus+%0D%0A%23+-+at+2007-08-23%0D%0A%23+-+of+firms%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fh+%3FhGeo+%3FhAcqTime+%3FhConfidence+%3FhConfirmation+%3FhProvider+%3FhSensor+%3FhSatellite%0D%0AWHERE+{%0D%0A++++%3Fh++a+noa%3AHotspot+%3B+%23+all%0D%0A++++++++noa%3AhasGeometry+%3FhGeo+%3B+%23+all%0D%0A++++++++noa%3AhasAcquisitionTime+%3FhAcqTime+%3B+%23+all%0D%0A++++++++noa%3AhasConfidence+%3FhConfidence+%3B+%23+all%0D%0A++++++++noa%3AisProducedBy+%3FhProvider+%3B+%23+all%0D%0A++++++++noa%3AhasConfirmation+%3FhConfirmation+%3B+%23+all+(only+value+unknown)%0D%0A++++++++noa%3AisDerivedFromSensor+%3FhSensor+%3B+%23+all%0D%0A++++++++noa%3AisDerivedFromSatellite+%3FhSatellite+.+%23+only+firms+noa%0D%0A++++++++FILTER(+%222007-08-23T00%3A00%3A00%22^^xsd%3AdateTime+<%3D+%3FhAcqTime+%26%26+%3FhAcqTime+<%3D+%222007-08-23T23%3A59%3A59%22^^xsd%3AdateTime+)+.%0D%0A++++++++FILTER(+%3FhProvider+%3D+noa%3Afirms+)+.%0D%0A++++++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FhGeo)+)+.%0D%0A}&format=KML]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query2 -->
+			<value><![CDATA[%23+Get+all+ArtificialSurfaces%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0APREFIX+owl%3A+<http%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23>%0D%0A%0D%0ASELECT+%3Fa+%3FaGeo%0D%0AWHERE+{%0D%0A++++%3Fa++a+clc%3AArea+%3B%0D%0A++++++++clc%3AhasLandUse+%3FaLandUse+%3B%0D%0A++++++++noa%3AhasGeometry+%3FaGeo+.%0D%0A++++%3FaLandUse+a+%3FaLandUseType+.%0D%0A++++FILTER(+%3FaLandUseType+%3D+clc%3AArtificialSurfaces+)+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FaGeo)+)+.%0D%0A}&format=KML]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query3 -->
+			<value><![CDATA[PREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fn+%3FnGeo+%3FnType+%3FnLabel%0D%0A{%0D%0A++++%3Fn++a+%3FnType+%3B%0D%0A++++++++geo%3Ageometry+%3FnGeo+%3B%0D%0A++++++++rdfs%3Alabel+%3FnLabel+.%0D%0A++++++++FILTER(+%3FnType+%3D+lgdo%3AHospital+||+%3FnType+%3D+lgdo%3AAerodrome+||+%3FnType+%3D+lgdo%3ARailway+)+.%0D%0A++++++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FnGeo)+)+.%0D%0A}&format=KML]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query4 -->
+			<value><![CDATA[%23+Get+all+Perfectures%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0A%23real%090m31.239s%0D%0A%23user%090m8.060s%0D%0A%23sys%090m0.480s%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fg+%3FgYpesCode+%3FgContainer+%3FgLabel+(+strdf%3Aboundary(%3FgGeog)+as+%3FgBoundary+)%0D%0AWHERE+{%0D%0A++++%3Fg++a+gag%3ADhmos+%3B%0D%0A++++++++noa%3AhasYpesCode+%3FgYpesCode+%3B%0D%0A++++++++gag%3AisPartOf+%3FgContainer+%3B%0D%0A++++++++rdfs%3Alabel+%3FgLabel+%3B%0D%0A++++++++strdf%3AhasGeometry+%3FgGeog+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FgGeog)+)+.%0D%0A}&format=KML]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query5 -->
+			<value><![CDATA[%23+Get+all+Prefectures%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0A%23real%090m31.239s%0D%0A%23user%090m8.060s%0D%0A%23sys%090m0.480s%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fg+%3FgYpesCode+%3FgContainer+%3FgLabel+(+strdf%3Aboundary(%3FgGeog)+as+%3FgBoundary+)%0D%0AWHERE+{%0D%0A++++%3Fg++a+gag%3ADhmos+%3B%0D%0A++++++++noa%3AhasYpesCode+%3FgYpesCode+%3B%0D%0A++++++++gag%3AisPartOf+%3FgContainer+%3B%0D%0A++++++++rdfs%3Alabel+%3FgLabel+%3B%0D%0A++++++++strdf%3AhasGeometry+%3FgGeog+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FgGeog)+)+.%0D%0A}&format=KML]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query6 -->
+                        <value><![CDATA[]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query7 -->
+                        <value><![CDATA[]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query8 -->
+                        <value><![CDATA[]]></value>
+		</constructor-arg>
+	</bean>
+
+<!-- 	<bean id="queryBean" class="eu.earthobservatory.org.StrabonEndpoint.QueryBean"> -->
+<!-- 		<property name="strabon" ref="strabonBean" /> -->
+<!-- 	</bean> -->
+
+</beans>
