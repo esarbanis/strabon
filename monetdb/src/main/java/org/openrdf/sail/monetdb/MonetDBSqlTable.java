@@ -7,6 +7,7 @@ package org.openrdf.sail.monetdb;
 
 import java.sql.SQLException;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
 /**
@@ -46,8 +47,9 @@ public class MonetDBSqlTable extends GeneralDBSqlTable {
 	}
 	
 	@Override
-	public String buildInsertGeometryValue() { // FIXME for srid
-		return " (id, strdfgeo) VALUES (CAST(? AS INTEGER),GeomFromWKB(?))";
+	public String buildInsertGeometryValue() {
+		Integer srid=  StrabonPolyhedron.defaultSRID;
+		return " (id, strdfgeo,srid) VALUES (CAST(? AS INTEGER), Transform(GeomFromWKB(CAST(? AS BLOB),CAST(? AS INTEGER)),"+srid+"), CAST(? AS INTEGER))"; 
 	}
 	
 	@Override
