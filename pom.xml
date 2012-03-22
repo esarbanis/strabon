@@ -70,12 +70,6 @@
 
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-sail-postgis</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>strabon-runtime</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
@@ -83,6 +77,12 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>strabon-endpoint</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-sail-postgis</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
@@ -96,30 +96,6 @@
 			<dependency>
 				<groupId>eu.earthobservatory</groupId>
 				<artifactId>strabon-runtime</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryresultio-sparqlxml-spatial</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-sail-postgis</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-sail-generaldb</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
