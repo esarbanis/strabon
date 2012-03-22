@@ -135,7 +135,7 @@ public class GeoValueTable {
 		sb.append("INSERT INTO ").append(getInsertTable().getName());
 //		Integer srid=  StrabonPolyhedron.defaultSRID;
 //		sb.append(" (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),").append(srid).append("),?)");
-		sb.append(((GeneralDBSqlTable)temporary).buildInsertGeometryValue());
+		sb.append(((GeneralDBSqlTable)table).buildInsertGeometryValue());
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");
