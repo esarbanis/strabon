@@ -11,9 +11,8 @@ import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
 /**
- * Converts table names to lower-case and include the analyse optimisation.
  * 
- * @author James Leigh
+ * @author George Garbis <ggarbis@di.uoa.gr>
  * 
  */
 public class MonetDBSqlTable extends GeneralDBSqlTable {
@@ -49,7 +48,7 @@ public class MonetDBSqlTable extends GeneralDBSqlTable {
 	@Override
 	public String buildInsertGeometryValue() {
 		Integer srid=  StrabonPolyhedron.defaultSRID;
-		return " (id, strdfgeo,srid) VALUES (CAST(? AS INTEGER), Transform(GeomFromWKB(CAST(? AS BLOB),CAST(? AS INTEGER)),"+srid+"), CAST(? AS INTEGER))"; 
+		return " (id, strdfgeo,srid) VALUES (CAST(? AS INTEGER), Transform(GeomFromWKB(CAST(? AS BLOB),CAST(? AS INTEGER)),"+srid+"), CAST(? AS INTEGER))";
 	}
 	
 	@Override
