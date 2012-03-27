@@ -5,7 +5,6 @@
  */
 package org.openrdf.sail.monetdb;
 
-import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
 import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 import info.aduna.concurrent.locks.Lock;
 
@@ -19,23 +18,20 @@ import org.openrdf.sail.generaldb.GeneralDBConnectionFactory;
 import org.openrdf.sail.generaldb.GeneralDBTripleRepository;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluationFactory;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilderFactory;
+import org.openrdf.sail.generaldb.managers.TransTableManager;
+import org.openrdf.sail.generaldb.managers.TripleManager;
 import org.openrdf.sail.generaldb.optimizers.GeneralDBQueryOptimizer;
 import org.openrdf.sail.generaldb.optimizers.GeneralDBSelectQueryOptimizerFactory;
+import org.openrdf.sail.generaldb.schema.ValueTableFactory;
 import org.openrdf.sail.helpers.DefaultSailChangedEvent;
 import org.openrdf.sail.monetdb.evaluation.MonetDBEvaluationFactory;
 import org.openrdf.sail.monetdb.evaluation.MonetDBQueryBuilderFactory;
 import org.openrdf.sail.monetdb.util.MonetDBLockManager;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
-import org.openrdf.sail.generaldb.managers.TransTableManager;
-import org.openrdf.sail.generaldb.managers.TripleManager;
 import org.openrdf.sail.rdbms.schema.TableFactory;
-import org.openrdf.sail.generaldb.schema.ValueTableFactory;
 
-/**
- * Responsible to initialise and wire all components together that will be
- * needed to satisfy any sail connection request.
- * 
- * @author James Leigh
+/** 
+ * @author George Garbis <ggarbis@di.uoa.gr> ??
  */
 public class MonetDBConnectionFactory extends GeneralDBConnectionFactory {
 
@@ -92,15 +88,14 @@ public class MonetDBConnectionFactory extends GeneralDBConnectionFactory {
 			 */
 			Connection db = nsAndTableIndexes;
 			db.setAutoCommit(true);
-			/**************************/
-//			if (db.getTransactionIsolation() != TRANSACTION_READ_COMMITTED) {
-//				db.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
-//			}
-			// giorgos
-			if (db.getTransactionIsolation() != TRANSACTION_SERIALIZABLE) {
-				db.setTransactionIsolation(TRANSACTION_SERIALIZABLE);
-			}
-			/***********************/
+
+			/**
+			 * In contrast to Postgres, MonetDB (actually the jdbc implementation of MonetDB) allows 
+			 * only serializable transactions. In every other case, an exception (or warning) is thrown.
+			 * To prevent this, we explicitly set the isolation level to TRANSACTION_SERIALIZABLE.   
+			 */
+			db.setTransactionIsolation(TRANSACTION_SERIALIZABLE);
+			
 			TripleManager tripleManager = new TripleManager();
 			GeneralDBTripleRepository s = new MonetDBTripleRepository();
 			s.setTripleManager(tripleManager);
