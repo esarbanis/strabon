@@ -1,6 +1,17 @@
 package org.openrdf.query.algebra.evaluation.function.spatial;
 import java.util.ArrayList;
 
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
@@ -15,24 +26,12 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.io.WKBWriter;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
-
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value; 
 
 public class StrabonPolyhedron implements Value {
 
+
+	private static final long serialVersionUID = 894529468109904724L;
+	
 	public static String CACHEPATH = "";
 	public static String TABLE_COUNTS = "counts.bin";
 	public static String TABLE_SUBJ_OBJ_TYPES = "tableProperties.bin";
@@ -132,6 +131,11 @@ public class StrabonPolyhedron implements Value {
 
 	private static int MAX_POINTS = Integer.MAX_VALUE;//40000;//Integer.MAX_VALUE;//10000;
 
+	/**
+	 * Get JTS singleton instance.
+	 */
+	private static JTSWrapper jts = JTSWrapper.getInstance();
+	
 	private Geometry geometry;
 
 	public StrabonPolyhedron() {
@@ -147,7 +151,7 @@ public class StrabonPolyhedron implements Value {
 
 
 	public static StrabonPolyhedron ConstructFromWKB(byte[] byteArray) throws Exception {
-		return new StrabonPolyhedron(new WKBReader().read(byteArray));
+		return new StrabonPolyhedron(jts.WKBread((byteArray)));
 	}
 
 	public static Geometry convertSRID(Geometry A, int sourceSRID, int targetSRID)
@@ -184,7 +188,7 @@ public class StrabonPolyhedron implements Value {
 
 	//public StrabonPolyhedron(int partitionAlgorithmIgnored, String constraints) throws Exception {
 	//	Polyhedron poly = new Polyhedron(constraints);
-	//	this.geometry = new WKTReader().read(poly.toWKT());
+	//	this.geometry = jts.WKTread(poly.toWKT());
 	//}
 
 
@@ -634,15 +638,14 @@ public class StrabonPolyhedron implements Value {
 				geometry.startsWith("MULTILINESTRING") || 
 				geometry.startsWith("MULTIPOLYGON") || 
 				geometry.startsWith("GEOMETRYCOLLECTION")) {
-			Geometry geo = new WKTReader().read(geometry);
+			Geometry geo = jts.WKTread(geometry);
 			this.geometry = new StrabonPolyhedron(geo).geometry;
 			//Default 
 			this.geometry.setSRID(geomSRID);
 		} else {
 			//Polyhedron polyhedron = new Polyhedron(geometry);
 			//String polyhedronWKT = polyhedron.toWKT();
-			//WKTReader reader = new WKTReader();
-			//Geometry geo = reader.read(polyhedronWKT);
+			//Geometry geo = jts.WKTread(polyhedronWKT);
 			//
 			//if (!EnableConstraintRepresentation) {
 			//	this.geometry = geo.union(geo);
@@ -651,24 +654,26 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		Geometry geo = new WKTReader().read(WKT);
+		System.out.println("	new StrabonPolyhedron: before WKTReader");
+		Geometry geo = jts.WKTread(WKT);
+		System.out.println("	new StrabonPolyhedron: after WKTReader");
 		this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm, int maxPoints) throws Exception {
-		Geometry geo = new WKTReader().read(WKT);
+		Geometry geo = jts.WKTread(WKT);
 		this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
 	}
 
 	public StrabonPolyhedron(byte[] byteArray) throws ParseException {
 
-		this.geometry = new WKBReader().read(byteArray);
+		this.geometry = jts.WKBread(byteArray);
 		//		System.out.println(geometry.toString()+" "+geometry.getSRID());
 	}
 
 	public StrabonPolyhedron(byte[] byteArray, int srid) throws ParseException {
 
-		this.geometry = new WKBReader().read(byteArray);
+		this.geometry = jts.WKBread(byteArray);
 		this.geometry.setSRID(srid);
 	}
 
@@ -695,17 +700,15 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public byte[] toWKB() {
-		WKBWriter writer = new WKBWriter();
-		return writer.write(this.geometry);		
+		return jts.WKBwrite(this.geometry);		
 	}
 
 	public String toWKT() {
-		WKTWriter writer = new WKTWriter();
-		return writer.write(this.geometry);		
+		return jts.WKTwrite(this.geometry);		
 	}
 
 	public byte[] toByteArray() {
-		return new WKBWriter().write(this.geometry);
+		return jts.WKBwrite(this.geometry);
 	}
 
 
@@ -939,7 +942,7 @@ public class StrabonPolyhedron implements Value {
 						+ "342164.38954080583 5536425.686612717" + "))";
 
 				start = System.nanoTime();
-				Geometry geo = new WKTReader().read(WKT);
+				Geometry geo = jts.WKTread(WKT);
 				geo.isValid();
 				geo.isSimple();
 				geo.normalize();
