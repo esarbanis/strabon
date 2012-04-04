@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,11 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -56,28 +50,6 @@ public class QueryBean extends HttpServlet {
 				this.format = null;
 				this.SPARQLQuery = null;
 				this.errorMessage = null;				
-			}
-			
-			public String getTinyURL(String fullURL){
-				String tinyUrl = null;
-				
-				try {
-					HttpClient httpclient = new HttpClient();
-					HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php"); 
-					method.setQueryString(new NameValuePair[]{new NameValuePair("url",fullURL)});
-					httpclient.executeMethod(method);
-					tinyUrl = method.getResponseBodyAsString();
-					method.releaseConnection();
-					
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				return tinyUrl;
 			}
 			
 			public String getSPARQLQuery() {
@@ -246,7 +218,7 @@ public class QueryBean extends HttpServlet {
     	     
  			 response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
  			 response.setDateHeader("Expires", 0);
- 			 InetAddress thisIp =InetAddress.getLocalHost();
+ 			 //InetAddress thisIp =InetAddress.getLocalHost();
  			 response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml");
  			 response.setStatus(301);
              
