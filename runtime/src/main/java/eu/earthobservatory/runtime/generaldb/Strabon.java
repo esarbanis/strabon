@@ -2,12 +2,17 @@ package eu.earthobservatory.runtime.generaldb;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+
+import java.io.FileReader;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -42,6 +47,9 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.Rio;
+import org.openrdf.rio.ntriples.NTriplesParser;
 import org.openrdf.rio.ntriples.NTriplesWriter;
 import org.openrdf.sail.helpers.SailBase;
 
@@ -713,7 +721,7 @@ public abstract class Strabon {
 		//return ret;
 		return retStream.toString();
 	}
-	
+
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 
 	{
@@ -744,12 +752,13 @@ public abstract class Strabon {
 		con1.add(file, baseURI, format);
 	}
 	
-	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault
+	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
 	{
+		System.out.println("generaldb.Strabon.store in repo");
 		storeInRepo(src, null, null, format);
 	}
 	
-	public void storeInRepo(Object src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault
+	public void storeInRepo(Object src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
 	{
 		RDFFormat realFormat = null;
 
@@ -808,13 +817,22 @@ public abstract class Strabon {
 		}
 	}
 	
-	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
 		System.out.println("File     : " + file.getName());
 		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
 		System.out.println("Context  : " + ((context == null) ? "null" : context));
 		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
 
+		RDFParser parser = Rio.createParser(format);
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		FileReader reader = new FileReader(file);
+		handler.startRDF();
+		parser.setRDFHandler(handler);
+		parser.parse(reader, "");
+		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		StringReader georeader= new StringReader(handler.getTriples().toString());
+		handler.endRDF();
 		if (context == null) {
 			System.out.println("[1]");
 			con1.add(file, baseURI, format);
@@ -822,15 +840,28 @@ public abstract class Strabon {
 			System.out.println("[2]");
 			con1.add(file, baseURI, format, context);
 		}
+		con1.add(georeader, "", RDFFormat.NTRIPLES);
+		
 	}
 
-	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
 		System.out.println("URL      : " + url.toString());
 		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
 		System.out.println("Context  : " + ((context == null) ? "null" : context));
 		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
 
+		InputStream in = (InputStream) url.openStream();
+		InputStreamReader reader = new InputStreamReader(in);
+		RDFParser parser = Rio.createParser(format);
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		handler.startRDF();
+		parser.setRDFHandler(handler);
+		parser.parse(reader, "");
+		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		StringReader georeader= new StringReader(handler.getTriples().toString());
+		handler.endRDF();
+		
 		if (context == null) {
 			System.out.println("[3]");
 			con1.add(url, baseURI, format);
@@ -838,9 +869,10 @@ public abstract class Strabon {
 			System.out.println("[4]");
 			con1.add(url, baseURI, format, context);
 		}
+		con1.add(georeader, "", RDFFormat.NTRIPLES);
 	}
-
-	private void storeString(String text, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException
+	
+	private void storeString(String text, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
 		if (baseURI == null)
 			baseURI = "";
@@ -851,6 +883,16 @@ public abstract class Strabon {
 		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
+		RDFParser parser = Rio.createParser(format);
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		
+		handler.startRDF();
+		parser.setRDFHandler(handler);
+		parser.parse(reader, "");
+		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		StringReader georeader= new StringReader(handler.getTriples().toString());
+		handler.endRDF();
+		
 		if (context == null) {
 			System.out.println("[5]");
 			con1.add(reader, baseURI, format);
@@ -858,6 +900,7 @@ public abstract class Strabon {
 			System.out.println("[6]");
 			con1.add(reader, baseURI, format, context);
 		}
+		con1.add(georeader, "", RDFFormat.NTRIPLES);
 	}
 
 	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException

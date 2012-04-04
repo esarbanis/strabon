@@ -218,6 +218,7 @@ public class LiteralTable {
 	{
 		labels.insert(id, label);
 		datatypes.insert(id, datatype);
+		System.out.println("about to insert double value:"+value);
 		numeric.insert(id, value);
 	}
 

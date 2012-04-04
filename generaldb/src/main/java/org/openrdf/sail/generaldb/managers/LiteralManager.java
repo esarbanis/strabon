@@ -97,6 +97,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 			/**********************************************/
 			try {
 				if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
+					System.out.println("about to insert double value:"+literal.doubleValue());
 					table.insertNumeric(id, label, dt, literal.doubleValue());
 				}
 				else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {
@@ -104,6 +105,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					table.insertDateTime(id, label, dt, value);
 				}
 				else {
+					//System.out.println("NOT  NUMERIC:::"+label+" "+literal);
 					table.insertDatatype(id, label, dt);
 					
 					/**

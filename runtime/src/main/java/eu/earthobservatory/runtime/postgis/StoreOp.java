@@ -38,6 +38,7 @@ public class StoreOp {
 		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
 		
 		File file = new File (src);
+		System.out.println("about to store the file in the repo!");
 		strabon.storeInRepo(file, format);
 //		strabon.storeInRepo(file, null, null, fileRDFFormat);
 
