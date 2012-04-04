@@ -119,7 +119,6 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("HTML");
 		}
-		//System.out.println("\n\n\n\n\format='"+this.format+"'\n\n\n\n\n");
 		
 		PrintWriter out = response.getWriter();
 		
@@ -190,16 +189,49 @@ public class QueryBean extends HttpServlet {
 			   //out.append("<div id=\"map_canvas\"></div>");
 				out.append("");
 			appendHTML5(out);
-		} 
-		else if ((hive.getFormat().equalsIgnoreCase("XML"))) {
+			
+		} else if ((hive.getFormat().equalsIgnoreCase("XML"))) {
+			int status_code = HttpServletResponse.SC_OK;
+			String answer = "";
+			
+			try {
+				// execute query
+				answer = (String) strabonWrapper.query(hive.getSPARQLQuery(), hive.getFormat());
+				
+			} catch (MalformedQueryException e) {
+				status_code = HttpServletResponse.SC_BAD_REQUEST;
+				answer = e.getMessage();
+				
+			} catch (RepositoryException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (QueryEvaluationException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (TupleQueryResultHandlerException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (ClassNotFoundException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+			}
+			
+			// write response to client
 			response.setContentType("text/xml; charset=UTF-8");
-			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-			hive.setErrorMessage(errorMessage.toString());
-			out.println(answer);
-
-		}
-		else {
+			response.setStatus(status_code);
+			if (status_code == HttpServletResponse.SC_OK) {
+				response.getWriter().append(answer);
+				
+			} else {
+				response.getWriter().append(UpdateBean.getUPDATEHeaderResponse());
+				response.getWriter().append(UpdateBean.getExceptionError(answer));
+				response.getWriter().append(UpdateBean.getUPDATEFooterResponse());
+			}
+			
+		} else { // HTML
 			
 			appendHTML1a(out,"");
 			
@@ -246,28 +278,17 @@ public class QueryBean extends HttpServlet {
 		context = getServletContext();
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
 		
-		strabonWrapper = (StrabonBeanWrapper)applicationContext.getBean("strabonBean");
+		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 	}
 
 	public String evaluateQuery(StrabonBeanWrapper strabonWrapper, String resultFormat, String reqFunctionality, String SPARQLQuery, StringBuilder errorMessage) {		
 		String answer = "";
-
-//		System.out.println("evaluateQuery: will call wrapper. Query  = " + this.SPARQLQuery);
-//		System.out.println("evaluateQuery: will call wrapper. result = " + resultFormat);
-
+		
 		try {
 			if (SPARQLQuery == null) {
 				answer = "";
 			} else {
-				//System.out.println("evaluateQuery: Calling...");
-				if (reqFunctionality.equals("Update")) {
-				//if (((String)this.SPARQLQuery).toLowerCase().contains("insert") || ((String)this.SPARQLQuery).toLowerCase().contains("delete"))  { 
-				   answer = (String)strabonWrapper.update(SPARQLQuery, resultFormat);
-				   }
-				else{
-				   answer = (String)strabonWrapper.query(SPARQLQuery, resultFormat);
-				}
-				//System.out.println("evaluateQuery: Called...");
+				   answer = (String) strabonWrapper.query(SPARQLQuery, resultFormat);
 			}
 		} catch (MalformedQueryException e) {
 			e.printStackTrace();
@@ -292,10 +313,6 @@ public class QueryBean extends HttpServlet {
 			errorMessage.append(e.getMessage());
 		}
 
-		//System.out.println("evaluateQuery: called wrapper. answer  = " + answer);
-		//System.out.println("evaluateQuery: called wrapper. error   = " + ((this.errorMessage == null) ? "" : this.errorMessage));
-
-		
 		return answer;		
 	}
 	
