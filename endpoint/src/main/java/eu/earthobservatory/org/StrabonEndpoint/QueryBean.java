@@ -154,16 +154,21 @@ public class QueryBean extends HttpServlet {
 		StrabonBeanWrapper strabonWrapper = (StrabonBeanWrapper)applicationContext.getBean("strabonBean");
 		
 		if (isUpdate) {
+			String answer = "";
 			try {
 				strabonWrapper.getStrabon().update(hive.getSPARQLQuery(), strabonWrapper.getStrabon().getSailRepoConnection());
 				response.setStatus(HttpServletResponse.SC_OK);
+				answer = "true";
 				
 			} catch(MalformedQueryException e) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				PrintWriter out = response.getWriter();
-				e.printStackTrace(out);
+				answer = "<exception>\n"+e.getMessage()+"\n\t</exception>";
 			}
 			
+			// write response to client
+			response.getWriter().append(getHeaderResponse());
+			response.getWriter().append(answer);
+			response.getWriter().append(getFooterResponse());
 			return;
 		}
 
@@ -305,6 +310,16 @@ public class QueryBean extends HttpServlet {
 			appendHTML5(out);
 		}
 		out.flush();
+	}
+
+	private String getHeaderResponse() {
+		return "<?xml version='1.0' encoding='UTF-8'?>\n" +
+			   "<response>\n" +
+			   "\t";
+	}
+	
+	private String getFooterResponse() {
+		return "\n</response>\n";
 	}
 
 	public void init(ServletConfig servletConfig) throws ServletException {
