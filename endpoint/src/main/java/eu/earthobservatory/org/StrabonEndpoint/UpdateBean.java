@@ -52,7 +52,7 @@ public class UpdateBean extends HttpServlet {
 			
 		} catch(MalformedQueryException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			answer = "<exception>\n"+e.getMessage()+"\n\t</exception>";
+			answer = getExceptionError(e.getMessage());
 		}
 		
 		// write response to client
@@ -77,6 +77,10 @@ public class UpdateBean extends HttpServlet {
 	 */
 	public static String getUPDATEFooterResponse() {
 		return "\n</response>\n";
+	}
+	
+	public static String getExceptionError(String msg) {
+		return "<exception>\n"+msg+"\n\t</exception>";
 	}
 
 }
