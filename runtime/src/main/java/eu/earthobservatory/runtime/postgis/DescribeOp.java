@@ -17,7 +17,7 @@ public class DescribeOp {
 			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
 			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
 			System.err.println("             <QUERY>      is the stSPARQL query to evaluate.");
-			System.err.println("             <OUTPUT>      is the stSPARQL query to evaluate.");
+			System.err.println("             <OUTPUT>     is the output file.");
 			System.exit(0);
 		}
 
