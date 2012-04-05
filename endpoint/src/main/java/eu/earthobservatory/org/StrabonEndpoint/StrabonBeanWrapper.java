@@ -12,7 +12,6 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 
@@ -102,19 +101,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 		
-    	//String newQueryString = TemporalWrapper.rebuildQuery(queryString);
-    	
-    	System.out.println("================================================================");
-    	System.out.println("Query:");
-    	System.out.println(queryString);
-    	System.out.println("================================================================");
-    	System.out.println("Answer format: " + answerFormatStrabon);
-    	System.out.println("================================================================");
-    	//System.out.println("Rewritten query:");
-    	//System.out.println(newQueryString);
-    	//System.out.println("================================================================");
-		
-   		//return strabon.query(newQueryString, answerFormatStrabon, strabon.getSailRepoConnection());
 		return strabon.query(queryString, answerFormatStrabon, strabon.getSailRepoConnection());
 	}
 	

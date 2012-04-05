@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# Script for executing SPARQL queries and SPARQL Update queries 
+# as well as storing RDF triples on a Strabon Endpoint.
+#
+# Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
+#
+
+function help() {
+	echo SYNOPSIS
+	echo "	`basename ${0}` query|update|store ARGS"
+}
+
+function help_query() {
+	echo SYNOPSIS
+	echo "	`basename ${0}` query URL SPARQL_QUERY"
+	echo
+	echo "	URL	     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	SPARQL_QUERY : the SPARQL query to execute"
+}
+
+function help_update() {
+	echo SYNOPSIS
+	echo "	`basename ${0}` update URL SPARQL_QUERY"
+	echo
+	echo "	URL	     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	SPARQL_QUERY : the SPARQL update query to execute"
+}
+
+function help_store() {
+	echo SYNOPSIS
+	echo "	`basename ${0}` store URL FORMAT -t TRIPLES|-u TRIPLES_URL  "
+	echo
+	echo "	URL	    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, or BinaryRDF)"
+	echo "	TRIPLES	    : the RDF triples to store"
+	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
+}
+
+CURL_OPTS="-w HTTP_CODE=%{http_code}\n -H \"Content-Type:application/x-www-form-urlencoded\" -H \"Accept:text/xml\""
+
+case "${1}" in
+	help)
+		help
+		exit 0
+		;;
+	query)
+		shift
+		if ! test $# -eq 2; then
+			help_query
+			exit 1
+		fi
+		URL="${1}/Query"
+		QUERY="${2}"
+
+		# TODO: make it an argument
+		FORMAT="XML"
+
+		curl ${CURL_OPTS} -d "format=${FORMAT}" --data-urlencode "SPARQLQuery=${QUERY}" ${URL}
+		;;
+	update)
+		shift
+		if ! test $# -eq 2; then
+			help_update
+			exit 1
+		fi
+		URL="${1}/Update"
+		QUERY="${2}"
+		
+		curl ${CURL_OPTS} --data-urlencode "SPARQLQuery=${QUERY}" ${URL}
+		;;
+	store)
+		shift
+		if ! test $# -eq 4; then
+			help_store
+			exit 1
+		fi
+		URL="${1}/Store"
+		FORMAT="${2}"
+		case "${3}" in
+			-t)
+				TRIPLES="${4}"
+				curl ${CURL_OPTS} -d "format=${FORMAT}" --data-urlencode "data=${TRIPLES}" ${URL}
+				;;
+			-u)
+				URL_TRIPLES="${4}"
+				curl ${CURL_OPTS} -d "format=${FORMAT}" --data-urlencode "url=${URL_TRIPLES}" -d "fromurl=" ${URL}
+				;;
+			 *)
+				help_store
+				exit 1
+				;;
+		esac
+		;;
+	*) 
+		echo "ERROR: Unknown command \"${1}\"."
+		help
+		exit 1
+		;;
+esac
+

@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,11 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -36,7 +30,8 @@ public class QueryBean extends HttpServlet {
 	
 	private static final long serialVersionUID = -378175118289907707L;
 	
-	public QueryBean() {}
+	private ServletContext context; 
+	private StrabonBeanWrapper strabonWrapper;
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException
@@ -56,28 +51,6 @@ public class QueryBean extends HttpServlet {
 				this.format = null;
 				this.SPARQLQuery = null;
 				this.errorMessage = null;				
-			}
-			
-			public String getTinyURL(String fullURL){
-				String tinyUrl = null;
-				
-				try {
-					HttpClient httpclient = new HttpClient();
-					HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php"); 
-					method.setQueryString(new NameValuePair[]{new NameValuePair("url",fullURL)});
-					httpclient.executeMethod(method);
-					tinyUrl = method.getResponseBodyAsString();
-					method.releaseConnection();
-					
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				return tinyUrl;
 			}
 			
 			public String getSPARQLQuery() {
@@ -104,51 +77,22 @@ public class QueryBean extends HttpServlet {
 				this.errorMessage = error;
 			}
 		}
-		
-//		System.out.println("\n\n\n\n\n\n\nrequest: ");
-//		System.out.println("HEADERS");
-//	    Enumeration headerNames = request.getHeaderNames();
-//	    while(headerNames.hasMoreElements()) {
-//	      String headerName = (String)headerNames.nextElement();
-//	      System.out.println(headerName + ":" +request.getHeader(headerName));
-//	    }
-//	    System.out.println("ATTRIBUTES");
-//	    Enumeration attributeNames = request.getAttributeNames();
-//	    while(attributeNames.hasMoreElements()) {
-//	      String attributeName = (String)attributeNames.nextElement();
-//	      System.out.println(attributeName + ":" +request.getAttribute(attributeName).toString());
-//	    }
-//	    Enumeration paramNames = request.getParameterNames();
-//	    while(paramNames.hasMoreElements()) {
-//	      String paramName = (String)paramNames.nextElement();
-//	      System.out.print(paramName + ":");
-//	      String[] paramValues = request.getParameterValues(paramName);
-//	      if (paramValues.length == 1) {
-//	        String paramValue = paramValues[0];
-//	        if (paramValue.length() == 0)
-//	          System.out.print("No Value");
-//	        else
-//	          System.out.print(paramValue + " ");
-//	      } else {
-//	        for(int i=0; i<paramValues.length; i++) {
-//	          System.out.println(":" + paramValues[i]);
-//	        }
-//	      }	    
-//	    }
-//		
-//		System.out.println("\n\n\n\n\nREQUEST.CONTENTTYPE='"+request.getContentType()+"'\n\n\n\n\n");
-		
+				
 		DataHive hive = new DataHive(); 
 		
 		hive.setSPARQLQuery(request.getParameter("SPARQLQuery"));
-		//System.out.println("SPARQLQuery = " + this.SPARQLQuery);
 		
 		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
 		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
 		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");
 		
 		// check whether Update submit button was fired
-		boolean isUpdate = (reqFuncionality.equals("Update") ? true:false);
+		if (reqFuncionality.equals("Update")) { // only for executions from web browsers
+			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+			response.sendRedirect("Update?SPARQLQuery=" + hive.getSPARQLQuery());
+			
+			return;
+		}
 		
 		if ((reqFormat == "") && (reqAccept == "")) {
 			hive.setFormat("HTML");
@@ -175,37 +119,10 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("HTML");
 		}
-		//System.out.println("\n\n\n\n\format='"+this.format+"'\n\n\n\n\n");
 		
-		ServletContext context = getServletContext();
-		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-		StrabonBeanWrapper strabonWrapper = (StrabonBeanWrapper)applicationContext.getBean("strabonBean");
-		
-		if (isUpdate) {
-			try {
-				strabonWrapper.getStrabon().update(hive.getSPARQLQuery(), strabonWrapper.getStrabon().getSailRepoConnection());
-				response.setStatus(HttpServletResponse.SC_OK);
-				
-			} catch(MalformedQueryException e) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				PrintWriter out = response.getWriter();
-				e.printStackTrace(out);
-			}
-			
-			return;
-		}
-
 		PrintWriter out = response.getWriter();
 		
 		if ((hive.getFormat().equalsIgnoreCase("KML"))) {
-			//try {
-		    //     String url = "http://www.google.com";
-		    //     java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-		    //     }
-		    //  catch (java.io.IOException e) {
-		    //     System.out.println(e.getMessage());
-		    //     }
-			
 			StringBuilder errorMessage = new StringBuilder ();
 			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
@@ -240,33 +157,19 @@ public class QueryBean extends HttpServlet {
  
 	            //System.out.println("Done");
  
-    	     }catch(IOException e){
+    	     } catch(IOException e) {
     		        e.printStackTrace();
-    	           }
+    	     }
     	     
  			 response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
  			 response.setDateHeader("Expires", 0);
- 			 InetAddress thisIp =InetAddress.getLocalHost();
  			 response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml");
- 			 response.setStatus(301);
-             
- 			 //out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
-             //out.println("<html>");
-             //out.println("<head>");
-             //out.println("<title>:)</title>");
-             //out.println("<meta http-equiv=\"REFRESH\" content=\"0;url=http://maps.google.com/maps?q=http://localhost:8080/tmp/temp.kml\"></HEAD>");
-             //out.println("<BODY>");
-             //out.println("Redirection WILL occur!");
-             //out.println("</BODY>");
-             //out.println("</HTML>");
-			//out.println(answer);
-			 
+ 			 response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 			 
     	    String pathToKML = "";
-    	    //InetAddress thisIp = InetAddress.getLocalHost();
     	    
     	    if (answer!="")
-			   pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml";//"http://dl.dropbox.com/u/19752551/dlr.kml";
+			   pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml";
 			
             appendHTML1a(out,pathToKML);
 			
@@ -286,16 +189,49 @@ public class QueryBean extends HttpServlet {
 			   //out.append("<div id=\"map_canvas\"></div>");
 				out.append("");
 			appendHTML5(out);
-		} 
-		else if ((hive.getFormat().equalsIgnoreCase("XML"))) {
+			
+		} else if ((hive.getFormat().equalsIgnoreCase("XML"))) {
+			int status_code = HttpServletResponse.SC_OK;
+			String answer = "";
+			
+			try {
+				// execute query
+				answer = (String) strabonWrapper.query(hive.getSPARQLQuery(), hive.getFormat());
+				
+			} catch (MalformedQueryException e) {
+				status_code = HttpServletResponse.SC_BAD_REQUEST;
+				answer = e.getMessage();
+				
+			} catch (RepositoryException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (QueryEvaluationException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (TupleQueryResultHandlerException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+				
+			} catch (ClassNotFoundException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
+			}
+			
+			// write response to client
 			response.setContentType("text/xml; charset=UTF-8");
-			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-			hive.setErrorMessage(errorMessage.toString());
-			out.println(answer);
-
-		}
-		else {
+			response.setStatus(status_code);
+			if (status_code == HttpServletResponse.SC_OK) {
+				response.getWriter().append(answer);
+				
+			} else {
+				response.getWriter().append(UpdateBean.getUPDATEHeaderResponse());
+				response.getWriter().append(UpdateBean.getExceptionError(answer));
+				response.getWriter().append(UpdateBean.getUPDATEFooterResponse());
+			}
+			
+		} else { // HTML
 			
 			appendHTML1a(out,"");
 			
@@ -337,27 +273,22 @@ public class QueryBean extends HttpServlet {
 
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
+		
+		// get StrabonWrapper
+		context = getServletContext();
+		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+		
+		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 	}
 
 	public String evaluateQuery(StrabonBeanWrapper strabonWrapper, String resultFormat, String reqFunctionality, String SPARQLQuery, StringBuilder errorMessage) {		
 		String answer = "";
-
-//		System.out.println("evaluateQuery: will call wrapper. Query  = " + this.SPARQLQuery);
-//		System.out.println("evaluateQuery: will call wrapper. result = " + resultFormat);
-
+		
 		try {
 			if (SPARQLQuery == null) {
 				answer = "";
 			} else {
-				//System.out.println("evaluateQuery: Calling...");
-				if (reqFunctionality.equals("Update")) {
-				//if (((String)this.SPARQLQuery).toLowerCase().contains("insert") || ((String)this.SPARQLQuery).toLowerCase().contains("delete"))  { 
-				   answer = (String)strabonWrapper.update(SPARQLQuery, resultFormat);
-				   }
-				else{
-				   answer = (String)strabonWrapper.query(SPARQLQuery, resultFormat);
-				}
-				//System.out.println("evaluateQuery: Called...");
+				   answer = (String) strabonWrapper.query(SPARQLQuery, resultFormat);
 			}
 		} catch (MalformedQueryException e) {
 			e.printStackTrace();
@@ -382,10 +313,6 @@ public class QueryBean extends HttpServlet {
 			errorMessage.append(e.getMessage());
 		}
 
-		//System.out.println("evaluateQuery: called wrapper. answer  = " + answer);
-		//System.out.println("evaluateQuery: called wrapper. error   = " + ((this.errorMessage == null) ? "" : this.errorMessage));
-
-		
 		return answer;		
 	}
 	

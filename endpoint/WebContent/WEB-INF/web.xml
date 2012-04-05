@@ -33,6 +33,17 @@
 		<url-pattern>/Store</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<display-name>Update</display-name>
+		<servlet-name>Update</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.UpdateBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Update</servlet-name>
+		<url-pattern>/Update</url-pattern>
+	</servlet-mapping>
+		
 <!-- 	<servlet> -->
 <!-- 		<display-name>QueryServlet</display-name> -->
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->
