@@ -7,31 +7,33 @@
 #
 
 function help() {
-	echo SYNOPSIS
-	echo "	`basename ${0}` query|update|store ARGS"
+	echo "Usage: `basename ${0}` COMMAND ENDPOINT ARGS"
+	echo
+	echo "Execute SPARQL and SPARQL Update queries as well as store RDF triples on a Strabon endpoint."
+	echo
+	echo "	COMMAND	 : one of query, update, store, or help"
+	echo "	ENDPOINT : the URL of the Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint)"
+	echo "	ARGS	 : arguments according to selected command"
 }
 
 function help_query() {
-	echo SYNOPSIS
-	echo "	`basename ${0}` query URL SPARQL_QUERY"
+	echo "Usage: `basename ${0}` query ENDPOINT SPARQL_QUERY"
 	echo
-	echo "	URL	     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
 	echo "	SPARQL_QUERY : the SPARQL query to execute"
 }
 
 function help_update() {
-	echo SYNOPSIS
-	echo "	`basename ${0}` update URL SPARQL_QUERY"
+	echo "Usage: `basename ${0}` update ENDPOINT SPARQL_QUERY"
 	echo
-	echo "	URL	     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
 	echo "	SPARQL_QUERY : the SPARQL update query to execute"
 }
 
 function help_store() {
-	echo SYNOPSIS
-	echo "	`basename ${0}` store URL FORMAT -t TRIPLES|-u TRIPLES_URL  "
+	echo "Usage: `basename ${0}` store ENDPOINT FORMAT -t TRIPLES|-u TRIPLES_URL"
 	echo
-	echo "	URL	    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	ENDPOINT    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
 	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, or BinaryRDF)"
 	echo "	TRIPLES	    : the RDF triples to store"
 	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
@@ -41,6 +43,24 @@ CURL_OPTS="-w HTTP_CODE=%{http_code}\n -H \"Content-Type:application/x-www-form-
 
 case "${1}" in
 	help)
+		shift
+		if test $# -eq 1; then
+			case "${1}" in
+				query)
+					help_query
+					;;
+				update)
+					help_update
+					;;
+				store)
+					help_store
+					;;
+				*)
+					help
+					;;
+			esac
+			exit 1
+		fi
 		help
 		exit 0
 		;;
@@ -93,8 +113,9 @@ case "${1}" in
 		esac
 		;;
 	*) 
-		echo "ERROR: Unknown command \"${1}\"."
 		help
+		echo
+		echo "ERROR: Unknown command \"${1}\"."
 		exit 1
 		;;
 esac
