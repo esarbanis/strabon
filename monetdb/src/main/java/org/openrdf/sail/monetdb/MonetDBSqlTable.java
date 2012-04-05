@@ -74,4 +74,9 @@ public class MonetDBSqlTable extends GeneralDBSqlTable {
 	public String buildDynamicParameterInteger() {
 			return "CAST( ? AS INTEGER)";
 	}
+	
+	@Override
+	public String buildWhere() {
+		return " WHERE (1=1 OR 1=1) ";
+	}
 }
