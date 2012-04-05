@@ -226,9 +226,9 @@ public class QueryBean extends HttpServlet {
 				response.getWriter().append(answer);
 				
 			} else {
-				response.getWriter().append(UpdateBean.getUPDATEHeaderResponse());
-				response.getWriter().append(UpdateBean.getExceptionError(answer));
-				response.getWriter().append(UpdateBean.getUPDATEFooterResponse());
+				response.getWriter().append(ResponseMessages.getXMLHeader());
+				response.getWriter().append(ResponseMessages.getXMLException(answer));
+				response.getWriter().append(ResponseMessages.getXMLFooter());
 			}
 			
 		} else { // HTML

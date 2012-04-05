@@ -46,41 +46,22 @@ public class UpdateBean extends HttpServlet {
 		
 		String answer = "";
 		try {
+			if (query == null) {
+				throw new MalformedQueryException("No SPARQL Update query specified.");
+			}
+			
 			strabonWrapper.getStrabon().update(query, strabonWrapper.getStrabon().getSailRepoConnection());
 			response.setStatus(HttpServletResponse.SC_OK);
 			answer = "true";
 			
 		} catch(MalformedQueryException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			answer = getExceptionError(e.getMessage());
+			answer = ResponseMessages.getXMLException(e.getMessage());
 		}
 		
 		// write response to client
-		response.getWriter().append(UpdateBean.getUPDATEHeaderResponse());
+		response.getWriter().append(ResponseMessages.getXMLHeader());
 		response.getWriter().append(answer);
-		response.getWriter().append(UpdateBean.getUPDATEFooterResponse());
+		response.getWriter().append(ResponseMessages.getXMLFooter());
 	}
-	
-	/**
-	 * Used as the template answer for UPDATE queries.
-	 * @return
-	 */
-	public static String getUPDATEHeaderResponse() {
-		return "<?xml version='1.0' encoding='UTF-8'?>\n" +
-			   "<response>\n" +
-			   "\t";
-	}
-	
-	/**
-	 * Used as the template answer for UPDATE queries.
-	 * @return
-	 */
-	public static String getUPDATEFooterResponse() {
-		return "\n</response>\n";
-	}
-	
-	public static String getExceptionError(String msg) {
-		return "<exception>\n"+msg+"\n\t</exception>";
-	}
-
 }
