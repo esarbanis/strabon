@@ -110,4 +110,17 @@ public class PostGISTripleRepository extends GeneralDBTripleRepository {
 		}
 		return sb.toString();
 	}
+	
+	@Override
+	public synchronized void close()
+		throws SQLException
+	{
+		manager.close();
+		if (!conn.getAutoCommit()) {
+			conn.rollback();
+		}
+		conn.setAutoCommit(true);
+		conn.close();
+		releaseLock();
+	}
 }

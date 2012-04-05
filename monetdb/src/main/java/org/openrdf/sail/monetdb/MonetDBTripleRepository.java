@@ -147,4 +147,24 @@ public class MonetDBTripleRepository extends GeneralDBTripleRepository {
 //		}
 //		return sb.toString();
 //	}
+	
+	@Override
+	public synchronized void close()
+		throws SQLException
+	{
+		manager.close();
+		if (!conn.getAutoCommit()) {
+			conn.rollback();
+		}
+	
+		/**
+		 * In MonetDBConnectionFactory.createConnection()
+		 * instead of creating a new connection (<db>) the connection <nsAndTableIndexes> is shared.
+		 * Here the <db> connection would be closed. This should not be done because it 
+		 * would cause <nsAndTableIndexes> to close too. 
+		 * */
+//		conn.setAutoCommit(true);
+//		conn.close();
+		releaseLock();
+	}
 }
