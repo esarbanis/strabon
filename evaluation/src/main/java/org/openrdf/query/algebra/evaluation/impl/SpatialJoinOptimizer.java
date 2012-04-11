@@ -195,6 +195,7 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 			}
 
 			//Checking graph to be sure
+			/*
 			for(int a = 0; a < allNodes; a++)
 			{
 				for(int b = 0; b < allNodes; b++)
@@ -204,6 +205,7 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 				}
 				System.out.println("");
 			}
+			*/
 
 			//Time to construct ordered sequence of joins + filters
 			List<TupleExpr> orderedJoinArgs = new ArrayList<TupleExpr>(allNodes);
@@ -223,9 +225,11 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 				}
 
 			}
+
+			/*
 			System.out.println("*--REWRITTEN TREE--**");
 			System.out.println(finalList.toString());
-
+			*/
 
 			int varsMapSize = varsMap.size();
 			for(Integer position : finalList)

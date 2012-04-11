@@ -187,7 +187,7 @@ QueryOptimizer
 		this.dataset = dataset;
 		this.bindings = bindings;
 		tupleExpr.visit(this);
-		System.out.println("placeholder");
+		//System.out.println("placeholder");
 	}
 
 	@Override

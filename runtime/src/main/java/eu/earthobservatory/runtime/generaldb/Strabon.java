@@ -720,7 +720,7 @@ public abstract class Strabon {
 		}
 		
 		// Print results.
-		System.out.println(retStream.toString());
+		//System.out.println(retStream.toString());
 
 		//return ret;
 		return retStream.toString();
