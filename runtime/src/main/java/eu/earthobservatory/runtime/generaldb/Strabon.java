@@ -143,6 +143,12 @@ public abstract class Strabon {
 			}
 	}
 
+	public Object query(String queryString)
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
+		return query(queryString, "", this.getSailRepoConnection());	
+	}
+	
 	public Object query(String queryString, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
 	{
