@@ -216,6 +216,7 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -227,14 +228,12 @@
 						</goals>
 						<phase>package</phase>
 						<configuration>
-							<!-- optional only if you want to use a preconfigured server.xml file -->
-							<!-- <serverXml>src/main/tomcatconf/server.xml</serverXml> -->
-							<!-- naming is disable by default so use true to enable it -->
 							<enableNaming>true</enableNaming>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			-->
 		</plugins>
 
 		<pluginManagement>
