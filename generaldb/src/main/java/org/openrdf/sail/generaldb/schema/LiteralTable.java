@@ -258,7 +258,7 @@ public class LiteralTable {
 		String[] crs=label.split(";");
 		if((crs.length == 1))
 		{
-			System.out.println("The coordinate reference system for the spatial literal is not specified. WGS84 (srid 4326) is used (default).");
+			//System.out.println("The coordinate reference system for the spatial literal is not specified. WGS84 (srid 4326) is used (default).");
 			return 4326; //use this as default
 		}
 		String prefix="http://www.opengis.net/def/crs/EPSG/0/";
@@ -266,9 +266,9 @@ public class LiteralTable {
 			int index=crs[1].lastIndexOf('/');
 			index++;
 			Integer srid = Integer.parseInt(crs[1].substring(index));
-			 System.out.println("The EPSG code: " + srid);
+			//System.out.println("The EPSG code: " + srid);
 					 
-			System.out.println("SRS FOUND:"+srid);
+			//System.out.println("SRS FOUND:"+srid);
 			 return srid;
 		}else{
 			throw new IllegalArgumentException("MALFORMED URI FOR SRID!!!");
