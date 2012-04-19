@@ -841,7 +841,7 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		System.out.println("Triples inferred:"+ handler.getTriples().toString());
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 		if (context == null) {
@@ -908,16 +908,13 @@ public abstract class Strabon {
 		if (context == null) {
 			System.out.println("[5]");
 			con1.add(reader, baseURI, format);
-			System.out.println("the triples should have been saved now");
 			reader.close();
 		} else {
 			System.out.println("[6]");
 			con1.add(reader, baseURI, format, context);
-			System.out.println("the triples should have been saved now");
 			reader.close();
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
-		System.out.println("the new triples should have been saved now");
 		georeader.close();
 	}
 

@@ -45,14 +45,14 @@ public class testCRS {
 		File file = new File ("/home/konstantina/Desktop/streason.nt");
 		URL url = new URL("http://www.di.uoa.gr/~pms509/rdf-data/streason.nt");
 		String fileBaseURI = "http://example#";
-		String fileRDFFormat = "N3";
+		String fileRDFFormat = "NTRIPLES";
 		String stringBaseURI = "http://example#";
 		String stringRDFFormat = "NTRIPLES";
 		try {
-			strabon.storeInRepo(statement1, stringBaseURI, null, stringRDFFormat);
+			//strabon.storeInRepo(statement1, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(statement2, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(text, null, null, "NTRIPLES");
-			//strabon.storeInRepo(file, null, null, fileRDFFormat);
+			strabon.storeInRepo(file, null, null, fileRDFFormat);
 			//strabon.storeInRepo(gml, null, null, fileRDFFormat);
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block

@@ -672,9 +672,9 @@ public class StrabonPolyhedron implements Value {
 		}
 		else
 		{
-			System.out.println("	new StrabonPolyhedron: before WKTReader");
+			//System.out.println("	new StrabonPolyhedron: before WKTReader");
 			Geometry geo = jts.WKTread(WKT);
-			System.out.println("	new StrabonPolyhedron: after WKTReader");
+			//System.out.println("	new StrabonPolyhedron: after WKTReader");
 			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
 		}
 	

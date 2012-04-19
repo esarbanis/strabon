@@ -188,7 +188,7 @@ public class LiteralTable {
 	//the new version will actually deal with WKB
 	public void insertWKT(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
-		
+		Integer srid;
 		byte[] geomWKB = null;
 		
 		try {
@@ -196,6 +196,11 @@ public class LiteralTable {
 			/***XXX new stuff dictated by kkyzir's StrabonPolyhedron***/
 			
 			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label,2);//current algorithm selected: approx convex partition
+			if(polyhedron.getGeometry().getSRID()>0)
+			{
+				srid = polyhedron.getGeometry().getSRID();
+				System.out.println("SRID="+srid);
+			}
 			geomWKB = polyhedron.toWKB();
 			
 		}  catch (conversionException e) {
@@ -205,7 +210,7 @@ public class LiteralTable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Integer srid= findSRID(label);
+	     srid= findSRID(label);
 		geoSpatialTable.insert(id,srid,/* start,end,*/ geomWKB);
 		
 		//XXX not needed currently because this method is called AFTER an insertDatatype()
@@ -260,16 +265,31 @@ public class LiteralTable {
 	
 	public static Integer findSRID(String label){
 		String[] crs=label.split(";");
+		String crsUri;
+		
 		if((crs.length == 1))
 		{
-			//System.out.println("The coordinate reference system for the spatial literal is not specified. WGS84 (srid 4326) is used (default).");
-			return 4326; //use this as default
+			if(label.contains("crsName"))
+			{
+			
+				int cut = label.indexOf('\"',label.lastIndexOf("crsName=\""));
+				String first= label.substring(cut+1);
+				cut= first.indexOf('\"');
+				crsUri=first.substring(0, cut);			
+			}
+			else
+			{
+				return 4326;
+			} 
 		}
+		else
+			crsUri = crs[1];
+		
 		String prefix="http://www.opengis.net/def/crs/EPSG/0/";
-		if(crs[1].startsWith(prefix)){
-			int index=crs[1].lastIndexOf('/');
+		if(crsUri.startsWith(prefix)){
+			int index=crsUri.lastIndexOf('/');
 			index++;
-			Integer srid = Integer.parseInt(crs[1].substring(index));
+			Integer srid = Integer.parseInt(crsUri.substring(index));
 			//System.out.println("The EPSG code: " + srid);
 					 
 			//System.out.println("SRS FOUND:"+srid);
