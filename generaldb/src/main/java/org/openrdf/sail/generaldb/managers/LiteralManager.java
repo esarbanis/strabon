@@ -124,6 +124,13 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					//	System.out.println(label);
 						table.insertWKT(id, label, dt, null, null);
 					}
+					else if(XMLGSDatatypeUtil.isGMLDatatype(datatype)) //GML case
+						
+					{
+					//	System.out.println(label);
+						table.insertWKT(id, label, dt, null, null);
+					}
+					
 				}
 				
 			}

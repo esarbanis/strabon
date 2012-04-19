@@ -61,5 +61,7 @@
 		</dependency>
 		
 	</dependencies>
+	<modules>
+	</modules>
 </project>
 

@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 
-import java.io.FileReader;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -892,15 +891,22 @@ public abstract class Strabon {
 		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
+
 		
 		if (context == null) {
 			System.out.println("[5]");
 			con1.add(reader, baseURI, format);
+			System.out.println("the triples should have been saved now");
+			reader.close();
 		} else {
 			System.out.println("[6]");
 			con1.add(reader, baseURI, format, context);
+			System.out.println("the triples should have been saved now");
+			reader.close();
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
+		System.out.println("the new triples should have been saved now");
+		georeader.close();
 	}
 
 	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException

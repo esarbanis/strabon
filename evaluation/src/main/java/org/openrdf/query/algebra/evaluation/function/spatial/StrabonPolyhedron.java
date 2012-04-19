@@ -26,6 +26,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.gml2.GMLReader;
 
 public class StrabonPolyhedron implements Value {
 
@@ -45,6 +46,7 @@ public class StrabonPolyhedron implements Value {
 	public static final String geof="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
 	//Extended functions
 	//Spatial Relationships
+	public static final String gml="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
 	public static final String anyInteract="http://strdf.di.uoa.gr/ontology#anyInteract";
 	public static final String contains="http://strdf.di.uoa.gr/ontology#contains";
 	public static final String coveredBy="http://strdf.di.uoa.gr/ontology#coveredBy";
@@ -643,6 +645,13 @@ public class StrabonPolyhedron implements Value {
 			//Default 
 			this.geometry.setSRID(geomSRID);
 		} else {
+			if(geometry.contains("<coordinates>"))
+			{
+				GMLReader gmlreader= new GMLReader();
+				GeometryFactory gf = new GeometryFactory();
+				Geometry geo = gmlreader.read(geometry,gf);
+				this.geometry = new StrabonPolyhedron(geo).geometry;
+			}
 			//Polyhedron polyhedron = new Polyhedron(geometry);
 			//String polyhedronWKT = polyhedron.toWKT();
 			//Geometry geo = jts.WKTread(polyhedronWKT);
@@ -654,15 +663,37 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		System.out.println("	new StrabonPolyhedron: before WKTReader");
-		Geometry geo = jts.WKTread(WKT);
-		System.out.println("	new StrabonPolyhedron: after WKTReader");
-		this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
+		if(WKT.contains("<coordinates>"))
+		{
+			GMLReader gmlreader= new GMLReader();
+			GeometryFactory gf = new GeometryFactory();
+			Geometry geo = gmlreader.read(WKT,gf);
+			this.geometry = new StrabonPolyhedron(geo).geometry;
+		}
+		else
+		{
+			System.out.println("	new StrabonPolyhedron: before WKTReader");
+			Geometry geo = jts.WKTread(WKT);
+			System.out.println("	new StrabonPolyhedron: after WKTReader");
+			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
+		}
+	
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm, int maxPoints) throws Exception {
-		Geometry geo = jts.WKTread(WKT);
-		this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
+		if(WKT.contains("<coordinates>"))
+		{
+			GMLReader gmlreader= new GMLReader();
+			GeometryFactory gf = new GeometryFactory();
+			Geometry geo = gmlreader.read(WKT,gf);
+			this.geometry = new StrabonPolyhedron(geo).geometry;
+		}
+		else
+		{
+
+			Geometry geo = jts.WKTread(WKT);
+			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;	
+		}
 	}
 
 	public StrabonPolyhedron(byte[] byteArray) throws ParseException {

@@ -76,8 +76,18 @@ public class XMLGSDatatypeUtil {
 		}
 		//return datatype.toString().equals("http://stsparql.di.uoa.gr/SemiLinearPointSet");
 // to evala apo katw hardcoded giati eixa accessibility issue - konstantina
-			return datatype.toString().equals("http://strdf.di.uoa.gr/ontology#WKT");
+		
+		
+			return (datatype.toString().equals("http://strdf.di.uoa.gr/ontology#WKT"));
 		//return datatype.toString().equals(GeneralDBPolyhedron.getPolyhedron().ogcGeometry);
+	}
+	
+	public static boolean isGMLDatatype(URI datatype)
+	{
+		if(datatype == null)
+			return false;
+	
+		return (datatype.toString().equals("http://strdf.di.uoa.gr/ontology#GML"));
 	}
 	/**
 	 * Checks whether the supplied datatype is a primitive XML Schema datatype.
@@ -347,7 +357,6 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 	}
-
 	public static boolean isValidLong(String value) {
 		try {
 			normalizeLong(value);

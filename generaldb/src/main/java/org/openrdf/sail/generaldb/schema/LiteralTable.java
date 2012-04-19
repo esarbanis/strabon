@@ -212,6 +212,9 @@ public class LiteralTable {
 		//		insertSimple(id, label);
 		//		datatypes.insert(id, datatype);
 	}
+	
+	
+	
 	/********************************************************************/
 	public void insertNumeric(Number id, String label, String datatype, double value)
 	throws SQLException, InterruptedException
