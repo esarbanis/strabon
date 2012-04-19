@@ -1,0 +1,144 @@
+#!/bin/bash
+#
+# Script for executing SPARQL queries and SPARQL Update queries 
+# as well as storing RDF triples on a Strabon Endpoint.
+#
+# Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
+#
+
+function help() {
+	echo "Usage: `basename ${0}` [OPTIONS] COMMAND ENDPOINT ARGS"
+	echo
+	echo "Execute SPARQL and SPARQL Update queries as well as store RDF triples on a Strabon endpoint."
+	echo
+	echo "	COMMAND	 : one of query, update, store, or help"
+	echo "	ENDPOINT : the URL of the Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint)"
+	echo "	ARGS	 : arguments according to selected command"
+	echo 
+	echo "OPTIONS can be any of the following"
+	echo "	-d	 : don't run, just print what shall be executed"
+}
+
+function help_query() {
+	echo "Usage: `basename ${0}` query ENDPOINT SPARQL_QUERY"
+	echo
+	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	SPARQL_QUERY : the SPARQL query to execute"
+}
+
+function help_update() {
+	echo "Usage: `basename ${0}` update ENDPOINT SPARQL_QUERY"
+	echo
+	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	SPARQL_QUERY : the SPARQL update query to execute"
+}
+
+function help_store() {
+	echo "Usage: `basename ${0}` store ENDPOINT FORMAT -t TRIPLES|-u TRIPLES_URL"
+	echo
+	echo "	ENDPOINT    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, or BinaryRDF)"
+	echo "	TRIPLES	    : the RDF triples to store"
+	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
+}
+
+CURL_OPTS="-w HTTP_CODE='%{http_code}\n' -H \"Content-Type:application/x-www-form-urlencoded\" -H \"Accept:text/xml\""
+
+# if set to 1, then only the command to be executed is printed
+DEBUG=0
+
+case "${1}" in
+	-d)
+		shift
+		DEBUG=1
+		;;
+esac
+
+case "${1}" in
+	help)
+		shift
+		if test $# -eq 1; then
+			case "${1}" in
+				query)
+					help_query
+					;;
+				update)
+					help_update
+					;;
+				store)
+					help_store
+					;;
+				*)
+					help
+					;;
+			esac
+			exit 1
+		fi
+		help
+		exit 0
+		;;
+	query)
+		shift
+		if ! test $# -eq 2; then
+			help_query
+			exit 1
+		fi
+		URL="${1}/Query"
+		QUERY="${2}"
+
+		# TODO: make it an argument
+		FORMAT="XML"
+
+		CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"SPARQLQuery=${QUERY}\" ${URL}"
+		;;
+	update)
+		shift
+		if ! test $# -eq 2; then
+			help_update
+			exit 1
+		fi
+		URL="${1}/Update"
+		QUERY="${2}"
+		
+		CMD="curl ${CURL_OPTS} --data-urlencode \"SPARQLQuery=${QUERY}\" ${URL}"
+		;;
+	store)
+		shift
+		if ! test $# -eq 4; then
+			help_store
+			exit 1
+		fi
+		URL="${1}/Store"
+		FORMAT="${2}"
+		case "${3}" in
+			-t)
+				TRIPLES="${4}"
+				CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"data=${TRIPLES}\" ${URL}"
+				;;
+			-u)
+				URL_TRIPLES="${4}"
+				CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"url=${URL_TRIPLES}\" -d \"fromurl=\" ${URL}"
+				;;
+			 *)
+				help_store
+				exit 1
+				;;
+		esac
+		;;
+	*) 
+		help
+		echo
+		echo "ERROR: Unknown command \"${1}\"."
+		exit 1
+		;;
+esac
+
+# execute or debug
+if test $DEBUG -eq 1; then
+	echo "`basename ${0}`: Debug is ON"
+	echo "`basename ${0}`: Printing command for execution"	
+	echo "	$CMD"
+else
+	eval ${CMD}
+fi
+

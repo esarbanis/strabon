@@ -171,7 +171,7 @@ public class ValueTableFactory {
 			int sqlType, int length)
 		throws SQLException
 	{
-		System.out.println("Create GeoValueTable!!");
+		//System.out.println("Create GeoValueTable!!");
 		GeoValueTable table = newGeoValueTable();
 		
 		table.setRdbmsTable(createTable(conn, name));

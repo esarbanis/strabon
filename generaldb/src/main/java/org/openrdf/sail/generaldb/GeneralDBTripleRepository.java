@@ -156,17 +156,8 @@ public abstract class GeneralDBTripleRepository {
 		conn.setAutoCommit(false);
 	}
 
-	public synchronized void close()
-		throws SQLException
-	{
-		manager.close();
-		if (!conn.getAutoCommit()) {
-			conn.rollback();
-		}
-		conn.setAutoCommit(true);
-		conn.close();
-		releaseLock();
-	}
+	abstract public void close()
+		throws SQLException;
 
 	public synchronized void commit()
 		throws SQLException, RdbmsException, InterruptedException 

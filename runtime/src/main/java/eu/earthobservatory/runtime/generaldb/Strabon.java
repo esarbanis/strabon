@@ -150,6 +150,18 @@ public abstract class Strabon {
 			}
 	}
 
+	public Object query(String queryString)
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
+		return query(queryString, "", this.getSailRepoConnection());	
+	}
+
+	public Object query(String queryString, String resultsFormat)
+			throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
+		return query (queryString, resultsFormat, this.getSailRepoConnection());
+	}
+	
 	public Object query(String queryString, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
 	{
@@ -715,7 +727,7 @@ public abstract class Strabon {
 		}
 		
 		// Print results.
-		System.out.println(retStream.toString());
+		//System.out.println(retStream.toString());
 
 		//return ret;
 		return retStream.toString();

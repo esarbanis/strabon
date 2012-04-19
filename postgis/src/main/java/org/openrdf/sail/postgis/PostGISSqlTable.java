@@ -75,4 +75,9 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	public String buildDynamicParameterInteger() {
 			return "?";
 	}
+	
+	@Override
+	public String buildWhere() {
+		return " WHERE (1=1) ";
+	}
 }

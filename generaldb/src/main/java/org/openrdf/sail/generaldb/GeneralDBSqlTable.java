@@ -48,4 +48,6 @@ public abstract class GeneralDBSqlTable extends RdbmsTable {
 	public abstract String buildDummyFromAndWhere(String fromDummy);
 	
 	public abstract String buildDynamicParameterInteger();
+	
+	public abstract String buildWhere();
 }

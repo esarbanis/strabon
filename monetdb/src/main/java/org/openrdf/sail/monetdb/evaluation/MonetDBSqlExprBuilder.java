@@ -25,10 +25,10 @@ public class MonetDBSqlExprBuilder extends GeneralDBSqlExprBuilder {
 	@Override
 	public void appendBoolean(boolean booleanValue) {
 		if (booleanValue) {
-			where.append(" (1=1) ");
+			where.append(" (1=1 or 1=1) ");
 		}
 		else {
-			where.append(" (0=1) ");
+			where.append(" (0=1 or 0=1) ");
 		}
 	}
 	

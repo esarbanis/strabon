@@ -67,68 +67,67 @@ public class PostGISConnectionFactory extends GeneralDBConnectionFactory {
 	@Override
 	public SailConnection createConnection()
 	throws SailException
-{
-	try {
-		Connection db = getConnection();
-		db.setAutoCommit(true);
-		if (db.getTransactionIsolation() != TRANSACTION_READ_COMMITTED) {
-			db.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+	{
+		try {
+			Connection db = getConnection();
+			db.setAutoCommit(true);
+			if (db.getTransactionIsolation() != TRANSACTION_READ_COMMITTED) {
+				db.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+			}
+			TripleManager tripleManager = new TripleManager();
+			GeneralDBTripleRepository s = new PostGISTripleRepository();
+			s.setTripleManager(tripleManager);
+			s.setValueFactory(vf);
+			s.setConnection(db);
+			s.setBNodeTable(bnodeTable);
+			s.setURITable(uriTable);
+			s.setLiteralTable(literalTable);
+			s.setIdSequence(ids);
+			DefaultSailChangedEvent sailChangedEvent = new DefaultSailChangedEvent(sail);
+			s.setSailChangedEvent(sailChangedEvent);
+			TableFactory tables = createTableFactory();
+			TransTableManager trans = createTransTableManager();
+			trans.setIdSequence(ids);
+			tripleManager.setTransTableManager(trans);
+			trans.setBatchQueue(tripleManager.getQueue());
+			trans.setSailChangedEvent(sailChangedEvent);
+			trans.setConnection(db);
+			trans.setTemporaryTableFactory(tables);
+			trans.setStatementsTable(tripleTableManager);
+			trans.setFromDummyTable(getFromDummyTable());
+			trans.initialize();
+			s.setTransaction(trans);
+			GeneralDBQueryBuilderFactory bfactory = createQueryBuilderFactory();
+			bfactory.setValueFactory(vf);
+			bfactory.setUsingHashTable(hashManager != null);
+			s.setQueryBuilderFactory(bfactory);
+			GeneralDBConnection conn = new GeneralDBConnection(sail, s);
+			conn.setNamespaces(namespaces);
+			GeneralDBEvaluationFactory efactory = new PostGISEvaluationFactory();
+			efactory.setQueryBuilderFactory(bfactory);
+			efactory.setRdbmsTripleRepository(s);
+			efactory.setIdSequence(ids);
+			conn.setRdbmsEvaluationFactory(efactory);
+			GeneralDBQueryOptimizer optimizer = createOptimizer();
+			GeneralDBSelectQueryOptimizerFactory selectOptimizerFactory = createSelectQueryOptimizerFactory();
+			selectOptimizerFactory.setTransTableManager(trans);
+			selectOptimizerFactory.setValueFactory(vf);
+			selectOptimizerFactory.setIdSequence(ids);
+			optimizer.setSelectQueryOptimizerFactory(selectOptimizerFactory);
+			optimizer.setValueFactory(vf);
+			optimizer.setBnodeTable(bnodeTable);
+			optimizer.setUriTable(uriTable);
+			optimizer.setLiteralTable(literalTable);
+			optimizer.setHashTable(hashTable);
+			conn.setRdbmsQueryOptimizer(optimizer);
+			conn.setLockManager(lock);
+			return conn;
 		}
-		TripleManager tripleManager = new TripleManager();
-		GeneralDBTripleRepository s = new PostGISTripleRepository();
-		s.setTripleManager(tripleManager);
-		s.setValueFactory(vf);
-		s.setConnection(db);
-		s.setBNodeTable(bnodeTable);
-		s.setURITable(uriTable);
-		s.setLiteralTable(literalTable);
-		s.setIdSequence(ids);
-		DefaultSailChangedEvent sailChangedEvent = new DefaultSailChangedEvent(sail);
-		s.setSailChangedEvent(sailChangedEvent);
-		TableFactory tables = createTableFactory();
-		TransTableManager trans = createTransTableManager();
-		trans.setIdSequence(ids);
-		tripleManager.setTransTableManager(trans);
-		trans.setBatchQueue(tripleManager.getQueue());
-		trans.setSailChangedEvent(sailChangedEvent);
-		trans.setConnection(db);
-		trans.setTemporaryTableFactory(tables);
-		trans.setStatementsTable(tripleTableManager);
-		trans.setFromDummyTable(getFromDummyTable());
-		trans.initialize();
-		s.setTransaction(trans);
-		GeneralDBQueryBuilderFactory bfactory = createQueryBuilderFactory();
-		bfactory.setValueFactory(vf);
-		bfactory.setUsingHashTable(hashManager != null);
-		s.setQueryBuilderFactory(bfactory);
-		GeneralDBConnection conn = new GeneralDBConnection(sail, s);
-		conn.setNamespaces(namespaces);
-		GeneralDBEvaluationFactory efactory = new PostGISEvaluationFactory();
-		efactory.setQueryBuilderFactory(bfactory);
-		efactory.setRdbmsTripleRepository(s);
-		efactory.setIdSequence(ids);
-		conn.setRdbmsEvaluationFactory(efactory);
-		GeneralDBQueryOptimizer optimizer = createOptimizer();
-		GeneralDBSelectQueryOptimizerFactory selectOptimizerFactory = createSelectQueryOptimizerFactory();
-		selectOptimizerFactory.setTransTableManager(trans);
-		selectOptimizerFactory.setValueFactory(vf);
-		selectOptimizerFactory.setIdSequence(ids);
-		optimizer.setSelectQueryOptimizerFactory(selectOptimizerFactory);
-		optimizer.setValueFactory(vf);
-		optimizer.setBnodeTable(bnodeTable);
-		optimizer.setUriTable(uriTable);
-		optimizer.setLiteralTable(literalTable);
-		optimizer.setHashTable(hashTable);
-		conn.setRdbmsQueryOptimizer(optimizer);
-		conn.setLockManager(lock);
-		return conn;
+		catch (SQLException e) {
+			throw new RdbmsException(e);
+		}
 	}
-	catch (SQLException e) {
-		throw new RdbmsException(e);
-	}
-}
 
-	
 	/**
 	 * FROM DUAL
 	 * 

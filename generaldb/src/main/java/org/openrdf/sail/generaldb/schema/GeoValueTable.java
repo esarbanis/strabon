@@ -139,7 +139,7 @@ public class GeoValueTable {
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");
-		sb.append("WHERE 1=1 ");
+		sb.append(((GeneralDBSqlTable)table).buildWhere());
 		EXPUNGE = sb.toString();
 		if (temporary != null) {
 			sb.delete(0, sb.length());
