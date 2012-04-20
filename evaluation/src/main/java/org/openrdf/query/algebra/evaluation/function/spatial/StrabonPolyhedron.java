@@ -49,7 +49,6 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.gml2.GMLReader;
 
 public class StrabonPolyhedron implements Value {
 
@@ -671,9 +670,6 @@ public class StrabonPolyhedron implements Value {
 		
 			if(geometry.contains("gml"))
 			{
-				//GMLReader gmlreader= new GMLReader();
-				//GeometryFactory gf = new GeometryFactory();
-				//Geometry geo = gmlreader.read(geometry,gf);
 				Geometry geo = GMLReader(geometry);
 				this.geometry = new StrabonPolyhedron(geo).geometry;
 			}
@@ -691,9 +687,6 @@ public class StrabonPolyhedron implements Value {
 	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
 		if(WKT.contains("gml"))
 		{
-			//GMLReader gmlreader= new GMLReader();
-			//GeometryFactory gf = new GeometryFactory();
-			//Geometry geo = gmlreader.read(WKT,gf);
 			Geometry geo = GMLReader(WKT);
 			this.geometry = new StrabonPolyhedron(geo).geometry;
 		}
