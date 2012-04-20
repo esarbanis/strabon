@@ -42,7 +42,7 @@ public class testCRS {
 				"\"^^<http://strdf.di.uoa.gr/ontology#WKT> .";
 		String gml =  "<http://example.org/rcc8Obj1> <http://example.org/hasGeometry> \"<gml:Point> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>\"^^<http://strdf.di.uoa.gr/ontology#GML> .\n";
 				
-		File file = new File ("/home/konstantina/Desktop/streason.nt");
+		File file = new File ("/home/konstantina/gmlread.nt");
 		URL url = new URL("http://www.di.uoa.gr/~pms509/rdf-data/streason.nt");
 		String fileBaseURI = "http://example#";
 		String fileRDFFormat = "NTRIPLES";

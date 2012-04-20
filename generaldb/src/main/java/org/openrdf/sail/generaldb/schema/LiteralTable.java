@@ -263,19 +263,25 @@ public class LiteralTable {
 		return bool;
 	}
 	
+	
+	
 	public static Integer findSRID(String label){
 		String[] crs=label.split(";");
-		String crsUri;
+		String crsUri=null;
 		
 		if((crs.length == 1))
 		{
-			if(label.contains("crsName"))
+			if(label.contains("gml"))
 			{
-			
-				int cut = label.indexOf('\"',label.lastIndexOf("crsName=\""));
-				String first= label.substring(cut+1);
-				cut= first.indexOf('\"');
-				crsUri=first.substring(0, cut);			
+				try {
+					StrabonPolyhedron poly = new StrabonPolyhedron(label);
+					if(poly.getGeometry().getSRID()>0)
+						return poly.getGeometry().getSRID();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 			else
 			{

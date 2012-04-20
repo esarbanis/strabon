@@ -1,8 +1,30 @@
 package org.openrdf.query.algebra.evaluation.function.spatial;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
+import javax.annotation.Resource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.geotools.feature.collection.AbstractFeatureVisitor;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.geotools.util.NullProgressListener;
+import org.geotools.GML;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.xml.Parser;
+import org.geotools.xml.Configuration;
+import org.geotools.gml3.GMLConfiguration;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -11,6 +33,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
@@ -645,13 +668,16 @@ public class StrabonPolyhedron implements Value {
 			//Default 
 			this.geometry.setSRID(geomSRID);
 		} else {
-			if(geometry.contains("<coordinates>"))
+		
+			if(geometry.contains("gml"))
 			{
-				GMLReader gmlreader= new GMLReader();
-				GeometryFactory gf = new GeometryFactory();
-				Geometry geo = gmlreader.read(geometry,gf);
+				//GMLReader gmlreader= new GMLReader();
+				//GeometryFactory gf = new GeometryFactory();
+				//Geometry geo = gmlreader.read(geometry,gf);
+				Geometry geo = GMLReader(geometry);
 				this.geometry = new StrabonPolyhedron(geo).geometry;
 			}
+			
 			//Polyhedron polyhedron = new Polyhedron(geometry);
 			//String polyhedronWKT = polyhedron.toWKT();
 			//Geometry geo = jts.WKTread(polyhedronWKT);
@@ -663,11 +689,12 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		if(WKT.contains("<coordinates>"))
+		if(WKT.contains("gml"))
 		{
-			GMLReader gmlreader= new GMLReader();
-			GeometryFactory gf = new GeometryFactory();
-			Geometry geo = gmlreader.read(WKT,gf);
+			//GMLReader gmlreader= new GMLReader();
+			//GeometryFactory gf = new GeometryFactory();
+			//Geometry geo = gmlreader.read(WKT,gf);
+			Geometry geo = GMLReader(WKT);
 			this.geometry = new StrabonPolyhedron(geo).geometry;
 		}
 		else
@@ -681,11 +708,13 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public StrabonPolyhedron(String WKT, int algorithm, int maxPoints) throws Exception {
-		if(WKT.contains("<coordinates>"))
+
+		if(WKT.contains("gml"))
 		{
-			GMLReader gmlreader= new GMLReader();
-			GeometryFactory gf = new GeometryFactory();
-			Geometry geo = gmlreader.read(WKT,gf);
+			//GMLReader gmlreader= new GMLReader();
+			//GeometryFactory gf = new GeometryFactory();
+			//Geometry geo = gmlreader.read(WKT,gf);
+			Geometry geo = GMLReader(WKT);
 			this.geometry = new StrabonPolyhedron(geo).geometry;
 		}
 		else
@@ -1027,5 +1056,18 @@ public class StrabonPolyhedron implements Value {
 
 		}
 		return false;
+	}
+	
+	public Geometry GMLReader(String GML) throws IOException, SAXException, ParserConfigurationException, JAXBException
+	{
+        StringReader reader = new StringReader(GML);
+		JAXBContext context=JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	
+		//Point point = (Point) context.createUnmarshaller().unmarshal(getClass().getResourceAsStream(inputstream));
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		Geometry geometry = (Geometry) unmarshaller.unmarshal(reader);
+		if(geometry.getSRID()>0)
+			 System.out.println("GML Geometry SRID: "+geometry.getSRID());
+		reader.close();
+        return  geometry;
 	}
 }
