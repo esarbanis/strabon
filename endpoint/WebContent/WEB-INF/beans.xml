@@ -11,7 +11,7 @@
 	<bean id="strabonBean" class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper" destroy-method="destroy">
 		<constructor-arg type="java.lang.String">
 			<!-- Database name -->
-			<value>corine</value>
+			<value>darmstadt-noa</value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Username -->
@@ -27,7 +27,7 @@
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Database server -->
-			<value>teleios4.di.uoa.gr</value>
+			<value>localhost</value>
 		</constructor-arg>
 		<constructor-arg type="boolean">
 			<!-- Check for locks and remove them (in case of a crash) -->
