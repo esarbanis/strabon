@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
@@ -435,16 +437,16 @@ public class QueryBean extends HttpServlet {
 		out.println("</html>");
 	}
 	
-	protected static void appendHTMLQ(PrintWriter out, StrabonBeanWrapper strabonWrapper) {
+	protected static void appendHTMLQ(PrintWriter out, StrabonBeanWrapper strabonWrapper) throws UnsupportedEncodingException {
 		out.println("<tr><td width=\"90\">");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery1()+"\">&nbsp;&middot;&nbsp;Query 1</a></br> ");		
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery2()+"\">&nbsp;&middot;&nbsp;Query 2</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery3()+"\">&nbsp;&middot;&nbsp;Query 3</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery4()+"\">&nbsp;&middot;&nbsp;Query 4</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery5()+"\">&nbsp;&middot;&nbsp;Query 5</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery6()+"\">&nbsp;&middot;&nbsp;Query 6</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery7()+"\">&nbsp;&middot;&nbsp;Query 7</a></br>");
-		out.println("<a href=\"Query?SPARQLQuery="+strabonWrapper.getQuery8()+"\">&nbsp;&middot;&nbsp;Query 8</a> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery1(), "UTF-8")+ "&" + strabonWrapper.getFormat() + "\">&nbsp;&middot;&nbsp;Query 1</a></br> ");		
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery2(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 2</a></br> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery3(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 3</a></br> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery4(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 4</a></br> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery5(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 5</a></br> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery6(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 6</a></br> ");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery7(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 7</a></br>");
+		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery8(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 8</a> ");
 		out.println("</td></tr> ");
 	}
 }

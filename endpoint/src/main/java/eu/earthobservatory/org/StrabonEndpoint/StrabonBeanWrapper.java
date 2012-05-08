@@ -32,6 +32,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String query6;
 	private String query7;
 	private String query8;
+	private String format;
 	
 	public StrabonBeanWrapper() {
 		this.strabon = null;
@@ -57,6 +58,27 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.query6 = query6;
 		this.query7 = query7;
 		this.query8 = query8;
+		format = "format=HTML";
+		init();
+	}
+	
+	public StrabonBeanWrapper(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, String query1, String query2, String query3, String query4, String query5, String query6, String query7, String query8, String format) {
+		this.serverName = serverName;
+		this.port = port;
+		this.databaseName = databaseName;
+		this.user = user;
+		this.password = password;
+		this.checkForLockTable = checkForLockTable;
+		//this.strabon = new Strabon(databaseName, user, password, port, serverName, checkForLockTable);
+		this.query1 = query1;
+		this.query2 = query2;
+		this.query3 = query3;
+		this.query4 = query4;
+		this.query5 = query5;
+		this.query6 = query6;
+		this.query7 = query7;
+		this.query8 = query8;
+		this.format = format;
 		
 		init();
 	}
@@ -242,6 +264,15 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	public void setQuery8(String query8) {
 		this.query8 = query8;
 	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+	
 	
 	
 }
