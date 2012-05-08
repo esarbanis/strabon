@@ -169,7 +169,15 @@ public class QueryBean extends HttpServlet {
 					file.createNewFile();
 				}
 
-				FileWriter fw = new FileWriter(basePath + temp + ".kml");
+				FileWriter fw = null;
+				if(hive.getFormat().equalsIgnoreCase("KML"))
+				{
+					fw = new FileWriter(basePath + temp + ".kml");
+				}
+				else //KMZ
+				{
+					fw = new FileWriter(basePath + temp + ".kmz");
+				}
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(answer);
 				bw.close();
@@ -177,31 +185,7 @@ public class QueryBean extends HttpServlet {
 
 				//System.out.println("Done");
 
-				if (hive.getFormat().equalsIgnoreCase("KMZ")) {
-					//compress
-					byte[] buf = new byte[1024];
-					String outFilename = basePath + temp + ".kmz";
-					ZipOutputStream kmzout = new ZipOutputStream(new FileOutputStream(outFilename));
-
-					// Compress the files
-					FileInputStream in = new FileInputStream(basePath + temp + ".kml");
-
-					// Add ZIP entry to output stream.
-					kmzout.putNextEntry(new ZipEntry("doc.kml"));
-
-					// Transfer bytes from the file to the ZIP file
-					int len;
-					while ((len = in.read(buf)) > 0) {
-						kmzout.write(buf, 0, len);
-					}
-
-					// Complete the entry
-					kmzout.closeEntry();
-					in.close();
-
-					// Complete the ZIP file
-					kmzout.close();
-				}
+				
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
