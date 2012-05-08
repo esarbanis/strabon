@@ -92,7 +92,7 @@ WHERE {
 		</constructor-arg>
                 <constructor-arg type="java.lang.String">
                         <!-- Default format -->
-                        <value><![CDATA[format=HTML]]></value>
+                        <value><![CDATA[format=KMZMAP]]></value>
                 </constructor-arg>
 	</bean>
 
