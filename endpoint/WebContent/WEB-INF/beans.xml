@@ -39,7 +39,32 @@
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Query2 -->
-			<value><![CDATA[%23+Get+all+ArtificialSurfaces%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0APREFIX+owl%3A+<http%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23>%0D%0A%0D%0ASELECT+%3Fa+%3FaGeo%0D%0AWHERE+{%0D%0A++++%3Fa++a+clc%3AArea+%3B%0D%0A++++++++clc%3AhasLandUse+%3FaLandUse+%3B%0D%0A++++++++noa%3AhasGeometry+%3FaGeo+.%0D%0A++++%3FaLandUse+a+%3FaLandUseType+.%0D%0A++++FILTER(+%3FaLandUseType+%3D+clc%3AArtificialSurfaces+)+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FaGeo)+)+.%0D%0A}&format=KML]]></value>
+			<value><![CDATA[# Get all hotspots 
+# - in Pelloponesus 
+# - at 2007-08-23
+# - of firms
+
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?h ?hGeo ?hAcqTime ?hConfidence ?hConfirmation ?hProvider ?hSensor ?hSatellite
+WHERE {
+    ?h  a noa:Hotspot ; # all
+        noa:hasGeometry ?hGeo ; # all
+        noa:hasAcquisitionTime ?hAcqTime ; # all
+        FILTER( "2007-08-24T00:00:00"^^xsd:dateTime <= ?hAcqTime && ?hAcqTime <= "2007-09-24T00:00:00"^^xsd:dateTime$
+}
+]]></value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Query3 -->
