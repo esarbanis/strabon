@@ -247,7 +247,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public Value evaluate(FunctionCall fc, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
-		//		System.out.println("FunctionCall placeholder");
+		System.out.println("FunctionCall placeholder");
 
 		if(fc.getParentNode() instanceof Avg)
 		{
