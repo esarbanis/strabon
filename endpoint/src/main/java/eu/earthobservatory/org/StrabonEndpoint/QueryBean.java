@@ -82,6 +82,12 @@ public class QueryBean extends HttpServlet {
 			public void setErrorMessage(String error) {
 				this.errorMessage = error;
 			}
+			
+			public String toString() {
+				return "Format: " + (this.format != null ? this.format : " NULL") + 
+						", SPARQLQuery: " + (this.SPARQLQuery != null ? this.SPARQLQuery : " NULL") + 
+						", errormessage: " + (this.errorMessage != null ? this.errorMessage : " NULL") + ".";
+ 			}
 		}
 
 		DataHive hive = new DataHive(); 
@@ -91,11 +97,17 @@ public class QueryBean extends HttpServlet {
 		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
 		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
 		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");
+		
+		//System.out.println("request format: " + reqFormat);
+		//System.out.println("request accept: " + reqAccept);
+		//System.out.println("request functionality: " + reqFuncionality);
 
 		// check whether Update submit button was fired
 		if (reqFuncionality.equals("Update")) { // only for executions from web browsers
+			//System.out.println("Running update");
+			//System.out.println("Datahive: " + hive.toString());
 			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
-			response.sendRedirect("Update?SPARQLQuery=" + hive.getSPARQLQuery());
+			response.sendRedirect("Update?SPARQLQuery=" +URLEncoder.encode(hive.getSPARQLQuery(), "UTF-8"));
 
 			return;
 		}
