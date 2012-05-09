@@ -640,17 +640,22 @@ public abstract class Strabon {
 				else //KMZ
 				{
 					//compress
-//					FileOutputStream fos = new FileOutputStream(new File("deleteme.kmz"));
-					//ZipOutputStream kmzout = new ZipOutputStream(retStream);
-//					ZipOutputStream kmzout = new ZipOutputStream(fos);
-					//ZipEntry entry = new ZipEntry("doc.kml");
+					//File zfile = new File("/tmp/deleteme.kmz");
+					//retStream.reset();
+					//FileOutputStream fos = new FileOutputStream(zfile);
+					ZipOutputStream kmzout = new ZipOutputStream(retStream);
+					//ZipOutputStream kmzout = new ZipOutputStream(fos);
+					ZipEntry entry = new ZipEntry("doc.kml");
 
 					//kmzout.setLevel(6);
-					//kmzout.putNextEntry(entry);
-					//kmzout.write(newString.getBytes());
-					//kmzout.closeEntry();
-					//kmzout.close();
+					kmzout.putNextEntry(entry);
+					kmzout.write(newString.getBytes());
+				    kmzout.closeEntry();
+					kmzout.close();
 					
+					//String kmzString = FileUtils.readFileToString(zfile);
+		            //writeOut.write(kmzString);
+					/*
 					try {
 						File file = new File("/tmp/tmp.kml");
 						String filename = "/tmp/tmp.kml";
@@ -688,7 +693,7 @@ public abstract class Strabon {
 			        } catch (Exception e) {
 			            e.printStackTrace();
 			        }
-										
+						*/				
 				}
 
 			} catch (IOException e) {
