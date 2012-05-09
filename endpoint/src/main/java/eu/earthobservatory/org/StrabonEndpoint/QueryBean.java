@@ -145,6 +145,9 @@ public class QueryBean extends HttpServlet {
 		} else if (reqFormat.equalsIgnoreCase("KMZMAP"))  {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("KMZMAP");
+		} else if (reqFormat.equalsIgnoreCase("GEOJSON"))  {
+			response.setContentType("application/json; charset=UTF-8");
+			hive.setFormat("GEOJSON");
 		} else {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("HTML");
@@ -337,7 +340,7 @@ public class QueryBean extends HttpServlet {
 			if (answer!="")
 				out.append("<div id=\"map_canvas\"></div>");
 			appendHTML5(out);
-		} else if ((hive.getFormat().equalsIgnoreCase("XML"))) {
+		} else if ((hive.getFormat().equalsIgnoreCase("XML"))||(hive.getFormat().equalsIgnoreCase("GEOJSON"))) {
 			int status_code = HttpServletResponse.SC_OK;
 			String answer = "";
 
@@ -367,7 +370,14 @@ public class QueryBean extends HttpServlet {
 			}
 
 			// write response to client
-			response.setContentType("text/xml; charset=UTF-8");
+			if(hive.getFormat().equalsIgnoreCase("XML"))
+			{
+				response.setContentType("text/xml; charset=UTF-8");
+			}
+			else //GeoJSON
+			{
+				response.setContentType("application/json; charset=UTF-8");
+			}
 			response.setStatus(status_code);
 			if (status_code == HttpServletResponse.SC_OK) {
 				response.getWriter().append(answer);
@@ -378,7 +388,8 @@ public class QueryBean extends HttpServlet {
 				response.getWriter().append(ResponseMessages.getXMLFooter());
 			}
 
-		} else { // HTML
+		} 
+		else { // HTML
 
 			appendHTML1a(out,"");
 
@@ -556,6 +567,7 @@ public class QueryBean extends HttpServlet {
 		out.println("	<option value=\"HTML\">HTML</option>");
 		out.println("	<option value=\"KML\">KML</option>");
 		out.println("	<option value=\"XML\">XML</option>");
+		out.println("	<option value=\"GEOJSON\">GeoJSON</option>");
 		out.println("</select></center></td>");
 		out.println("</tr>");
 		out.println("<tr>");
