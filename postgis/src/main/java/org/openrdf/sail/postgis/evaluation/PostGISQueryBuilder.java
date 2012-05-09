@@ -1073,9 +1073,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					tmp = child;
 					if(tmp instanceof GeneralDBLabelColumn)
 					{
-						//Reached the innermost left var -> need to capture its SRID
-						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
-						alias=alias+".srid";
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
 						sridExpr = alias;
 						//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
 						break;
@@ -1115,7 +1123,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
-			
+
 			//SRID Support
 			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
 			{
@@ -1124,13 +1132,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				filter.append(sridExpr);
 				filter.closeBracket();
 			}
-			
+
 			filter.appendComma();
 
 			if(expr.getRightArg() instanceof GeneralDBSqlCase) //case met in transform!
 			{
 				GeneralDBURIColumn plainURI = (GeneralDBURIColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
-				
+
 				//XXX This case would be met if we recovered the SRID URI from the db!!!
 				//Need to set sridExpr to the value of this new URI, otherwise the appended uri
 				//to the spatial object will be the wrong one!!!! (Seee following case)
@@ -1143,16 +1151,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getRightArg() instanceof GeneralDBStringValue)
 			{
 				String unparsedSRID = ((GeneralDBStringValue)expr.getRightArg()).getValue();
-//				int srid = Integer.parseInt(unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1));
+				//				int srid = Integer.parseInt(unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1));
 				sridExpr = unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1);
 				filter.append(sridExpr);
 				filter.closeBracket();
 			}
 
-			
+
 		}
 		filter.closeBracket();
-		//In this case, SRID is the one that has been provided by the user!!
+		//In this case, SRID is the one that has been provided by the user!! 
+		//I am including this extra binding to be used in subsequent (Aggregate) steps
 		if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
 		{
 			filter.appendComma();
