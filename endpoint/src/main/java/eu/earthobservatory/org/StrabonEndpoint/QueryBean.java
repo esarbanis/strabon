@@ -243,13 +243,14 @@ public class QueryBean extends HttpServlet {
 		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
 
 			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
+			String answer = evaluateQuery(strabonWrapper, hive.getFormat().equalsIgnoreCase("KMLMAP") ? "KML" : "KMZ", reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
 			SecureRandom random = new SecureRandom();
 			String temp = new BigInteger(130, random).toString(32);  			
-			String basePath = context.getRealPath("/") + "/../ROOT/tmp/";
+			String basePath = context.getRealPath("/") + "/../ROOT/tmp/"; 
 			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
 
+			
 			try{
 				Date date = new Date();
 
@@ -280,11 +281,11 @@ public class QueryBean extends HttpServlet {
 				e.printStackTrace();
 			}
 
-			response.setDateHeader("Expires", 0);			
-			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			//response.setDateHeader("Expires", 0);			
+			//response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 
 			String pathToKML = "";
-			response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension);
+			//response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension);
 			
 			if (answer!="")
 				pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension;
