@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.io.*;
+import java.util.zip.*;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
@@ -638,15 +641,53 @@ public abstract class Strabon {
 				{
 					//compress
 //					FileOutputStream fos = new FileOutputStream(new File("deleteme.kmz"));
-					ZipOutputStream kmzout = new ZipOutputStream(retStream);
+					//ZipOutputStream kmzout = new ZipOutputStream(retStream);
 //					ZipOutputStream kmzout = new ZipOutputStream(fos);
-					ZipEntry entry = new ZipEntry("doc.kml");
+					//ZipEntry entry = new ZipEntry("doc.kml");
 
-					kmzout.setLevel(9);
-					kmzout.putNextEntry(entry);
-					kmzout.write(newString.getBytes());
-					kmzout.closeEntry();
-					kmzout.close();
+					//kmzout.setLevel(6);
+					//kmzout.putNextEntry(entry);
+					//kmzout.write(newString.getBytes());
+					//kmzout.closeEntry();
+					//kmzout.close();
+					
+					try {
+						File file = new File("/tmp/tmp.kml");
+						String filename = "/tmp/tmp.kml";
+						FileUtils.writeStringToFile(file, newString);
+						
+						File zfile = new File("/tmp/tmp.kmz");
+			            String zipfilename = "/tmp/tmp.kmz";
+						
+			            byte[] buf = new byte[1024];
+			            FileInputStream fis = new FileInputStream(filename);
+			            fis.read(buf,0,buf.length);
+			            
+			            CRC32 crc = new CRC32();
+			            ZipOutputStream s = new ZipOutputStream(
+			                    (OutputStream)new FileOutputStream(zipfilename));
+			            
+			            //s.setLevel(6);
+			            
+			            ZipEntry entry = new ZipEntry(filename);
+			            entry.setSize((long)buf.length);
+			            crc.reset();
+			            crc.update(buf);
+			            entry.setCrc( crc.getValue());
+			            s.putNextEntry(entry);
+			            s.write(buf, 0, buf.length);
+			            s.finish();
+			            s.close();
+			            
+			            String kmzString = FileUtils.readFileToString(zfile);
+			            writeOut.write(kmzString);
+			            
+			            //FileUtils.forceDelete(file);
+			            //FileUtils.forceDelete(zfile);
+			            
+			        } catch (Exception e) {
+			            e.printStackTrace();
+			        }
 										
 				}
 
