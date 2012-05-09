@@ -160,6 +160,7 @@ public class QueryBean extends HttpServlet {
 			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
 			SecureRandom random = new SecureRandom();
+			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
 			String temp = new BigInteger(130, random).toString(32);   
 			
 			String basePath = context.getRealPath("/") + "/../ROOT/tmp/";
@@ -177,7 +178,7 @@ public class QueryBean extends HttpServlet {
 					}
 				}
 
-				File file =new File(basePath + temp + ".kml");
+				File file =new File(basePath + temp + "." + extension);
 
 				//if file doesnt exists, then create it
 				if(!file.exists()){
@@ -243,7 +244,7 @@ public class QueryBean extends HttpServlet {
 		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
 
 			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat().equalsIgnoreCase("KMLMAP") ? "KML" : "KMZ", reqFuncionality, hive.getSPARQLQuery(), errorMessage);
+			String answer = evaluateQuery(strabonWrapper, hive.getFormat().equalsIgnoreCase("KMLMAP") ? "KML" : "KML", reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
 			SecureRandom random = new SecureRandom();
 			String temp = new BigInteger(130, random).toString(32);  			
@@ -264,7 +265,7 @@ public class QueryBean extends HttpServlet {
 					}
 				}
 
-				File file = new File(basePath + temp + ".kml");
+				File file = new File(basePath + temp + "." + extension);
 
 				//if file doesnt exists, then create it
 				if(!file.exists()){
@@ -273,7 +274,20 @@ public class QueryBean extends HttpServlet {
 
 				FileWriter fw = new FileWriter(basePath + temp + "." + extension);
 				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(answer);
+				if (hive.getFormat().equalsIgnoreCase("KMLMAP")) {
+				   bw.write(answer);
+				}
+				else {
+				   FileOutputStream fos = new FileOutputStream(file);
+				   ZipOutputStream kmzout = new ZipOutputStream(fos);
+				   ZipEntry entry = new ZipEntry("doc.kml");
+
+				//kmzout.setLevel(6);
+				   kmzout.putNextEntry(entry);
+				   kmzout.write(answer.getBytes());
+			       kmzout.closeEntry();
+				   kmzout.close();
+				   }
 				bw.close();
 				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
 
