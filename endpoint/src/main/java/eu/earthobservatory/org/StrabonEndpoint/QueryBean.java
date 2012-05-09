@@ -243,12 +243,12 @@ public class QueryBean extends HttpServlet {
 		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
 
 			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, "KML", reqFuncionality, hive.getSPARQLQuery(), errorMessage);
+			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
 			SecureRandom random = new SecureRandom();
-			String temp = new BigInteger(130, random).toString(32);   
-			
+			String temp = new BigInteger(130, random).toString(32);  			
 			String basePath = context.getRealPath("/") + "/../ROOT/tmp/";
+			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
 
 			try{
 				Date date = new Date();
@@ -263,46 +263,19 @@ public class QueryBean extends HttpServlet {
 					}
 				}
 
-				File file =new File(basePath + temp + ".kml");
+				File file = new File(basePath + temp + ".kml");
 
 				//if file doesnt exists, then create it
 				if(!file.exists()){
 					file.createNewFile();
 				}
 
-				FileWriter fw = new FileWriter(basePath + temp + ".kml");
+				FileWriter fw = new FileWriter(basePath + temp + "." + extension);
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(answer);
 				bw.close();
 				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
 
-				//System.out.println("Done");
-
-				if (hive.getFormat().equalsIgnoreCase("KMZMAP")) {
-					//compress
-					byte[] buf = new byte[1024];
-					String outFilename = basePath + temp + ".kmz";
-					ZipOutputStream kmzout = new ZipOutputStream(new FileOutputStream(outFilename));
-
-					// Compress the files
-					FileInputStream in = new FileInputStream(basePath + temp + ".kml");
-
-					// Add ZIP entry to output stream.
-					kmzout.putNextEntry(new ZipEntry("doc.kml"));
-
-					// Transfer bytes from the file to the ZIP file
-					int len;
-					while ((len = in.read(buf)) > 0) {
-						kmzout.write(buf, 0, len);
-					}
-
-					// Complete the entry
-					kmzout.closeEntry();
-					in.close();
-
-					// Complete the ZIP file
-					kmzout.close();
-				}
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -311,17 +284,10 @@ public class QueryBean extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 
 			String pathToKML = "";
-			if (hive.getFormat().equalsIgnoreCase("KMLMAP")) {
-				//response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-				response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml");
-				if (answer!="")
-					pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml";
-			} else {
-				//response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
-				response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kmz");
-				if (answer!="")
-					pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kmz";
-			}
+			response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension);
+			
+			if (answer!="")
+				pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension;
 			
 			appendHTML1a(out,pathToKML);
 
@@ -485,10 +451,10 @@ public class QueryBean extends HttpServlet {
 		out.println("<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?sensor=false\"></script>");
 		out.println("<script type=\"text/javascript\">");
 		out.println("function initialize() {");
-		out.println("  var chicago = new google.maps.LatLng(41.875696,-87.624207);");
+		out.println("  var brahames = new google.maps.LatLng(37.92253, 23.72275);");
 		out.println("  var myOptions = {");
 		out.println("    zoom: 11,");
-		out.println("    center: chicago,");
+		out.println("    center: brahames,");
 		out.println("   mapTypeId: google.maps.MapTypeId.ROADMAP");
 		out.println("  }");
 		out.println("");
@@ -564,6 +530,8 @@ public class QueryBean extends HttpServlet {
 		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
 		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
 		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\">");
+		out.println("	<option value=\"KMZMAP\">HTML with google maps (kmz)</option>");
+		out.println("	<option value=\"KMLMAP\">HTML with google maps (kml)</option>");
 		out.println("	<option value=\"HTML\">HTML</option>");
 		out.println("	<option value=\"KML\">KML</option>");
 		out.println("	<option value=\"XML\">XML</option>");
