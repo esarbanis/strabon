@@ -11,15 +11,15 @@
 	<bean id="strabonBean" class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper" destroy-method="destroy">
 		<constructor-arg type="java.lang.String">
 			<!-- Database name -->
-			<value>darmstadt-noa</value>
+			<value>endpoint</value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Username -->
-			<value>kkyzir</value>
+			<value>postgresql</value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Password -->
-			<value>p1r3as</value>
+			<value>postgresql</value>
 		</constructor-arg>
 		<constructor-arg type="int">
 			<!-- Port -->
