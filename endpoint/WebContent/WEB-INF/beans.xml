@@ -15,7 +15,7 @@
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Username -->
-			<value>postgresql</value>
+			<value>kkyzir</value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Password -->
@@ -35,15 +35,7 @@
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
 			<!-- Query1 -->
-			<value><![CDATA[select * where {?s ?p ?o} limit 10]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
-			<!-- Query2 -->
-			<value><![CDATA[# Get all hotspots 
-# - in Pelloponesus 
-# - at 2007-08-23
-# - of firms
-
+			<value><![CDATA[# Discovering raw data and products
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -57,38 +49,228 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX lgdo: <http://linkedgeodata.org/ontology/>
 PREFIX gn: <http://www.geonames.org/ontology#>
 
-SELECT ?h ?hGeo ?hAcqTime ?hConfidence ?hConfirmation ?hProvider ?hSensor ?hSatellite
+SELECT ?filename
 WHERE {
-    ?h  a noa:Hotspot ; # all
-        noa:hasGeometry ?hGeo ; # all
-        noa:hasAcquisitionTime ?hAcqTime ; # all
-        FILTER( "2007-08-24T00:00:00"^^xsd:dateTime <= ?hAcqTime && ?hAcqTime <= "2007-09-24T00:00:00"^^xsd:dateTime$
+?file rdf:type noa:ShpFile .
+	 ?file noa:hasFilename ?filename .
+	 ?file noa:hasAcquisitionTime ?sensingTime .
+	 FILTER( str(?sensingTime) >= "2007-08-26T12:00:00" ) .
+	 FILTER( str(?sensingTime) <= "2007-08-26T12:30:00" ) .
+	 ?file noa:isDerivedFromSensor ?sensor .
+	 FILTER( str(?sensor) = "MSG2" ) .
+	 ?file noa:producedFromProcessingChain ?chain .
+	 FILTER( str(?chain) = "StaticThresholds" ) . }
+]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query2 -->
+			<value><![CDATA[# Get all hotspots 
+# - in Pelloponesus 
+# - at 2007-08-24
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?h ?hAcqTime ?hConfidence ?hConfirmation ?hProvider ?hSensor ?hSatellite (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) as ?geo) 
+WHERE { ?h 	rdf:type noa:Hotspot;
+			noa:hasGeometry ?hGeo;
+			noa:hasAcquisitionTime ?hAcqTime;
+			noa:hasConfidence ?hConfidence;
+			noa:isProducedBy ?hProvider;
+			noa:hasConfirmation ?hConfirmation;
+			noa:isDerivedFromSensor ?hSensor;
+			noa:isDerivedFromSatellite ?hSatellite ;
+			noa:producedFromProcessingChain ?hChain .
+	FILTER(str(?hChain) = "StaticThresholds").
+	FILTER(?hAcqTime = "2007-08-24T14:45:00"^^xsd:dateTime) .
+	FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)) . 
+}]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query3 -->
+			<value><![CDATA[# Delete hotspots that lie in sea
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+DELETE {?h ?property ?object}
+WHERE {
+	?h 	rdf:type noa:Hotspot;
+		noa:hasAcquisitionTime ?hAcqTime;
+		noa:producedFromProcessingChain ?hChain;
+		noa:hasGeometry ?hGeo;
+		?property ?object.
+		FILTER(str(?hChain) = "StaticThresholds").
+		FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)).
+		FILTER("2007-08-24T14:45:00"^^xsd:dateTime = ?hAcqTime).
+		OPTIONAL {
+			?c rdf:type noa:Coastline;
+			noa:hasGeometry ?cGeo.
+			FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?cGeo)).
+			FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
+		}
+		FILTER(!bound(?c)).
+ }]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query4 -->
+			<value><![CDATA[# Refine the geometry of hotspots that partially lie in sea
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+DELETE { ?h noa:hasGeometry ?hGeo}
+INSERT { ?h noa:hasGeometry ?dif}
+WHERE {
+SELECT DISTINCT ?h ?hGeo (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif)
+WHERE {
+	?h 	rdf:type noa:Hotspot;
+		noa:hasAcquisitionTime ?hAcqTime;
+		noa:producedFromProcessingChain ?hChain;
+		noa:hasGeometry ?hGeo.
+		FILTER("2007-08-24T14:45:00"^^xsd:dateTime = ?hAcqTime).
+		FILTER(str(?hChain) = "StaticThresholds").
+		FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)).
+		?c rdf:type noa:Coastline ;
+		noa:hasGeometry ?cGeo .
+		FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?cGeo)).
+		FILTER(strdf:anyInteract(?hGeo, ?cGeo)).}
+		GROUP BY ?h ?hGeo
+		HAVING strdf:overlap(?hGeo, strdf:union(?cGeo)) 
+}]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query5 -->
+			<value><![CDATA[#Get all coniferous forests in Peloponnese
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?a ?aGeo
+WHERE{?a rdf:type clc:Area;
+clc:hasLandUse ?aLandUse;
+noa:hasGeometry ?aGeo.
+?aLandUse rdf:type ?aLandUseType.
+FILTER(?aLandUseType = clc:ConiferousForest).
+FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^strdf:WKT,?aGeo)). 
+}]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query6 -->
+            <value><![CDATA[# Get all municipalities of Pelloponnese
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/lontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?d ?dGeo
+WHERE { 
+	?d a gag:Dhmos; 
+		strdf:hasGeometry ?dGeo; 
+		rdfs:label ?dLabel. 
+FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?dGeo)).
+}]]></value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<!-- Query7 -->
+            <value><![CDATA[# Get all primary roads in Pelloponnese
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?r ?rGeo
+WHERE {
+?r rdf:type ?rType ;
+   noa:hasGeometry ?rGeo .
+FILTER(?rType = lgdo:Primary) .
+FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05,21.027 38.36))"^^strdf:WKT, ?rGeo) ).
 }
 ]]></value>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String">
-			<!-- Query3 -->
-			<value><![CDATA[PREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fn+%3FnGeo+%3FnType+%3FnLabel%0D%0A{%0D%0A++++%3Fn++a+%3FnType+%3B%0D%0A++++++++geo%3Ageometry+%3FnGeo+%3B%0D%0A++++++++rdfs%3Alabel+%3FnLabel+.%0D%0A++++++++FILTER(+%3FnType+%3D+lgdo%3AHospital+||+%3FnType+%3D+lgdo%3AAerodrome+||+%3FnType+%3D+lgdo%3ARailway+)+.%0D%0A++++++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FnGeo)+)+.%0D%0A}&format=KML]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
-			<!-- Query4 -->
-			<value><![CDATA[%23+Get+all+Perfectures%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0A%23real%090m31.239s%0D%0A%23user%090m8.060s%0D%0A%23sys%090m0.480s%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fg+%3FgYpesCode+%3FgContainer+%3FgLabel+(+strdf%3Aboundary(%3FgGeog)+as+%3FgBoundary+)%0D%0AWHERE+{%0D%0A++++%3Fg++a+gag%3ADhmos+%3B%0D%0A++++++++noa%3AhasYpesCode+%3FgYpesCode+%3B%0D%0A++++++++gag%3AisPartOf+%3FgContainer+%3B%0D%0A++++++++rdfs%3Alabel+%3FgLabel+%3B%0D%0A++++++++strdf%3AhasGeometry+%3FgGeog+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FgGeog)+)+.%0D%0A}&format=KML]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
-			<!-- Query5 -->
-			<value><![CDATA[%23+Get+all+Prefectures%0D%0A%23+-+in+Pelloponesus%0D%0A%0D%0A%23real%090m31.239s%0D%0A%23user%090m8.060s%0D%0A%23sys%090m0.480s%0D%0A%0D%0APREFIX+noa%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+clc%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FclcOntology.owl%23>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0APREFIX+strdf%3A+<http%3A%2F%2Fstrdf.di.uoa.gr%2Fontology%23>%0D%0APREFIX+teleios%3A+<http%3A%2F%2Fteleios.di.uoa.gr%2Fontologies%2FnoaOntology.owl%23>%0D%0APREFIX+gag%3A+<http%3A%2F%2Fwww.semanticweb.org%2Fontologies%2F2011%2FgagKallikratis.rdf%23>%0D%0APREFIX+geo%3A+<http%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23>%0D%0APREFIX+georss%3A+<http%3A%2F%2Fwww.georss.org%2Fgeorss%2F>%0D%0APREFIX+xsd%3A+<http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23>%0D%0APREFIX+lgdo%3A+<http%3A%2F%2Flinkedgeodata.org%2Fontology%2F>%0D%0APREFIX+gn%3A+<http%3A%2F%2Fwww.geonames.org%2Fontology%23>%0D%0A%0D%0ASELECT+%3Fg+%3FgYpesCode+%3FgContainer+%3FgLabel+(+strdf%3Aboundary(%3FgGeog)+as+%3FgBoundary+)%0D%0AWHERE+{%0D%0A++++%3Fg++a+gag%3ADhmos+%3B%0D%0A++++++++noa%3AhasYpesCode+%3FgYpesCode+%3B%0D%0A++++++++gag%3AisPartOf+%3FgContainer+%3B%0D%0A++++++++rdfs%3Alabel+%3FgLabel+%3B%0D%0A++++++++strdf%3AhasGeometry+%3FgGeog+.%0D%0A++++FILTER(++strdf%3Acontains(%22POLYGON((21.027+38.36%2C+23.77+38.36%2C+23.77+36.05%2C+21.027+36.05%2C+21.027+38.36))%22^^strdf%3AWKT%2C+%3FgGeog)+)+.%0D%0A}&format=KML]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
-			<!-- Query6 -->
-                        <value><![CDATA[]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
-			<!-- Query7 -->
-                        <value><![CDATA[]]></value>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String">
 			<!-- Query8 -->
-                        <value><![CDATA[]]></value>
+            <value><![CDATA[# Get all hotspots 
+# - in Pelloponesus 
+# - at 2007-08-24
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX georss: <http://www.georss.org/georss/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT ?h ?hAcqTime ?hConfidence ?hConfirmation ?hProvider ?hSensor ?hSatellite (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) as ?geo) 
+WHERE { ?h 	rdf:type noa:Hotspot;
+			noa:hasGeometry ?hGeo;
+			noa:hasAcquisitionTime ?hAcqTime;
+			noa:hasConfidence ?hConfidence;
+			noa:isProducedBy ?hProvider;
+			noa:hasConfirmation ?hConfirmation;
+			noa:isDerivedFromSensor ?hSensor;
+			noa:isDerivedFromSatellite ?hSatellite ;
+			noa:producedFromProcessingChain ?hChain .
+	FILTER(str(?hChain) = "StaticThresholds").
+	FILTER(?hAcqTime = "2007-08-24T14:45:00"^^xsd:dateTime) .
+	FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)) . 
+}]]></value>
 		</constructor-arg>
                 <constructor-arg type="java.lang.String">
                         <!-- Default format -->
