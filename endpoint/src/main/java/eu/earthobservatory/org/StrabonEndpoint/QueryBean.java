@@ -12,7 +12,11 @@ import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -30,6 +34,8 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
 
 
 public class QueryBean extends HttpServlet {
@@ -231,7 +237,7 @@ public class QueryBean extends HttpServlet {
 			if (hive.getSPARQLQuery() != null)
 				out.write(hive.getSPARQLQuery());
 
-			appendHTML2(out);
+			appendHTML2(out, hive.getFormat());
 
 			out.append("</table></td></tr></table>");
 
@@ -313,7 +319,7 @@ public class QueryBean extends HttpServlet {
 			if (hive.getSPARQLQuery() != null)
 				out.write(hive.getSPARQLQuery());
 
-			appendHTML2(out);
+			appendHTML2(out, hive.getFormat());
 
 			out.append("</table></td></tr></table>");
 
@@ -381,7 +387,7 @@ public class QueryBean extends HttpServlet {
 			if (hive.getSPARQLQuery() != null)
 				out.write(hive.getSPARQLQuery());
 
-			appendHTML2(out);
+			appendHTML2(out, hive.getFormat());
 
 			String answer = "";
 			if (hive.getSPARQLQuery() != null) {
@@ -540,17 +546,34 @@ public class QueryBean extends HttpServlet {
 		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><textarea name=\"SPARQLQuery\" rows=\"15\" cols=\"100\">");
 	}
 
-	protected static void appendHTML2(PrintWriter out) {
+	protected static void appendHTML2(PrintWriter out, String format) {
 		out.println("</textarea></td>");
 		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
 		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
 		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\">");
-		out.println("	<option value=\"KMZMAP\">HTML with google maps (kmz)</option>");
-		out.println("	<option value=\"KMLMAP\">HTML with google maps (kml)</option>");
-		out.println("	<option value=\"HTML\">HTML</option>");
-		out.println("	<option value=\"KML\">KML</option>");
-		out.println("	<option value=\"XML\">XML</option>");
-		out.println("	<option value=\"GEOJSON\">GeoJSON</option>");
+		
+		Map<String, String> selections = new HashMap<String, String>();
+		selections.put("KMZMAP", "HTML with google maps (kmz)");
+		selections.put("KMLMAP", "HTML with google maps (kml)");
+		selections.put("HTML", "HTML");
+		//selections.put("KMZ", "KZM file");
+		selections.put("KML", "KML file");
+		selections.put("XML", "XML");
+		selections.put("GEOJSON", "GeoJSON");
+		
+		Iterator <String> it = selections.keySet().iterator();
+		
+		while (it.hasNext()) {
+			String key = it.next();
+			String value = selections.get(key);
+			out.print("<option ");
+			if (key.equalsIgnoreCase(format))
+				out.print("selected");
+			
+			out.println(" value=\"" + key + "\">" + value + "</option>");
+		}
+		
+		
 		out.println("</select></center></td>");
 		out.println("</tr>");
 		out.println("<tr>");
@@ -579,14 +602,27 @@ public class QueryBean extends HttpServlet {
 
 	protected static void appendHTMLQ(PrintWriter out, StrabonBeanWrapper strabonWrapper) throws UnsupportedEncodingException {
 		out.println("<tr><td width=\"90\">");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery1(), "UTF-8")+ "&" + strabonWrapper.getFormat() + "\">&nbsp;&middot;&nbsp;Query 1</a></br> ");		
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery2(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 2</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery3(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 3</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery4(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 4</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery5(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 5</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery6(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 6</a></br> ");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery7(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 7</a></br>");
-		out.println("<a href=\"Query?SPARQLQuery="+URLEncoder.encode(strabonWrapper.getQuery8(), "UTF-8")+ "&" + strabonWrapper.getFormat() +"\">&nbsp;&middot;&nbsp;Query 8</a> ");
+		List<Entry> entries = strabonWrapper.getEntries();
+		Iterator<Entry> it = entries.iterator();
+		while (it.hasNext()) {
+			Entry entry = it.next();
+			out.println(createLink(entry));
+		}
 		out.println("</td></tr> ");
+	}
+	
+	private static String createLink(Entry entry) throws UnsupportedEncodingException {
+		StringBuffer buf = new StringBuffer(1024);
+		buf.append("<a href=\"");
+		buf.append(entry.getBean());
+		buf.append("?SPARQLQuery=");
+		buf.append(URLEncoder.encode(entry.getStatement(), "UTF-8"));
+		buf.append("&format=");
+		buf.append(entry.getFormat());
+		buf.append("\">&nbsp;&middot;&nbsp;");
+		buf.append(entry.getLabel());
+		buf.append("</a><br/>");
+		
+		return buf.toString();
 	}
 }
