@@ -1,4 +1,4 @@
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  */
 
 public class SimpleTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
-	
+
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
@@ -32,32 +32,29 @@ public class SimpleTests extends eu.earthobservatory.runtime.generaldb.SimpleTes
 		InputStream propertiesStream =  SimpleTests.class.getResourceAsStream("/databases.properties");
 		properties.load(propertiesStream);
 
-		serverName = properties.getProperty("postgis.serverName");
-		databaseName = properties.getProperty("postgis.databaseName");
-		port = Integer.parseInt(properties.getProperty("postgis.port"));
-		username = properties.getProperty("postgis.username");
-		password = properties.getProperty("postgis.password");
+		serverName = properties.getProperty("monetdb.serverName");
+		databaseName = properties.getProperty("monetdb.databaseName");
+		port = Integer.parseInt(properties.getProperty("monetdb.port"));
+		username = properties.getProperty("monetdb.username");
+		password = properties.getProperty("monetdb.password");
 				
 		// Connect to database
-		Class.forName("org.postgresql.Driver");
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/"+databaseName;
+		Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
+		String url = "jdbc:monetdb://"+serverName+":"+port+"/"+databaseName;
 		conn = DriverManager.getConnection(url, username, password);
 				
 //		// Clean database
 		Statement stmt = conn.createStatement();
-		ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
-						"table_schema='public' AND table_name <> 'spatial_ref_sys' " +
-						"AND table_name <> 'geometry_columns' AND " +
-						"table_name <> 'geography_columns' AND table_name <> 'locked'");
+		ResultSet results = stmt.executeQuery("SELECT name FROM tables WHERE system=false AND name <> 'locked'");
 		while (results.next()) {
-			String table_name = results.getString("table_name");
+			String table_name = results.getString("name");
 			Statement stmt2 = conn.createStatement();
 			stmt2.executeUpdate("DROP TABLE \""+table_name+"\"");
 			stmt2.close();
 		}
 		stmt.close();
 		
-	    strabon = new Strabon(databaseName, username, password, port, serverName, true);
+		strabon = new Strabon(databaseName, username, password, port, serverName, true);
 		
 		loadTestData();
 	}
