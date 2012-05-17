@@ -24,18 +24,6 @@ public class TransformTests {
 	protected static java.sql.Connection conn = null;
 	protected static String databaseName = null; 
 	
-	@AfterClass
-	public static void afterClass() throws SQLException
-	{
-		strabon.close();
-	
-		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/template1";
-		conn = DriverManager.getConnection(url, username, password);
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate("DROP DATABASE \""+databaseName+"\"");
-		conn.close();
-	}
 
 
 	String prefixes = "PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#> \n"+

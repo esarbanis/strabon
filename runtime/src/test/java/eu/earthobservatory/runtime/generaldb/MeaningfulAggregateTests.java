@@ -36,19 +36,7 @@ public class MeaningfulAggregateTests {
 //		strabon = new Strabon("cco2","postgres","p1r3as", 5432, "localhost", true);
 //	}
 
-	@AfterClass
-	public static void afterClass() throws SQLException
-	{
-		strabon.close();
-		
-		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/template1";
-		conn = DriverManager.getConnection(url, username, password);
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate("DROP DATABASE \""+databaseName+"\"");
-		conn.close();
-	}
-	
+
 	protected static void loadTestData()
 			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 		{

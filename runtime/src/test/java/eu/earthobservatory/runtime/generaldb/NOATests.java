@@ -31,18 +31,7 @@ public class NOATests {
 	protected static String databaseName = null; 
 	
 
-	@AfterClass
-	public static void afterClass() throws SQLException
-	{
-		strabon.close();
-		
-		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/template1";
-		conn = DriverManager.getConnection(url, username, password);
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate("DROP DATABASE \""+databaseName+"\"");
-		conn.close();
-	}
+
 	
 	protected static void loadTestData()
 			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault

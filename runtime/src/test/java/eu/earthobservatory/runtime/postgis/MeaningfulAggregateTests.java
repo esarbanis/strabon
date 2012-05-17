@@ -22,12 +22,15 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class HavingTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class MeaningfulAggregateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+	
 	
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		// Read properties
+		SimpleTests.beforeClass();
+	}
+	/*	// Read properties
 		Properties properties = new Properties();
 		InputStream propertiesStream =  SimpleTests.class.getResourceAsStream("/databases.properties");
 		properties.load(propertiesStream);
@@ -60,12 +63,12 @@ public class HavingTests extends eu.earthobservatory.runtime.generaldb.SimpleTes
 	    strabon = new Strabon(databaseName, username, password, port, serverName, true);
 		
 		loadTestData();
-	}
+	}*/
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		strabon.close();
+		SimpleTests.afterClass();
 	}
 	
 }
