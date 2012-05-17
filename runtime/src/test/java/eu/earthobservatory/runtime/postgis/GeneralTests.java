@@ -49,10 +49,5 @@ public class GeneralTests extends eu.earthobservatory.runtime.generaldb.GeneralT
 		loadTestData();
 	}
 	
-	protected static void loadTestData()
-			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-		{
-			URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-			strabon.storeInRepo(src, "NTRIPLES");
-		}
+	
 }

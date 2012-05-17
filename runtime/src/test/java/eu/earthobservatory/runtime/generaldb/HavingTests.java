@@ -47,6 +47,8 @@ public class HavingTests {
 		stmt.executeUpdate("DROP DATABASE \""+databaseName+"\"");
 		conn.close();
 	}
+	
+
 
 	String prefixes =
 			" PREFIX noa:<http://www.earthobservatory.eu/ontologies/noaOntology.owl#>"+
