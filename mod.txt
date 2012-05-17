@@ -1,0 +1,7 @@
+mod.txt
+runtime/src/test/java/eu/earthobservatory/runtime/generaldb/AggregateTests.java
+runtime/src/test/java/eu/earthobservatory/runtime/generaldb/GeneralTests.java
+runtime/src/test/java/eu/earthobservatory/runtime/generaldb/HavingTests.java
+runtime/src/test/java/eu/earthobservatory/runtime/postgis/AggregateTests.java
+runtime/src/test/java/eu/earthobservatory/runtime/postgis/GeneralTests.java
+runtime/src/test/java/eu/earthobservatory/runtime/postgis/HavingTests.java
