@@ -22,7 +22,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class TransformTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class SPARQL11Tests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 	
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
