@@ -104,6 +104,12 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
+	/**
+	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
+	 * Opting to ask for 'null' instead
+	 */
+	boolean nullLabel = false;
+	
 	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, inside, left, right, above, below; }
 	public enum SpatialFunctionsPostGIS 
 	{ 	//stSPARQL++
@@ -211,6 +217,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
 		if (var.getRdbmsVar().isResource()) {
 			filter.appendNull();
+			nullLabel = true;
 		}
 		else {
 			if(var.isSpatial())
@@ -759,8 +766,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
-						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
-						alias=alias+".srid";
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
 						sridExpr = alias;
 						filter.append(sridExpr);
 						filter.closeBracket();
@@ -1085,7 +1101,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 							alias=alias+".srid";
 						}
 						sridExpr = alias;
-						//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
 						break;
 					}
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
@@ -1219,10 +1234,18 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
-						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
-						alias=alias+".srid";
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
 						sridExpr = alias;
-						//						((GeneralDBSqlSpatialConstructBinary)expr).setSrid(alias);
 						break;
 					}
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
@@ -1415,9 +1438,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
-						String alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
-						alias=alias+".srid";
-						//((GeneralDBSqlSpatialConstructUnary)expr).setSrid(alias);
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
 						sridExpr = alias;
 						break;
 					}
