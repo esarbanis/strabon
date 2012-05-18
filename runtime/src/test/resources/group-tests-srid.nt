@@ -1,0 +1,22 @@
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot1> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(10 10)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot2> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(5 6)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot3> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(10 10)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot4> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(0 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot5> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(10 10)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#Hotspot6> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(5 6)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea1> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((20 20, 20 22, 22 22, 22 20, 20 20))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea2> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((23 18, 24 19, 23 19, 23 18))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#BurntArea3> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((20 15, 21 15, 21 16, 20 15))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea1> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((21.5 18.5, 23.5 18.5, 23.5 21, 21.5 21, 21.5 18.5))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.earthobservatory.eu/ontologies/noaOntology.owl#UrbanArea2> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((19 19, 21 19, 21 21, 19 21, 19 19))"^^<http://strdf.di.uoa.gr/ontology#WKT>.

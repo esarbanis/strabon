@@ -19,6 +19,14 @@ import eu.earthobservatory.runtime.generaldb.Strabon;
 
 public class SpatialTests {
 	public static Strabon strabon;
+	
+	protected static String jdbcDriver= "org.postgresql.Driver";  
+	protected static String serverName = "localhost";
+	protected static String username = "postgres";
+	protected static String password = "postgres";
+	protected static Integer port = 5432;
+	protected static java.sql.Connection conn = null;
+	protected static String databaseName = null; 
 
 	public String 	STRDF_NS = "http://strdf.di.uoa.gr/ontology#",
 					EX_NS = "http://example.org/",

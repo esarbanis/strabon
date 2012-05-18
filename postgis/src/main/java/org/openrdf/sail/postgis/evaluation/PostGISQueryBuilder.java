@@ -109,7 +109,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 * Opting to ask for 'null' instead
 	 */
 	boolean nullLabel = false;
-	
+
 	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, inside, left, right, above, below; }
 	public enum SpatialFunctionsPostGIS 
 	{ 	//stSPARQL++
@@ -1715,13 +1715,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 			filter.appendComma();
-			//			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
-			//			if(check2)
-			//			{
-			//				this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
-			//			}
-			//			else
-			//			{
+
 			if(expr.getRightArg() instanceof GeneralDBStringValue)
 			{
 				appendWKT(expr.getRightArg(),filter);
@@ -1766,7 +1760,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
 			}
 
-			//			}
 			//3rd arg
 			filter.appendComma();
 
@@ -1779,6 +1772,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.append("'");
 
 			filter.closeBracket();
+
 		}
 
 		filter.closeBracket();
@@ -2120,10 +2114,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					filter.or();
 				}
 			}
-			//			filter.appendFunction("ST_Relate");
-			//			filter.openBracket();
-			//			
-			//			filter.closeBracket();
+
+			//Also need bounding box intersection query to enable the usage of the Gist R-tree index
+			if(func != SpatialFunctionsPostGIS.SF_Disjoint && func != SpatialFunctionsPostGIS.EH_Disjoint)
+			{
+				filter.and();
+				appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Intersects);
+			}
 		}
 		filter.closeBracket();
 			}

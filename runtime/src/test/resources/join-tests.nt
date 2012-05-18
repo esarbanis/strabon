@@ -1,0 +1,20 @@
+<http://pachube.org/ontology/Tajikistan> <http://dbpedia.org/property/hasGeometry> "POINT(0 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://pachube.org/ontology/SensorDeployment9> <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> <http://pachube.org/ontology/SensorPlatform9>.
+<http://pachube.org/ontology/SensorPlatform9> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <http://pachube.org/ontology/Kikirikistan>.
+<http://dbpedia.org/ontology/PopulatedPlace9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/PopulatedPlace>.
+<http://pachube.org/ontology/SensorDeployment1> <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> <http://pachube.org/ontology/SensorPlatform1>.
+<http://linkedgeodata.org/ontology/Node1> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(1 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://pachube.org/ontology/Kikirikistan> <http://dbpedia.org/property/hasGeometry> "POINT(2 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://dbpedia.org/ontology/PopulatedPlaceGeoNames> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/ontology/PopulatedPlace9>.
+<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Area88> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> "POINT(0 1)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://pachube.org/ontology/SensorSystem1> <http://purl.oclc.org/NET/ssnx/ssn#hasSubSystem> <http://pachube.org/ontology/System1>.
+<http://dbpedia.org/ontology/PopulatedPlaceGeoNames> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> "POINT(3 5)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#LandArea9> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry> "POINT(0 5)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#LandArea9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Area>.
+<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Area88> <http://www.geonames.org/ontology#name> "London".
+<http://pachube.org/ontology/SensorDeployment1> <http://purl.oclc.org/NET/ssnx/ssn#deployedSystem> <http://pachube.org/ontology/SensorSystem1>.
+<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#LandArea9> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasLandUse> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#portAreas>.
+<http://pachube.org/ontology/SensorSystem9> <http://purl.oclc.org/NET/ssnx/ssn#hasSubSystem> <http://pachube.org/ontology/System9>.
+<http://pachube.org/ontology/SensorDeployment9> <http://purl.oclc.org/NET/ssnx/ssn#deployedSystem> <http://pachube.org/ontology/SensorSystem9>.
+<http://linkedgeodata.org/ontology/Node1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/NaturalWood>.
+<http://pachube.org/ontology/SensorPlatform1> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <http://pachube.org/ontology/Tajikistan>.

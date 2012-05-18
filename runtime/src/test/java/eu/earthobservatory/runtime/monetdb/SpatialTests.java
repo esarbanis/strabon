@@ -1,4 +1,4 @@
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
