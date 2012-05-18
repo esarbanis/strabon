@@ -1,4 +1,4 @@
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class JoinTests extends eu.earthobservatory.runtime.generaldb.JoinTests {
+public class GeneralTests extends eu.earthobservatory.runtime.generaldb.GeneralTests {
 	
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault

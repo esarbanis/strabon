@@ -22,7 +22,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class MeaningfulAggregateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class MeaningfulAggregateTests extends eu.earthobservatory.runtime.generaldb.MeaningfulAggregateTests {
 	
 	
 	@BeforeClass

@@ -1,113 +1,71 @@
 package eu.earthobservatory.runtime.postgis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
+import java.util.Properties;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 
-import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
+
+/**
+ * A set of simple tests on SPARQL query functionality 
+ * 
+ * @author George Garbis
+ */
 
 public class SpatialTests extends eu.earthobservatory.runtime.generaldb.SpatialTests {
-
+	
 	@BeforeClass
-	public static void initialize() throws SQLException, ClassNotFoundException
+	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		strabon = new Strabon("spatial-tests-srid","strabon","p1r3as", 5432, "strabon.di.uoa.gr", true);
+	 TemplateTests.beforeClass();
 	}
 	
-	@Test
-	public void testStrdfLeft() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{ // TODO left not implemented in monetdb
-		String query = 
-			prefixes+
-				"SELECT DISTINCT ?id1 \n"+
-				"WHERE { \n" +
-				" ?s1 ex:id ?id1 . \n"+
-				" ?s2 ex:id ?id2 . \n"+
-				" FILTER( str(?id1) != str(?id2) ) . \n"+
-				" FILTER( str(?id2) = \"Z\"^^xsd:string ) . \n"+
-				" ?s2 ex:geometry ?g2 . \n" +
-				" ?s1 ex:geometry ?g1 . \n"+
-				" FILTER( strdf:left(?g1, ?g2 )) . \n"+
-			"}";
-		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		
-		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id1=\"A\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+	@AfterClass
+	public static void afterClass() throws SQLException
+	{
+		TemplateTests.afterClass();
 	}
 	
-	@Test
-	public void testStrdfRight() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{ // TODO right not implemented in monetdb
-		String query = 
-			prefixes+
-				"SELECT DISTINCT ?id1 \n"+
-				"WHERE { \n" +
-				" ?s1 ex:id ?id1 . \n"+
-				" ?s2 ex:id ?id2 . \n"+
-				" FILTER( str(?id1) != str(?id2) ) . \n"+
-				" FILTER( str(?id2) = \"Z\"^^xsd:string ) . \n"+
-				" ?s2 ex:geometry ?g2 . \n" +
-				" ?s1 ex:geometry ?g1 . \n"+
-				" FILTER( strdf:right(?g1, ?g2 )) . \n"+
-			"}";
-		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		
-		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id1=\"D\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
-	
-	@Test
-	public void testStrdfAbove() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{ // TODO above not implemented in monetdb
-		String query = 
-			prefixes+
-				"SELECT DISTINCT ?id1 \n"+
-				"WHERE { \n" +
-				" ?s1 ex:id ?id1 . \n"+
-				" ?s2 ex:id ?id2 . \n"+
-				" FILTER( str(?id1) != str(?id2) ) . \n"+
-				" FILTER( str(?id2) = \"Z\"^^xsd:string ) . \n"+
-				" ?s2 ex:geometry ?g2 . \n" +
-				" ?s1 ex:geometry ?g1 . \n"+
-				" FILTER( strdf:above(?g1, ?g2 )) . \n"+
-			"}";
-		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		
-		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id1=\"H\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
-	
-	@Test
-	public void testStrdfBelow() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{ // TODO below not implemented in monetdb
-		String query = 
-			prefixes+
-				"SELECT DISTINCT ?id1 \n"+
-				"WHERE { \n" +
-				" ?s1 ex:id ?id1 . \n"+
-				" ?s2 ex:id ?id2 . \n"+
-				" FILTER( str(?id1) != str(?id2) ) . \n"+
-				" FILTER( str(?id2) = \"Z\"^^xsd:string ) . \n"+
-				" ?s2 ex:geometry ?g2 . \n" +
-				" ?s1 ex:geometry ?g1 . \n"+
-				" FILTER( strdf:below(?g1, ?g2 )) . \n"+
-			"}";
-		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		
-		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id1=\"C\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
+//	/**
+//	 * @throws java.lang.Exception
+//	 */
+//	@Before
+//	public void before()
+//		throws Exception
+//	{
+//		
+//	}
+//
+//	/**
+//	 * @throws java.lang.Exception
+//	 */
+//	@After
+//	public void after()
+//		throws Exception
+//	{
+//		// Clean database
+//		Statement stmt = conn.createStatement();
+//		ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
+//						"table_schema='public' and table_name <> 'spatial_ref_sys' " +
+//						"and table_name <> 'geometry_columns' and " +
+//						"table_name <> 'geography_columns' and table_name <> 'locked'");
+//		while (results.next()) {
+//			String table_name = results.getString("table_name");
+//			Statement stmt2 = conn.createStatement();
+//			stmt2.executeUpdate("DROP TABLE \""+table_name+"\"");
+//			stmt2.close();
+//		}
+//			
+//		stmt.close();
+//	}
 }
