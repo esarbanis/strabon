@@ -27,7 +27,7 @@ public class TransformTests extends eu.earthobservatory.runtime.generaldb.Transf
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass("/transform-tests.ntriples");
+	 TemplateTests.beforeClass("/transform-tests.nt");
 	}
 	
 	@AfterClass

@@ -25,18 +25,7 @@ public class AggregateTests {
 	protected static java.sql.Connection conn = null;
 	protected static String databaseName = null; 
 
-//	@BeforeClass
-//	public abstract static void initialize() throws SQLException, ClassNotFoundException
-//	{
-//		strabon = new Strabon("cco2","postgres","p1r3as", 5432, "localhost", true);
-//	}
-	
-	protected static void loadTestData()
-			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-		{
-			URL src = SimpleTests.class.getResource("/aggregate-tests.ntriples");
-			strabon.storeInRepo(src, "NTRIPLES");
-		}
+
 
 
 

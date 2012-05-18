@@ -39,13 +39,6 @@ public class JoinTests {
 //	}
 
 
-	protected static void loadTestData()
-			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-		{
-			URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-			strabon.storeInRepo(src, "NTRIPLES");
-		}
-
 
 	String query5a = 
 		"PREFIX strdf:<http://strdf.di.uoa.gr/ontology#> "+

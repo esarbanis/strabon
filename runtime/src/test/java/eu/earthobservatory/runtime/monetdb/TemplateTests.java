@@ -2,6 +2,7 @@ package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
+import eu.earthobservatory.runtime.generaldb.SimpleTests;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -25,7 +27,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 
 	@BeforeClass
-	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void beforeClass(String inputfile) throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 		// Read properties
 		Properties properties = new Properties();
@@ -56,7 +58,7 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 		
 		strabon = new Strabon(databaseName, username, password, port, serverName, true);
 		
-		loadTestData();
+		TemplateTests.loadTestData(inputfile);
 	}
 	
 	@AfterClass
@@ -64,6 +66,13 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 	{
 		strabon.close();
 	}
+	
+	protected static void loadTestData(String inputfile)
+			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+		{
+			URL src = SimpleTests.class.getResource(inputfile);
+			strabon.storeInRepo(src, "NTRIPLES");
+		}
 	
 //	/**
 //	 * @throws java.lang.Exception
@@ -118,4 +127,4 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 //			
 //		stmt.close();
 //	}
-}
+

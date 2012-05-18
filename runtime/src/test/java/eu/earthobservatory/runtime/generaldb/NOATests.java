@@ -32,14 +32,6 @@ public class NOATests {
 	
 
 
-	
-	protected static void loadTestData()
-			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-		{
-			URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-			strabon.storeInRepo(src, "NTRIPLES");
-		}
-
 	String prefixes = 
 		"PREFIX imAn: <http://teleios.di.uoa.gr/ontologies/imageAnnotationOntology.owl#> "+
 		"PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> "+

@@ -38,12 +38,7 @@ public class GeneralTests {
 	//	}
 
 
-	protected static void loadTestData()
-		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-	{
-		URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-		strabon.storeInRepo(src, "NTRIPLES");
-	}
+
 	
 	
 
