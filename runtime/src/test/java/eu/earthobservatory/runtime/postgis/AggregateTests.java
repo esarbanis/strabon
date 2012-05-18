@@ -1,12 +1,7 @@
 package eu.earthobservatory.runtime.postgis;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,12 +17,14 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class AggregateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class AggregateTests extends eu.earthobservatory.runtime.generaldb.AggregateTests {
 	
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass();
+		TemplateTests.beforeClass("/aggregate-tests.ntriples");
+		
+//		strabon = new Strabon("aggregate-tests-srid", "postgres", "p1r3as", 5432, "strabon.di.uoa.gr", true);
 	}
 	
 	@AfterClass

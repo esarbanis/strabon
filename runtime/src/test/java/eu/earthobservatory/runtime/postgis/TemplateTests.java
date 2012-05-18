@@ -2,6 +2,7 @@ package eu.earthobservatory.runtime.postgis;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
+import eu.earthobservatory.runtime.generaldb.SimpleTests;
+import eu.earthobservatory.runtime.postgis.Strabon;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -22,10 +25,22 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class TemplateTests {
+	
+	public static Strabon strabon;
+
+	public static java.sql.Connection conn = null;
+	public static String databaseName = null; 
+
+	public static String jdbcDriver = null;
+	public static String serverName = null;
+	public static String username = null;
+	public static String password = null;
+	public static Integer port = null;
 	
 	@BeforeClass
-	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void beforeClass(String inputFile)
+		throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 		// Read properties
 		Properties properties = new Properties();
@@ -59,13 +74,20 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 		
 	    strabon = new Strabon(databaseName, username, password, port, serverName, true);
 		
-		loadTestData();
+		loadTestData(inputFile);
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
 		strabon.close();
+	}
+	
+	protected static void loadTestData(String inputFile)
+		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	{
+		URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
+		strabon.storeInRepo(src, "NTRIPLES");
 	}
 	
 //	/**

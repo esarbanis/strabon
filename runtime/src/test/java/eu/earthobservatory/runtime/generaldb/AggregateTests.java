@@ -2,11 +2,7 @@ package eu.earthobservatory.runtime.generaldb;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -15,7 +11,6 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
-import eu.earthobservatory.runtime.generaldb.Strabon;
 import eu.earthobservatory.runtime.postgis.SimpleTests;
 
 public class AggregateTests {
@@ -39,7 +34,7 @@ public class AggregateTests {
 	protected static void loadTestData()
 			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 		{
-			URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
+			URL src = SimpleTests.class.getResource("/aggregate-tests.ntriples");
 			strabon.storeInRepo(src, "NTRIPLES");
 		}
 
@@ -53,7 +48,7 @@ public class AggregateTests {
 
 	String queryGroupBy1 = 
 		prefixes+
-		"SELECT (?placegeo AS ?xxx)  (AVG(?placegeo) AS ?av)  (strdf:union(?placegeo) AS ?united) "+
+		"SELECT (?placegeo AS ?xxx) (AVG(?placegeo) AS ?av)  (strdf:union(?placegeo) AS ?united) "+
 		"WHERE {  "+
 		"?place  "+
 		"rdfs:label ?placename ; "+ 	
@@ -95,7 +90,7 @@ public class AggregateTests {
 
 	String queryOrder1 =
 		prefixes+
-		"SELECT ?placegeo ?place (strdf:union(?placegeo,?placegeo) AS ?koko) (strdf:union(?placegeo,?placegeo) AS ?kiki) "+ 
+		"SELECT ?placegeo ?place (strdf:union(?placegeo) AS ?koko) (strdf:union(?placegeo,?placegeo) AS ?kiki) "+ 
 		"WHERE { "+ 
 		"?place "+ 
 		"rdfs:label ?placename ; "+ 	
@@ -124,7 +119,6 @@ public class AggregateTests {
 	public void testQueryGroupBy1() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		strabon.query(queryGroupBy1,strabon.getSailRepoConnection());
-
 	}
 
 	@Test

@@ -22,12 +22,12 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
  * @author George Garbis
  */
 
-public class JoinTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
+public class JoinTests extends eu.earthobservatory.runtime.generaldb.JoinTests {
 	
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass();
+	 TemplateTests.beforeClass("/join-tests.ntriples");
 	}
 	
 	@AfterClass
