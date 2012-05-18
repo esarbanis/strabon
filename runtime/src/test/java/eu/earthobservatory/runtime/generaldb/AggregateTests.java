@@ -43,19 +43,7 @@ public class AggregateTests {
 			strabon.storeInRepo(src, "NTRIPLES");
 		}
 
-	@AfterClass
-	public static void afterclass() throws SQLException
-	{
-strabon.close();
-		
-		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/template1";
-		conn = DriverManager.getConnection(url, username, password);
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate("DROP DATABASE \""+databaseName+"\"");
-		conn.close();
 
-	}
 
 	String prefixes = 
 		"PREFIX lgdo:<http://linkedgeodata.org/ontology/> "+

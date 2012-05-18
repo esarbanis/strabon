@@ -1,11 +1,15 @@
-mod.txt
-runtime/src/test/java/eu/earthobservatory/runtime/generaldb/JoinTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/generaldb/MeaningfulAggregateTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/generaldb/NOATests.java
-runtime/src/test/java/eu/earthobservatory/runtime/generaldb/TransformTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/AggregateTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/GeneralTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/HavingTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/TransformTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/JoinTests.java
-runtime/src/test/java/eu/earthobservatory/runtime/postgis/MeaningfulAggregateTests.java
+M mod.txt
+M runtime/src/test/java/eu/earthobservatory/runtime/generaldb/AggregateTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/generaldb/GeneralTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/generaldb/HavingTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/AggregateTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/GeneralTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/HavingTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/JoinTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/MeaningfulAggregateTests.java
+M runtime/src/test/java/eu/earthobservatory/runtime/postgis/TransformTests.java
+? runtime/src/test/java/eu/earthobservatory/runtime/generaldb/SPARQL11Tests.java
+? runtime/src/test/java/eu/earthobservatory/runtime/generaldb/SpatialTests.java
+? runtime/src/test/java/eu/earthobservatory/runtime/postgis/SPARQL11Tests.java
+? runtime/src/test/java/eu/earthobservatory/runtime/postgis/SpatialTests.java
+? runtime/src/test/java/eu/earthobservatory/runtime/postgis/TemplateTests.java
