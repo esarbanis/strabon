@@ -1,0 +1,30 @@
+<http://example.org/pol1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/pol1> <http://example.org/id> "A"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol11> <http://example.org/id> "A"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol2> <http://example.org/id> "B"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol3> <http://example.org/id> "C"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol4> <http://example.org/id> "D"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol5> <http://example.org/id> "E"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol6> <http://example.org/id> "F"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol7> <http://example.org/id> "G"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol8> <http://example.org/id> "H"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol9> <http://example.org/id> "Z"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/pol1> <http://example.org/geometry> "POLYGON((1 6, 2 6, 2 7, 1 7, 1 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol11> <http://example.org/geometry> "POLYGON((1 6, 2 6, 2 7, 1 7, 1 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol2> <http://example.org/geometry> "POLYGON((4 2, 5 2, 5 4, 4 4, 4 2))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol3> <http://example.org/geometry> "POLYGON((8 1, 9 1, 9 2, 8 2, 8 1))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol4> <http://example.org/geometry> "POLYGON((11 6, 12 6, 12 7, 11 7, 11 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol5> <http://example.org/geometry> "POLYGON((8 6, 9 6, 9 7, 8 7, 8 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol6> <http://example.org/geometry> "POLYGON((6 7, 7 7, 7 8, 6 8, 6 7))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol7> <http://example.org/geometry> "POLYGON((4 8, 5 8, 5 9, 4 9, 4 8))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol8> <http://example.org/geometry> "POLYGON((8 9, 9 9, 9 10, 8 10, 8 9))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/pol9> <http://example.org/geometry> "POLYGON((3 3, 10 3, 10 8, 3 8, 3 3))"^^<http://strdf.di.uoa.gr/ontology#WKT>.

@@ -1,0 +1,58 @@
+<http://linkedgeodata.org/triplify/node823767430> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.87631 50.7213)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify#way4020525> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POLYGON((23.65 37.94,23.64 37.935,23.64 37.934,23.65 37.94))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://dbpedia.org/resource/Greece> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/resource/Country>.
+<http://linkedgeodata.org/triplify#way4020525> <http://www.w3.org/2000/01/rdf-schema#label> "Piraeus Pier".
+<http://linkedgeodata.org/triplify/node742231352> <http://www.w3.org/2000/01/rdf-schema#label> "Rosie's".
+<http://linkedgeodata.org/triplify/node817345828> <http://www.w3.org/2000/01/rdf-schema#label> "Coffee Republic".
+<http://linkedgeodata.org/triplify#way4020525> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology#Pier>.
+<http://linkedgeodata.org/triplify/node344800922> <http://www.w3.org/2000/01/rdf-schema#label> "Norwegian Wood".
+<http://linkedgeodata.org/triplify/node817345828> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.87647 50.721)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node742231354> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.83702 50.7272)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node817345828> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node344800922> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node278571210> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node278982153> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node742231354> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node666779036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node742231352> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node823767430> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node823767435> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Cafe>.
+<http://linkedgeodata.org/triplify/node278982153> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.81769 50.7218)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node278571210> <http://www.w3.org/2000/01/rdf-schema#label> "The Clock Café".
+<http://linkedgeodata.org/triplify/node278571210> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.84845 50.7231)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node666779036> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.84667 50.7317)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node344800922> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.87346 50.7214)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify#way4020526> <http://www.w3.org/2000/01/rdf-schema#label> "Pearl Harbor".
+<http://linkedgeodata.org/ontology/Node122> <http://linkedgeodata.org/ontology/bufferExtent> "2"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://www.geonames.org/ontology/Athens> <http://www.w3.org/2002/07/owl#sameAs> <http://dbpedia.org/resource/Athens>.
+<http://linkedgeodata.org/triplify/node823767435> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.87652 50.7214)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node278982153> <http://www.w3.org/2000/01/rdf-schema#label> "Café Riva".
+<http://linkedgeodata.org/triplify/node666779036> <http://www.w3.org/2000/01/rdf-schema#label> "Curzon Diner".
+<http://linkedgeodata.org/triplify/node742231352> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> "POINT(-1.84186 50.7255)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify/node742231354> <http://www.w3.org/2000/01/rdf-schema#label> "Boscanova".
+<http://linkedgeodata.org/triplify/node823767430> <http://www.w3.org/2000/01/rdf-schema#label> "Caffe Nero".
+<http://linkedgeodata.org/triplify#way4020526> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(23.63 37.96)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://www.geonames.org/ontology/Athens> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(23.71 37.97)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://linkedgeodata.org/triplify#way4020526> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology#Harbour>.
+<http://linkedgeodata.org/triplify/node823767435> <http://www.w3.org/2000/01/rdf-schema#label> "Costa".
+<http://www.geonames.org/ontology/Greece> <http://strdf.di.uoa.gr/ontology#hasGeometry> "POINT(22.0 39.0)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://dbpedia.org/resource/Athens> <http://www.w3.org/2000/01/rdf-schema#label> "Athens".
+<http://dbpedia.org/resource/Greece> <http://dbpedia.org/property/capital> "Athens".
+<http://linkedgeodata.org/triplify/node817345828> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node344800922> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node278571210> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node278982153> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node742231354> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node666779036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node742231352> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node823767430> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node823767435> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Node>.
+<http://linkedgeodata.org/triplify/node817345828> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node344800922> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node278571210> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node278982153> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node742231354> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node666779036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node742231352> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node823767430> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
+<http://linkedgeodata.org/triplify/node823767435> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://linkedgeodata.org/ontology/Amenity>.
