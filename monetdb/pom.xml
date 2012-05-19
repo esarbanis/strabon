@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
+			<artifactId>sesame-queryalgebra-evaluation-strabon</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>

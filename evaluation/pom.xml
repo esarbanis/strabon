@@ -9,8 +9,8 @@
 	</parent>
 
 	<groupId>org.openrdf.sesame</groupId>
-	<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-	<name>OpenRDF Sesame: Query algebra - evaluation -spatial</name>
+	<artifactId>sesame-queryalgebra-evaluation-strabon</artifactId>
+	<name>OpenRDF Sesame: Query algebra - evaluation -spatial/temporal</name>
 	<description>Spatial Extension Functions - stSPARQL </description>
 	<packaging>jar</packaging>
 

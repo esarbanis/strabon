@@ -47,7 +47,7 @@
 			<!-- Strabon dependencies -->
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
+				<artifactId>sesame-queryalgebra-evaluation-strabon</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
