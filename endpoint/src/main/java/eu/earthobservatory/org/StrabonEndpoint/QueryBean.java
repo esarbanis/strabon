@@ -160,6 +160,7 @@ public class QueryBean extends HttpServlet {
 		}
 
 		PrintWriter out = response.getWriter();
+                out.flush();
 
 		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
 			StringBuilder errorMessage = new StringBuilder ();
@@ -200,7 +201,10 @@ public class QueryBean extends HttpServlet {
 			//response.setContentType("text/plain; charset=UTF-8");
                         response.setStatus(status_code);
 			if (status_code == HttpServletResponse.SC_OK) {
-				response.getWriter().append(answer);
+                                response.setContentLength(answer.length());
+				//response.getWriter().append(answer.toString());
+                                out.append(answer.toString());
+                                out.flush();
 
 			} else {
 				response.getWriter().append(ResponseMessages.getXMLHeader());
