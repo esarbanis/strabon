@@ -28,13 +28,13 @@ public class GeneralTests extends eu.earthobservatory.runtime.generaldb.GeneralT
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass("/more-tests.nt");
+		strabon = TemplateTests.beforeClass("/more-tests.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 

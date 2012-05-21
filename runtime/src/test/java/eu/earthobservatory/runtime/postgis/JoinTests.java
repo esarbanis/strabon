@@ -22,13 +22,13 @@ public class JoinTests extends eu.earthobservatory.runtime.generaldb.JoinTests {
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass("/join-tests-srid.nt");
+		strabon = TemplateTests.beforeClass("/join-tests-srid.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 }

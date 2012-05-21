@@ -28,13 +28,13 @@ public class SPARQL11Tests extends eu.earthobservatory.runtime.generaldb.SPARQL1
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass("/sparql11-tests.nt");
+		strabon = TemplateTests.beforeClass("/sparql11-tests.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 	

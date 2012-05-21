@@ -17,7 +17,7 @@ import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.SimpleTests;
-import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.runtime.generaldb.Strabon;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -27,8 +27,6 @@ import eu.earthobservatory.runtime.postgis.Strabon;
 
 public class TemplateTests {
 	
-	public static Strabon strabon;
-
 	public static java.sql.Connection conn = null;
 	public static String databaseName = null; 
 
@@ -39,7 +37,7 @@ public class TemplateTests {
 	public static Integer port = null;
 	
 	@BeforeClass
-	public static void beforeClass(String inputFile)
+	public static Strabon beforeClass(String inputFile)
 		throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 		// Read properties
@@ -72,18 +70,20 @@ public class TemplateTests {
 		}
 		stmt.close();
 		
-	    strabon = new Strabon(databaseName, username, password, port, serverName, true);
+	    Strabon strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, username, password, port, serverName, true);
 		
-		loadTestData(inputFile);
+		loadTestData(inputFile, strabon);
+		
+		return strabon;
 	}
 	
 	@AfterClass
-	public static void afterClass() throws SQLException
+	public static void afterClass(Strabon strabon) throws SQLException
 	{
 		strabon.close();
 	}
 	
-	protected static void loadTestData(String inputfile)
+	protected static void loadTestData(String inputfile, Strabon strabon)
 		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		URL src = SimpleTests.class.getResource(inputfile);

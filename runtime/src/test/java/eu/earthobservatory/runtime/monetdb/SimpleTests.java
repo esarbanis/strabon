@@ -28,13 +28,13 @@ public class SimpleTests extends eu.earthobservatory.runtime.generaldb.SimpleTes
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		TemplateTests.beforeClass("/simple-tests.ntriples");
+		strabon = TemplateTests.beforeClass("/simple-tests.ntriples");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 //	/**

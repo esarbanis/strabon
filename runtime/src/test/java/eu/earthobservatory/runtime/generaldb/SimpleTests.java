@@ -13,6 +13,8 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
 
+import eu.earthobservatory.runtime.monetdb.TemplateTests;
+
 /**
  * A set of simple tests on SPARQL query functionality 
  * 

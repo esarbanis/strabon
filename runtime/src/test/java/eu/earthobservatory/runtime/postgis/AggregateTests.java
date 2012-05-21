@@ -18,14 +18,13 @@ public class AggregateTests extends eu.earthobservatory.runtime.generaldb.Aggreg
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		TemplateTests.beforeClass("/aggregate-tests-srid.nt");
-		
+		strabon = TemplateTests.beforeClass("/aggregate-tests-srid.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 }
