@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -14,8 +13,6 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
-
-import eu.earthobservatory.runtime.generaldb.Strabon;
 
 
 public class SPARQL11Tests {
@@ -59,6 +56,7 @@ public class SPARQL11Tests {
 			"WHERE \n" +
 			"{ ?s ?p ?o . } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results =  (ArrayList <String>)strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(62, results.size());
 	}
@@ -73,6 +71,7 @@ public class SPARQL11Tests {
 			" ?x foaf:mbox ?mbox ." +
 			" } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList <String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(11, results.size());
 	}
@@ -84,6 +83,7 @@ public class SPARQL11Tests {
 		"SELECT ?v WHERE { ?v ns:p ?s . FILTER(str(?s) = \"cat\") } \n";
 //		"SELECT ?v WHERE { ?v ns:p \"cat\" } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList <String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[v=http://example.org#x]"));
@@ -95,6 +95,7 @@ public class SPARQL11Tests {
 		String queryString = prefixes+
 			"SELECT ?v WHERE { ?v ns:p \"cat\"@en } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList <String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[v=http://example.org#x]"));
@@ -106,6 +107,7 @@ public class SPARQL11Tests {
 		String queryString = prefixes+
 			"SELECT ?v WHERE { ?v ns:p 42 } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList <String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[v=http://example.org#y]"));
@@ -117,6 +119,7 @@ public class SPARQL11Tests {
 		String queryString = prefixes+
 			"SELECT ?v WHERE { ?v ?p \"abc\"^^dt:specialDatatype } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList <String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[v=http://example.org#z]"));
@@ -133,6 +136,7 @@ public class SPARQL11Tests {
 			" BIND( CONCAT(?G, \" \", ?S) AS ?name ) . \n"+
 			"} \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[name=\"John Doe\"]"));
@@ -146,6 +150,7 @@ public class SPARQL11Tests {
 			"SELECT ( CONCAT(?G, \" \", ?S) AS ?name ) \n" +
 			"WHERE  { ?P foaf:givenName ?G ; foaf:surname ?S } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[name=\"John Doe\"]"));
@@ -160,6 +165,7 @@ public class SPARQL11Tests {
 			"	OPTIONAL { ?x  foaf:mbox  ?mbox } \n"+
        		"} \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>)strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(13, results.size());
 		assertTrue(-1<results.indexOf("[name=\"Alice\";mbox=mailto:alice@example.com]"));
@@ -176,6 +182,7 @@ public class SPARQL11Tests {
 			"	OPTIONAL { ?x ns:price ?price . FILTER (?price < 30) } \n"+
         	"}\n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(4, results.size());
 		assertTrue(-1<results.indexOf("[title=\"SPARQL Tutorial\"]"));
@@ -194,9 +201,11 @@ public class SPARQL11Tests {
 			"	OPTIONAL { ?x foaf:homepage ?hpage } . \n"+
        		"} ORDER BY ?name \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>)strabon.query(queryString, strabon.getSailRepoConnection());
+		
 		assertEquals(13, results.size());
-		assertTrue(-1<results.indexOf("[hpage=http://work.example.org/alice/;mbox=mailto:alice@example.com;name=\"A. Foo\"]"));
+		assertTrue(-1<results.indexOf("[hpage=http://work.example.org/alice/;name=\"A. Foo\";mbox=mailto:alice@example.com]"));
 		assertTrue(-1<results.indexOf("[name=\"Bob\";mbox=mailto:bob@work.example]"));
 		assertTrue(-1<results.indexOf("[name=\"C. Baz\"]"));
 	}
@@ -212,6 +221,7 @@ public class SPARQL11Tests {
 			"	FILTER NOT EXISTS { ?person foaf:name ?name } . \n"+
 			"}    \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(0, results.size()); // TODO add such an item
 	}
@@ -226,6 +236,7 @@ public class SPARQL11Tests {
 			"	FILTER EXISTS { ?person foaf:name ?name } \n"+
 			"} \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(2, results.size());
 		assertTrue(-1<results.indexOf("[person=http://example.org#bob]"));
@@ -243,6 +254,7 @@ public class SPARQL11Tests {
 			"	?s foaf:givenName \"Bob\" . \n"+
 			"} } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(19, results.size());
 	}
@@ -260,6 +272,7 @@ public class SPARQL11Tests {
 			+"GROUP BY ?org HAVING (SUM(?lprice) > 10) \n"
 			;
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[totalPrice=\"21\"^^<http://www.w3.org/2001/XMLSchema#integer>]"));
@@ -274,6 +287,7 @@ public class SPARQL11Tests {
 			"	FILTER regex(?title, \"^SPARQL\") \n"+ 
         	"} ORDER BY ?title\n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(3, results.size());
 		assertTrue(-1<results.indexOf("[title=\"SPARQL Protocol Tutorial\"]"));
@@ -290,6 +304,7 @@ public class SPARQL11Tests {
 			"	FILTER regex(?title, \"web\", \"i\" ) ."+ 
         	"} \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(1, results.size());
 		assertTrue(-1<results.indexOf("[title=\"The Semantic Web\"]"));
@@ -302,6 +317,7 @@ public class SPARQL11Tests {
 			"SELECT ?title \n"+
 			"WHERE  { { ?book dc10:title  ?title } UNION { ?book dc11:title  ?title } } \n";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(6, results.size());
 		assertTrue(-1<results.indexOf("[title=\"SPARQL Query Language Tutorial\"]"));
@@ -318,7 +334,8 @@ public class SPARQL11Tests {
 		String queryString = prefixes+
 			"SELECT ?x ?y \n"+
 			"WHERE  { { ?book dc10:title  ?x } UNION { ?book dc11:title  ?y } } \n";
-		
+	
+		@SuppressWarnings("unchecked")
 		ArrayList<String> results = (ArrayList<String>) strabon.query(queryString, strabon.getSailRepoConnection());
 		assertEquals(6, results.size());
 		assertTrue(-1<results.indexOf("[x=\"SPARQL Query Language Tutorial\"]"));

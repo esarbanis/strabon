@@ -102,14 +102,14 @@ public abstract class Strabon {
 	}
 
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
-			throws SQLException, ClassNotFoundException 
-			{
+	throws SQLException, ClassNotFoundException 
+	{
 		if (checkForLockTable == true) {
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
 		}
 
 		initiate(databaseName, user, password, port, serverName);
-			}
+	}
 
 
 	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName) ;
@@ -142,7 +142,7 @@ public abstract class Strabon {
 
 
 	protected abstract void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName)
-			throws SQLException, ClassNotFoundException ;
+	throws SQLException, ClassNotFoundException ;
 
 	public SailRepositoryConnection getSailRepoConnection() {
 		return con1;
@@ -171,27 +171,27 @@ public abstract class Strabon {
 	}
 
 	public Object query(String queryString)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query(queryString, "", this.getSailRepoConnection());	
-			}
+	}
 
 	public Object query(String queryString, String resultsFormat)
-			throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query (queryString, resultsFormat, this.getSailRepoConnection());
-			}
+	}
 
 	public Object query(String queryString, SailRepositoryConnection con)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query(queryString, "", con);	
-			}
+	}
 
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
 
-			{
+	{
 		TupleQuery tupleQuery = null;
 		try {
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
@@ -635,7 +635,7 @@ public abstract class Strabon {
 				if(resultsFormat.equalsIgnoreCase("KML"))
 				{
 					writeOut.write(newString);
-//					System.out.println(newString);
+					//					System.out.println(newString);
 				}
 				else //KMZ
 				{
@@ -650,30 +650,30 @@ public abstract class Strabon {
 					//kmzout.setLevel(6);
 					kmzout.putNextEntry(entry);
 					kmzout.write(newString.getBytes());
-				    kmzout.closeEntry();
+					kmzout.closeEntry();
 					kmzout.close();
-					
+
 					//String kmzString = FileUtils.readFileToString(zfile);
-		            //writeOut.write(kmzString);
+					//writeOut.write(kmzString);
 					/*
 					try {
 						File file = new File("/tmp/tmp.kml");
 						String filename = "/tmp/tmp.kml";
 						FileUtils.writeStringToFile(file, newString);
-						
+
 						File zfile = new File("/tmp/tmp.kmz");
 			            String zipfilename = "/tmp/tmp.kmz";
-						
+
 			            byte[] buf = new byte[1024];
 			            FileInputStream fis = new FileInputStream(filename);
 			            fis.read(buf,0,buf.length);
-			            
+
 			            CRC32 crc = new CRC32();
 			            ZipOutputStream s = new ZipOutputStream(
 			                    (OutputStream)new FileOutputStream(zipfilename));
-			            
+
 			            //s.setLevel(6);
-			            
+
 			            ZipEntry entry = new ZipEntry(filename);
 			            entry.setSize((long)buf.length);
 			            crc.reset();
@@ -683,17 +683,17 @@ public abstract class Strabon {
 			            s.write(buf, 0, buf.length);
 			            s.finish();
 			            s.close();
-			            
+
 			            String kmzString = FileUtils.readFileToString(zfile);
 			            writeOut.write(kmzString);
-			            
+
 			            //FileUtils.forceDelete(file);
 			            //FileUtils.forceDelete(zfile);
-			            
+
 			        } catch (Exception e) {
 			            e.printStackTrace();
 			        }
-						*/				
+					 */				
 				}
 
 			} catch (IOException e) {
@@ -776,7 +776,7 @@ public abstract class Strabon {
 
 		//return ret;
 		return retStream.toString();
-			}
+	}
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 
