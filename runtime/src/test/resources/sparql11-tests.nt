@@ -1,0 +1,62 @@
+<http://example.org#alice> <http://purl.org/dc/elements/1.0/title> "SPARQL Query Language Tutorial".
+<http://example.org#carol> <http://purl.org/dc/elements/1.0/title> "SPARQL".
+<http://example.org#a> <http://xmlns.com/foaf/0.1/name> "Johnny Lee Outlaw".
+<http://example.org#b> <http://xmlns.com/foaf/0.1/name> "Peter Goodguy".
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/name> "Alice".
+<http://example.org#bob> <http://xmlns.com/foaf/0.1/name> "Bob".
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/name> "Alice Foo".
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/name> "A. Foo".
+<http://example.org#bob> <http://xmlns.com/foaf/0.1/name> "Bob Bar".
+<http://example.org#bob> <http://xmlns.com/foaf/0.1/name> "B. Bar".
+<http://example.org#carol> <http://xmlns.com/foaf/0.1/name> "Carol Baz".
+<http://example.org#carol> <http://xmlns.com/foaf/0.1/name> "C. Baz".
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/homepage> <http://work.example.org/alice/>.
+<http://example.org#a> <http://xmlns.com/foaf/0.1/mbox> <mailto:jlow@example.com>.
+<http://example.org#b> <http://xmlns.com/foaf/0.1/mbox> <mailto:peter@example.org>.
+<http://example.org#c> <http://xmlns.com/foaf/0.1/mbox> <mailto:carol@example.org>.
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/mbox> <mailto:alice@example.com>.
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/mbox> <mailto:alice@work.example>.
+<http://example.org#bob> <http://xmlns.com/foaf/0.1/mbox> <mailto:bob@work.example>.
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/familyName> "Smith".
+<http://example.org#bob> <http://xmlns.com/foaf/0.1/familyName> "Jones".
+<http://example.org#carol> <http://xmlns.com/foaf/0.1/familyName> "Smith".
+<http://example.org#alice> <http://purl.org/dc/elements/1.0/creator> "Alice".
+<http://example.org#bob> <http://purl.org/dc/elements/1.1/creator> "Bob".
+<http://example.org#org1> <http://example.org#affiliates> <http://example.org#auth1>.
+<http://example.org#org1> <http://example.org#affiliates> <http://example.org#auth2>.
+<http://example.org#org2> <http://example.org#affiliates> <http://example.org#auth3>.
+<http://example.org#x> <http://example.org/ns#p> "cat"@en.
+<http://example.org#y> <http://example.org/ns#p> "42"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#z> <http://example.org/ns#p> "abc"^^<http://example.org/datatype#specialDatatype>.
+<http://example.org#a> <http://example.org#p> "1"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#b> <http://example.org#p> "3.0"^^<http://www.w3.org/2001/XMLSchema#decimal>.
+<http://example.org#a> <http://example.org#q> "1"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#a> <http://example.org#q> "2"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#b> <http://example.org#q> "4.0"^^<http://www.w3.org/2001/XMLSchema#decimal>.
+<http://example.org#b> <http://example.org#q> "5.0"^^<http://www.w3.org/2001/XMLSchema#decimal>.
+<http://example.org#auth1> <http://example.org#writesBook> <http://example.org#book1>.
+<http://example.org#auth1> <http://example.org#writesBook> <http://example.org#book2>.
+<http://example.org#auth2> <http://example.org#writesBook> <http://example.org#book3>.
+<http://example.org#auth3> <http://example.org#writesBook> <http://example.org#book4>.
+<http://example.org#book1> <http://example.org#price> "9"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#book2> <http://example.org#price> "5"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#book3> <http://example.org#price> "7"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#book4> <http://example.org#price> "7"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#johnDoe> <http://xmlns.com/foaf/0.1/surname> "Doe".
+<http://example.org#johnDoe> <http://xmlns.com/foaf/0.1/givenName> "John".
+<http://example.org#alice> <http://example.com/org#employeeId> "12345"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#bob> <http://example.com/org#employeeId> "67890"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#alice> <http://example.com/org#employeeName> "Alice".
+<http://example.org#bob> <http://example.com/org#employeeName> "Bob".
+<http://example.org#book1> <http://purl.org/dc/elements/1.1/title> "SPARQL Tutorial".
+<http://example.org#book2> <http://purl.org/dc/elements/1.1/title> "The Semantic Web".
+<http://example.org#bob> <http://purl.org/dc/elements/1.1/title> "SPARQL Protocol Tutorial".
+<http://example.org#carol> <http://purl.org/dc/elements/1.1/title> "SPARQL (updated)".
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/knows> <http://example.org#bob>.
+<http://example.org#alice> <http://xmlns.com/foaf/0.1/knows> <http://example.org#carol>.
+<http://example.org#book1> <http://example.org/ns#discount> "0.2"^^<http://www.w3.org/2001/XMLSchema#decimal>.
+<http://example.org#book2> <http://example.org/ns#discount> "0.25"^^<http://www.w3.org/2001/XMLSchema#decimal>.
+<http://example.org#book1> <http://example.org/ns#price> "42"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#book2> <http://example.org/ns#price> "23"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://example.org#alice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.
+<http://example.org#bob> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.
