@@ -27,13 +27,13 @@ public class SpatialTests extends eu.earthobservatory.runtime.generaldb.SpatialT
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass();
+		strabon = TemplateTests.beforeClass("./spatial-tests-srid.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
 	
 //	/**

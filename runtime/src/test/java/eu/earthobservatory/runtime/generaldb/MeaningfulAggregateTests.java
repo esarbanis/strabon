@@ -36,13 +36,6 @@ public class MeaningfulAggregateTests {
 //		strabon = new Strabon("cco2","postgres","p1r3as", 5432, "localhost", true);
 //	}
 
-
-	protected static void loadTestData()
-			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-		{
-			URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-			strabon.storeInRepo(src, "NTRIPLES");
-		}
 	
 
 	String prefixes =

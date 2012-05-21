@@ -2,6 +2,7 @@ package eu.earthobservatory.runtime.postgis;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,14 +28,16 @@ public class SPARQL11Tests extends eu.earthobservatory.runtime.generaldb.SPARQL1
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-	 TemplateTests.beforeClass();
+		strabon = TemplateTests.beforeClass("/sparql11-tests.nt");
 	}
 	
 	@AfterClass
 	public static void afterClass() throws SQLException
 	{
-		TemplateTests.afterClass();
+		TemplateTests.afterClass(strabon);
 	}
+	
+	
 	
 //	/**
 //	 * @throws java.lang.Exception

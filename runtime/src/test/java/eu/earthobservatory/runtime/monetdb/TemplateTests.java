@@ -2,6 +2,7 @@ package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
+import eu.earthobservatory.runtime.generaldb.SimpleTests;
+import eu.earthobservatory.runtime.generaldb.Strabon;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -25,7 +28,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 
 	@BeforeClass
-	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static Strabon beforeClass(String inputfile) throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 		// Read properties
 		Properties properties = new Properties();
@@ -54,16 +57,25 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 		}
 		stmt.close();
 		
-		strabon = new Strabon(databaseName, username, password, port, serverName, true);
+		Strabon strabon = new eu.earthobservatory.runtime.monetdb.Strabon(databaseName, username, password, port, serverName, true);
 		
-		loadTestData();
+		TemplateTests.loadTestData(inputfile, strabon);
+		
+		return strabon;
 	}
 	
 	@AfterClass
-	public static void afterClass() throws SQLException
+	public static void afterClass(Strabon strabon) throws SQLException
 	{
 		strabon.close();
 	}
+	
+	protected static void loadTestData(String inputfile, Strabon strabon)
+			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+		{
+			URL src = SimpleTests.class.getResource(inputfile);
+			strabon.storeInRepo(src, "NTRIPLES");
+		}
 	
 //	/**
 //	 * @throws java.lang.Exception
@@ -98,3 +110,24 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 //		stmt.close();
 //	}
 }
+//	 */
+//	@After
+//	public void after()
+//		throws Exception
+//	{
+//		// Clean database
+//		Statement stmt = conn.createStatement();
+//		ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
+//						"table_schema='public' and table_name <> 'spatial_ref_sys' " +
+//						"and table_name <> 'geometry_columns' and " +
+//						"table_name <> 'geography_columns' and table_name <> 'locked'");
+//		while (results.next()) {
+//			String table_name = results.getString("table_name");
+//			Statement stmt2 = conn.createStatement();
+//			stmt2.executeUpdate("DROP TABLE \""+table_name+"\"");
+//			stmt2.close();
+//		}
+//			
+//		stmt.close();
+//	}
+

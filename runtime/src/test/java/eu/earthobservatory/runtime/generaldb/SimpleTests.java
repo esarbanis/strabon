@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -13,11 +12,8 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
 
-import eu.earthobservatory.runtime.generaldb.Strabon;
+import eu.earthobservatory.runtime.monetdb.TemplateTests;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -50,13 +46,6 @@ public class SimpleTests {
 		"PREFIX xsd: <"+XMLSchema.NAMESPACE+"> \n" +
 		"PREFIX ex: <"+EX_NS+"> \n" +
 		"PREFIX noa: <"+NOA_NS+"> \n";
-		
-	protected static void loadTestData()
-		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
-	{
-		URL src = SimpleTests.class.getResource("/simple-tests.ntriples");
-		strabon.storeInRepo(src, "NTRIPLES");
-	}
 	
 	@Test
 	public void testSimpleFilter() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
