@@ -221,13 +221,25 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		else {
 			if(var.isSpatial())
 			{
-				filter.appendFunction("asBinary");
+				filter.appendFunction("AsBinary");
 				filter.openBracket();
+				//XXX SRID
+				filter.appendFunction("Transform");
+				filter.openBracket();
+				//
 				String alias = getLabelAlias(var.getRdbmsVar());
 
 				filter.column(alias, "strdfgeo");
+				//XXX SRID
+				filter.appendComma();
+				filter.column(alias, "srid");
+				filter.closeBracket();
+				//
 				filter.closeBracket();
 
+				//Adding srid field explicitly for my StrabonPolyhedron constructor later on!
+				filter.appendComma();
+				filter.column(alias, "srid");
 			}
 			else
 			{
@@ -326,7 +338,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty))
 		{
-			query.select().appendFunction("asBinary");
+			query.select().appendFunction("AsBinary");
 		}
 		else
 		{

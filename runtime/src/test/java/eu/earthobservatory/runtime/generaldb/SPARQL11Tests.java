@@ -329,7 +329,7 @@ public class SPARQL11Tests {
 	}
 	
 	@Test
-	public void testUnionWithDifferenceObject() throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testUnionWithDifferentObject() throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{	
 		String queryString = prefixes+
 			"SELECT ?x ?y \n"+

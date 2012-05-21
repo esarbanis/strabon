@@ -1045,8 +1045,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendTransformFunc(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
 		//XXX Incorporating SRID
@@ -1183,7 +1183,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.append(sridExpr);
 		}
 
-			}
+	}
 
 
 

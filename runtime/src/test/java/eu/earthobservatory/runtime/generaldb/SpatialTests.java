@@ -7,15 +7,12 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-
-import eu.earthobservatory.runtime.generaldb.Strabon;
 
 public class SpatialTests {
 	public static Strabon strabon;
@@ -65,6 +62,7 @@ public class SpatialTests {
 			" FILTER( strdf:anyInteract(?g1, ?g2 ) ) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")	
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 
 		assertEquals(4, bindings.size());
@@ -89,6 +87,7 @@ public class SpatialTests {
 			" FILTER( strdf:contains(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -110,6 +109,7 @@ public class SpatialTests {
 			" FILTER( strdf:covers(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -131,6 +131,7 @@ public class SpatialTests {
 			" FILTER( strdf:coveredBy(?g1, ?g2 )) . \n"+
 			"}";
 
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -150,6 +151,7 @@ public class SpatialTests {
 			" FILTER( strdf:disjoint(?g1, ?g2 )) . \n"+
 			"}";
 
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(40, bindings.size());
 		// too many results
@@ -169,9 +171,10 @@ public class SpatialTests {
 			" FILTER( strdf:equals(?g1, ?g2 )) . \n"+
 			"}";
 		
-			ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-			assertEquals(1, bindings.size());
-			assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(1, bindings.size());
+		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
 		}
 
 	@Test
@@ -189,10 +192,11 @@ public class SpatialTests {
 			" FILTER( strdf:inside(?g1, ?g2 )) . \n"+
 			"}";
 		
-			ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-			assertEquals(2, bindings.size());
-			assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-			assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(2, bindings.size());
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
 
 	@Test
@@ -210,6 +214,7 @@ public class SpatialTests {
 			" FILTER( strdf:overlap(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -231,6 +236,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-touches(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -251,6 +257,7 @@ public class SpatialTests {
 			" FILTER( strdf:relate(?g1, ?g2, \"T*F**F***\" )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -280,10 +287,11 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 10 8, 10 3, 5 3))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 10 8, 10 3, 5 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 	
 	@Test
@@ -298,6 +306,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -322,6 +331,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -340,6 +350,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -357,6 +368,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
@@ -375,6 +387,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -393,6 +406,7 @@ public class SpatialTests {
 		" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 		"}";
 	
+	@SuppressWarnings("unchecked")
 	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 			
 	assertEquals(1, bindings.size());
@@ -413,6 +427,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -431,6 +446,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -451,6 +467,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
@@ -477,6 +494,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 
 		assertEquals(1, bindings.size());
@@ -503,6 +521,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 
 		assertEquals(1, bindings.size());
@@ -529,6 +548,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		// TODO test srid uri arguments
 		assertEquals(1, bindings.size());		
@@ -554,10 +574,11 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 	
-	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-
-	assertEquals(1, bindings.size());		
-	assertTrue(-1<bindings.indexOf("[ret2=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret1=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret0=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>]"));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		
+		assertEquals(1, bindings.size());		
+		assertTrue(-1<bindings.indexOf("[ret2=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret1=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret0=\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>]"));
 	}
 	
 	@Test
@@ -574,10 +595,11 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 	
-	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-
-	assertEquals(1, bindings.size());		
-	assertTrue(-1<bindings.indexOf("[ret2=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret1=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret0=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>]"));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+	
+		assertEquals(1, bindings.size());		
+		assertTrue(-1<bindings.indexOf("[ret2=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret1=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>;ret0=\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>]"));
 	}
 	
 	// -- GEOSPARQL -- //
@@ -596,6 +618,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -614,6 +637,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
@@ -632,6 +656,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -650,6 +675,7 @@ public class SpatialTests {
 		" FILTER( str(?id) = \"Z\"^^xsd:string ) . \n" +
 		"}";
 	
+	@SuppressWarnings("unchecked")
 	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 			
 	assertEquals(1, bindings.size());
@@ -668,6 +694,7 @@ public class SpatialTests {
 			" FILTER( str(?id) = \"C\"^^xsd:string ) . \n" +
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
@@ -713,6 +740,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-equals(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
@@ -731,6 +759,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-disjoint(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(40, bindings.size());
 		// too many results :)
@@ -752,6 +781,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-intersects(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(4, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -775,6 +805,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-touches(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -795,6 +826,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-crosses(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(4, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -818,6 +850,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-within(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -839,6 +872,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-contains(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -860,6 +894,7 @@ public class SpatialTests {
 			" FILTER( geof:sf-overlaps(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -881,6 +916,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-equals(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
@@ -899,6 +935,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-disjoint(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(40, bindings.size());
 		// too many results :)
@@ -920,6 +957,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-meet(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -941,6 +979,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-overlap(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -962,6 +1001,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-covers(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -982,6 +1022,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-coveredBy(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1002,6 +1043,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-inside(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1022,6 +1064,7 @@ public class SpatialTests {
 			" FILTER( geof:eh-contains(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1042,6 +1085,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-dc(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(40, bindings.size());
 		// too many results :)
@@ -1063,6 +1107,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-po(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(2, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1084,6 +1129,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-tppi(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1104,6 +1150,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-tpp(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1125,6 +1172,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-ntpp(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
@@ -1144,6 +1192,7 @@ public class SpatialTests {
 			" FILTER( geof:rcc8-ntpp(?g1, ?g2 )) . \n"+
 			"}";
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		assertEquals(1, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
