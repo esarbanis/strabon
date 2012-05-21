@@ -19,17 +19,17 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>DLRstrabonv4</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Username -->
-            <value>kkyzir</value>
+            <value>postgres</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-            <value>postgresql</value>
+            <value>brun1s86</value>
         </constructor-arg>
 
         <constructor-arg type="int" >

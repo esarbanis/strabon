@@ -122,10 +122,10 @@ public class QueryBean extends HttpServlet {
 			hive.setFormat("HTML");
 			response.setContentType("text/html; charset=UTF-8");			
 		} else if (reqAccept.contains("application/vnd.google-earth.kml+xml")) {
-			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kml+xml");
 			hive.setFormat("KML");
 		} else if (reqAccept.contains("application/vnd.google-earth.kmz")) {
-			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kmz");
 			hive.setFormat("KMZ");
 		} else if (reqAccept.contains("application/sparql-results+xml")) {			
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
@@ -134,10 +134,10 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
-			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kml+xml");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
-			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kmz");
 			hive.setFormat("KMZ");
 		} else if (reqFormat.equalsIgnoreCase("SPARQLRESULTS"))  {
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
@@ -163,89 +163,50 @@ public class QueryBean extends HttpServlet {
 
 		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
 			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-			hive.setErrorMessage(errorMessage.toString());
-			SecureRandom random = new SecureRandom();
-			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
-			String temp = new BigInteger(130, random).toString(32);   
+			//String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
+			//hive.setErrorMessage(errorMessage.toString());
+			//SecureRandom random = new SecureRandom();
+			//String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
+			//String temp = new BigInteger(130, random).toString(32);   
 			
-			String basePath = context.getRealPath("/") + "/../ROOT/tmp/";
+			int status_code = HttpServletResponse.SC_OK;
+			String answer = "";
 
-			try{
-				Date date = new Date();
+			try {
+				// execute query
+				answer = (String) strabonWrapper.query(hive.getSPARQLQuery(), hive.getFormat());
 
-				FileUtils.forceMkdir(new File(basePath));
+			} catch (MalformedQueryException e) {
+				status_code = HttpServletResponse.SC_BAD_REQUEST;
+				answer = e.getMessage();
 
-				Iterator it = FileUtils.iterateFiles(new File(basePath), null, false);
-				while(it.hasNext()){
-					File tbd = new File(((File) it.next()).getAbsolutePath());
-					if (FileUtils.isFileOlder( new File(tbd.getAbsolutePath()), date.getTime())){
-						FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
-					}
-				}
+			} catch (RepositoryException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
 
-				File file =new File(basePath + temp + "." + extension);
+			} catch (QueryEvaluationException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
 
-				//if file doesnt exists, then create it
-				if(!file.exists()){
-					file.createNewFile();
-				}
+			} catch (TupleQueryResultHandlerException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
 
-				FileWriter fw = null;
-				if(hive.getFormat().equalsIgnoreCase("KML"))
-				{
-					fw = new FileWriter(basePath + temp + ".kml");
-				}
-				else //KMZ
-				{
-					fw = new FileWriter(basePath + temp + ".kmz");
-				}
-				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(answer);
-				bw.close();
-				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
-
-				//System.out.println("Done");
-
-				
-			} catch(IOException e) {
-				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+				answer = e.getMessage();
 			}
 
-			response.setDateHeader("Expires", 0);			
-			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			//response.setContentType("text/plain; charset=UTF-8");
+                        response.setStatus(status_code);
+			if (status_code == HttpServletResponse.SC_OK) {
+				response.getWriter().append(answer);
 
-			String pathToKML = "";
-			if (hive.getFormat().equalsIgnoreCase("KML")) {
-				response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-				response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml");
-				if (answer!="")
-					pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kml";
 			} else {
-				response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
-				response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kmz");
-				if (answer!="")
-					pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + ".kmz";
+				response.getWriter().append(ResponseMessages.getXMLHeader());
+				response.getWriter().append(ResponseMessages.getXMLException(answer));
+				response.getWriter().append(ResponseMessages.getXMLFooter());
 			}
-			
-			appendHTML1a(out,pathToKML);
-
-			appendHTMLQ(out, strabonWrapper);
-
-			appendHTML1b(out);
-
-			if (hive.getSPARQLQuery() != null)
-				out.write(hive.getSPARQLQuery());
-
-			appendHTML2(out, hive.getFormat());
-
-			out.append("</table></td></tr></table>");
-
-			appendHTML4(out);
-			if (answer!="")
-				//out.append("<div id=\"map_canvas\"></div>");
-				out.append("");
-			appendHTML5(out);
 
 		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
 
