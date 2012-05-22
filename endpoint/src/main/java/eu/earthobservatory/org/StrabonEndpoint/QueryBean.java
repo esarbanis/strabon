@@ -134,7 +134,7 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
-			response.setContentType("text/plain; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
                         response.setHeader("Content-Disposition","attachment;filename=pico.kml");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
