@@ -58,6 +58,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
+import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
 import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBFromItem;
@@ -104,6 +105,13 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  */
 public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
+	/**
+	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
+	 * Opting to ask for 'null' instead
+	 */
+	
+	boolean nullLabel = false;
+	
 	public enum SpatialOperandsMonetDB { left, right, above, below; }
 	public enum SpatialFunctionsMonetDB 
 	{ 	//Spatial Relationships
@@ -352,6 +360,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, (MonetDBSqlExprBuilder)query.select);
 		}
+		
+		//SRID support must be explicitly added!
 		return this;
 	}
 
@@ -654,11 +664,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Buffer);
 	}
 	
+	//XXX Different Behavior
 	@Override
 	protected void append(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
 	throws UnsupportedRdbmsOperatorException
 	{
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Transform);
+//		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Transform);
+		appendTransformFunc(expr, filter);
 	}
 
 	@Override
@@ -744,7 +756,122 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
 	throws UnsupportedRdbmsOperatorException
 	{
-		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_SRID);
+		//		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_SRID);
+
+		boolean sridNeeded = true;
+		filter.openBracket();
+
+		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = false;
+		if(expr.getArg() instanceof GeneralDBLabelColumn)
+		{
+			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
+			{
+				check2 = true;
+			}
+		}
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getArg(), filter);
+
+		}
+		else if (check2)
+		{
+			appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
+		}
+		else
+		{
+			//XXX Incorporating SRID
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp.getParentNode() == null)
+			{
+				String sridExpr;
+				while(true)
+				{
+					GeneralDBSqlExpr child = null;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else if(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						//Constant!!
+						sridNeeded  = false;
+						break;
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						filter.append(sridExpr);
+						filter.closeBracket();
+						return;
+						//break;
+					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						//Constant!!
+						sridNeeded  = false;
+						break;
+					}
+
+				}
+			}
+
+			if(sridNeeded)
+			{
+				filter.appendFunction("ST_SRID");
+				filter.openBracket();
+				if(expr.getArg() instanceof GeneralDBStringValue)
+				{
+					appendWKT(expr.getArg(),filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
+				{
+					appendConstructFunction(expr.getArg(), filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+				{
+					appendConstructFunction(expr.getArg(), filter);
+				}
+				else if(expr.getArg() instanceof GeneralDBSqlCase)
+				{
+					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
+					appendMBB(onlyLabel,filter); 
+				}
+				else
+				{
+					appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
+				}
+
+				filter.closeBracket();
+			}
+			else
+			{
+				//4326 by default - Software House additions
+				filter.append("4326");
+			}
+		}
+
+		filter.closeBracket();
 	}
 
 	@Override
@@ -784,11 +911,159 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		return raw;
 	}
 
-	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
+	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
+	protected void appendTransformFunc(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
+	throws UnsupportedRdbmsOperatorException
+	{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
+		//XXX Incorporating SRID
+		String sridExpr = null;
+
+		filter.openBracket();
+		filter.appendFunction("Transform");
+		filter.openBracket();
+
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+		}
+		else
+		{
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
+
+				}
+				if(sridNeeded)
+				{
+					filter.appendFunction("Transform");
+					filter.openBracket();
+				}
+			}
+
+			if(expr.getLeftArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getLeftArg(),filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+			}
+
+			//SRID Support
+			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+
+			filter.appendComma();
+
+			if(expr.getRightArg() instanceof GeneralDBSqlCase) //case met in transform!
+			{
+				GeneralDBURIColumn plainURI = (GeneralDBURIColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+
+				//XXX This case would be met if we recovered the SRID URI from the db!!!
+				//Need to set sridExpr to the value of this new URI, otherwise the appended uri
+				//to the spatial object will be the wrong one!!!! (Seee following case)
+				filter.keepSRID_part1();
+				append(plainURI, filter);
+				filter.keepSRID_part2();
+				append(plainURI, filter);
+				filter.keepSRID_part3();
+			}
+			else if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				String unparsedSRID = ((GeneralDBStringValue)expr.getRightArg()).getValue();
+				//				int srid = Integer.parseInt(unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1));
+				sridExpr = unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1);
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+
+
+		}
+		filter.closeBracket();
+		//In this case, SRID is the one that has been provided by the user!! 
+		//I am including this extra binding to be used in subsequent (Aggregate) steps
+		if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
+
+	}
 	
+	
+	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
+	//EXCEPT ST_Transform!!!
 	protected void appendMonetDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
 	throws UnsupportedRdbmsOperatorException
 	{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
+		//XXX Incorporating SRID
+		String sridExpr = null;
+		
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
@@ -799,6 +1074,57 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
+			
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
+
+				}
+				if(sridNeeded)
+				{
+					filter.appendFunction("Transform");
+					filter.openBracket();
+				}
+			}
+			/////
+			
+			
 			switch(func)
 			{
 			//XXX Careful: ST_Transform support MISSING!!!
@@ -818,7 +1144,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			case contains: filter.appendFunction("Contains"); break;
 			case inside: filter.appendFunction("Within"); break;
 			}
-			//filter.appendFunction("ST_Union");
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
@@ -874,6 +1199,14 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				{
 					append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
 				}
+				else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+				{
+					filter.keepSRID_part1();
+					append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+					filter.keepSRID_part2();
+					append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+					filter.keepSRID_part3();
+				}
 				//case met in buffer when in select -> buffer(?spatial,?thematic)
 				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 				{
@@ -896,15 +1229,34 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 			}
 			filter.closeBracket();
+			//SRID Support
+			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+			///
 		}
 
 		filter.closeBracket();
+		//Used to explicitly include SRID
+		if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
 	}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
 	protected void appendMonetDBSpatialFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
 	throws UnsupportedRdbmsOperatorException
 	{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
+		String sridExpr = null;
+		
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
@@ -915,6 +1267,63 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
+
+			GeneralDBSqlExpr tmp = expr;
+
+
+			if(tmp instanceof GeneralDBSqlSpatialConstructUnary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child = null;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else if(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+					else if(tmp instanceof GeneralDBStringValue)
+					{
+						sridNeeded  = false;
+						break;
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
+
+				}
+				if(sridNeeded)
+				{
+					filter.appendFunction("Transform");
+					filter.openBracket();
+				}
+			}
+			/////
+			
 			switch(func)
 			{
 			case ST_Envelope: filter.appendFunction("Envelope"); break;
@@ -928,7 +1337,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_IsEmpty: filter.appendFunction("IsEmpty"); break;
 			case ST_IsSimple: filter.appendFunction("IsSimple"); break;
 			}
-			//filter.appendFunction("ST_Union");
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
@@ -953,9 +1361,27 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			filter.closeBracket();
+//			//SRID Support
+			if(sridNeeded)
+			{
+				if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+				{
+					filter.appendComma();
+					//				filter.append(((GeneralDBSqlSpatialConstructUnary)expr).getSrid());
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
+			}
+			///
 		}
 
 		filter.closeBracket();
+		//Used to explicitly include SRID
+		if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
 	}
 	
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
