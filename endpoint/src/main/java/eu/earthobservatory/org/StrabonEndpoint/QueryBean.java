@@ -122,10 +122,10 @@ public class QueryBean extends HttpServlet {
 			hive.setFormat("HTML");
 			response.setContentType("text/html; charset=UTF-8");			
 		} else if (reqAccept.contains("application/vnd.google-earth.kml+xml")) {
-			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kml+xml");
 			hive.setFormat("KML");
 		} else if (reqAccept.contains("application/vnd.google-earth.kmz")) {
-			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kmz");
 			hive.setFormat("KMZ");
 		} else if (reqAccept.contains("application/sparql-results+xml")) {			
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
@@ -134,10 +134,11 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
-			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
+			response.setContentType("text/plain; charset=UTF-8");
+                        response.setHeader("Content-Disposition","attachment;filename=pico.kml");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
-			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
+			response.setContentType("application/vnd.google-earth.kmz");
 			hive.setFormat("KMZ");
 		} else if (reqFormat.equalsIgnoreCase("SPARQLRESULTS"))  {
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
@@ -198,11 +199,11 @@ public class QueryBean extends HttpServlet {
 				answer = e.getMessage();
 			}
 
-			//response.setContentType("text/plain; charset=UTF-8");
+                        //response.setContentType("text/plain");
+			//response.setCharacterEncoding("UTF-8");
                         response.setStatus(status_code);
-                        response.setHeader("Content-Disposition","attachment; filename=pico.kml");
 			if (status_code == HttpServletResponse.SC_OK) {
-                                response.setContentLength(answer.length());
+                                //response.setContentLength(answer.length());
 				//response.getWriter().append(answer.toString());
                                 out.append(answer.toString());
                                 //out.flush();
