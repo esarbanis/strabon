@@ -2,6 +2,7 @@
 package org.openrdf.sail.generaldb.schema;
 
 
+import org.apache.commons.codec.binary.Hex;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import java.sql.PreparedStatement;
@@ -279,6 +280,11 @@ public class GeoValueTable {
 		}
 		else
 		{
+			///
+//			geom[0]=1;
+//			String hexString = new String(Hex.encodeHex(geom));
+//			System.err.println(id+", "+hexString);
+			///
 			batch.setBytes(2,geom);
 		}
 		batch.setObject(3, srid); //adding original srid-constant

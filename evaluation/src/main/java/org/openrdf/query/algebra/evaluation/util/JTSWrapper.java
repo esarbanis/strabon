@@ -5,6 +5,7 @@ package org.openrdf.query.algebra.evaluation.util;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKBConstants;
 import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
@@ -32,7 +33,8 @@ public class JTSWrapper {
 		wktr = new WKTReader();
 		wktw = new WKTWriter();
 		wkbr = new WKBReader();
-		wkbw = new WKBWriter();
+//		wkbw = new WKBWriter(); // PostGIS
+		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -42,7 +44,7 @@ public class JTSWrapper {
 		return instance;
 	}
 	
-	public synchronized Geometry WKTread(String wkt) throws ParseException {
+	public synchronized Geometry WKTread(String wkt) throws ParseException {		
 		return wktr.read(wkt);
 	}
 	
@@ -55,7 +57,13 @@ public class JTSWrapper {
 	}
 	
 	public synchronized byte[] WKBwrite(Geometry geom) {
-		return wkbw.write(geom);
+//		return wkbw.write(geom); // PostGIS
+		// MonetDB
+		byte[] temp = wkbw.write(geom);
+		temp[0] = 1;
+		return temp;
+		//
+		
 	}
 	
 }

@@ -65,9 +65,9 @@ public class GeneralTests {
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr) "+
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
@@ -76,9 +76,9 @@ public class GeneralTests {
 			"SELECT ?place (?placegeo AS ?constr) "+
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
@@ -87,9 +87,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo "+
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) " +
 			"&& strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
@@ -99,9 +99,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo "+
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)). "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)). "+
 			"}";
@@ -112,9 +112,9 @@ public class GeneralTests {
 			"?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr2) "+
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
@@ -123,9 +123,9 @@ public class GeneralTests {
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr) "+
 			"WHERE { "+
 			"?place "+
-			"      a ?type ; "+
-			"       geo:geometry ?placegeo ; "+
-			"        rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"   geo:geometry ?placegeo ; "+
+			"   rdfs:label ?placename . "+
 			"} ";
 
 	String query8 = 
@@ -133,9 +133,9 @@ public class GeneralTests {
 			"SELECT ?place "+  
 			"WHERE { "+
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+
 			"}";
 
@@ -144,9 +144,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
@@ -155,9 +155,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
@@ -166,9 +166,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(\"POINT(23.72873 37.97205)\"^^<http://strdf.di.uoa.gr/ontology#WKT>,0.0572),?placegeo)) "+
 			"}";
 
@@ -177,9 +177,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,2) AS ?buf) "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
@@ -189,9 +189,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,?ext) AS ?buf) "+
 			"WHERE { ?x lgdo:bufferExtent ?ext . "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
@@ -200,9 +200,9 @@ public class GeneralTests {
 			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,3) AS ?buf) "+
 			"WHERE { ?x lgdo:bufferExtent ?ext . "+ 
 			"?place "+
-			"a ?type ; "+
-			"geo:geometry ?placegeo ; "+
-			"rdfs:label ?placename . "+
+			"	a ?type ; "+
+			"	geo:geometry ?placegeo ; "+
+			"	rdfs:label ?placename . "+
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
@@ -210,11 +210,11 @@ public class GeneralTests {
 			prefixes+
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:envelope(?placegeo) AS ?constr)  (strdf:convexHull(?placegeo) AS ?constr2) "+ 
 			"WHERE { "+
-			"                     ?place "+
-			"                            a ?type ; "+
-			"                            geo:geometry ?placegeo ; "+
-			"                           rdfs:label ?placename . "+
-			"		     FILTER(strdf:anyInteract(strdf:union(?placegeo,strdf:envelope(?placegeo)),?placegeo) && strdf:anyInteract(strdf:convexHull(?placegeo),?placegeo)) "+
+			"?place "+
+			"	a ?type ; "+
+			"   geo:geometry ?placegeo ; "+
+			"   rdfs:label ?placename . "+
+			"FILTER(strdf:anyInteract(strdf:union(?placegeo,strdf:envelope(?placegeo)),?placegeo) && strdf:anyInteract(strdf:convexHull(?placegeo),?placegeo)) "+
 			"}";
 
 	String queryMetrics1 =
@@ -223,9 +223,9 @@ public class GeneralTests {
 			"( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext .  "+
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(2*strdf:distance(?placegeo,?placegeo) + strdf:area(?placegeo) - 3 + ?ext  "+
 			"< ?ext + 8 - strdf:distance(?placegeo,?placegeo)) "+
 			"}";
@@ -235,9 +235,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(2*strdf:distance(?placegeo,?placegeo) < 8) "+
 			"}";
 
@@ -247,9 +247,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(2*strdf:area(?placegeo) < 8) "+
 			"}";
 
@@ -258,9 +258,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(2*strdf:distance(?placegeo,?placegeo) + strdf:area(?placegeo) - 3 + ?ext " +
 			"< ?ext + 8 - strdf:distance(?placegeo,?placegeo)) "+
 			"}";
@@ -270,9 +270,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo (strdf:dimension(?placegeo) + 2 AS ?dim) (strdf:srid(?placegeo) AS ?srid) "+
 			"WHERE { "+
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 			"&& strdf:dimension(?placegeo) - 1 < 3) "+
 			"}";
@@ -282,9 +282,9 @@ public class GeneralTests {
 			"SELECT ?place ?placegeo (strdf:srid(?placegeo) AS ?srid) (strdf:dimension(?placegeo) + 2 AS ?dim)  "+
 			"WHERE { "+
 			"?place "+
-			"rdfs:label ?placename ; "+	
-			"geo:geometry ?placegeo ; "+
-			"a ?type. "+
+			"	rdfs:label ?placename ; "+	
+			"	geo:geometry ?placegeo ; "+
+			"	a ?type. "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 			"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3) "+
 			"}";
