@@ -133,12 +133,19 @@ public class QueryBean extends HttpServlet {
 		} else if (reqAccept.contains("text/xml")) {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
-		} else if (reqFormat.equalsIgnoreCase("KML")) {
+		} else if (reqFormat.equalsIgnoreCase("KML file")) {
 			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-                        response.setHeader("Content-Disposition","attachment;filename=pico.kml");
+            response.setHeader("Content-Disposition","attachment;filename=pico.kml");
 			hive.setFormat("KML");
+		} else if (reqFormat.equalsIgnoreCase("KML")) {
+			response.setContentType("text/plain; charset=UTF-8");
+			hive.setFormat("KML");
+		} else if (reqFormat.equalsIgnoreCase("KMZ file")) {
+			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
+            response.setHeader("Content-Disposition","attachment;filename=pico.kmz");
+			hive.setFormat("KMZ");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
-			response.setContentType("application/vnd.google-earth.kmz");
+			response.setContentType("text/plain; charset=UTF-8");
 			hive.setFormat("KMZ");
 		} else if (reqFormat.equalsIgnoreCase("SPARQLRESULTS"))  {
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
@@ -165,11 +172,6 @@ public class QueryBean extends HttpServlet {
 
 		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
 			StringBuilder errorMessage = new StringBuilder ();
-			//String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-			//hive.setErrorMessage(errorMessage.toString());
-			//SecureRandom random = new SecureRandom();
-			String extension = (hive.format.equalsIgnoreCase("KML") ? "kml" : "kmz");
-			//String temp = new BigInteger(130, random).toString(32);   
 			
 			int status_code = HttpServletResponse.SC_OK;
 			String answer = "";
@@ -199,15 +201,9 @@ public class QueryBean extends HttpServlet {
 				answer = e.getMessage();
 			}
 
-                        //response.setContentType("text/plain");
-			//response.setCharacterEncoding("UTF-8");
-                        response.setStatus(status_code);
+            response.setStatus(status_code);
 			if (status_code == HttpServletResponse.SC_OK) {
-                                //response.setContentLength(answer.length());
-				//response.getWriter().append(answer.toString());
-                                out.append(answer.toString());
-                                //out.flush();
-
+               out.append(answer.toString());
 			} else {
 				response.getWriter().append(ResponseMessages.getXMLHeader());
 				response.getWriter().append(ResponseMessages.getXMLException(answer));
@@ -524,7 +520,8 @@ public class QueryBean extends HttpServlet {
 		selections.put("KMLMAP", "HTML with google maps (kml)");
 		selections.put("HTML", "HTML");
 		//selections.put("KMZ", "KZM file");
-		selections.put("KML", "KML file");
+		selections.put("KML file", "KML file");
+		selections.put("KML", "KML plain text");
 		selections.put("XML", "XML");
 		selections.put("GEOJSON", "GeoJSON");
 		
