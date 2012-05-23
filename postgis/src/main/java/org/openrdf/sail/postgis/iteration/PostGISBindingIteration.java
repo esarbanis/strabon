@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 /**
@@ -57,8 +58,7 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 	@Override
 	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
 	throws SQLException
-	{
-
+	{		
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);

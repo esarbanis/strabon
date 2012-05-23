@@ -2113,7 +2113,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			//Also need bounding box intersection query to enable the usage of the Gist R-tree index
-			if(func != SpatialFunctionsPostGIS.SF_Disjoint && func != SpatialFunctionsPostGIS.EH_Disjoint)
+			if(func != SpatialFunctionsPostGIS.SF_Disjoint && func != SpatialFunctionsPostGIS.EH_Disjoint && func != SpatialFunctionsPostGIS.RCC8_Dc)
 			{
 				filter.and();
 				appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Intersects);

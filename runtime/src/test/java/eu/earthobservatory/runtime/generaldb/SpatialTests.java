@@ -300,6 +300,7 @@ public class SpatialTests {
 		String query = 
 			prefixes+
 			"SELECT DISTINCT ( strdf:envelope(strdf:buffer(?g, \"0.5\"^^xsd:float)) AS ?ret ) \n"+
+//			"SELECT DISTINCT ?g (strdf:buffer(?g, \"0.5\"^^xsd:float) as ?buf) ( strdf:envelope(strdf:buffer(?g, \"0.5\"^^xsd:float)) AS ?ret ) \n"+			
 			"WHERE { \n" +
 			" ?s ex:id ?id . \n"+
 			" ?s ex:geometry ?g . \n" +
@@ -311,8 +312,8 @@ public class SpatialTests {
 				
 		assertEquals(1, bindings.size());
 				
-		if ( -1<bindings.indexOf("[ret=\"POLYGON ((7.5 0.5, 7.5 2.5, 9.5 2.5, 9.5 0.5, 7.5 0.5))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]") ||
-			 -1<bindings.indexOf("[ret=\"POLYGON ((7.542893218813453 0.5428932188134517, 9.457106781186548 0.5428932188134517, 9.457106781186548 2.4571067811865483, 7.542893218813453 2.4571067811865483, 7.542893218813453 0.5428932188134517))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]")
+		if ( -1<bindings.indexOf("[ret=\"POLYGON ((7.5 0.5, 7.5 2.5, 9.5 2.5, 9.5 0.5, 7.5 0.5));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]") ||
+			 -1<bindings.indexOf("[ret=\"POLYGON ((7.542893218813453 0.5428932188134517, 9.457106781186548 0.5428932188134517, 9.457106781186548 2.4571067811865483, 7.542893218813453 2.4571067811865483, 7.542893218813453 0.5428932188134517));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]")
 		)
 			assertTrue(true);
 		else
@@ -335,7 +336,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((50 5, 10 8, 10 10, 100 190, 150 30, 150 10, 50 5))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((50 5, 10 8, 10 10, 100 190, 150 30, 150 10, 50 5));http://www.opengis.net/def/crs/EPSG/0/0\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 	
 	@Test
@@ -354,14 +355,14 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"LINESTRING (8 1, 9 1, 9 2, 8 2, 8 1)\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));	}
+		assertTrue(-1<bindings.indexOf("[ret=\"LINESTRING (8 1, 9 1, 9 2, 8 2, 8 1);http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));	}
 
 	@Test
 	public void testStrdfIntersection() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{ 
 		String query = 
 			prefixes+
-			"SELECT DISTINCT ( strdf:intersection(?g, \"POLYGON((5 3, 10 3, 10 8, 5 8, 5 3))\"^^strdf:WKT) AS ?ret ) \n"+
+			"SELECT DISTINCT ( strdf:intersection(?g, \"POLYGON((5 3, 10 3, 10 8, 5 8, 5 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^strdf:WKT) AS ?ret ) \n"+
 			"WHERE { \n" +
 			" ?s ex:id ?id . \n"+
 			" ?s ex:geometry ?g . \n" +
@@ -372,7 +373,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((10 3, 5 3, 5 8, 10 8, 10 3))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((10 3, 5 3, 5 8, 10 8, 10 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 	
 	@Test
@@ -391,7 +392,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 5 3))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 5 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 
 	@Test
@@ -399,7 +400,7 @@ public class SpatialTests {
 	{
 	String query = 
 		prefixes+
-		"SELECT DISTINCT ( strdf:symDifference(?g, \"POLYGON((5 3, 12 3, 12 8, 5 8, 5 3))\"^^strdf:WKT) AS ?ret ) \n"+
+		"SELECT DISTINCT ( strdf:symDifference(?g, \"POLYGON((5 3, 12 3, 12 8, 5 8, 5 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^strdf:WKT) AS ?ret ) \n"+
 		"WHERE { \n" +
 		" ?s ex:id ?id . \n"+
 		" ?s ex:geometry ?g . \n" +
@@ -410,7 +411,7 @@ public class SpatialTests {
 	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 			
 	assertEquals(1, bindings.size());
-	assertTrue(-1<bindings.indexOf("[ret=\"MULTIPOLYGON (((5 3, 3 3, 3 8, 5 8, 5 3)), ((10 3, 10 8, 12 8, 12 3, 10 3)))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+	assertTrue(-1<bindings.indexOf("[ret=\"MULTIPOLYGON (((5 3, 3 3, 3 8, 5 8, 5 3)), ((10 3, 10 8, 12 8, 12 3, 10 3)));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 
 //	// -- Spatial Metric Functions -- //
@@ -622,7 +623,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((50 5, 10 8, 10 10, 100 190, 150 30, 150 10, 50 5))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((50 5, 10 8, 10 10, 100 190, 150 30, 150 10, 50 5));http://www.opengis.net/def/crs/EPSG/0/0\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 	
 	@Test
@@ -641,7 +642,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((10 3, 5 3, 5 8, 10 8, 10 3))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((10 3, 5 3, 5 8, 10 8, 10 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 	
 	@Test
@@ -660,7 +661,7 @@ public class SpatialTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 				
 		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 5 3))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+		assertTrue(-1<bindings.indexOf("[ret=\"POLYGON ((5 3, 3 3, 3 8, 5 8, 5 3));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 
 	@Test
@@ -679,7 +680,7 @@ public class SpatialTests {
 	ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
 			
 	assertEquals(1, bindings.size());
-	assertTrue(-1<bindings.indexOf("[ret=\"MULTIPOLYGON (((5 3, 3 3, 3 8, 5 8, 5 3)), ((10 3, 10 8, 12 8, 12 3, 10 3)))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
+	assertTrue(-1<bindings.indexOf("[ret=\"MULTIPOLYGON (((5 3, 3 3, 3 8, 5 8, 5 3)), ((10 3, 10 8, 12 8, 12 3, 10 3)));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]"));
 	}
 
 	@Test
@@ -699,8 +700,8 @@ public class SpatialTests {
 				
 		assertEquals(1, bindings.size());
 				
-		if ( -1<bindings.indexOf("[ret=\"POLYGON ((7.5 0.5, 7.5 2.5, 9.5 2.5, 9.5 0.5, 7.5 0.5))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]") ||
-			 -1<bindings.indexOf("[ret=\"POLYGON ((7.542893218813453 0.5428932188134517, 9.457106781186548 0.5428932188134517, 9.457106781186548 2.4571067811865483, 7.542893218813453 2.4571067811865483, 7.542893218813453 0.5428932188134517))\"^^<http://strdf.di.uoa.gr/ontology#WKT>]")
+		if ( -1<bindings.indexOf("[ret=\"POLYGON ((7.5 0.5, 7.5 2.5, 9.5 2.5, 9.5 0.5, 7.5 0.5));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]") ||
+			 -1<bindings.indexOf("[ret=\"POLYGON ((7.542893218813453 0.5428932188134517, 9.457106781186548 0.5428932188134517, 9.457106781186548 2.4571067811865483, 7.542893218813453 2.4571067811865483, 7.542893218813453 0.5428932188134517));http://www.opengis.net/def/crs/EPSG/0/4326\"^^<http://strdf.di.uoa.gr/ontology#WKT>]")
 		)
 			assertTrue(true);
 		else

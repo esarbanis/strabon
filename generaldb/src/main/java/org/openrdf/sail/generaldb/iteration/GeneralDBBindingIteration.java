@@ -5,6 +5,7 @@
  */
 package org.openrdf.sail.generaldb.iteration;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.schema.ValueTable;
 
@@ -108,6 +110,26 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected BindingSet convert(ResultSet rs)
 	throws SQLException
 	{
+		
+		/// debug
+		for(int i=1; i<12;i++) {
+			Object o = rs.getObject(i);
+			if (o instanceof byte[] ) {
+				byte[] label = rs.getBytes(i);
+				int srid = rs.getInt(i + 1);
+				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
+				System.out.println(i+": "+g.getPolyhedronStringRep());
+			} else if (o instanceof Blob ) {
+				Blob labelBlob = rs.getBlob(i); 
+				byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
+				int srid = rs.getInt(i + 1);
+				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
+				System.out.println(i+": "+g.getPolyhedronStringRep());
+			}  
+			else 
+				System.out.println(i+": "+rs.getObject(i));
+		}
+		///
 
 		QueryBindingSet result = new QueryBindingSet(bindings);
 		for (GeneralDBColumnVar var : projections) {
