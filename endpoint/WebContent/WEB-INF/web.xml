@@ -54,6 +54,15 @@
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->
 <!-- 		<url-pattern>/QueryServlet</url-pattern> -->
 <!-- 	</servlet-mapping> -->
+ 
+    	<mime-mapping>
+        	<extension>kml</extension>
+        	<mime-type>application/vnd.google-earth.kml+xml</mime-type>
+    	</mime-mapping>
+    	<mime-mapping>
+        	<extension>kmz</extension>
+        	<mime-type>application/vnd.google-earth.kmz</mime-type>
+    	</mime-mapping>
 	
 	<session-config>
 		<session-timeout>60</session-timeout>

@@ -134,7 +134,8 @@ public class QueryBean extends HttpServlet {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
-			response.setContentType("application/vnd.google-earth.kml+xml");
+			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
+                        response.setHeader("Content-Disposition","attachment;filename=pico.kml");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
 			response.setContentType("application/vnd.google-earth.kmz");
@@ -167,7 +168,7 @@ public class QueryBean extends HttpServlet {
 			//String answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			//hive.setErrorMessage(errorMessage.toString());
 			//SecureRandom random = new SecureRandom();
-			//String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
+			String extension = (hive.format.equalsIgnoreCase("KML") ? "kml" : "kmz");
 			//String temp = new BigInteger(130, random).toString(32);   
 			
 			int status_code = HttpServletResponse.SC_OK;
@@ -198,13 +199,14 @@ public class QueryBean extends HttpServlet {
 				answer = e.getMessage();
 			}
 
-			//response.setContentType("text/plain; charset=UTF-8");
+                        //response.setContentType("text/plain");
+			//response.setCharacterEncoding("UTF-8");
                         response.setStatus(status_code);
 			if (status_code == HttpServletResponse.SC_OK) {
-                                response.setContentLength(answer.length());
+                                //response.setContentLength(answer.length());
 				//response.getWriter().append(answer.toString());
                                 out.append(answer.toString());
-                                out.flush();
+                                //out.flush();
 
 			} else {
 				response.getWriter().append(ResponseMessages.getXMLHeader());
