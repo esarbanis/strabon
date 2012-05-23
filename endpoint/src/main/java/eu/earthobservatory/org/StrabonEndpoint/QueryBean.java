@@ -133,16 +133,20 @@ public class QueryBean extends HttpServlet {
 		} else if (reqAccept.contains("text/xml")) {
 			response.setContentType("text/xml; charset=UTF-8");
 			hive.setFormat("XML");
+		} else if (reqAccept.contains("application/json"))  {
+			response.setContentType("application/json; charset=UTF-8");
+			hive.setFormat("GEOJSON");
+
 		} else if (reqFormat.equalsIgnoreCase("KML file")) {
 			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-            response.setHeader("Content-Disposition","attachment;filename=pico.kml");
+		        response.setHeader("Content-Disposition","attachment;filename=pico.kml");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
 			response.setContentType("text/plain; charset=UTF-8");
 			hive.setFormat("KML");
 		} else if (reqFormat.equalsIgnoreCase("KMZ file")) {
 			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
-            response.setHeader("Content-Disposition","attachment;filename=pico.kmz");
+			response.setHeader("Content-Disposition","attachment;filename=pico.kmz");
 			hive.setFormat("KMZ");
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
 			response.setContentType("text/plain; charset=UTF-8");
