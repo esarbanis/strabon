@@ -3,8 +3,6 @@ package org.openrdf.sail.generaldb.schema;
 
 
 //import org.apache.commons.codec.binary.Hex;
-import org.openrdf.sail.generaldb.GeneralDBSqlTable;
-import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +10,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+
+import org.openrdf.sail.generaldb.GeneralDBSqlTable;
+import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
 
 /**
