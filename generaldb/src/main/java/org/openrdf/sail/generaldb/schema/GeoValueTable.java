@@ -2,7 +2,7 @@
 package org.openrdf.sail.generaldb.schema;
 
 
-import org.apache.commons.codec.binary.Hex;
+//import org.apache.commons.codec.binary.Hex;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import java.sql.PreparedStatement;
