@@ -61,6 +61,11 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 		
 		TemplateTests.loadTestData(inputfile, strabon);
 		
+		// This is a workaround for http://bug.strabon.di.uoa.gr/ticket/1
+		strabon.close();
+		strabon = new eu.earthobservatory.runtime.monetdb.Strabon(databaseName, username, password, port, serverName, true);
+		//
+		
 		return strabon;
 	}
 	
