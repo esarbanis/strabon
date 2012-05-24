@@ -111,63 +111,7 @@ public class TripleTable {
 		initialize = true;
 			}
 
-	/**
-	 *  TODO Steps:
-	 *  
-	 *  During 1st run, use the original code of reload enhanced only with the two additional int tables. Also 
-	 *  use the altered form of close()
-	 *  
-	 *  2nd run: replace reload() code and keep original close()
-	 */
 
-	//Original
-	//	public void reload()
-	//	throws SQLException
-	//	{
-	//		table.count();
-	//		if (table.size() > 0) {
-	//			//XXX uncomment during 1st run!! --> Original code
-	//			ValueType[] values = ValueType.values();
-	//			String[] OBJ_CONTAINS = new String[values.length];
-	//			String[] SUBJ_CONTAINS = new String[values.length];
-	//			StringBuilder sb = new StringBuilder();
-	//			for (int i = 0, n = values.length; i < n; i++) {
-	//				sb.delete(0, sb.length());
-	//				ValueType code = values[i];
-	//				sb.append("MAX(CASE WHEN obj BETWEEN ").append(ids.minId(code));
-	//				sb.append(" AND ").append(ids.maxId(code));
-	//				sb.append(" THEN 1 ELSE 0 END)");
-	//				OBJ_CONTAINS[i] = sb.toString();
-	//				sb.delete(0, sb.length());
-	//				sb.append("MAX(CASE WHEN subj BETWEEN ").append(ids.minId(code));
-	//				sb.append(" AND ").append(ids.maxId(code));
-	//				sb.append(" THEN 1 ELSE 0 END)");
-	//				SUBJ_CONTAINS[i] = sb.toString();
-	//			}
-	//			int[] aggregate = table.aggregate(OBJ_CONTAINS);
-	//			//XXX mine
-	//			objAggregates = aggregate;
-	//			//
-	//			for (int i = 0; i < aggregate.length; i++) {
-	//				if (aggregate[i] == 1) {
-	//					objTypes.add(values[i]);
-	//				}
-	//			}
-	//			aggregate = table.aggregate(SUBJ_CONTAINS);
-	//			//XXX mine
-	//			subjAggregates = aggregate;
-	//			//
-	//			for (int i = 0; i < aggregate.length; i++) {
-	//				if (aggregate[i] == 1) {
-	//					subjTypes.add(values[i]);
-	//				}
-	//			}
-	//		}
-	//		initialize = true;
-	//	}
-
-
-	//2nd version of reload
 	public void reload()
 			throws SQLException
 			{
@@ -260,7 +204,7 @@ public class TripleTable {
 
 					dis.close();
 					//KK}
-				//KKelse //skip line
+					//KKelse //skip line
 					//KK{
 					//KKwhile(dis.readChar()!='\n')
 					//KK{
