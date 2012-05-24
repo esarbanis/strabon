@@ -68,6 +68,9 @@ public class MonetDBEvaluation extends GeneralDBEvaluation {
 					if ( o instanceof String ) {
 						stmt.setString(++p, (String)o); // TODO this must be extended with all types 
 					}
+					if ( o instanceof Double ){
+						stmt.setDouble(++p, (Double)o); // TODO this must be extended with all types
+					}
 					else {
 						stmt.setObject(++p, o);
 					}
