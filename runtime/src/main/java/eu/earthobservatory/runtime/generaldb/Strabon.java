@@ -110,6 +110,24 @@ public abstract class Strabon {
 
 		initiate(databaseName, user, password, port, serverName);
 	}
+	
+	public Strabon (String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, String cachePath) throws SQLException, ClassNotFoundException {
+		
+		if(!cachePath.endsWith("/"))
+		{	
+			cachePath = cachePath+"/";
+		}
+		StrabonPolyhedron.CACHEPATH = ""+cachePath;
+		StrabonPolyhedron.TABLE_COUNTS = cachePath + "counts.bin";
+		StrabonPolyhedron.TABLE_SHIFTING = cachePath + "groupbys.bin";
+		StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES = cachePath + "tableProperties.bin";
+		
+		if (checkForLockTable == true) {
+			checkAndDeleteLock(databaseName, user, password, port, serverName);
+		}
+
+		initiate(databaseName, user, password, port, serverName);
+	}
 
 
 	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName) ;
@@ -155,17 +173,24 @@ public abstract class Strabon {
 	}
 
 	public void close() {
-
-		System.out.println("Closing...");
-
-
-
 		try {
+			System.out.println("Closing...");
 			con1.commit();
 			con1.close();
-			repo1.shutDown();
-		} catch (RepositoryException e) {
 
+			repo1.shutDown();
+			
+			try {
+				FileWriter fw = new FileWriter(new File(StrabonPolyhedron.CACHEPATH+"initialized.bin"));
+				fw.write(1);
+				fw.close();
+			} catch (IOException e) {
+				 
+				e.printStackTrace();
+			}
+			 
+		} catch (RepositoryException e) {
+			 
 			e.printStackTrace();
 		}
 	}

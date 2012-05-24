@@ -5,10 +5,18 @@
  */
 package org.openrdf.sail.generaldb.schema;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import org.openrdf.sail.rdbms.schema.ValueTypes;
 import org.openrdf.sail.rdbms.schema.ValueType;
@@ -53,6 +61,12 @@ public class TripleTable {
 
 	private IdSequence ids;
 
+	/**
+	 * My additions in order to avoid the expensive initialization queries
+	 */
+	private int[] subjAggregates;
+	private int[] objAggregates;
+
 	public TripleTable(RdbmsTable table) {
 		this.table = table;
 	}
@@ -74,8 +88,8 @@ public class TripleTable {
 	}
 
 	public synchronized void initTable()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		if (initialize)
 			return;
 		table.createTransactionalTable(buildTableColumns());
@@ -95,62 +109,241 @@ public class TripleTable {
 			createIndex();
 		}
 		initialize = true;
-	}
+			}
 
+	/**
+	 *  TODO Steps:
+	 *  
+	 *  During 1st run, use the original code of reload enhanced only with the two additional int tables. Also 
+	 *  use the altered form of close()
+	 *  
+	 *  2nd run: replace reload() code and keep original close()
+	 */
+
+	//Original
+	//	public void reload()
+	//	throws SQLException
+	//	{
+	//		table.count();
+	//		if (table.size() > 0) {
+	//			//XXX uncomment during 1st run!! --> Original code
+	//			ValueType[] values = ValueType.values();
+	//			String[] OBJ_CONTAINS = new String[values.length];
+	//			String[] SUBJ_CONTAINS = new String[values.length];
+	//			StringBuilder sb = new StringBuilder();
+	//			for (int i = 0, n = values.length; i < n; i++) {
+	//				sb.delete(0, sb.length());
+	//				ValueType code = values[i];
+	//				sb.append("MAX(CASE WHEN obj BETWEEN ").append(ids.minId(code));
+	//				sb.append(" AND ").append(ids.maxId(code));
+	//				sb.append(" THEN 1 ELSE 0 END)");
+	//				OBJ_CONTAINS[i] = sb.toString();
+	//				sb.delete(0, sb.length());
+	//				sb.append("MAX(CASE WHEN subj BETWEEN ").append(ids.minId(code));
+	//				sb.append(" AND ").append(ids.maxId(code));
+	//				sb.append(" THEN 1 ELSE 0 END)");
+	//				SUBJ_CONTAINS[i] = sb.toString();
+	//			}
+	//			int[] aggregate = table.aggregate(OBJ_CONTAINS);
+	//			//XXX mine
+	//			objAggregates = aggregate;
+	//			//
+	//			for (int i = 0; i < aggregate.length; i++) {
+	//				if (aggregate[i] == 1) {
+	//					objTypes.add(values[i]);
+	//				}
+	//			}
+	//			aggregate = table.aggregate(SUBJ_CONTAINS);
+	//			//XXX mine
+	//			subjAggregates = aggregate;
+	//			//
+	//			for (int i = 0; i < aggregate.length; i++) {
+	//				if (aggregate[i] == 1) {
+	//					subjTypes.add(values[i]);
+	//				}
+	//			}
+	//		}
+	//		initialize = true;
+	//	}
+
+
+	//2nd version of reload
 	public void reload()
-		throws SQLException
-	{
-		table.count();
-		if (table.size() > 0) {
-			ValueType[] values = ValueType.values();
-			String[] OBJ_CONTAINS = new String[values.length];
-			String[] SUBJ_CONTAINS = new String[values.length];
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0, n = values.length; i < n; i++) {
-				sb.delete(0, sb.length());
-				ValueType code = values[i];
-				sb.append("MAX(CASE WHEN obj BETWEEN ").append(ids.minId(code));
-				sb.append(" AND ").append(ids.maxId(code));
-				sb.append(" THEN 1 ELSE 0 END)");
-				OBJ_CONTAINS[i] = sb.toString();
-				sb.delete(0, sb.length());
-				sb.append("MAX(CASE WHEN subj BETWEEN ").append(ids.minId(code));
-				sb.append(" AND ").append(ids.maxId(code));
-				sb.append(" THEN 1 ELSE 0 END)");
-				SUBJ_CONTAINS[i] = sb.toString();
-			}
-			int[] aggregate = table.aggregate(OBJ_CONTAINS);
-			for (int i = 0; i < aggregate.length; i++) {
-				if (aggregate[i] == 1) {
-					objTypes.add(values[i]);
-				}
-			}
-			aggregate = table.aggregate(SUBJ_CONTAINS);
-			for (int i = 0; i < aggregate.length; i++) {
-				if (aggregate[i] == 1) {
-					subjTypes.add(values[i]);
-				}
-			}
+			throws SQLException
+			{
+		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		File file = new File(StrabonPolyhedron.CACHEPATH+"tableProperties/"+this.getName());
+		//if(!existing.exists())
+		if(!file.exists())
+		{			
+			long start = System.nanoTime();
+			table.count();
+			if (table.size() > 0) {
 
+				ValueType[] values = ValueType.values();
+				String[] OBJ_CONTAINS = new String[values.length];
+				String[] SUBJ_CONTAINS = new String[values.length];
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0, n = values.length; i < n; i++) {
+					sb.delete(0, sb.length());
+					ValueType code = values[i];
+					sb.append("MAX(CASE WHEN obj BETWEEN ").append(ids.minId(code));
+					sb.append(" AND ").append(ids.maxId(code));
+					sb.append(" THEN 1 ELSE 0 END)");
+					OBJ_CONTAINS[i] = sb.toString();
+					sb.delete(0, sb.length());
+					sb.append("MAX(CASE WHEN subj BETWEEN ").append(ids.minId(code));
+					sb.append(" AND ").append(ids.maxId(code));
+					sb.append(" THEN 1 ELSE 0 END)");
+					SUBJ_CONTAINS[i] = sb.toString();
+				}
+				int[] aggregate = table.aggregate(OBJ_CONTAINS);
+
+				objAggregates = aggregate;
+
+				for (int i = 0; i < aggregate.length; i++) {
+					if (aggregate[i] == 1) {
+						objTypes.add(values[i]);
+					}
+				}
+				aggregate = table.aggregate(SUBJ_CONTAINS);
+
+				subjAggregates = aggregate;
+
+				for (int i = 0; i < aggregate.length; i++) {
+					if (aggregate[i] == 1) {
+						subjTypes.add(values[i]);
+					}
+				}
+			}
+			initialize = true;
+			//System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Initialization took "+(System.nanoTime()-start)+" nanoseconds.");
 		}
-		initialize = true;
-	}
+		else
+		{
+			long start = System.nanoTime();
+			//System.out.println("Everything is cached");
+			table.count();
+			if (table.size() > 0) {
+
+
+				try {
+					ValueType[] values = ValueType.values();
+					//KKFileInputStream fstream = new FileInputStream(new File(StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES));
+					FileInputStream fstream = new FileInputStream(file);
+					DataInputStream dis = new DataInputStream(fstream);
+					//KKboolean foundName = false;
+					//KKwhile(!foundName)
+					//KK{
+					//KKString potentialName = dis.readUTF();
+					//KKif(table.getName().equals(potentialName))//found table name
+					//KK{
+					//KK	foundName = true;
+					int[] aggregate = new int[16];
+					for(int i=0;i<16;i++)
+					{
+						aggregate[i] = dis.readInt();
+						if (aggregate[i] == 1) {
+							subjTypes.add(values[i]);
+
+						}
+					}
+
+					for(int i=0;i<16;i++)
+					{
+						aggregate[i] = dis.readInt();
+						if (aggregate[i] == 1) {
+							objTypes.add(values[i]);
+
+						}
+					}
+
+					dis.close();
+					//KK}
+				//KKelse //skip line
+					//KK{
+					//KKwhile(dis.readChar()!='\n')
+					//KK{
+					//KK//just loop till you find next line
+					//KK}
+					//KK}}
+					//KK}
+				} catch (FileNotFoundException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
+
+			}
+			initialize = true;
+			//System.out.println("["+this.getName()+"] Cache TRIPLETABLE file found. Initialization took "+(System.nanoTime()-start)+" nanoseconds.");
+		}
+			}
 
 	public void close()
-		throws SQLException
-	{
+			throws SQLException
+			{
+		//XXX uncomment during 1st run in order to fill properties file
+		//KKFile output = new File(StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES);
+		File output = new File(StrabonPolyhedron.CACHEPATH+"tableProperties/"+this.getName());
+		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		if(!output.exists()&&subjAggregates!=null)
+		{
+			System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Storing cache details...");
+			FileOutputStream fstream = null;
+			DataOutputStream dos = null;
+			try {
+				//KKfstream = new FileOutputStream(output,true);
+				fstream = new FileOutputStream(output,false);
+
+				dos = new DataOutputStream(fstream);
+
+				//KKdos.writeUTF(table.getName());
+				//dos.writeChar(';');
+				for(int ii=0;ii<subjAggregates.length;ii++)
+				{
+					dos.writeInt(subjAggregates[ii]);
+				}
+
+				//dos.writeChar(';');
+				for(int ii=0;ii<objAggregates.length;ii++)
+				{
+					dos.writeInt(objAggregates[ii]);
+				}
+
+				//KKdos.writeChar('\n');
+				dos.close();
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+
+
 		table.close();
-	}
+			}
+
+
+	//	//Original close
+	//	public void close()
+	//		throws SQLException
+	//	{
+	//		table.close();
+	//	}
 
 	public boolean isIndexed()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		return table.getIndexes().size() > 1;
-	}
+			}
 
 	public void createIndex()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		if (isPredColumnPresent()) {
 			table.index(PRED_INDEX);
 			total_st++;
@@ -161,42 +354,42 @@ public class TripleTable {
 		total_st++;
 		table.index(EXPL_INDEX);
 		total_st++;
-	}
+			}
 
 	public void dropIndex()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		for (Map.Entry<String, List<String>> e : table.getIndexes().entrySet()) {
 			if (!e.getValue().contains("OBJ") && !e.getValue().contains("obj")) {
 				table.dropIndex(e.getKey());
 			}
 		}
-	}
+			}
 
 	public boolean isReady() {
 		return initialize;
 	}
 
 	public void blockUntilReady()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		if (initialize)
 			return;
 		initTable();
-	}
+			}
 
 	public String getName()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		return table.getName();
-	}
+			}
 
 	public String getNameWhenReady()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		blockUntilReady();
 		return table.getName();
-	}
+			}
 
 	public ValueTypes getObjTypes() {
 		return objTypes;
@@ -215,8 +408,8 @@ public class TripleTable {
 	}
 
 	public void modified(int addedCount, int removedCount)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		blockUntilReady();
 		table.modified(addedCount, removedCount);
 		table.optimize();
@@ -224,14 +417,14 @@ public class TripleTable {
 			objTypes.reset();
 			subjTypes.reset();
 		}
-	}
+			}
 
 	public boolean isEmpty()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		blockUntilReady();
 		return table.size() == 0;
-	}
+			}
 
 	@Override
 	public String toString() {
@@ -239,11 +432,11 @@ public class TripleTable {
 	}
 
 	public void drop()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		blockUntilReady();
 		table.drop();
-	}
+			}
 
 	protected CharSequence buildTableColumns() {
 		StringBuilder sb = new StringBuilder();

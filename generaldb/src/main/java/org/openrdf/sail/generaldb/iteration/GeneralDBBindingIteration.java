@@ -111,25 +111,25 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	throws SQLException
 	{
 		
-		/// debug
-		for(int i=1; i<12;i++) {
-			Object o = rs.getObject(i);
-			if (o instanceof byte[] ) {
-				byte[] label = rs.getBytes(i);
-				int srid = rs.getInt(i + 1);
-				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
-				System.out.println(i+": "+g.getPolyhedronStringRep());
-			} else if (o instanceof Blob ) {
-				Blob labelBlob = rs.getBlob(i); 
-				byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
-				int srid = rs.getInt(i + 1);
-				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
-				System.out.println(i+": "+g.getPolyhedronStringRep());
-			}  
-			else 
-				System.out.println(i+": "+rs.getObject(i));
-		}
-		///
+//		/// debug
+//		for(int i=1; i<12;i++) {
+//			Object o = rs.getObject(i);
+//			if (o instanceof byte[] ) {
+//				byte[] label = rs.getBytes(i);
+//				int srid = rs.getInt(i + 1);
+//				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
+//				System.out.println(i+": "+g.getPolyhedronStringRep());
+//			} else if (o instanceof Blob ) {
+//				Blob labelBlob = rs.getBlob(i); 
+//				byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
+//				int srid = rs.getInt(i + 1);
+//				GeneralDBPolyhedron g = vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
+//				System.out.println(i+": "+g.getPolyhedronStringRep());
+//			}  
+//			else 
+//				System.out.println(i+": "+rs.getObject(i));
+//		}
+//		///
 
 		QueryBindingSet result = new QueryBindingSet(bindings);
 		for (GeneralDBColumnVar var : projections) {

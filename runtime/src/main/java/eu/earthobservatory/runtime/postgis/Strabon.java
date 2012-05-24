@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.postgis.PostGISSqlStore;
 
 
@@ -14,6 +15,12 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 	}
 
 
+	public Strabon (String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, String cachePath) throws SQLException, ClassNotFoundException {
+		
+		super(databaseName, user, password, port, serverName, checkForLockTable,cachePath);
+	}
+
+	
 	protected void initiate(String databaseName, String user, String password, int port, String serverName) {
 		db_store = new PostGISSqlStore();
 

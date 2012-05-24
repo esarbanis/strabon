@@ -26,6 +26,7 @@
 		<module>generaldb</module>
 		<module>resultio</module>
 		<module>endpoint</module>
+		<module>rdbms</module>
 	</modules>
 
 	<properties>
@@ -45,6 +46,13 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Strabon dependencies -->
+			
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-sail-rdbms-caches</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
@@ -145,12 +153,6 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-query</artifactId>
-				<version>${sesame.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-sail-rdbms</artifactId>
 				<version>${sesame.version}</version>
 			</dependency>
 

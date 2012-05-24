@@ -5,6 +5,14 @@
  */
 package org.openrdf.sail.generaldb.schema;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
@@ -57,6 +66,11 @@ public class ValueTable  {
 	private boolean indexingValues;
 
 	private PreparedStatement insertSelect;
+
+	//XXX addition in order to avoid costly select - hack
+	private List<Long> maxIds = new ArrayList<Long>();
+	private boolean isHashTable = false;
+	////
 
 	public void setQueue(BlockingQueue<Batch> queue) {
 		this.queue = queue;
@@ -123,12 +137,12 @@ public class ValueTable  {
 	}
 
 	public void initialize()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		StringBuilder sb = new StringBuilder();
 		/****************/
-//		sb.append("INSERT INTO ").append(getInsertTable().getName());
-//		sb.append(" (id, value) VALUES (?, ?)");
+		//		sb.append("INSERT INTO ").append(getInsertTable().getName());
+		//		sb.append(" (id, value) VALUES (?, ?)");
 		sb.append("INSERT INTO ").append(getInsertTable().getName());
 		GeneralDBSqlTable table = (GeneralDBSqlTable)getInsertTable();
 		sb.append(table.buildInsertValue(sql(sqlType, length)));
@@ -160,11 +174,46 @@ public class ValueTable  {
 		if (temporary != null && !temporary.isCreated()) {
 			createTemporaryTable(temporary);
 		}
-	}
+			}
 
 	public void close()
-		throws SQLException
-	{
+			throws SQLException
+			{
+		//XXX uncomment during 1st run in order to fill properties file
+		//File will only have one line
+
+		File output = new File(StrabonPolyhedron.TABLE_SHIFTING);
+		File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		if((!existing.exists()) || (!output.exists()))
+		{			
+			if(isHashTable)
+			{
+				System.out.println("["+this.getName()+"] Cache VALUETABLE file not found. Storing cache details...");
+
+				FileOutputStream fstream = null;
+				DataOutputStream dos = null;
+				try {
+					fstream = new FileOutputStream(output,true);
+
+					dos = new DataOutputStream(fstream);
+
+					//dos.writeUTF(table.getName());
+
+					for(Long tmp : maxIds)
+					{
+						dos.writeLong(tmp);
+					}
+
+					//dos.writeChar('\n');
+					dos.close();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
+			}
+		}
+		//end of addition
+
 		if (insertSelect != null) {
 			insertSelect.close();
 		}
@@ -172,11 +221,11 @@ public class ValueTable  {
 			temporary.close();
 		}
 		table.close();
-	}
+			}
 
 	public synchronized void insert(Number id, String value)
-		throws SQLException, InterruptedException
-	{
+			throws SQLException, InterruptedException
+			{
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -186,11 +235,11 @@ public class ValueTable  {
 		batch.setString(2, value);
 		batch.addBatch();
 		queue(batch);
-	}
+			}
 
 	public synchronized void insert(Number id, Number value)
-		throws SQLException, InterruptedException
-	{
+			throws SQLException, InterruptedException
+			{
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -200,7 +249,7 @@ public class ValueTable  {
 		batch.setObject(2, value);
 		batch.addBatch();
 		queue(batch);
-	}
+			}
 
 	public ValueBatch getValueBatch() {
 		return this.batch;
@@ -217,8 +266,8 @@ public class ValueTable  {
 	}
 
 	public void initBatch(ValueBatch batch)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		batch.setTable(table);
 		batch.setBatchStatement(prepareInsert(INSERT));
 		batch.setMaxBatchSize(getBatchSize());
@@ -229,11 +278,11 @@ public class ValueTable  {
 			}
 			batch.setInsertStatement(insertSelect);
 		}
-	}
+			}
 
 	public void queue(ValueBatch batch)
-		throws SQLException, InterruptedException
-	{
+			throws SQLException, InterruptedException
+			{
 		this.batch = batch;
 		if (queue == null) {
 			batch.flush();
@@ -241,17 +290,17 @@ public class ValueTable  {
 		else {
 			queue.put(batch);
 		}
-	}
+			}
 
 	public void optimize()
-		throws SQLException
-	{
+			throws SQLException
+			{
 		table.optimize();
-	}
+			}
 
 	public boolean expunge(String condition)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		synchronized (table) {
 			int count = table.executeUpdate(EXPUNGE + condition);
 			if (count < 1)
@@ -259,73 +308,117 @@ public class ValueTable  {
 			table.modified(0, count);
 			return true;
 		}
-	}
+			}
 
 	public List<Long> maxIds(int shift, int mod)
-		throws SQLException
-	{
-		String column = "id";
-		StringBuilder expr = new StringBuilder();
-		expr.append("MOD((").append(column);
-		expr.append(" >> ").append(shift);
-		expr.append(") + ").append(mod).append(", ");
-		expr.append(mod);
-		expr.append(")");
-		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT ");
-		sb.append("MAX(");
-		sb.append(column);
-		sb.append("), ").append(expr).append(" AS grp");
-		sb.append("\nFROM ").append(getName());
-		sb.append("\nGROUP BY grp");
-		String query = sb.toString();
-		PreparedStatement st = table.prepareStatement(query);
-		try {
-			ResultSet rs = st.executeQuery();
+			throws SQLException
+			{
+
+		File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		if(!existing.exists())
+		{
+			String column = "id";
+			StringBuilder expr = new StringBuilder();
+			expr.append("MOD((").append(column);
+			expr.append(" >> ").append(shift);
+			expr.append(") + ").append(mod).append(", ");
+			expr.append(mod);
+			expr.append(")");
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ");
+			sb.append("MAX(");
+			sb.append(column);
+			sb.append("), ").append(expr).append(" AS grp");
+			sb.append("\nFROM ").append(getName());
+			sb.append("\nGROUP BY grp");
+			String query = sb.toString();
+			PreparedStatement st = table.prepareStatement(query);
 			try {
-				List<Long> result = new ArrayList<Long>();
-				while (rs.next()) {
-					result.add(rs.getLong(1));
+				ResultSet rs = st.executeQuery();
+				try {
+					List<Long> result = new ArrayList<Long>();
+					while (rs.next()) {
+						result.add(rs.getLong(1));
+					}
+
+					//XXX addition --> will use in close()
+					maxIds.addAll(result);
+					isHashTable = true;
+
+					return result;
 				}
-				return result;
+
+				finally {
+					rs.close();
+				}
 			}
 			finally {
-				rs.close();
+				st.close();
 			}
 		}
-		finally {
-			st.close();
+		else
+		{
+			long start = System.nanoTime();
+			try 
+			{
+				FileInputStream fstream = new FileInputStream(new File(StrabonPolyhedron.TABLE_SHIFTING));
+				DataInputStream dis = new DataInputStream(fstream);
+
+
+				while(true)
+				{
+					try
+					{
+						long read = dis.readLong();
+						maxIds.add(read);
+					}
+					catch(EOFException e)
+					{
+						break;
+					}
+				}
+
+
+			} catch (FileNotFoundException e) {
+
+				e.printStackTrace();
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+			//System.out.println("["+this.getName()+"] Cache VALUETABLE file found. Initialization took "+(System.nanoTime()-start)+" nanoseconds.");
+			return maxIds;
 		}
-	}
+			}
 
 	public String sql(int type, int length) {
 		switch (type) {
-			case Types.VARCHAR:
-				if (length > 0)
-					return "VARCHAR(" + length + ")";
-				return "TEXT";
-			case Types.LONGVARCHAR:
-				if (length > 0)
-					return "LONGVARCHAR(" + length + ")";
-				return "TEXT";
-			case Types.BIGINT:
-				return "BIGINT";
-			case Types.INTEGER:
-				return "INTEGER";
-			case Types.SMALLINT:
-				return "SMALLINT";
-			case Types.FLOAT:
-				return "FLOAT";
-			case Types.DOUBLE:
-				return "DOUBLE";
-			case Types.DECIMAL:
-				return "DECIMAL";
-			case Types.BOOLEAN:
-				return "BOOLEAN";
-			case Types.TIMESTAMP:
-				return "TIMESTAMP";
-			default:
-				throw new AssertionError("Unsupported SQL Type: " + type);
+		case Types.VARCHAR:
+			if (length > 0)
+				return "VARCHAR(" + length + ")";
+			return "TEXT";
+		case Types.LONGVARCHAR:
+			if (length > 0)
+				return "LONGVARCHAR(" + length + ")";
+			return "TEXT";
+		case Types.BIGINT:
+			return "BIGINT";
+		case Types.INTEGER:
+			return "INTEGER";
+		case Types.SMALLINT:
+			return "SMALLINT";
+		case Types.FLOAT:
+			return "FLOAT";
+		case Types.DOUBLE:
+			return "DOUBLE";
+		case Types.DECIMAL:
+			return "DECIMAL";
+		case Types.BOOLEAN:
+			return "BOOLEAN";
+		case Types.TIMESTAMP:
+			return "TIMESTAMP";
+		default:
+			throw new AssertionError("Unsupported SQL Type: " + type);
 		}
 	}
 
@@ -343,34 +436,34 @@ public class ValueTable  {
 	}
 
 	protected PreparedStatement prepareInsert(String sql)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		return table.prepareStatement(sql);
-	}
+			}
 
 	protected PreparedStatement prepareInsertSelect(String sql)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		return table.prepareStatement(sql);
-	}
+			}
 
 	protected void createTable(RdbmsTable table)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		StringBuilder sb = new StringBuilder();
 		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,\n");
 		sb.append("  value ").append(sql(sqlType, length));
 		sb.append(" NOT NULL\n");
 		table.createTable(sb);
-	}
+			}
 
 	protected void createTemporaryTable(RdbmsTable table)
-		throws SQLException
-	{
+			throws SQLException
+			{
 		StringBuilder sb = new StringBuilder();
 		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,\n");
 		sb.append("  value ").append(sql(sqlType, length));
 		sb.append(" NOT NULL\n");
 		table.createTemporaryTable(sb);
-	}
+			}
 }

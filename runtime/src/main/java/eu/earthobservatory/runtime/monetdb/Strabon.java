@@ -17,16 +17,20 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		super(databaseName, user, password, port, serverName, checkForLockTable);
 	}
 
+	public Strabon (String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, String cachePath) throws SQLException, ClassNotFoundException {
+
+		super(databaseName, user, password, port, serverName, checkForLockTable,cachePath);
+	}
 
 	protected void initiate(String databaseName, String user, String password, int port, String serverName) {
 		db_store = new MonetDBSqlStore();
 
 		MonetDBSqlStore monetDB_store = (MonetDBSqlStore)db_store;
-		
-//		Map<String, String> properties = new HashedMap();
-//		properties.put("debug", "true");
-//		monetDB_store.setProperties(properties);
-		
+
+		//		Map<String, String> properties = new HashedMap();
+		//		properties.put("debug", "true");
+		//		monetDB_store.setProperties(properties);
+
 		monetDB_store.setDatabaseName(databaseName);
 		monetDB_store.setUser(user);
 		monetDB_store.setPassword(password);
@@ -44,7 +48,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 			System.out.println("[Strabon] Cleaning...");
 			Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
 			url = "jdbc:monetdb://" + serverName + ":" + port + "/"
-			+ databaseName + "?user=" + user + "&password=" + password;
+					+ databaseName + "?user=" + user + "&password=" + password;
 			Connection conn = DriverManager.getConnection(url);
 			java.sql.Statement st = conn.createStatement();
 			// change
