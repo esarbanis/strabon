@@ -20,9 +20,9 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 public class JoinTests extends eu.earthobservatory.runtime.generaldb.JoinTests {
 
 	@BeforeClass
-	public static void beforeClass(String inputfile) throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		strabon = TemplateTests.beforeClass("/join-tests-srid");
+		strabon = TemplateTests.beforeClass("/join-tests-srid.nt");
 	}
 	
 	@AfterClass

@@ -112,7 +112,7 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	{
 		
 		/// debug
-		for(int i=1; i<12;i++) {
+		/*for(int i=1; i<12;i++) {
 			Object o = rs.getObject(i);
 			if (o instanceof byte[] ) {
 				byte[] label = rs.getBytes(i);
@@ -128,7 +128,7 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			}  
 			else 
 				System.out.println(i+": "+rs.getObject(i));
-		}
+		}*/
 		///
 
 		QueryBindingSet result = new QueryBindingSet(bindings);
