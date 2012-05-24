@@ -11,6 +11,10 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -37,6 +41,19 @@ public class GeneralTests extends eu.earthobservatory.runtime.generaldb.GeneralT
 		TemplateTests.afterClass(strabon);
 	}
 	
+	@Test
+	public void testQuerySpatialProperties() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		strabon.query(querySpatialPropertiesPostGIS,strabon.getSailRepoConnection());
+
+	}
+
+	@Test
+	public void testQuerySpatialPropertiesConst() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		strabon.query(querySpatialPropertiesConstPostGIS,strabon.getSailRepoConnection());
+
+	}
 
 	
 //	/**

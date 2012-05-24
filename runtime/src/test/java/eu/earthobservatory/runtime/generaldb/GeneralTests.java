@@ -18,7 +18,7 @@ import org.openrdf.rio.RDFParseException;
 import eu.earthobservatory.runtime.generaldb.Strabon;
 import eu.earthobservatory.runtime.postgis.SimpleTests;
 
-public class GeneralTests {
+abstract public class GeneralTests {
 	public static Strabon strabon;
 	
 	
@@ -42,14 +42,14 @@ public class GeneralTests {
 	
 	
 
-	String prefixes = 
+	protected String prefixes = 
 			"PREFIX lgdo:<http://linkedgeodata.org/ontology/> "+
 					"PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#> "+
 					"PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "+
 					"PREFIX strdf:<http://strdf.di.uoa.gr/ontology#> "+
 					"PREFIX geonames:<http://www.geonames.org/ontology/>";
 
-	String query1 = 
+	protected String query1 = 
 			prefixes+
 			"SELECT ?place ?placegeo "+ 
 			"WHERE { "+
@@ -60,7 +60,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
-	String query2 = 
+	protected String query2 = 
 			prefixes+
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr) "+
 			"WHERE { "+
@@ -71,7 +71,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
-	String query3 = 
+	protected String query3 = 
 			prefixes+
 			"SELECT ?place (?placegeo AS ?constr) "+
 			"WHERE { "+
@@ -82,7 +82,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
-	String query4 =
+	protected String query4 =
 			prefixes+
 			"SELECT ?place ?placegeo "+
 			"WHERE { "+
@@ -94,7 +94,7 @@ public class GeneralTests {
 			"&& strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
-	String query5 =
+	protected String query5 =
 			prefixes+
 			"SELECT ?place ?placegeo "+
 			"WHERE { "+
@@ -106,7 +106,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)). "+
 			"}";
 
-	String query6 =
+	protected String query6 =
 			prefixes+
 			"SELECT (strdf:union(?placegeo,strdf:union(?placegeo,?placegeo)) AS ?constr1) " +
 			"?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr2) "+
@@ -118,7 +118,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
-	String query7 = 
+	protected String query7 = 
 			prefixes+
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:union(?placegeo,?placegeo) AS ?constr) "+
 			"WHERE { "+
@@ -128,7 +128,7 @@ public class GeneralTests {
 			"   rdfs:label ?placename . "+
 			"} ";
 
-	String query8 = 
+	protected String query8 = 
 			prefixes+
 			"SELECT ?place "+  
 			"WHERE { "+
@@ -139,7 +139,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+
 			"}";
 
-	String queryBufferVar =
+	protected String queryBufferVar =
 			prefixes+
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
@@ -150,7 +150,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
-	String queryBufferConst =
+	protected String queryBufferConst =
 			prefixes+
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
@@ -161,7 +161,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
-	String queryBufferConst2 =
+	protected String queryBufferConst2 =
 			prefixes+
 			"SELECT  ?place (?placegeo AS ?tt1)  "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
@@ -172,19 +172,19 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:buffer(\"POINT(23.72873 37.97205)\"^^<http://strdf.di.uoa.gr/ontology#WKT>,0.0572),?placegeo)) "+
 			"}";
 
-	String queryBufferConstInSelect =
+	protected String queryBufferConstInSelect =
 			prefixes+
-			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,2) AS ?buf) "+
+			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,2.5) AS ?buf) "+
 			"WHERE {  ?x lgdo:bufferExtent ?ext .  "+ 
 			"?place "+
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
+			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2.5),?placegeo)) "+
 			"}";
 
 
-	String queryBufferSelectFilterA =
+	protected String queryBufferSelectFilterA =
 			prefixes+
 			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,?ext) AS ?buf) "+
 			"WHERE { ?x lgdo:bufferExtent ?ext . "+ 
@@ -195,7 +195,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
-	String queryBufferSelectFilterB =
+	protected String queryBufferSelectFilterB =
 			prefixes+
 			"SELECT  ?place (?placegeo AS ?tt1) (strdf:buffer(?placegeo,3) AS ?buf) "+
 			"WHERE { ?x lgdo:bufferExtent ?ext . "+ 
@@ -206,7 +206,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
-	String queryEnvelopeConvexHull = 
+	protected String queryEnvelopeConvexHull = 
 			prefixes+
 			"SELECT ?place (?placegeo AS ?tt1) (strdf:envelope(?placegeo) AS ?constr)  (strdf:convexHull(?placegeo) AS ?constr2) "+ 
 			"WHERE { "+
@@ -217,7 +217,7 @@ public class GeneralTests {
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,strdf:envelope(?placegeo)),?placegeo) && strdf:anyInteract(strdf:convexHull(?placegeo),?placegeo)) "+
 			"}";
 
-	String queryMetrics1 =
+	protected String queryMetrics1 =
 			prefixes+
 			"SELECT ?place ?placegeo  ( strdf:area(?placegeo) AS ?area) "+
 			"( strdf:envelope(?placegeo) AS ?mbb) "+
@@ -230,7 +230,7 @@ public class GeneralTests {
 			"< ?ext + 8 - strdf:distance(?placegeo,?placegeo)) "+
 			"}";
 
-	String queryMetricsLightOptimized = 
+	protected String queryMetricsLightOptimized = 
 			prefixes+
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
@@ -242,7 +242,7 @@ public class GeneralTests {
 			"}";
 
 	//Metrics with only one var must not be optimized
-	String queryMetricsAreaMustNotBeOptimized =
+	protected String queryMetricsAreaMustNotBeOptimized =
 			prefixes+
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
@@ -253,7 +253,7 @@ public class GeneralTests {
 			"FILTER(2*strdf:area(?placegeo) < 8) "+
 			"}";
 
-	String queryMetricsMathInSelect =
+	protected String queryMetricsMathInSelect =
 			prefixes+
 			"SELECT ?place ?placegeo  ( 33*strdf:area(?placegeo) + 114 AS ?area) ( strdf:envelope(?placegeo) AS ?mbb) "+
 			"WHERE {   ?x lgdo:bufferExtent ?ext . "+ 
@@ -265,7 +265,7 @@ public class GeneralTests {
 			"< ?ext + 8 - strdf:distance(?placegeo,?placegeo)) "+
 			"}";
 
-	String querySpatialProperties = 
+	protected String querySpatialPropertiesMonetDB = 
 			prefixes+
 			"SELECT ?place ?placegeo (strdf:dimension(?placegeo) + 2 AS ?dim) (strdf:srid(?placegeo) AS ?srid) "+
 			"WHERE { "+
@@ -274,10 +274,23 @@ public class GeneralTests {
 			"	geo:geometry ?placegeo ; "+
 			"	a ?type. "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
-			"&& strdf:dimension(?placegeo) - 1 < 3) "+
+//			"&& strdf:dimension(?placegeo) - 1 < 3" +
+			") "+
 			"}";
+	
+	protected String querySpatialPropertiesPostGIS = 
+		prefixes+
+		"SELECT ?place ?placegeo (strdf:dimension(?placegeo) + 2 AS ?dim) (strdf:srid(?placegeo) AS ?srid) "+
+		"WHERE { "+
+		"?place "+
+		"	rdfs:label ?placename ; "+	
+		"	geo:geometry ?placegeo ; "+
+		"	a ?type. "+
+		"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+		"&& strdf:dimension(?placegeo) - 1 < 3) "+
+		"}";
 
-	String querySpatialPropertiesConst = 
+	protected String querySpatialPropertiesConstMonetDB = 
 			prefixes+
 			"SELECT ?place ?placegeo (strdf:srid(?placegeo) AS ?srid) (strdf:dimension(?placegeo) + 2 AS ?dim)  "+
 			"WHERE { "+
@@ -286,10 +299,23 @@ public class GeneralTests {
 			"	geo:geometry ?placegeo ; "+
 			"	a ?type. "+
 			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
-			"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3) "+
+//			"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3" +
+			") "+
 			"}";
 
-	String queryRelate = 
+	protected String querySpatialPropertiesConstPostGIS = 
+		prefixes+
+		"SELECT ?place ?placegeo (strdf:srid(?placegeo) AS ?srid) (strdf:dimension(?placegeo) + 2 AS ?dim)  "+
+		"WHERE { "+
+		"?place "+
+		"	rdfs:label ?placename ; "+	
+		"	geo:geometry ?placegeo ; "+
+		"	a ?type. "+
+		"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+		"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3) "+
+		"}";
+	
+	protected String queryRelate = 
 			prefixes+
 			"SELECT ?place ?placegeo "+
 			"WHERE { "+
@@ -300,7 +326,7 @@ public class GeneralTests {
 			"FILTER(strdf:relate(?placegeo,?placegeo,\"0FFFFF212\")) "+
 			"}";
 
-	//	String queryThematicUnion = 
+	//	protected String queryThematicUnion = 
 	//			prefixes+
 	//			"SELECT ?place "+
 	//			"WHERE { "+
@@ -316,7 +342,7 @@ public class GeneralTests {
 	 * The following three queries test potential bugs noticed during the evaluation process for www2012.
 	 * No issue seems to be present.
 	 */
-	String queryThematicUnion = 
+	protected String queryThematicUnion = 
 			prefixes+
 			"SELECT ?place2 ?placename "+
 			" WHERE { "+
@@ -333,7 +359,7 @@ public class GeneralTests {
 			"FILTER(strdf:disjoint(?placegeo,?ar))" +
 			"}";
 
-	String query6_real = prefixes+
+	protected String query6_real = prefixes+
 			"SELECT ?capital ?pierLabel "+
 			"WHERE  "+
 			"{ "+
@@ -351,7 +377,7 @@ public class GeneralTests {
 			"} "+
 			"} ";
 
-	String query6_real_union = prefixes+
+	protected String query6_real_union = prefixes+
 			"SELECT ?capital ?pierLabel "+
 			"WHERE  "+
 			"{ "+
@@ -375,7 +401,7 @@ public class GeneralTests {
 			"} "+
 			"} ";
 
-	String queryNegation = prefixes+
+	protected String queryNegation = prefixes+
 			"SELECT ?capital ?pier "+
 			"WHERE  "+
 			"{ "+
@@ -396,7 +422,7 @@ public class GeneralTests {
 			"";
 	
 	//Representative of functionality. If I remove !bound, 3 more results appear
-	String queryNegation2 = prefixes+
+	protected String queryNegation2 = prefixes+
 			"SELECT ?s ?pier "+
 			"WHERE  "+
 			"{ "+
@@ -413,7 +439,7 @@ public class GeneralTests {
 			"";
 	
 	
-	String queryNotExists = 
+	protected String queryNotExists = 
 		prefixes+
 		"SELECT ?capital ?pierLabel "+
 		"WHERE  "+
@@ -568,19 +594,13 @@ public class GeneralTests {
 	}
 
 	@Test
-	public void testQuerySpatialProperties() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		strabon.query(querySpatialProperties,strabon.getSailRepoConnection());
-
-	}
+	// MonetDB has not function Dimension
+	abstract public void testQuerySpatialProperties() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException ;
 
 	@Test
-	public void testQuerySpatialPropertiesConst() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		strabon.query(querySpatialPropertiesConst,strabon.getSailRepoConnection());
-
-	}
-
+	// MonetDB has not function Dimension
+	abstract public void testQuerySpatialPropertiesConst() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException ;
+	
 	@Test
 	public void testQueryRelate() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
