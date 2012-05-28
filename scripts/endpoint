@@ -89,7 +89,7 @@ case "${1}" in
 		# TODO: make it an argument
 		FORMAT="XML"
 
-		CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"SPARQLQuery=${QUERY}\" ${URL}"
+		CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	update)
 		shift
@@ -100,7 +100,7 @@ case "${1}" in
 		URL="${1}/Update"
 		QUERY="${2}"
 		
-		CMD="curl ${CURL_OPTS} --data-urlencode \"SPARQLQuery=${QUERY}\" ${URL}"
+		CMD="curl ${CURL_OPTS} --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	store)
 		shift
@@ -113,11 +113,11 @@ case "${1}" in
 		case "${3}" in
 			-t)
 				TRIPLES="${4}"
-				CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"data=${TRIPLES}\" ${URL}"
+				CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode data='${TRIPLES}' ${URL}"
 				;;
 			-u)
 				URL_TRIPLES="${4}"
-				CMD="curl ${CURL_OPTS} -d \"format=${FORMAT}\" --data-urlencode \"url=${URL_TRIPLES}\" -d \"fromurl=\" ${URL}"
+				CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
 				;;
 			 *)
 				help_store
