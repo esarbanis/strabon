@@ -74,8 +74,7 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
 				//
 		
-				System.out.println("In PostGIS Evaluation, query is: ");
-				System.out.println(query);
+				logger.debug("In PostGIS Evaluation, query is: \n" + query);
 				return result;
 			}
 			catch (SQLException e) {

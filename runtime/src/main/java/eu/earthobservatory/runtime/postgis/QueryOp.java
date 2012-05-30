@@ -1,8 +1,13 @@
 package eu.earthobservatory.runtime.postgis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class QueryOp {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.postgis.QueryOp.class);
+	
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -32,13 +37,10 @@ public class QueryOp {
 			resultsFormat = args[6];
 		}
 
-
-
-
 		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
 
+		logger.info("[QueryOp] Executing query: " + queryString);
 		strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
-
 		strabon.close();
 	}
 	/*

@@ -2,16 +2,15 @@ package eu.earthobservatory.runtime.generaldb;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-
-import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -19,12 +18,9 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import java.io.*;
-import java.util.zip.*;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
@@ -40,7 +36,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -70,6 +65,8 @@ import org.openrdf.rio.ntriples.NTriplesWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.helpers.SailBase;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -84,12 +81,9 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-
 public abstract class Strabon {
 
-	/**
-	 * @param args
-	 */
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
 
 	protected SailBase db_store;
 	SailRepository repo1;
@@ -126,17 +120,15 @@ public abstract class Strabon {
 		try {
 			repo1.initialize();
 		} catch (RepositoryException e) {
-
-			e.printStackTrace();
+			logger.error("[Strabon.init] initialize", e.getStackTrace());
 		}
 
-		System.out.println("Clearing Successful");
+		logger.info("[Strabon.init] Clearing Successful.");
 
 		try {
 			con1 = repo1.getConnection();
 		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.init] getConnection", e.getStackTrace());
 		}
 	}
 
@@ -148,26 +140,23 @@ public abstract class Strabon {
 		return con1;
 	}
 
-
-
 	public void setCon1(SailRepositoryConnection con1) {
 		this.con1 = con1;
 	}
 
 	public void close() {
-
-		System.out.println("Closing...");
-
-
+		logger.info("[Strabon.close] Closing connection...");
 
 		try {
 			con1.commit();
 			con1.close();
 			repo1.shutDown();
+			
 		} catch (RepositoryException e) {
-
-			e.printStackTrace();
+			logger.error("[Strabon.close]", e.getStackTrace());
 		}
+		
+		logger.info("[Strabon.close] Connection closed.");
 	}
 
 	public Object query(String queryString)
@@ -179,7 +168,7 @@ public abstract class Strabon {
 	public Object query(String queryString, String resultsFormat)
 	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
 	{
-		return query (queryString, resultsFormat, this.getSailRepoConnection());
+		return query(queryString, resultsFormat, this.getSailRepoConnection());
 	}
 
 	public Object query(String queryString, SailRepositoryConnection con)
@@ -190,7 +179,6 @@ public abstract class Strabon {
 
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
-
 	{
 		TupleQuery tupleQuery = null;
 		try {
@@ -373,10 +361,8 @@ public abstract class Strabon {
 							}
 
 						} 
-						catch (ParseException e) 
-						{
-							System.out.println("Faults detected in spatial literal representation");
-							e.printStackTrace();
+						catch (ParseException e) {
+							logger.error("[Strabon.query] Faults detected in spatial literal representation.", e.getStackTrace());
 						}
 					}
 
@@ -384,10 +370,9 @@ public abstract class Strabon {
 					try {
 						geomCRS = CRS.decode("EPSG:"+SRID);
 					} catch (NoSuchAuthorityCodeException e) {
-						System.out.println("Error decoding returned geometry's SRID");
-						e.printStackTrace();
+						logger.error("[Strabon.query] Error decoding returned geometry's SRID", e.getStackTrace());
 					} catch (FactoryException e) {
-						e.printStackTrace();
+						logger.error("[Strabon.query]", e.getStackTrace());
 					}
 
 					tb[i].setCRS(geomCRS);
@@ -588,14 +573,12 @@ public abstract class Strabon {
 					//				out.writeChars(bindingSet.toString());
 				}
 			} catch (QueryEvaluationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("[Strabon.query]", e.getStackTrace());
 			}
 			try {
 				dos.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("[Strabon.query]", e.getStackTrace());
 			}
 
 			//Finishing the structure of the kml document
@@ -697,8 +680,7 @@ public abstract class Strabon {
 				}
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("[Strabon.query]", e.getStackTrace());
 			}
 		}
 		else if(resultsFormat.equalsIgnoreCase("HTML")) {
@@ -758,7 +740,7 @@ public abstract class Strabon {
 		}
 		else {
 			//			System.exit(-1);// throw new InvalidDatasetFormatFault(); // TODO
-			System.out.println("No Such Format Available!!");
+			logger.warn("[Strabon.query] No such format available \"" + resultsFormat + "\".");
 			return null;
 		}
 
@@ -767,8 +749,7 @@ public abstract class Strabon {
 			writeOut.flush();
 			retStream.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.query]", e.getStackTrace());
 		}
 
 		// Print results.
@@ -779,28 +760,28 @@ public abstract class Strabon {
 	}
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
-
 	{
 		Update update = null;
 
 		try {
 			update = con.prepareUpdate(QueryLanguage.SPARQL, updateString);
 		} catch (RepositoryException e) {
-			e.printStackTrace();
+			logger.error("[Strabon.update]", e.getStackTrace());
 		}
 
-		System.out.println("Placemark0");
-		System.out.println("\n\n\nGot query: " + updateString + "\n\n\n");
+		//System.out.println("Placemark0");
+		//System.out.println("\n\n\nGot query: " + updateString + "\n\n\n");
+		logger.info("[Strabon.update] executing update query: " + updateString);
 
 		try {
 			update.execute();
 		} catch (UpdateExecutionException e) {
-			e.printStackTrace();
+			logger.error("[Strabon.update]", e.getStackTrace());
 		}
 
-		System.out.println("-------------------------------------------");
-		System.out.println("-            UPDATE EXECUTED              -");
-		System.out.println("-------------------------------------------");
+//		System.out.println("-------------------------------------------");
+//		System.out.println("-            UPDATE EXECUTED              -");
+//		System.out.println("-------------------------------------------");
 	}
 
 	@SuppressWarnings("unused")
@@ -810,7 +791,6 @@ public abstract class Strabon {
 
 	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
 	{
-		System.out.println("generaldb.Strabon.store in repo");
 		storeInRepo(src, null, null, format);
 	}
 
@@ -867,18 +847,17 @@ public abstract class Strabon {
 				storeString((String)src, baseURI, uriContext, realFormat);
 			}
 		}
-		catch(NullPointerException e)
-		{
-			e.printStackTrace();
+		catch(NullPointerException e) {
+			logger.error("[Strabon.storeInRepo]", e.getStackTrace());
 		}
 	}
 
 	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
-		System.out.println("File     : " + file.getName());
-		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
-		System.out.println("Context  : " + ((context == null) ? "null" : context));
-		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+		logger.info("[Strabon.storeFile] File     : " + file.getName());
+		logger.info("[Strabon.storeFile] Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		logger.info("[Strabon.storeFile] Context  : " + ((context == null) ? "null" : context));
+		logger.info("[Strabon.storeFile] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		RDFParser parser = Rio.createParser(format);
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
@@ -886,14 +865,14 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		System.out.println("Triples inferred:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeFile] Triples inferred:"+ handler.getTriples().toString());
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 		if (context == null) {
-			System.out.println("[1]");
+			logger.info("[Strabon.storeFile] [1]");
 			con1.add(file, baseURI, format);
 		} else {
-			System.out.println("[2]");
+			logger.info("[Strabon.storeFile] [2]");
 			con1.add(file, baseURI, format, context);
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
@@ -902,10 +881,10 @@ public abstract class Strabon {
 
 	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
-		System.out.println("URL      : " + url.toString());
-		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
-		System.out.println("Context  : " + ((context == null) ? "null" : context));
-		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+		logger.info("[Strabon.storeURL] URL      : " + url.toString());
+		logger.info("[Strabon.storeURL] Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		logger.info("[Strabon.storeURL] Context  : " + ((context == null) ? "null" : context));
+		logger.info("[Strabon.storeURL] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		InputStream in = (InputStream) url.openStream();
 		InputStreamReader reader = new InputStreamReader(in);
@@ -914,15 +893,15 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeURL] These are the extra triples:"+ handler.getTriples().toString());
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
 		if (context == null) {
-			System.out.println("[3]");
+			logger.info("[Strabon.storeURL] [3]");
 			con1.add(url, baseURI, format);
 		} else {
-			System.out.println("[4]");
+			logger.info("[Strabon.storeURL] [4]");
 			con1.add(url, baseURI, format, context);
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
@@ -933,10 +912,10 @@ public abstract class Strabon {
 		if (baseURI == null)
 			baseURI = "";
 
-		System.out.println("Text     : " + text);
-		System.out.println("Base URI : " + ((baseURI == null) ? "null" : baseURI));
-		System.out.println("Context  : " + ((context == null) ? "null" : context));
-		System.out.println("Format   : " + ((format == null) ? "null" : format.toString()));
+		logger.info("[Strabon.storeString] Text     : " + text);
+		logger.info("[Strabon.storeString] Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		logger.info("[Strabon.storeString] Context  : " + ((context == null) ? "null" : context));
+		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
 		RDFParser parser = Rio.createParser(format);
@@ -945,17 +924,17 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		System.out.println("These are the extra triples:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeString] These are the extra triples:"+ handler.getTriples().toString());
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
 
 		if (context == null) {
-			System.out.println("[5]");
+			logger.info("[Strabon.storeString] [5]");
 			con1.add(reader, baseURI, format);
 			reader.close();
 		} else {
-			System.out.println("[6]");
+			logger.info("[Strabon.storeString] [6]");
 			con1.add(reader, baseURI, format, context);
 			reader.close();
 		}
@@ -970,34 +949,32 @@ public abstract class Strabon {
 		try {
 			graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, describeString);
 		} catch (RepositoryException e) {
-			e.printStackTrace();
+			logger.error("[Strabon.describe]", e.getStackTrace());
 		}
 
-		System.out.println("Placemark0");
-		System.out.println("\n\n\nGot query: " + describeString + "\n\n\n");
-
+//		System.out.println("Placemark0");
+//		System.out.println("\n\n\nGot query: " + describeString + "\n\n\n");
+		logger.info("[Strabon.describe] Executing describe query:" + describeString);
+		
 		try {
 			OutputStream out = new FileOutputStream(outFile);
 			RDFHandler rdfHandler = new NTriplesWriter(out);
 			graphQuery.evaluate(rdfHandler);
 			out.close();
+			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.describe]", e.getStackTrace());
 		} catch (QueryEvaluationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.describe]", e.getStackTrace());
 		} catch (RDFHandlerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.describe]", e.getStackTrace());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("[Strabon.describe]", e.getStackTrace());
 		}
 
-		System.out.println("Output: "+outFile);
-		System.out.println("---------------------------------------------");
-		System.out.println("-            DESCRIBE EXECUTED              -");
-		System.out.println("---------------------------------------------");
+		logger.info("[Strabon.describe] Output: "+outFile);
+//		System.out.println("---------------------------------------------");
+//		System.out.println("-            DESCRIBE EXECUTED              -");
+//		System.out.println("---------------------------------------------");
 	}
 }
