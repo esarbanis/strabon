@@ -29,7 +29,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-            <value>brun1s86</value>
+	    <value>postgres</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
