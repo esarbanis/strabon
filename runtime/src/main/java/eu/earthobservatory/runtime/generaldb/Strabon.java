@@ -180,6 +180,7 @@ public abstract class Strabon {
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
 	{
+		logger.info("[Strabon.query] Executing query: " + queryString);
 		TupleQuery tupleQuery = null;
 		try {
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);

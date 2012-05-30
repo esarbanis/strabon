@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -25,6 +27,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class StoreBean extends HttpServlet {
 	
 	private static final long serialVersionUID = -7541662133934957148L;
+	
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StoreBean.class);
 	
 	/**
 	 * Parameters used in the store.jsp file
@@ -145,7 +149,7 @@ public class StoreBean extends HttpServlet {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			}
-			System.err.println(e.getMessage());
+			logger.error("[StrabonEndpoint.StoreBean] " + e.getMessage());
 		}
 	}
 	

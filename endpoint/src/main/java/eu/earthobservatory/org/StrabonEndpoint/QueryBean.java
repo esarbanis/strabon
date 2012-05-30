@@ -2,7 +2,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,8 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -42,18 +42,20 @@ public class QueryBean extends HttpServlet {
 
 	private static final long serialVersionUID = -378175118289907707L;
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.QueryBean.class);
+	
 	private ServletContext context; 
 	private StrabonBeanWrapper strabonWrapper;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-			{
+	throws ServletException, IOException 
+	{
 		doPost(request, response);
-			}
+	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-			{
+	throws ServletException, IOException
+	{
 		final class DataHive{
 			private String format;
 			private String SPARQLQuery;
@@ -172,7 +174,7 @@ public class QueryBean extends HttpServlet {
 		}
 
 		PrintWriter out = response.getWriter();
-                out.flush();
+        out.flush();
 
 		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
 			StringBuilder errorMessage = new StringBuilder ();
@@ -265,7 +267,7 @@ public class QueryBean extends HttpServlet {
 				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
 
 			} catch(IOException e) {
-				e.printStackTrace();
+				logger.error("[StrabonEndpoint.QueryBean] " + e.getStackTrace());
 			}
 
 			//response.setDateHeader("Expires", 0);			
@@ -381,7 +383,7 @@ public class QueryBean extends HttpServlet {
 			appendHTML5(out);
 		}
 		out.flush();
-			}
+	}
 
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
@@ -403,25 +405,25 @@ public class QueryBean extends HttpServlet {
 				answer = (String) strabonWrapper.query(SPARQLQuery, resultFormat);
 			}
 		} catch (MalformedQueryException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (RepositoryException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (TupleQueryResultHandlerException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
 			errorMessage.append(e.getMessage());
 		}
 
@@ -540,7 +542,6 @@ public class QueryBean extends HttpServlet {
 			
 			out.println(" value=\"" + key + "\">" + value + "</option>");
 		}
-		
 		
 		out.println("</select></center></td>");
 		out.println("</tr>");

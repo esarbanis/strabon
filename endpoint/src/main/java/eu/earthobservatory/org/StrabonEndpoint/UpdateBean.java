@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.query.MalformedQueryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -24,6 +26,8 @@ public class UpdateBean extends HttpServlet {
 
 	private static final long serialVersionUID = -633279376188071670L;
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.UpdateBean.class);
+	
 	private StrabonBeanWrapper strabonWrapper;
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,6 +54,7 @@ public class UpdateBean extends HttpServlet {
 				throw new MalformedQueryException("No SPARQL Update query specified.");
 			}
 			
+			logger.info("[StrabonEndpoint.UpdateBean] Received UPDATE query.");
 			strabonWrapper.getStrabon().update(query, strabonWrapper.getStrabon().getSailRepoConnection());
 			response.setStatus(HttpServletResponse.SC_OK);
 			answer = "true";

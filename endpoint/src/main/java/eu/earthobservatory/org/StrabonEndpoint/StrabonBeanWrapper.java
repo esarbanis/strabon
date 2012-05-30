@@ -3,13 +3,11 @@ package eu.earthobservatory.org.StrabonEndpoint;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hsqldb.lib.Collection;
 import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -17,10 +15,14 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
+	
 	public class Entry {
 		private String label;
 		private String bean;
@@ -168,13 +170,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private boolean init() {
 		if (this.strabon == null) {
 			try {
-				System.err.println("Strabon not initialized yet.");
-				System.err.println("Initializing strabon.");
-				System.out.println(this.getDetails());
+				logger.warn("Strabon not initialized yet.");
+				logger.warn("Initializing strabon.");
+				logger.warn(this.getDetails());
 				this.strabon = new Strabon(databaseName, user, password, port, serverName, checkForLockTable);
 			} catch (Exception e) {
-				System.err.println("Exception occured while creating Strabon.\n"+this.getDetails());
-				e.printStackTrace();
+				logger.error("Exception occured while creating Strabon.\n"+this.getDetails(), e.getStackTrace());
 				return false;
 			}
 		}
@@ -198,9 +199,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		strabon.close();
 	}
 
-
-
-	public Object query(String queryString, String answerFormatStrabon) throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
+	public Object query(String queryString, String answerFormatStrabon)
+	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
+		logger.info("[StrabonEndpoint] Received SELECT query.");
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
@@ -208,19 +209,22 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return strabon.query(queryString, answerFormatStrabon, strabon.getSailRepoConnection());
 	}
 
-	public Object update(String updateString, String answerFormatStrabon) throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
+	public Object update(String updateString, String answerFormatStrabon) 
+	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
+		logger.info("[StrabonEndpoint] Received UPDATE query.");
+		logger.info("[StrabonEndpoint] Answer format: " + answerFormatStrabon);
+		
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-
+		
 		//String newQueryString = TemporalWrapper.rebuildQuery(queryString);
 
-		System.out.println("================================================================");
-		System.out.println("Update:");
-		System.out.println(updateString);
-		System.out.println("================================================================");
-		System.out.println("Answer format: " + answerFormatStrabon);
-		System.out.println("================================================================");
+//		System.out.println("================================================================");
+//		System.out.println("Update:");
+//		System.out.println(updateString);
+//		System.out.println("================================================================");
+//		System.out.println("================================================================");
 		//System.out.println("Rewritten query:");
 		//System.out.println(newQueryString);
 		//System.out.println("================================================================");
@@ -248,6 +252,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	 * @throws ClassNotFoundException
 	 */
 	public boolean store(String source_data, RDFFormat format, boolean url) throws Exception {
+		logger.info("[StrabonEndpoint] Received store request.");
+		
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		}
