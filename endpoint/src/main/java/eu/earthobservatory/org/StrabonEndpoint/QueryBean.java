@@ -177,8 +177,6 @@ public class QueryBean extends HttpServlet {
         out.flush();
 
 		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
-			StringBuilder errorMessage = new StringBuilder ();
-			
 			int status_code = HttpServletResponse.SC_OK;
 			String answer = "";
 
