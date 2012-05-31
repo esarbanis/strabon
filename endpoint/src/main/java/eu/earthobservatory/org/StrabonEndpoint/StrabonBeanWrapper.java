@@ -252,7 +252,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	 * @throws ClassNotFoundException
 	 */
 	public boolean store(String source_data, RDFFormat format, boolean url) throws Exception {
-		logger.info("[StrabonEndpoint] Received store request.");
+		logger.info("[StrabonEndpoint] Received STORE request.");
 		
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
@@ -269,6 +269,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			} else {
 				conn.add(new StringReader(source_data), "", format, new Resource[1]);
 			}
+			
+			logger.info("[StrabonEndpoint] STORE was successful.");
 
 		} catch (Exception e) {
 			throw e;
