@@ -23,7 +23,9 @@ function help_query() {
 	echo "Usage: `basename ${0}` query ENDPOINT SPARQL_QUERY"
 	echo
 	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
-	echo "	SPARQL_QUERY : the SPARQL query to execute"
+	echo "	SPARQL_QUERY : the SPARQL query to execute or the alias name corresponding to a"
+	echo "		       predefined query such as:"
+	echo "				\`size': SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
 }
 
 function help_update() {
@@ -85,6 +87,12 @@ case "${1}" in
 		fi
 		URL="${1}/Query"
 		QUERY="${2}"
+
+		case "${QUERY}" in
+			size)
+				QUERY="SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
+				;;
+		esac
 
 		# TODO: make it an argument
 		FORMAT="XML"
