@@ -9,7 +9,7 @@
 # absolute directory name of this command
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-RUNTIME="`readlink -f ${LOC}/../runtime`"
+RUNTIME="${LOC}/../runtime"
 
 function help() {
 	echo "Usage: `basename ${0}` [OPTIONS] COMMAND ARGS"
