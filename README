@@ -28,9 +28,15 @@ Currently, only the geospatial features of stSPARQL have been implemented fully.
 The temporal features are the subject of current work.
 
 
+Strabon Homepage
+================
+The homepage of Strabon is at http://www.strabon.di.uoa.gr/.
+
+
 Demo
 ====
 You can find a demo of the system Strabon at http://test.strabon.di.uoa.gr/NOA/.
+
 
 Getting Started
 ===============
@@ -165,7 +171,7 @@ problems:
     for Qualitative Spatial Reasoning in Linked Geospatial Data. In Proceedings
     of IJCAI 2011 Workshop on Benchmarks and Applications of Spatial Reasoning,
     Barcelona, Spain.
-   [pdf: http://www.earthobservatory.eu/publications/SciQL_ADASS2011.pdf]
+    [pdf: http://www.earthobservatory.eu/publications/SciQL_ADASS2011.pdf]
 
 
 Contributors
@@ -177,11 +183,6 @@ The system Strabon has been developed by the following members of our team:
 * Manolis Koubarakis	<koubarak@di.uoa.gr>
 * Giorgos Garbis	<ggarbis@di.uoa.gr>
 * Konstantina Bereta	<konstantina.bereta@di.uoa.gr>
-
-
-License
-=======
-Copyright (C) 2010-2012 Strabon Team
 
 
 Mailing-list
@@ -196,3 +197,8 @@ Bugs
 ====
 Please report bugs to http://bug.strabon.di.uoa.gr/report or
 the Strabon-devel mailing-list Strabon-devel@di.uoa.gr.
+
+
+License
+=======
+Copyright (C) 2010-2012 Strabon Team
