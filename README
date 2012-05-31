@@ -1,0 +1,198 @@
+			Strabon
+		      -----------
+
+Introduction
+============
+Strabon is a fully implemented semantic geospatial database system that can be
+used to store linked geospatial data expressed in RDF and query them using an
+extension of SPARQL. Strabon supports spatial selections, spatial joins, a rich
+set of spatial functions similar to those offered by geospatial relational
+database systems, support for multiple Coordinate Reference Systems and widely
+used serializations for geometric objects such as WKT and GML. Strabon is built
+on top of the well-known RDF store Sesame and extends Sesame’s components to be
+able to manage thematic and spatial data that are stored in PostGIS.
+
+The development of Strabon started in the context of European FP7 project
+SemsorGrid4Env (Semantic Sensor Grids for Rapid Application Development for 
+Environmental Management) [http://www.semsorgrid4env.eu/]. Starting September
+2011, Strabon is being utilized and extended with new functionalities in the
+FP7 project TELEIOS (Virtual Observatory Infrastructure for Earth Observation
+Data) [http://www.earthobservatory.eu/] which our group leads.
+
+The query language of Strabon is called stSPARQL. stSPARQL can be used to query
+data represented in an extension of RDF called stRDF. stRDF and stSPARQL have
+been designed for representing and querying geospatial data that changes over
+time (e.g., the growth of a city over the years due to new developments). 
+
+Currently, only the geospatial features of stSPARQL have been implemented fully.
+The temporal features are the subject of current work.
+
+
+Demo
+====
+You can find a demo of the system Strabon at http://test.strabon.di.uoa.gr/NOA/.
+
+Getting Started
+===============
+To get started  with Strabon please have a look at the tutorial for the stRDF
+data model and stSPARQL query language, the User Guide, and the Developer Guide.
+
+stRDF and stSPARQL tutorial
+	http://www.strabon.di.uoa.gr/files/stSPARQL_tutorial.pdf
+
+User Guide
+~~~~~~~~~~
+Assuming that you are familiar with Maven, the following steps need to be
+followed in order to use Strabon using Eclipse:
+
+1. Install PostgreSQL from http://www.postgresql.org/download/. At the time of
+   this writing the latest PostgreSQL version is 9.1.
+2. Install PostGIS from http://postgis.refractions.net/download/. At the time of
+   this writing we have tested Strabon with PostGIS 1.5.3.
+3. Install Maven from http://maven.apache.org/download.html. At the time of this
+   writing the latest Maven version is 3.0.4. 
+4. Install Eclipse from http://www.eclipse.org/downloads/. At the time of this
+   writing the latest Eclipse version is 3.7.2.
+5. Install the m2e plugin for Eclipse from http://www.eclipse.org/m2e/.
+6. Install the MercurialEclipse plugin for Eclipse from
+   http://javaforge.com/project/HGE .
+7. From Eclipse, go to File --> Import --> Mercurial --> Clone Existing
+   Mercurial Repository --> Next. In the URL textarea paste the following
+   URL: http://hg.strabon.di.uoa.gr/StrabonUser and then press Next --> Next -->
+   Finish. If you used the default settings, you should have a new project named
+   StrabonMain. Right click on the project and select Configure --> Convert to
+   Maven project. Eclipse will enable Maven dependency management for the
+   project, download any dependencies and build the project. 
+
+
+	Storing stRDF graphs and evaluating stSPARQL queries
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can see some examples in the classes gr.uoa.di.strabon.example.PostgisExample
+and gr.uoa.di.strabon.example.PostgisExample2.
+
+
+Developer Guide
+~~~~~~~~~~~~~~~
+Assuming that you are familiar with Maven, the following steps need to be
+followed in order to use Strabon using Eclipse:
+
+1. Install PostgreSQL from http://www.postgresql.org/download/. At the time of
+   this writing the latest PostgreSQL version is 9.1.
+2. Install PostGIS from http://postgis.refractions.net/download/. At the time of
+   this writing we have tested Strabon with PostGIS 1.5.3.
+3. Install Maven from http://maven.apache.org/download.html. At the time of this
+   writing the latest Maven version is 3.0.4. 
+4. Install Eclipse from http://www.eclipse.org/downloads/. At the time of this
+   writing the latest Eclipse version is 3.7.2.
+5. Install the m2e plugin for Eclipse from http://www.eclipse.org/m2e/.
+6. Install the MercurialEclipse plugin for Eclipse from
+   http://javaforge.com/project/HGE.
+7. From Eclipse, go to File --> Import --> Mercurial --> Clone Existing
+   Mercurial Repository --> Next. In the URL textarea paste the following
+   URL: http://hg.strabon.di.uoa.gr/Strabon and then press Next --> Next -->
+   Finish. If you used the default settings, you should have a new project named
+   StrabonMain. Right click on the project and select Configure --> Convert to
+   Maven project. Eclipse will enable Maven dependency management for the
+   project, download any dependencies and build the project. 
+
+
+	Storing stRDF graphs and evaluating stSPARQL queries
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can see some examples in the classes
+eu.earthobservatory.runtime.postgis.StoreOp and
+eu.earthobservatory.runtime.postgis.QueryOp.
+
+
+Download
+========
+You can download the source code of the latest version of Strabon by accessing
+our public mercurial repository located at http://hg.strabon.di.uoa.gr/Strabon.
+You can find more information on how to use and extend Strabon at the Getting
+Started section.
+
+
+Publications
+============
+You can learn about stRDF data model and stSPARQL query language employed in
+Strabon by reading our tutorial under the Getting Started section and/or the
+publications given on this page. 
+
+The current versions of stRDF and stSPARQL which are based on OGC standards are
+presented in the following document:
+  * Manolis Koubarakis, Kostis Kyzirakos, Babis Nikolaou, Michael Sioutis, and
+    Stavros Vassos. A data model and query language for an extension of RDF with
+    time and space. Deliverable D2.1, European ICT project TELEIOS, 2011.
+    [pdf: http://strabon.di.uoa.gr/files/deliv2-1-re-revised.pdf]
+
+The initial versions of stRDF and stSPARQL that are based on constraint
+databases are presented in the following publications:
+  * Manolis Koubarakis and Kostis Kyzirakos. Modeling and Querying Metadata in
+    the Semantic Sensor Web: the Model stRDF and the Query Language stSPARQL.
+    In 7th Extended Semantic Web Conference (ESWC 2010). Heraklion, Crete,
+    30 May - 03 June, 2010.
+    [pdf: http://strabon.di.uoa.gr/files/stSPARQL.pdf]
+ 
+  * Kostis Kyzirakos, Manos Karpathiotakis and Manolis Koubarakis. Developing
+    Registries for the Semantic Sensor Web using stRDF and stSPARQL (short
+    paper).
+    In Proceedings of 3rd International workshop on Semantic Sensor Networks
+    2010, in conjunction with ISWC 2010, November 2010, Shanghai, China.
+    [pdf: http://strabon.di.uoa.gr/files/strabon.pdf]
+
+Applications of stRDF, stSPARQL, and the system Strabon are described here:
+  * Alasdair J. G. Gray, Raúl García-Castro, Kostis Kyzirakos, Manos
+    Karpathiotakis, Jean-Paul Calbimonte, Kevin Page, Jason Sadler, Alex
+    Frazer, Ixent Galpin, Alvaro A. A. Fernandes, Norman W. Paton, Oscar
+    Corcho, Manolis Koubarakis, David De Roure, Kirk Martinez and Asunción
+    Gómez-Pérez. A Semantically Enabled Service Architecture for Mashups over
+    Streaming and Stored Data. In 8th Extended Semantic Web Conference (ESWC
+    2011). Heraklion, Crete, May 20 - June 2, 2011.
+    [pdf: http://strabon.di.uoa.gr/files/Gray2011Architecture.pdf]
+
+  * A.J.G. Gray, J. Sadler, O. Kit, K. Kyzirakos, M. Karpathiotakis, J.-P.
+    Calbimonte, K. Page, R. García-Castro, A. Frazer, I. Galpin, A.A.A.
+    Fernandes, N.W. Paton, O. Corcho, M. Koubarakis, D.D. Roure, K. Martinez,
+    A. Gómez-Pérez. A Semantic Sensor Web for Environmental Decision Support
+    Applications. Sensors. 11, 8855-8887.
+    [pdf: http://strabon.di.uoa.gr/files/sensors-11-08855.pdf]
+
+Coming up soon:
+Strabon will soon support an extension of RDF for incomplete geospatial 
+information. The following publication gives a preview of the relevant research
+problems:
+  * M. Koubarakis, K. Kyzirakos, M. Karpathiotakis, C. Nikolaou, M. Sioutis,
+    S. Vassos, D. Michail, T. Herekakis, C. Kontoes and I. Papoutsis. Challenges
+    for Qualitative Spatial Reasoning in Linked Geospatial Data. In Proceedings
+    of IJCAI 2011 Workshop on Benchmarks and Applications of Spatial Reasoning,
+    Barcelona, Spain.
+   [pdf: http://www.earthobservatory.eu/publications/SciQL_ADASS2011.pdf]
+
+
+Contributors
+============
+The system Strabon has been developed by the following members of our team:
+
+* Manos Karpathiotakis	<mk@di.uoa.gr>
+* Kostis Kyzirakos	<kkyzir@di.uoa.gr>
+* Manolis Koubarakis	<koubarak@di.uoa.gr>
+* Giorgos Garbis	<ggarbis@di.uoa.gr>
+* Konstantina Bereta	<konstantina.bereta@di.uoa.gr>
+
+
+License
+=======
+Copyright (C) 2010-2012 Strabon Team
+
+
+Mailing-list
+============
+Currently, there is only a developers mailing-list, Strabon-devel, for support
+and other questions concerning Strabon. To subscribe to the mailing-list, please
+visit page http://cgi.di.uoa.gr/~mailman/listinfo/strabon-devel. To post e-mails
+to Strabon-devel mailing-list, write to Strabon-devel@di.uoa.gr.
+
+
+Bugs
+====
+Please report bugs to http://bug.strabon.di.uoa.gr/report or
+the Strabon-devel mailing-list Strabon-devel@di.uoa.gr.
