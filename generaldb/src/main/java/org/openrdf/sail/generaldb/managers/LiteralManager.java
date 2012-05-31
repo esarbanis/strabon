@@ -5,7 +5,6 @@
  */
 package org.openrdf.sail.generaldb.managers;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -16,8 +15,10 @@ import org.openrdf.generaldb.managers.base.ValueManagerBase;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
-import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.generaldb.schema.LiteralTable;
+import org.openrdf.sail.rdbms.model.RdbmsLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages RDBMS Literals. Including creation, id lookup, and inserting them
@@ -28,6 +29,8 @@ import org.openrdf.sail.generaldb.schema.LiteralTable;
  */
 public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.managers.LiteralManager.class);
+	
 	private static TimeZone Z = TimeZone.getTimeZone("GMT");
 
 	public static long getCalendarValue(XMLGregorianCalendar xcal) {
@@ -97,7 +100,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 			/**********************************************/
 			try {
 				if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
-					System.out.println("about to insert double value:"+literal.doubleValue());
+					logger.debug("about to insert double value:"+literal.doubleValue());
 					table.insertNumeric(id, label, dt, literal.doubleValue());
 				}
 				else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {

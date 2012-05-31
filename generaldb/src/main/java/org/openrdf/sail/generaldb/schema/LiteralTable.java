@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.lang.IllegalArgumentException;
 import org.openrdf.sail.generaldb.exceptions.conversionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Facade to the five literal value tables. Which are labels, languages,
@@ -21,6 +23,8 @@ import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
  */
 public class LiteralTable {
 
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.schema.LiteralTable.class);
+	
 	public static final boolean ONLY_INSERT_LABEL = false;
 
 	private ValueTable labels;
@@ -226,7 +230,7 @@ public class LiteralTable {
 	{
 		labels.insert(id, label);
 		datatypes.insert(id, datatype);
-		System.out.println("about to insert double value:"+value);
+		logger.debug("about to insert double value:"+value);
 		numeric.insert(id, value);
 	}
 
