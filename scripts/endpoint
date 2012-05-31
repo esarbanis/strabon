@@ -32,7 +32,9 @@ function help_update() {
 	echo "Usage: `basename ${0}` update ENDPOINT SPARQL_QUERY"
 	echo
 	echo "	ENDPOINT     : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
-	echo "	SPARQL_QUERY : the SPARQL update query to execute"
+	echo "	SPARQL_QUERY : the SPARQL update query to execute or the alias name corresponding to a"
+	echo "		       predefined query such as:"
+	echo "				\`clear': DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
 }
 
 function help_store() {
@@ -88,6 +90,7 @@ case "${1}" in
 		URL="${1}/Query"
 		QUERY="${2}"
 
+		# predefined queries
 		case "${QUERY}" in
 			size)
 				QUERY="SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
@@ -108,6 +111,13 @@ case "${1}" in
 		URL="${1}/Update"
 		QUERY="${2}"
 		
+		# predefined queries
+		case "${QUERY}" in
+			clear)
+				QUERY="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
+				;;
+		esac
+
 		CMD="curl ${CURL_OPTS} --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	store)
