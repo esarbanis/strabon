@@ -4,6 +4,7 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
@@ -143,7 +144,7 @@ public class StoreBean extends HttpServlet {
 			if (browser) {
 				redirect(response, STORE_ERROR);
 			} else {
-				if (e instanceof RDFParseException) {
+				if (e instanceof RDFParseException || e instanceof IllegalArgumentException || e instanceof MalformedURLException) {
 					response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				} else {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

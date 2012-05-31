@@ -23,6 +23,8 @@ import eu.earthobservatory.runtime.postgis.Strabon;
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
 	
+	private static final String FILE_PROTOCOL = "file";
+	
 	public class Entry {
 		private String label;
 		private String bean;
@@ -264,7 +266,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		try {
 			// store data
 			if (url) {
-				conn.add(new URL(source_data), "", format, new Resource[1]);
+				URL source = new URL(source_data);
+				if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
+					// it would be a security issue if we read from the server's filesystem
+					throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
+				} 
+				conn.add(source, "", format, new Resource[1]);
 
 			} else {
 				conn.add(new StringReader(source_data), "", format, new Resource[1]);
