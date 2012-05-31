@@ -172,7 +172,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			try {
 				logger.warn("Strabon not initialized yet.");
 				logger.warn("Initializing strabon.");
-				logger.warn(this.getDetails());
+				logger.info(this.getDetails());
 				this.strabon = new Strabon(databaseName, user, password, port, serverName, checkForLockTable);
 			} catch (Exception e) {
 				logger.error("Exception occured while creating Strabon.\n"+this.getDetails(), e.getStackTrace());
