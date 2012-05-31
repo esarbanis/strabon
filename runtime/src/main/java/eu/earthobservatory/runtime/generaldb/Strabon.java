@@ -233,7 +233,7 @@ public abstract class Strabon {
 			return ret;
 		}
 		else if (resultsFormat.equalsIgnoreCase("XML")) {
-			System.out.println("Serializing results (XML)");
+			logger.debug("Serializing results (XML)");
 			tupleQuery.evaluate(new stSPARQLResultsXMLWriter(retStream));
 		} 
 		else if (resultsFormat.equalsIgnoreCase("GeoJSON")) {
