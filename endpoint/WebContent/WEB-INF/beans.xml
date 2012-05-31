@@ -19,7 +19,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>DLRstrabonv4</value>
+            <value>endpoint</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >

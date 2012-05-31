@@ -40,6 +40,7 @@
 		<xml.bind.version>2.1.7</xml.bind.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+		<skipTests>true</skipTests>
 	</properties>
 
 	<dependencyManagement>
@@ -523,6 +524,15 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
+			<!-- The following plugin is to enable skipTest (see also properties) -->
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <version>2.12</version>
+		        <configuration>
+		          <skipTests>${skipTests}</skipTests>
+			    </configuration>
+		    </plugin>
 		</plugins>
 	</build>
 

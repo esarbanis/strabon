@@ -33,8 +33,8 @@ public class JTSWrapper {
 		wktr = new WKTReader();
 		wktw = new WKTWriter();
 		wkbr = new WKBReader();
-//		wkbw = new WKBWriter(); // PostGIS
-		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
+		wkbw = new WKBWriter(); // PostGIS
+//		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -57,11 +57,11 @@ public class JTSWrapper {
 	}
 	
 	public synchronized byte[] WKBwrite(Geometry geom) {
-//		return wkbw.write(geom); // PostGIS
+		return wkbw.write(geom); // PostGIS
 		// MonetDB
-		byte[] temp = wkbw.write(geom);
-		temp[0] = 1;
-		return temp;
+//		byte[] temp = wkbw.write(geom);
+//		temp[0] = 1;
+//		return temp;
 		//
 		
 	}

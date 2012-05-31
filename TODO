@@ -15,3 +15,11 @@ SPARQL11Tests
 	- testRegexI
 	- testUnionWithCommonObject
 	- testUnionWithDifferentObject
+
+GenralTests
+	- testQueryRelate (Conversion not allowed)
+	- testQueryThematicUnion (Union ?)
+	- testQuery6_real (Optional ?)
+	- testQuery6_real_union (Optional + Union ?)
+	- testQueryNegation (Optional)
+	- testQueryNegation2 (Optaional)
