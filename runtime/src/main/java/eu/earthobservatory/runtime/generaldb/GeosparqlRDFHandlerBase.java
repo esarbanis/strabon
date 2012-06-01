@@ -42,6 +42,11 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	private StringBuffer triples = new StringBuffer(1024);
 	
+	/** 
+	 * The number of triples that the "triples" object above contains.
+	 */
+	private int ntriples = 0;
+	
 	public StringBuffer getTriples()
 	{
 		return triples;
@@ -61,6 +66,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 
 	public void endRDF() {};
 	
+	public int getNumberOfTriples() {
+		return ntriples;
+	}
 	
 	public void handleStatement(Statement st)
 	{
@@ -74,11 +82,13 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 			String triple = "<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n" +
 					"<"+object+ "> <"+ type +"> <"+ SpatialObject+ "> .\n" ;
 			triples.append(triple);
+			ntriples++;
 		}
 		if(predicate.equals(type)&&(object.equals(Feature) || object.equals(Geometry) ))
 		{
 			String triple = "<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n";
 			triples.append(triple);
+			ntriples++;
 		}
 		if(predicate.equals(hasGeometry))
 		{
@@ -87,6 +97,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 					"<"+	subject+ "> <"+ type +"> <"+ SpatialObject + "> .\n" +
 					"<"+	object+ "> <"+ type +"> <"+ SpatialObject + "> .\n";
 			triples.append(triple);
+			ntriples++;
 		}
 		if(predicate.equals(defaultGeometry))
 		{
@@ -95,12 +106,14 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 					"<"+	subject+ "> <"+ type +"> <"+ SpatialObject + "> .\n"+
 			"<"+	subject+ "> <"+ hasGeometry +"> <"+ object + "> .\n";
 			triples.append(triple);
+			ntriples++;
 		}
 		if(geometryDomainList.contains(predicate))
 		{
 			String triple = "<"+subject+ "> <"+ type +"> <"+ Geometry+ "> .\n" +
 					"<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n";
 			triples.append(triple);
+			ntriples++;
 		}
 		if (predicate.equals(type)) {
 			if (object.equals(gml + "GM_Complex")
@@ -109,12 +122,14 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 				String triple = "<" + subject + "> <" + type + "> <" + gml
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(gml + "GM_Composite")) {
 				String triple = "<" + subject + "> <" + type + "> <" + gml
 						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + type
 						+ "> <" + gml + "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_MultiPrimitive")) {
@@ -122,6 +137,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "GM_Aggregate" + "> .\n" + "<" + subject + "> <"
 						+ type + "> <" + gml + "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_Point")
@@ -131,6 +147,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "GM_Primitive" + "> .\n" + "<" + subject + "> <"
 						+ type + "> <" + gml + "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_OrientableCurve")
@@ -141,6 +158,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "<" + subject + "> <" + type + "> <" + gml
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_Curve")) {
@@ -151,6 +169,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "<" + subject + "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
 						+ "<" + subject + "> <" + type + "> <" + gml+ "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_Surface")) {
@@ -161,6 +180,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "<" + subject + "> <" + type + "> <" + gml
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_CompositeCurve")) {
@@ -176,6 +196,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ subject + "> <" + type + "> <" + gml + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_CompositeSurface")) {
@@ -191,6 +212,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ subject + "> <" + type + "> <" + gml + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_CompositeSolid")) {
@@ -202,6 +224,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "GM_Composite" + "> .\n" + "<" + subject + "> <"
 						+ type + "> <" + gml + "GM_Object" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(gml + "GM_MultiPoint")
@@ -214,6 +237,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ subject + "> <" + type + "> <" + gml + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
+				ntriples++;
 
 			}
 			if (object.equals(sf + "Point") || object.equals(sf + "Curve")
@@ -222,12 +246,14 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
 						+ "Geometry" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "LineString")) {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
 						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
 						+ "> <" + sf + "Curve" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "Line") || object.equals(sf + "LinearRing")) {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
@@ -235,12 +261,14 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "> <" + sf + "Curve" + "> .\n" + "<" + subject
 						+ "> <" + type + "> <" + sf + "LineString" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "Polygon")) {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
 						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
 						+ "> <" + sf + "Surface" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "MultiSurface")
 					|| object.equals(sf + "MultiCurve")
@@ -249,6 +277,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
 						+ "> <" + sf + "GeometryCollection" + "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "MultiPolygon")) {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
@@ -257,6 +286,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "> <" + type + "> <" + sf + "GeometryCollection"
 						+ "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 			if (object.equals(sf + "MultiLineString")) {
 				String triple = "<" + subject + "> <" + type + "> <" + sf
@@ -265,15 +295,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 						+ "> <" + type + "> <" + sf + "GeometryCollection"
 						+ "> .\n";
 				triples.append(triple);
+				ntriples++;
 			}
 		}
-
-		
-	
-				
-		
-		//triples.append("niania\n");
-		
 	}
 	
 
