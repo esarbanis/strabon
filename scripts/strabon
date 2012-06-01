@@ -48,18 +48,18 @@ DBUSER="charnik"
 DBPASS="charnik"
 
 # the query to run
-QUERY="select (count(*) as ?c) where {?s ?p ?o}"
+QUERY=
+
+# predefined queries
+QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
+QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
 
 # debug option for log4j configuration:
 #-Dlog4j.debug
 #-Dlog4j.configuration=\"${RUNTIME}/log4j.properties\"
 
-CMD="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
-
-eval $CMD
-exit 1
-
-case "${1}" in
+DEBUG=0
+#case "${1}" in
 #	-d)
 #		shift
 #		DEBUG=1
@@ -90,66 +90,48 @@ case "${1}" in
 		exit 0
 		;;
 	query)
+		CLASS="QueryOp"
 		shift
-		if ! test $# -eq 2; then
-			help_query
+		if ! test $# -eq 1; then
+			#help_query
+			help
 			exit 1
 		fi
-		URL="${1}/Query"
-		QUERY="${2}"
+		QUERY="${1}"
 
-		# predefined queries
+		# check for predefined queries
 		case "${QUERY}" in
 			size)
-				QUERY="SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
+				QUERY="${QUERY_SIZE}"
 				;;
 		esac
-
-		# TODO: make it an argument
-		FORMAT="XML"
-
-		CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	update)
+		CLASS="UpdateOp"
 		shift
-		if ! test $# -eq 2; then
-			help_update
+		if ! test $# -eq 1; then
+			#help_query
+			help
 			exit 1
 		fi
-		URL="${1}/Update"
-		QUERY="${2}"
-		
-		# predefined queries
+		QUERY="${1}"
+
+		# check for predefined queries
 		case "${QUERY}" in
 			clear)
-				QUERY="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
+				QUERY="${QUERY_DELETEALL}"
 				;;
 		esac
-
-		CMD="curl ${CURL_OPTS} --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	store)
+		CLASS="StoreOp"
 		shift
-		if ! test $# -eq 4; then
-			help_store
+		if ! test $# -eq 1; then
+			#help_query
+			help
 			exit 1
 		fi
-		URL="${1}/Store"
-		FORMAT="${2}"
-		case "${3}" in
-			-t)
-				TRIPLES="${4}"
-				CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode data='${TRIPLES}' ${URL}"
-				;;
-			-u)
-				URL_TRIPLES="${4}"
-				CMD="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
-				;;
-			 *)
-				help_store
-				exit 1
-				;;
-		esac
+		QUERY="${1}"
 		;;
 	*) 
 		help
@@ -159,11 +141,13 @@ case "${1}" in
 		;;
 esac
 
+CMD="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
+
 # execute or debug
-if test $DEBUG -eq 1; then
+if test ${DEBUG} -eq 1; then
 	echo "`basename ${0}`: Debug is ON"
 	echo "`basename ${0}`: Printing command for execution"	
-	echo "	$CMD"
+	echo "	${CMD}"
 else
 	eval ${CMD}
 fi
