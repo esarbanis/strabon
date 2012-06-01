@@ -866,14 +866,15 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		logger.info("[Strabon.storeFile] Triples inferred:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeFile] Inferred " + handler.getNumberOfTriples() + " triples.");
+		if (handler.getNumberOfTriples() > 0) {
+			logger.info("[Strabon.storeFile] Triples inferred:"+ handler.getTriples().toString());
+		}
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 		if (context == null) {
-			logger.info("[Strabon.storeFile] [1]");
 			con1.add(file, baseURI, format);
 		} else {
-			logger.info("[Strabon.storeFile] [2]");
 			con1.add(file, baseURI, format, context);
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
@@ -894,15 +895,16 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		logger.info("[Strabon.storeURL] These are the extra triples:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeURL] Inferred " + handler.getNumberOfTriples() + " triples.");
+		if (handler.getNumberOfTriples() > 0) {
+			logger.info("[Strabon.storeURL] Triples inferred:"+ handler.getTriples().toString());
+		}
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
 		if (context == null) {
-			logger.info("[Strabon.storeURL] [3]");
 			con1.add(url, baseURI, format);
 		} else {
-			logger.info("[Strabon.storeURL] [4]");
 			con1.add(url, baseURI, format, context);
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
@@ -925,17 +927,17 @@ public abstract class Strabon {
 		handler.startRDF();
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		logger.info("[Strabon.storeString] These are the extra triples:"+ handler.getTriples().toString());
+		logger.info("[Strabon.storeString] Inferred " + handler.getNumberOfTriples() + " triples.");
+		if (handler.getNumberOfTriples() > 0) {
+			logger.info("[Strabon.storeString] Triples inferred:"+ handler.getTriples().toString());
+		}
 		StringReader georeader= new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
-
 		if (context == null) {
-			logger.info("[Strabon.storeString] [5]");
 			con1.add(reader, baseURI, format);
 			reader.close();
 		} else {
-			logger.info("[Strabon.storeString] [6]");
 			con1.add(reader, baseURI, format, context);
 			reader.close();
 		}
