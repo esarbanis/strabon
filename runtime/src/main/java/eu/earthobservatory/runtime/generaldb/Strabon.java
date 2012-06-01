@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -832,8 +833,27 @@ public abstract class Strabon {
 		{
 			throw new InvalidDatasetFormatFault();
 		}
+       try{
+    	   URL source = new URL((String) src);
+    	   storeURL(source, baseURI, uriContext, realFormat);
+    	   
+       }catch(MalformedURLException e){
+    	   File file = new File((String) src);
+    	   String urlfile = "file://"+src;
 
-		try
+    	   try
+    	   {
+    		   URL urlf  = new URL(urlfile);
+    		   storeURL(urlf, baseURI, uriContext, realFormat); //file.toURL is deprecated  
+    	   }
+    	   catch(MalformedURLException ex)
+    	   {
+    		   storeString((String)src, baseURI, uriContext, realFormat);
+    	   }
+    	   
+       }
+
+		/*try
 		{
 			if(File.class.isInstance(src))
 			{
@@ -850,7 +870,7 @@ public abstract class Strabon {
 		}
 		catch(NullPointerException e) {
 			logger.error("[Strabon.storeInRepo]", e.getStackTrace());
-		}
+		}*/
 	}
 
 	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
