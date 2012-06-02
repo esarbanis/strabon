@@ -786,17 +786,12 @@ public abstract class Strabon {
 //		System.out.println("-------------------------------------------");
 	}
 
-	@SuppressWarnings("unused")
-	private void store(File file, String baseURI, RDFFormat format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault {
-		con1.add(file, baseURI, format);
-	}
-
-	public void storeInRepo(Object src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
+	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
 	{
 		storeInRepo(src, null, null, format);
 	}
 
-	public void storeInRepo(Object src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
+	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
 	{
 		RDFFormat realFormat = null;
 
@@ -871,34 +866,6 @@ public abstract class Strabon {
 		catch(NullPointerException e) {
 			logger.error("[Strabon.storeInRepo]", e.getStackTrace());
 		}*/
-	}
-
-	private void storeFile(File file, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
-	{
-		logger.info("[Strabon.storeFile] File     : " + file.getName());
-		logger.info("[Strabon.storeFile] Base URI : " + ((baseURI == null) ? "null" : baseURI));
-		logger.info("[Strabon.storeFile] Context  : " + ((context == null) ? "null" : context));
-		logger.info("[Strabon.storeFile] Format   : " + ((format == null) ? "null" : format.toString()));
-
-		RDFParser parser = Rio.createParser(format);
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
-		FileReader reader = new FileReader(file);
-		handler.startRDF();
-		parser.setRDFHandler(handler);
-		parser.parse(reader, "");
-		logger.info("[Strabon.storeFile] Inferred " + handler.getNumberOfTriples() + " triples.");
-		if (handler.getNumberOfTriples() > 0) {
-			logger.info("[Strabon.storeFile] Triples inferred:"+ handler.getTriples().toString());
-		}
-		StringReader georeader= new StringReader(handler.getTriples().toString());
-		handler.endRDF();
-		if (context == null) {
-			con1.add(file, baseURI, format);
-		} else {
-			con1.add(file, baseURI, format, context);
-		}
-		con1.add(georeader, "", RDFFormat.NTRIPLES);
-
 	}
 
 	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException

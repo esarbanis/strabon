@@ -1,10 +1,13 @@
 #!/bin/bash
 #
 # Script for running the main classes of Strabon. The main classes of Strabon comprises
-# QueryOp, StoreOp, etc.
+# QueryOp, , UpdateOp, and StoreOp.
 #
 # Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
 #
+
+# command name
+CMD="$(basename ${0})"
 
 # absolute directory name of this command
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -12,15 +15,45 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUNTIME="${LOC}/../runtime"
 
 function help() {
-	echo "Usage: `basename ${0}` [OPTIONS] COMMAND ARGS"
+	echo "Usage: ${CMD} [OPTIONS] COMMAND ARGS"
 	echo
 	echo "Interface to execute the main classes of Strabon, such as QueryOp, StoreOp, UpdateOp, etc."
 	echo
 	echo "	COMMAND	 : one of \`query', \`update', \`store', or \`help'"
 	echo "	ARGS	 : arguments according to selected command"
-	echo 
-#	echo "OPTIONS can be any of the following"
-#	echo "	-d	 : don't run, just print what shall be executed"
+	echo
+	echo "OPTIONS can be any of the following"
+	echo "	-d	 : don't run, just print what shall be executed"
+	echo "	-c FILE	 : configuration file to use for the connection. It defaults to \`${HOME}/.strabon'."
+}
+
+function help_query() {
+	echo "Usage: ${CMD} query SPARQL_QUERY"
+	echo
+	echo "Execute a SPARQL query on Strabon."
+	echo
+	echo "	SPARQL_QUERY	: the SPARQL query to execute or an alias name such as the following:"
+	echo "				size: returns the number of triples"
+}
+
+function help_update() {
+	echo "Usage: ${CMD} update SPARQL_UPDATE"
+	echo
+	echo "Execute a SPARQL Update query on Strabon."
+	echo
+	echo "	SPARQL_UPDATE	: the SPARQL update query to execute or an alias name such as the"
+	echo "			  the following:"
+	echo "				clear: deletes all triples"
+}
+
+function help_store() {
+	echo "Usage: ${CMD} store FILE"
+	echo
+	echo "Store an RDF document or ??? in Strabon."
+	echo
+	echo "	FILE	: the file containing the RDF document to store. It can be a filename or a URL"
+	echo "		  (i.e., file:///tmp/file.nt, http://www.example.org/file.nt,"
+	echo "		  ftp://www.example.org/file.nt, etc.)"
 }
 
 # runtime package
@@ -40,6 +73,7 @@ PORT=5432
 
 # the database name to connect to
 DB="endpoint"
+DB="strabon"
 
 # the username for the database connection
 DBUSER="charnik"
@@ -58,13 +92,30 @@ QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
 #-Dlog4j.debug
 #-Dlog4j.configuration=\"${RUNTIME}/log4j.properties\"
 
+# just print what shall be executed
 DEBUG=0
-#case "${1}" in
-#	-d)
-#		shift
-#		DEBUG=1
-#		;;
-#esac
+
+# configuration file for the Strabon connection
+STRABON_CONF="${HOME}/.strabon"
+case "${1}" in
+	-d)
+		shift
+		DEBUG=1
+		;;
+	-c)
+		shift
+		if ! test $# -gt 1; then
+			help
+			exit 1
+		fi
+		STRABON_CONF="${1}"
+		if ! test -e "${STRABON_CONF}"; then
+			echo "${CMD}: configuration file \"${1}\" does not exist."
+			exit 1
+		fi
+		shift
+		;;
+esac
 
 case "${1}" in
 	help)
@@ -141,14 +192,14 @@ case "${1}" in
 		;;
 esac
 
-CMD="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
+STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
 
 # execute or debug
 if test ${DEBUG} -eq 1; then
 	echo "`basename ${0}`: Debug is ON"
 	echo "`basename ${0}`: Printing command for execution"	
-	echo "	${CMD}"
+	echo "	${STRABON_EXEC}"
 else
-	eval ${CMD}
+	eval ${STRABON_EXEC}
 fi
 

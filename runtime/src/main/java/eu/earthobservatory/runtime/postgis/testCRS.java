@@ -1,15 +1,12 @@
 package eu.earthobservatory.runtime.postgis;
-import org.openrdf.repository.RepositoryException;
-
-
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 
 public class testCRS {
@@ -42,7 +39,7 @@ public class testCRS {
 				"\"^^<http://strdf.di.uoa.gr/ontology#WKT> .";
 		String gml =  "<http://example.org/rcc8Obj1> <http://example.org/hasGeometry> \"<gml:Point> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>\"^^<http://strdf.di.uoa.gr/ontology#GML> .\n";
 				
-		File file = new File ("/home/konstantina/gmlread.nt");
+		String file = "/home/konstantina/gmlread.nt";
 		URL url = new URL("http://www.di.uoa.gr/~pms509/rdf-data/streason.nt");
 		String fileBaseURI = "http://example#";
 		String fileRDFFormat = "NTRIPLES";
@@ -52,23 +49,16 @@ public class testCRS {
 			//strabon.storeInRepo(statement1, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(statement2, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(text, null, null, "NTRIPLES");
-			strabon.storeInRepo(file, null, null, fileRDFFormat);
+			strabon.storeInRepo(file, fileRDFFormat);
 			//strabon.storeInRepo(gml, null, null, fileRDFFormat);
+			
 		} catch (RDFParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			strabon.close();
 		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			strabon.close();
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			strabon.close();
 			e.printStackTrace();
 		} catch (InvalidDatasetFormatFault e) {
-			// TODO Auto-generated catch block
-			strabon.close();
 			e.printStackTrace();
 		}
 		finally{

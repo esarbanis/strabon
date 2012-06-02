@@ -86,8 +86,7 @@ public class TemplateTests {
 	protected static void loadTestData(String inputfile, Strabon strabon)
 		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
-		URL src = SimpleTests.class.getResource(inputfile);
-		strabon.storeInRepo(src, "NTRIPLES");
+		strabon.storeInRepo(inputfile, "NTRIPLES");
 	}
 	
 //	/**

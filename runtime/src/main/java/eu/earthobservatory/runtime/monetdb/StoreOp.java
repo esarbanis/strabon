@@ -35,11 +35,7 @@ public class StoreOp {
 		}
 
 		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-		
-		File file = new File (src);
-		strabon.storeInRepo(file, format);
-//		strabon.storeInRepo(file, null, null, fileRDFFormat);
-
+		strabon.storeInRepo(src, format);
 		strabon.close();
 	}
 
