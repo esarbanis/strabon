@@ -12,7 +12,7 @@ public class QueryOp {
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length < 6) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> ");
@@ -37,11 +37,19 @@ public class QueryOp {
 			resultsFormat = args[6];
 		}
 
-		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-
-		logger.info("[QueryOp] Executing query: " + queryString);
-		strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
-		strabon.close();
+		Strabon strabon = null;
+		try {
+			logger.info("[QueryOp] Executing query: " + queryString);
+			
+			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+			
+		} catch (Exception e) {
+			logger.error("[Strabon.QueryOp] Error during querying.", e);
+			
+		} finally {
+			strabon.close();
+		}
 	}
 	/*
 	private static void query(String queryString, SailRepositoryConnection con) throws MalformedQueryException, RepositoryException, QueryEvaluationException, IOException, ClassNotFoundException, TupleQueryResultHandlerException {

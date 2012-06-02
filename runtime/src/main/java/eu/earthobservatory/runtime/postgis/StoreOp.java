@@ -41,9 +41,10 @@ public class StoreOp {
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, true);
 			strabon.storeInRepo(src, format);
-			strabon.close();
+			
 		} catch (Exception e) {
 			logger.error("[Strabon.StoreOp] Error during store.", e);
+			
 		} finally {
 			strabon.close();
 		}
