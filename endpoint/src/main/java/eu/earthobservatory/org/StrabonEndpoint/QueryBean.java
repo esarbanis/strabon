@@ -225,16 +225,16 @@ public class QueryBean extends HttpServlet {
 			String basePath = context.getRealPath("/") + "/../ROOT/tmp/"; 
 			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
 
-			
 			try{
 				Date date = new Date();
 
 				FileUtils.forceMkdir(new File(basePath));
 
-				Iterator it = FileUtils.iterateFiles(new File(basePath), null, false);
+				@SuppressWarnings("unchecked")
+				Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
 				while(it.hasNext()){
-					File tbd = new File(((File) it.next()).getAbsolutePath());
-					if (FileUtils.isFileOlder( new File(tbd.getAbsolutePath()), date.getTime())){
+					File tbd = new File((it.next()).getAbsolutePath());
+					if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
 						FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
 					}
 				}
