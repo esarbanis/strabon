@@ -828,48 +828,26 @@ public abstract class Strabon {
 		{
 			throw new InvalidDatasetFormatFault();
 		}
+		
        try{
-    	   URL source = new URL((String) src);
+    	   URL source = new URL(src);
     	   storeURL(source, baseURI, uriContext, realFormat);
     	   
-       }catch(MalformedURLException e){
-    	   File file = new File((String) src);
-    	   String urlfile = "file://"+src;
-
-    	   try
-    	   {
-    		   URL urlf  = new URL(urlfile);
-    		   storeURL(urlf, baseURI, uriContext, realFormat); //file.toURL is deprecated  
-    	   }
-    	   catch(MalformedURLException ex)
-    	   {
+       } catch(MalformedURLException e) {
+    	   File file = new File(src);
+    	   if (file.exists()) {
+    		   storeURL(new URL("file://" + src), baseURI, uriContext, realFormat);
+    		   
+    	   } else {
+    		   logger.info("File \"" + src + "\" does not exist. Trying reading as String.");
     		   storeString((String)src, baseURI, uriContext, realFormat);
     	   }
-    	   
        }
-
-		/*try
-		{
-			if(File.class.isInstance(src))
-			{
-				storeFile((File)src, baseURI, uriContext, realFormat);
-			}
-			else if(URL.class.isInstance(src))
-			{
-				storeURL((URL)src, baseURI, uriContext, realFormat);
-			}
-			else if(String.class.isInstance(src))
-			{
-				storeString((String)src, baseURI, uriContext, realFormat);
-			}
-		}
-		catch(NullPointerException e) {
-			logger.error("[Strabon.storeInRepo]", e.getStackTrace());
-		}*/
 	}
 
 	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
+		logger.info("[Strabon.storeURL] Storing file.");
 		logger.info("[Strabon.storeURL] URL      : " + url.toString());
 		logger.info("[Strabon.storeURL] Base URI : " + ((baseURI == null) ? "null" : baseURI));
 		logger.info("[Strabon.storeURL] Context  : " + ((context == null) ? "null" : context));
@@ -886,7 +864,7 @@ public abstract class Strabon {
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeURL] Triples inferred:"+ handler.getTriples().toString());
 		}
-		StringReader georeader= new StringReader(handler.getTriples().toString());
+		StringReader georeader = new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
 		if (context == null) {
@@ -895,6 +873,8 @@ public abstract class Strabon {
 			con1.add(url, baseURI, format, context);
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
+		georeader.close();
+		logger.info("[Strabon.storeURL] Storing was successful.");
 	}
 
 	private void storeString(String text, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
@@ -902,6 +882,7 @@ public abstract class Strabon {
 		if (baseURI == null)
 			baseURI = "";
 
+		logger.info("[Strabon.storeString] Storing triples.");
 		logger.info("[Strabon.storeString] Text     : " + text);
 		logger.info("[Strabon.storeString] Base URI : " + ((baseURI == null) ? "null" : baseURI));
 		logger.info("[Strabon.storeString] Context  : " + ((context == null) ? "null" : context));
@@ -918,7 +899,7 @@ public abstract class Strabon {
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeString] Triples inferred:"+ handler.getTriples().toString());
 		}
-		StringReader georeader= new StringReader(handler.getTriples().toString());
+		StringReader georeader = new StringReader(handler.getTriples().toString());
 		handler.endRDF();
 
 		if (context == null) {
@@ -930,6 +911,7 @@ public abstract class Strabon {
 		}
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
 		georeader.close();
+		logger.info("[Strabon.storeString] Storing was successful.");
 	}
 
 	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException
