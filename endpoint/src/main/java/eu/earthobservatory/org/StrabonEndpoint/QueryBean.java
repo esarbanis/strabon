@@ -36,6 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
+import eu.earthobservatory.org.StrabonEndpoint.ResponseMessages;
 
 
 public class QueryBean extends HttpServlet {

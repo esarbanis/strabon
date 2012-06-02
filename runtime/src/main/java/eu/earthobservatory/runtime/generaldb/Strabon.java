@@ -121,7 +121,7 @@ public abstract class Strabon {
 		try {
 			repo1.initialize();
 		} catch (RepositoryException e) {
-			logger.error("[Strabon.init] initialize", e.getStackTrace());
+			logger.error("[Strabon.init] initialize", e);
 		}
 
 		logger.info("[Strabon.init] Clearing Successful.");
@@ -129,7 +129,7 @@ public abstract class Strabon {
 		try {
 			con1 = repo1.getConnection();
 		} catch (RepositoryException e) {
-			logger.error("[Strabon.init] getConnection", e.getStackTrace());
+			logger.error("[Strabon.init] getConnection", e);
 		}
 	}
 
@@ -154,7 +154,7 @@ public abstract class Strabon {
 			repo1.shutDown();
 			
 		} catch (RepositoryException e) {
-			logger.error("[Strabon.close]", e.getStackTrace());
+			logger.error("[Strabon.close]", e);
 		}
 		
 		logger.info("[Strabon.close] Connection closed.");
@@ -364,7 +364,7 @@ public abstract class Strabon {
 
 						} 
 						catch (ParseException e) {
-							logger.error("[Strabon.query] Faults detected in spatial literal representation.", e.getStackTrace());
+							logger.error("[Strabon.query] Faults detected in spatial literal representation.", e);
 						}
 					}
 
@@ -372,9 +372,9 @@ public abstract class Strabon {
 					try {
 						geomCRS = CRS.decode("EPSG:"+SRID);
 					} catch (NoSuchAuthorityCodeException e) {
-						logger.error("[Strabon.query] Error decoding returned geometry's SRID", e.getStackTrace());
+						logger.error("[Strabon.query] Error decoding returned geometry's SRID", e);
 					} catch (FactoryException e) {
-						logger.error("[Strabon.query]", e.getStackTrace());
+						logger.error("[Strabon.query]", e);
 					}
 
 					tb[i].setCRS(geomCRS);
@@ -575,12 +575,12 @@ public abstract class Strabon {
 					//				out.writeChars(bindingSet.toString());
 				}
 			} catch (QueryEvaluationException e) {
-				logger.error("[Strabon.query]", e.getStackTrace());
+				logger.error("[Strabon.query]", e);
 			}
 			try {
 				dos.close();
 			} catch (IOException e) {
-				logger.error("[Strabon.query]", e.getStackTrace());
+				logger.error("[Strabon.query]", e);
 			}
 
 			//Finishing the structure of the kml document
@@ -682,7 +682,7 @@ public abstract class Strabon {
 				}
 
 			} catch (IOException e) {
-				logger.error("[Strabon.query]", e.getStackTrace());
+				logger.error("[Strabon.query]", e);
 			}
 		}
 		else if(resultsFormat.equalsIgnoreCase("HTML")) {
@@ -751,7 +751,7 @@ public abstract class Strabon {
 			writeOut.flush();
 			retStream.flush();
 		} catch (IOException e) {
-			logger.error("[Strabon.query]", e.getStackTrace());
+			logger.error("[Strabon.query]", e);
 		}
 
 		// Print results.
@@ -768,7 +768,7 @@ public abstract class Strabon {
 		try {
 			update = con.prepareUpdate(QueryLanguage.SPARQL, updateString);
 		} catch (RepositoryException e) {
-			logger.error("[Strabon.update]", e.getStackTrace());
+			logger.error("[Strabon.update]", e);
 		}
 
 		//System.out.println("Placemark0");
@@ -778,7 +778,7 @@ public abstract class Strabon {
 		try {
 			update.execute();
 		} catch (UpdateExecutionException e) {
-			logger.error("[Strabon.update]", e.getStackTrace());
+			logger.error("[Strabon.update]", e);
 		}
 
 //		System.out.println("-------------------------------------------");
@@ -855,11 +855,14 @@ public abstract class Strabon {
 
 		InputStream in = (InputStream) url.openStream();
 		InputStreamReader reader = new InputStreamReader(in);
+		
 		RDFParser parser = Rio.createParser(format);
+		
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
-		handler.startRDF();
+		
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
+		
 		logger.info("[Strabon.storeURL] Inferred " + handler.getNumberOfTriples() + " triples.");
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeURL] Triples inferred:"+ handler.getTriples().toString());
@@ -889,12 +892,14 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
+		
 		RDFParser parser = Rio.createParser(format);
+		
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
-
-		handler.startRDF();
+		
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
+		
 		logger.info("[Strabon.storeString] Inferred " + handler.getNumberOfTriples() + " triples.");
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeString] Triples inferred:"+ handler.getTriples().toString());
@@ -921,7 +926,7 @@ public abstract class Strabon {
 		try {
 			graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, describeString);
 		} catch (RepositoryException e) {
-			logger.error("[Strabon.describe]", e.getStackTrace());
+			logger.error("[Strabon.describe]", e);
 		}
 
 //		System.out.println("Placemark0");
@@ -935,13 +940,13 @@ public abstract class Strabon {
 			out.close();
 			
 		} catch (FileNotFoundException e) {
-			logger.error("[Strabon.describe]", e.getStackTrace());
+			logger.error("[Strabon.describe]", e);
 		} catch (QueryEvaluationException e) {
-			logger.error("[Strabon.describe]", e.getStackTrace());
+			logger.error("[Strabon.describe]", e);
 		} catch (RDFHandlerException e) {
-			logger.error("[Strabon.describe]", e.getStackTrace());
+			logger.error("[Strabon.describe]", e);
 		} catch (IOException e) {
-			logger.error("[Strabon.describe]", e.getStackTrace());
+			logger.error("[Strabon.describe]", e);
 		}
 
 		logger.info("[Strabon.describe] Output: "+outFile);
