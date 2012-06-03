@@ -388,6 +388,10 @@ case "${1}" in
 		# handle the case of storing multiple files afterwards
 		# QUERY="${@}"
 		;;
+	"")
+		help
+		exit 1
+		;;
 	*) 
 		help
 		echo
