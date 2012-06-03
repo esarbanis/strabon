@@ -22,7 +22,7 @@ function help() {
 	echo "	COMMAND	 : one of \`query', \`update', \`store', or \`help'"
 	echo "	ARGS	 : arguments according to selected command"
 	echo
-	echo "OPTIONS can be one of the following"
+	echo "OPTIONS can be any of the following"
 	echo "	-d	 : don't run, just print what shall be executed"
 	#echo "	-c FILE	 : configuration file to use for the connection. It defaults to \`${HOME}/.strabon'."
 }
@@ -104,6 +104,8 @@ DEBUG=0
 
 # configuration file for the Strabon connection
 STRABON_CONF="${HOME}/.strabon"
+
+# read script options
 case "${1}" in
 	-d)
 		shift
@@ -124,6 +126,7 @@ case "${1}" in
 		;;
 esac
 
+# determine command to execute
 case "${1}" in
 	help)
 		shift
@@ -223,6 +226,7 @@ case "${1}" in
 		;;
 esac
 
+# compile command to execute
 if test "${CLASS}" = "StoreOp"; then
 	STRABON_EXEC=
 	for file in "${@}"; do
@@ -233,7 +237,7 @@ else
 	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
 fi
 
-# execute or debug
+# execute command or debug
 if test ${DEBUG} -eq 1; then
 	echo "${CMD}: Debug is ON"
 	echo "${CMD}: Printing command for execution"	
