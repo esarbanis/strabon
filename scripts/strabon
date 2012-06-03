@@ -131,7 +131,6 @@ function help_store() {
 
 # read configuration script first
 if test -e "${STRABON_CONF}"; then
-	echo "${CMD}: reading configuration file ${STRABON_CONF}"
 	. ${STRABON_CONF}
 fi
 
@@ -230,7 +229,9 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 				exit 1
 			else
 				# if true, then debug has been set ON in command line
-				echo "${CMD}: Reading configuration file \"${STRABON_CONF}\""
+				if $DEBUG; then
+					echo "${CMD}: Reading configuration file \"${STRABON_CONF}\""
+				fi
 
 				. ${STRABON_CONF}
 
