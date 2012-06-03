@@ -186,14 +186,10 @@ public abstract class Strabon {
 		try {
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 		} catch (RepositoryException e) {
-
-			e.printStackTrace();
+			logger.error("[Strabon.query] Error in preparing tuple query.", e);
 		}
-		//System.out.println("Placemark0");
-		//System.out.println("\n\n\nGot query - new2: " + queryString + "\n\n\n");
 
 		ArrayList<String> ret = new ArrayList<String>();
-
 		ByteArrayOutputStream retStream = new ByteArrayOutputStream();
 		//		DataOutputStream out = new DataOutputStream(retStream);
 		OutputStreamWriter writeOut = new OutputStreamWriter(retStream,"UTF-8");
