@@ -39,8 +39,6 @@ public class QueryOp {
 
 		Strabon strabon = null;
 		try {
-			logger.info("[QueryOp] Executing query: " + queryString);
-			
 			strabon = new Strabon(db, user, passwd, port, host, true);
 			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
 			

@@ -47,13 +47,13 @@ function help_update() {
 }
 
 function help_store() {
-	echo "Usage: ${CMD} store FILE"
+	echo "Usage: ${CMD} store FILE..."
 	echo
-	echo "Store an RDF document or ??? in Strabon."
+	echo "Store RDF documents in Strabon."
 	echo
-	echo "	FILE	: the file containing the RDF document to store. It can be a filename or a URL"
+	echo "	FILE	: the file containing the RDF document to store. It can be a filename or a URL,"
 	echo "		  (i.e., file:///tmp/file.nt, http://www.example.org/file.nt,"
-	echo "		  ftp://www.example.org/file.nt, etc.)"
+	echo "		  ftp://www.example.org/file.nt, etc.)."
 }
 
 # runtime package
@@ -144,8 +144,7 @@ case "${1}" in
 		CLASS="QueryOp"
 		shift
 		if ! test $# -eq 1; then
-			#help_query
-			help
+			help_query
 			exit 1
 		fi
 		QUERY="${1}"
@@ -161,8 +160,7 @@ case "${1}" in
 		CLASS="UpdateOp"
 		shift
 		if ! test $# -eq 1; then
-			#help_query
-			help
+			help_update
 			exit 1
 		fi
 		QUERY="${1}"
@@ -177,29 +175,37 @@ case "${1}" in
 	store)
 		CLASS="StoreOp"
 		shift
-		if ! test $# -eq 1; then
-			#help_query
-			help
+		if ! test $# -ge 1; then
+			help_store
 			exit 1
 		fi
-		QUERY="${1}"
+		# do not make an assignment of the files to QUERY
+		# handle the case afterwards
+		# QUERY="${@}"
 		;;
 	*) 
 		help
 		echo
-		echo "ERROR: Unknown command \"${1}\"."
+		echo "${CMD}: Unknown command \"${1}\"."
 		exit 1
 		;;
 esac
 
-STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
+if test "${CLASS}" = "StoreOp"; then
+	STRABON_EXEC=
+	for file in "${@}"; do
+		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\");
+"
+	done
+else
+	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
+fi
 
 # execute or debug
 if test ${DEBUG} -eq 1; then
-	echo "`basename ${0}`: Debug is ON"
-	echo "`basename ${0}`: Printing command for execution"	
-	echo "	${STRABON_EXEC}"
+	echo "${CMD}: Debug is ON"
+	echo "${CMD}: Printing command for execution"	
+	echo "${STRABON_EXEC}"
 else
 	eval ${STRABON_EXEC}
 fi
-
