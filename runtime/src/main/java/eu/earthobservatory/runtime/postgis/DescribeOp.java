@@ -35,7 +35,6 @@ public class DescribeOp {
 		String outFile = args[6];
 		
 		Strabon strabon = null;
-		
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, true);
 			strabon.describe(queryString, strabon.getSailRepoConnection(), outFile);
@@ -44,7 +43,9 @@ public class DescribeOp {
 			logger.error("[Strabon.DescribeOp] Error during execution of DESCRIBE query.", e);
 			
 		} finally {
-			strabon.close();
+			if (strabon != null) {
+				strabon.close();
+			}
 		}
 	}
 }

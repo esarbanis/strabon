@@ -46,7 +46,9 @@ public class StoreOp {
 			logger.error("[Strabon.StoreOp] Error during store.", e);
 			
 		} finally {
-			strabon.close();
+			if (strabon != null) {
+				strabon.close();
+			}
 		}
 	}
 

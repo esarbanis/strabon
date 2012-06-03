@@ -40,7 +40,9 @@ public class UpdateOp {
 			logger.error("[Strabon.UpdateOp] Error during execution of UPDATE query.", e);
 			
 		} finally {
-			strabon.close();
+			if (strabon != null) {
+				strabon.close();
+			}
 		}
 	}
 }

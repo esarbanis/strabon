@@ -79,27 +79,4 @@ public class QueryDir {
 		}
 		return stringBuilder.toString();
 	}
-
-	/*
-	private static void query(String queryString, SailRepositoryConnection con) throws MalformedQueryException, RepositoryException, QueryEvaluationException, IOException, ClassNotFoundException, TupleQueryResultHandlerException {
-		TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-
-		System.out.println(queryString);
-		TupleQueryResult result = tupleQuery.evaluate();
-
-		System.out.println("-------------------------------------------");
-		System.out.println("-                RESULTS                  -");
-		System.out.println("-------------------------------------------");
-
-		tupleQuery.evaluate(new SPARQLResultsXMLWriter(System.out));
-
-		List<String> bindingNames = result.getBindingNames();
-		while (result.hasNext()) {
-			BindingSet bindingSet = result.next();			
-			System.out.println(bindingSet.toString());
-		}
-		System.out.println("-------------------------------------------");
-		System.out.flush();
-	}
-	 */
 }
