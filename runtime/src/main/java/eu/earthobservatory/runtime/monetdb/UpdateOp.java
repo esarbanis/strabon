@@ -1,13 +1,18 @@
 package eu.earthobservatory.runtime.monetdb;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class UpdateOp {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.monetdb.UpdateOp.class);
+	
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length < 6) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <UPDATE> ");
@@ -27,10 +32,18 @@ public class UpdateOp {
 		String passwd = args[4];		
 		String queryString = args[5];
 		
-		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-
-		strabon.update(queryString, strabon.getSailRepoConnection());
-
-		strabon.close();
+		Strabon strabon = null;
+		try {
+			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon.update(queryString, strabon.getSailRepoConnection());
+			
+		} catch (Exception e) {
+			logger.error("[Strabon.UpdateOp] Error during execution of UPDATE query.", e);
+			
+		} finally {
+			if (strabon != null) {
+				strabon.close();
+			}
+		}
 	}
 }

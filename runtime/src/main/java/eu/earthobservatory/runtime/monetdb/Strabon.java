@@ -1,14 +1,10 @@
 package eu.earthobservatory.runtime.monetdb;
 
-import info.aduna.concurrent.locks.Properties;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.openrdf.sail.monetdb.MonetDBSqlStore;
 
 public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {

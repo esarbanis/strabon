@@ -1,15 +1,17 @@
 package eu.earthobservatory.runtime.monetdb;
 
-import java.io.File;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StoreOp {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.monetdb.StoreOp.class);
+	
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length < 6) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> ");
@@ -34,9 +36,19 @@ public class StoreOp {
 			format = args[6];
 		}
 
-		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-		strabon.storeInRepo(src, format);
-		strabon.close();
+		Strabon strabon = null;
+		try {
+			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon.storeInRepo(src, format);
+		
+		} catch (Exception e) {
+			logger.error("[Strabon.StoreOp] Error during store.", e);
+			
+		} finally {
+			if (strabon != null) {
+				strabon.close();
+			}
+		}
 	}
 
 }

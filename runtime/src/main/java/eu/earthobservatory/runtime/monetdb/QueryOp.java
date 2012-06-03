@@ -1,13 +1,17 @@
 package eu.earthobservatory.runtime.monetdb;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueryOp {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.monetdb.QueryOp.class);
+	
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length < 6) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> ");
@@ -32,35 +36,18 @@ public class QueryOp {
 			resultsFormat = args[6];
 		}
 
-
-
-
-		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-
-		strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
-
-		strabon.close();
-	}
-	/*
-	private static void query(String queryString, SailRepositoryConnection con) throws MalformedQueryException, RepositoryException, QueryEvaluationException, IOException, ClassNotFoundException, TupleQueryResultHandlerException {
-		TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-
-		System.out.println(queryString);
-		TupleQueryResult result = tupleQuery.evaluate();
-
-		System.out.println("-------------------------------------------");
-		System.out.println("-                RESULTS                  -");
-		System.out.println("-------------------------------------------");
-
-		tupleQuery.evaluate(new SPARQLResultsXMLWriter(System.out));
-
-		List<String> bindingNames = result.getBindingNames();
-		while (result.hasNext()) {
-			BindingSet bindingSet = result.next();			
-			System.out.println(bindingSet.toString());
+		Strabon strabon = null;
+		try {
+			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+			
+		} catch (Exception e) {
+			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query.", e);
+			
+		} finally {
+			if (strabon != null) {
+				strabon.close();
+			}
 		}
-		System.out.println("-------------------------------------------");
-		System.out.flush();
 	}
-	 */
 }
