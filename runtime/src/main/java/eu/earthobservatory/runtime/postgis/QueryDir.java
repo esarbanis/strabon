@@ -6,14 +6,19 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class QueryDir {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.postgis.QueryDir.class);
+	
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length < 7) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <PATH> [<FORMAT>]");
@@ -40,32 +45,40 @@ public class QueryDir {
 			resultsFormat = args[7];
 		}
 
-		Strabon strabon = new Strabon(db, user, passwd, port, host, true);
-
-		File dir = new File(path);
-
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(extension);
-			}
-		};
-
-		String[] children = dir.list(filter);
-		if (children != null) {
-			for (int i=0; i<children.length; i++) {
-				String filename = children[i];
-				try {
-					System.out.println("Evaluating query from '" + path + System.getProperty("file.separator") + filename  +"'.");
-					String queryString = readFile(path + System.getProperty("file.separator") + filename);
-					System.out.println("Evaluating stSPARQL query: \n"+queryString+"\n");
-					strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
-				} catch (IOException e) {
-					System.err.println("IOException while reading " + filename);
+		Strabon strabon = null;
+		try {
+			strabon = new Strabon(db, user, passwd, port, host, true);
+	
+			File dir = new File(path);
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.endsWith(extension);
+				}
+			};
+	
+			String[] children = dir.list(filter);
+			if (children != null) {
+				for (int i=0; i<children.length; i++) {
+					String filename = children[i];
+					try {
+						logger.info("[Strabon.QueryDir] Evaluating query from '" + path + System.getProperty("file.separator") + filename  +"'.");
+						String queryString = readFile(path + System.getProperty("file.separator") + filename);
+						logger.info("[Strabon.QueryDir] Evaluating stSPARQL query: \n"+queryString+"\n");
+						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+						
+					} catch (IOException e) {
+						logger.error("[Strabon.QueryDir] IOException while reading " + filename, e);
+					}
 				}
 			}
+		} catch (Exception e) {
+			logger.error("[Strabon.QueryDir] Error during execution of QueryDir.", e);
+			
+		} finally {
+			if (strabon != null) {
+				strabon.close();	
+			}
 		}
-		
-		strabon.close();
 	}
 
 	private static String readFile(String file) throws IOException {
