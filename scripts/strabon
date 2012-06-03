@@ -22,9 +22,9 @@ function help() {
 	echo "	COMMAND	 : one of \`query', \`update', \`store', or \`help'"
 	echo "	ARGS	 : arguments according to selected command"
 	echo
-	echo "OPTIONS can be any of the following"
+	echo "OPTIONS can be one of the following"
 	echo "	-d	 : don't run, just print what shall be executed"
-	echo "	-c FILE	 : configuration file to use for the connection. It defaults to \`${HOME}/.strabon'."
+	#echo "	-c FILE	 : configuration file to use for the connection. It defaults to \`${HOME}/.strabon'."
 }
 
 function help_query() {
@@ -47,13 +47,17 @@ function help_update() {
 }
 
 function help_store() {
-	echo "Usage: ${CMD} store FILE..."
+	echo "Usage: ${CMD} store [OPTIONS] FILE..."
 	echo
 	echo "Store RDF documents in Strabon."
 	echo
 	echo "	FILE	: the file containing the RDF document to store. It can be a filename or a URL,"
 	echo "		  (i.e., file:///tmp/file.nt, http://www.example.org/file.nt,"
 	echo "		  ftp://www.example.org/file.nt, etc.)."
+	echo 
+	echo "OPTIONS can be one of the following"
+	echo "	-f FORMAT : the RDF format of the files to store. The format can be one of the following:"
+	echo "		    \`ntriples' (default), \`n3', \`rdfxml', or \`turtle'."
 }
 
 # runtime package
@@ -83,6 +87,9 @@ DBPASS="charnik"
 
 # the query to run
 QUERY=
+
+# the RDF format of the files to store (defaults to ntriples)
+FORMAT=
 
 # predefined queries
 QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
@@ -120,7 +127,7 @@ esac
 case "${1}" in
 	help)
 		shift
-		if test $# -eq 1; then
+		if test $# -ge 1; then
 			case "${1}" in
 				query)
 					help_query
@@ -179,14 +186,39 @@ case "${1}" in
 			help_store
 			exit 1
 		fi
+		# check whether format is specified
+		if test "${1}" = "-f"; then
+			shift
+			if ! test $# -ge 1; then
+				echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')."
+				exit 2
+			else
+				FORMAT="${1}"
+				case "${FORMAT}" in
+					ntriples|n3|rdfxml|turtle)
+						shift
+						;;
+					*)
+						echo "${CMD}: invalid RDF format \"${FORMAT}\"."
+						echo "${CMD}: valid RDF formats are \`ntriples', \`n3', \`rdfxml', or \`turtle'."
+						exit 2
+						;;
+				esac
+			fi
+		fi
+		# if no files are given
+		if ! test $# -ge 1; then
+			help_store
+			exit 1
+		fi
 		# do not make an assignment of the files to QUERY
-		# handle the case afterwards
+		# handle the case of storing multiple files afterwards
 		# QUERY="${@}"
 		;;
 	*) 
 		help
 		echo
-		echo "${CMD}: Unknown command \"${1}\"."
+		echo "${CMD}: unknown command \"${1}\"."
 		exit 1
 		;;
 esac
@@ -194,7 +226,7 @@ esac
 if test "${CLASS}" = "StoreOp"; then
 	STRABON_EXEC=
 	for file in "${@}"; do
-		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\");
+		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" ${FORMAT});
 "
 	done
 else
