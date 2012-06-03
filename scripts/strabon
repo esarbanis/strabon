@@ -14,6 +14,54 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 RUNTIME="${LOC}/../runtime"
 
+# runtime package
+PKG="eu.earthobservatory.runtime"
+
+# the underlying database to use (one of `postgis' or `monetdb')
+DATABASE="postgis"
+
+# the main class to run
+CLASS=
+
+# the hostname at which the database runs
+HOST="localhost"
+
+# the port at which the database listens
+PORT=
+
+# the database name to connect to
+DB="strabon"
+
+# the username for the database connection
+DBUSER=
+
+# the password for the database connection
+DBPASS=
+
+# the query to run
+QUERY=
+
+# the RDF format of the files to store (defaults to ntriples)
+FORMAT="ntriples"
+
+# predefined queries
+QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
+QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
+
+# debug option for log4j configuration:
+#-Dlog4j.debug
+#-Dlog4j.configuration=\"${RUNTIME}/log4j.properties\"
+
+# just print what shall be executed
+DEBUG=false
+
+# if true, DEBUG has been set in command line,
+# so it must not be overidden
+DEBUG_SAVE=false
+
+# configuration file for the Strabon connection
+STRABON_CONF="${HOME}/.strabon"
+
 function help() {
 	echo "Usage: ${CMD} [OPTIONS] COMMAND ARGS"
 	echo
@@ -22,9 +70,29 @@ function help() {
 	echo "	COMMAND	 : one of \`query', \`update', \`store', or \`help'"
 	echo "	ARGS	 : arguments according to selected command"
 	echo
-	echo "OPTIONS can be any of the following"
-	echo "	-d	 : don't run, just print what shall be executed"
-	#echo "	-c FILE	 : configuration file to use for the connection. It defaults to \`${HOME}/.strabon'."
+	echo "OPTIONS can be any of the following (variable names and values are case sensitive)"
+	echo "	-d		: don't run, just print what shall be executed"
+	echo "			  Variable for configuration file: \`DEBUG'"
+	echo "			  Values: \`true' or \`false'" 
+	echo "	-e DATABASE	: the database engine to connect (one of \`postgis' (default) or \`monetdb')"
+	echo "			  Variable for configuration file: \`DATABASE'"
+	echo "			  Values: \`postgis' or \`monetdb'" 
+	echo "	-db DB		: the database to connect to (defaults to \`${DB}')"
+	echo "			  Variable for configuration file: \`DB'"
+	echo "	-p PORT		: the port to use for the database connection"
+	echo "			: (defaults to 5432 for postgis and 50000 for monetdb)"
+	echo "			  Variable for configuration file: \`PORT'"
+	echo "	-h HOSTNAME	: the hostname to use for the database connection (defaults to \`${HOST}')"
+	echo "			  Variable for configuration file: \`HOST'"
+	echo "	-u USERNAME	: the username for the database connection"
+	echo "			  (defaults to \`postgres' for postgis and \`monetdb' for monetdb)"
+	echo "			  Variable for configuration file: \`DBUSER'"
+	echo "	-pass PASS	: the password for the database connection"
+	echo "			  (defaults to \`postgres' for postgis and \`monetdb' for monetdb)"
+	echo "			  Variable for configuration file: \`DBPASS'"
+	echo "	-c FILE		: configuration file to use for the connection (defaults to \`${STRABON_CONF}')."
+	echo "			  If the default configuration file exists, it is read. Options specified in the"
+	echo "			  command line override their values already set by the configuration file."
 }
 
 function help_query() {
@@ -60,71 +128,174 @@ function help_store() {
 	echo "		    \`ntriples' (default), \`n3', \`rdfxml', or \`turtle'."
 }
 
-# runtime package
-PKG="eu.earthobservatory.runtime"
 
-# the underlying database to use (one of postgis or monetdb)
-DATABASE="postgis"
+# read configuration script first
+if test -e "${STRABON_CONF}"; then
+	. ${STRABON_CONF}
+fi
 
-# the main class to run
-CLASS="QueryOp"
-
-# the hostname at which the database runs
-HOST="localhost"
-
-# the port at which the database listens
-PORT=5432
-
-# the database name to connect to
-DB="endpoint"
-DB="strabon"
-
-# the username for the database connection
-DBUSER="charnik"
-
-# the password for the database connection
-DBPASS="charnik"
-
-# the query to run
-QUERY=
-
-# the RDF format of the files to store (defaults to ntriples)
-FORMAT=
-
-# predefined queries
-QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
-QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
-
-# debug option for log4j configuration:
-#-Dlog4j.debug
-#-Dlog4j.configuration=\"${RUNTIME}/log4j.properties\"
-
-# just print what shall be executed
-DEBUG=0
-
-# configuration file for the Strabon connection
-STRABON_CONF="${HOME}/.strabon"
+if ${DEBUG}; then
+	echo "${CMD}: debug is ON (from configuration file ${STRABON_CONF})"
+fi
 
 # read script options
-case "${1}" in
-	-d)
-		shift
-		DEBUG=1
-		;;
-	-c)
-		shift
-		if ! test $# -gt 1; then
+while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
+	case "${1}" in
+		-d)
+			shift
+			if ! ${DEBUG}; then
+				echo "${CMD}: debug is ON"
+			fi
+			DEBUG=true
+			DEBUG_SAVE=true
+			;;
+		-e)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+
+			DATABASE=${1}
+			case "${DATABASE}" in
+				monetdb|postgis)
+					shift
+					;;
+				postgis)
+					shift
+					;;
+				*)
+					echo "${CMD}: invalid database engine"
+					echo "${CMD}: valid database engines are \`postgis' or \`monetdb'"
+					exit 2
+					;;
+			esac
+			;;
+		-db)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			DB="${1}"
+			shift
+			;;
+		-p)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			PORT=${1}
+			shift
+			;;
+		-h)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			HOST=${1}
+			shift
+			;;
+		-u)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			DBUSER=${1}
+			shift
+			;;
+		-pass)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			DBPASS=${1}
+			shift
+			;;
+		-c)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+
+			STRABON_CONF="${1}"
+			if ! test -e "${STRABON_CONF}"; then
+				echo "${CMD}: configuration file \"${1}\" does not exist"
+				exit 1
+			else
+				# if true, then debug has been set ON in command line
+				if $DEBUG; then
+					echo "${CMD}: Reading configuration file \"${STRABON_CONF}\""
+				fi
+
+				. ${STRABON_CONF}
+
+				if $DEBUG_SAVE; then
+					# restore debug value set on command line
+					DEBUG=true
+				fi
+				shift
+			fi
+			;;
+		-*)
+			echo "${CMD}: unknown option \"${1}\""
 			help
 			exit 1
+			;;
+	esac
+done
+
+# set defaults
+case "${DATABASE}" in
+	postgis)
+		if test -z "${PORT}";
+		then
+			PORT=5432
 		fi
-		STRABON_CONF="${1}"
-		if ! test -e "${STRABON_CONF}"; then
-			echo "${CMD}: configuration file \"${1}\" does not exist."
-			exit 1
+
+		if test -z "${DBUSER}";
+		then
+			DBUSER="postgres"
 		fi
-		shift
+		
+		if test -z "${DBPASS}";
+		then
+			DBPASS="postgres"
+		fi
+		;;
+	monetdb)
+		if test -z "${PORT}";
+		then
+			PORT=50000
+		fi
+
+		if test -z "${DBUSER}";
+		then
+			DBUSER="monetdb"
+		fi
+		
+		if test -z "${DBPASS}";
+		then
+			DBPASS="monetdb"
+		fi
 		;;
 esac
+
+# print configuration/options
+if ${DEBUG}; then
+	echo "${CMD}: printing database connection details"
+	echo "	 Database Engine : ${DATABASE}"
+	echo "	 Database Name	 : ${DB}"
+	echo "	 Hostname	 : ${HOST}"
+	echo "	 Port		 : ${PORT}"
+	echo "	 Username	 : ${DBUSER}"
+	echo "	 Password	 : ${DBPASS}"
+fi
 
 # determine command to execute
 case "${1}" in
@@ -193,7 +364,7 @@ case "${1}" in
 		if test "${1}" = "-f"; then
 			shift
 			if ! test $# -ge 1; then
-				echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')."
+				echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')"
 				exit 2
 			else
 				FORMAT="${1}"
@@ -203,7 +374,7 @@ case "${1}" in
 						;;
 					*)
 						echo "${CMD}: invalid RDF format \"${FORMAT}\"."
-						echo "${CMD}: valid RDF formats are \`ntriples', \`n3', \`rdfxml', or \`turtle'."
+						echo "${CMD}: valid RDF formats are \`ntriples', \`n3', \`rdfxml', or \`turtle'"
 						exit 2
 						;;
 				esac
@@ -238,9 +409,8 @@ else
 fi
 
 # execute command or debug
-if test ${DEBUG} -eq 1; then
-	echo "${CMD}: Debug is ON"
-	echo "${CMD}: Printing command for execution"	
+if ${DEBUG}; then
+	echo "${CMD}: printing command for execution"	
 	echo "${STRABON_EXEC}"
 else
 	eval ${STRABON_EXEC}
