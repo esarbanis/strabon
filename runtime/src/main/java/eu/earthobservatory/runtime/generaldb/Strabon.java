@@ -89,12 +89,6 @@ public abstract class Strabon {
 	SailRepository repo1;
 	SailRepositoryConnection con1 = null;
 
-	public static void main(String[] args) {
-
-		//PgSqlStore db_store;
-
-	}
-
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
 	throws SQLException, ClassNotFoundException 
 	{
