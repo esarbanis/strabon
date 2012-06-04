@@ -3,7 +3,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,13 +14,18 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.runtime.generaldb.Strabon;
 
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
+	
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
+	
+	private static final String DBBACKEND_POSTGIS = "postgis";
+	private static final String DBBACKEND_MONETDB = "monetdb";
 	
 	private static final String FILE_PROTOCOL = "file";
 	
@@ -76,27 +80,22 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String databaseName;
 	private String user;
 	private String password;
-
+	private String dbBackend;
+	
 	private Strabon strabon = null;
+	
 	private boolean checkForLockTable;
 	private List<Entry> entries;
 
-	public StrabonBeanWrapper() {
-		this.strabon = null;
-	}
-
-	public StrabonBeanWrapper(Strabon strabon) {
-		this.strabon = strabon;
-	}
-
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
-			int port, String serverName, boolean checkForLockTable, List<List<String>> args) {
+			int port, String serverName, boolean checkForLockTable, String dbBackend, List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
 		this.user = user;
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
+		this.dbBackend = dbBackend;
 		this.entries = new ArrayList<StrabonBeanWrapper.Entry>(args.size());
 		
 		Iterator<List<String>> entryit = args.iterator();
@@ -107,7 +106,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			
 			while (it.hasNext()) {
 				int items = 0;
-				String label = "", bean = "'", statement = "", format = ""; 
+				String label = "", bean = "", statement = "", format = ""; 
 	
 				if (it.hasNext()) {
 					bean = it.next();
@@ -139,22 +138,32 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private boolean init() {
 		if (this.strabon == null) {
 			try {
-				logger.warn("Strabon not initialized yet.");
-				logger.warn("Initializing strabon.");
-				logger.info(this.getDetails());
-				this.strabon = new Strabon(databaseName, user, password, port, serverName, checkForLockTable);
+				logger.warn("[StrabonEndpoint] Strabon not initialized yet.");
+				logger.warn("[StrabonEndpoint] Initializing Strabon.");
+				logger.info("[StrabonEndpoint]\n" + this.getDetails());
+				
+				// initialize Strabon according to user preference
+				if (DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
+					this.strabon = new eu.earthobservatory.runtime.monetdb.Strabon(databaseName, user, password, port, serverName, checkForLockTable);
+					
+				} else {
+					// check whether the user typed wrong database backend and report
+					if (!DBBACKEND_POSTGIS.equalsIgnoreCase(dbBackend)) {
+						logger.warn("[StrabonEndpoint] Unknown database backend \""+dbBackend+"\". Assuming PostGIS.");
+					}
+					
+					// use PostGIS as the default database backend
+					this.strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, user, password, port, serverName, checkForLockTable);	
+				}
+				
+				
 			} catch (Exception e) {
-				logger.error("Exception occured while creating Strabon.\n"+this.getDetails(), e);
+				logger.error("[StrabonEndpoint] Exception occured while creating Strabon.\n" + this.getDetails(), e);
 				return false;
 			}
 		}
 
 		return true;
-	}
-
-	public StrabonBeanWrapper(String databaseName, String user, String password, int port, String serverName) 
-	throws SQLException, ClassNotFoundException {
-		this.strabon = new Strabon(databaseName, user, password, port, serverName, true);
 	}
 
 	public Strabon getStrabon() {

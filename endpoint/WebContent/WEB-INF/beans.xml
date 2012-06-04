@@ -47,6 +47,11 @@
             <value>true</value>
         </constructor-arg>
 
+        <constructor-arg type="java.lang.String" >
+            <!-- Database Backend (either "postgis" or "monetdb") -->
+            <value>postgis</value>
+        </constructor-arg>
+        
          <constructor-arg>
              <list>
 	             <list>

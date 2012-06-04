@@ -12,7 +12,8 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.postgis.Strabon.class);
 	
-	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws SQLException, ClassNotFoundException {
+	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
+	throws SQLException, ClassNotFoundException {
 		super(databaseName, user, password, port, serverName, checkForLockTable);
 	}
 

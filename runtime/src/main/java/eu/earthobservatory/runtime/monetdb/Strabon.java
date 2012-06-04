@@ -18,7 +18,6 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		super(databaseName, user, password, port, serverName, checkForLockTable);
 	}
 
-
 	protected void initiate(String databaseName, String user, String password, int port, String serverName) {
 		db_store = new MonetDBSqlStore();
 
@@ -39,7 +38,8 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 	}
 
 
-	protected void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName) throws SQLException, ClassNotFoundException {
+	protected void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName)
+	throws SQLException, ClassNotFoundException {
 		String url = "";
 		try {
 			logger.info("[Strabon] Cleaning...");
