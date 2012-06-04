@@ -3,7 +3,7 @@
   <parent>
     <artifactId>strabon</artifactId>
     <groupId>eu.earthobservatory</groupId>
-    <version>3.1.10-SNAPSHOT</version>
+    <version>3.1.10-experiments-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>org.openrdf.sesame</groupId>
