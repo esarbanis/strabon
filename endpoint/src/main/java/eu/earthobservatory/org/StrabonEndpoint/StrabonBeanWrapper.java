@@ -122,7 +122,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 //		init();
 //	}
 
-	public StrabonBeanWrapper(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, List<List> args) {
+	public StrabonBeanWrapper(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable, List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -131,10 +131,10 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.checkForLockTable = checkForLockTable;
 		this.entries = new ArrayList<StrabonBeanWrapper.Entry>(args.size());
 		
-		Iterator<List> entryit = args.iterator();
+		Iterator<List<String>> entryit = args.iterator();
 		
 		while (entryit.hasNext()) {
-			List list = entryit.next();
+			List<String> list = entryit.next();
 			Iterator<String> it = list.iterator();
 			
 			while (it.hasNext()) {
@@ -158,7 +158,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					items++;
 				}
 				
-				
 				if (items == 4) {
 					Entry entry = new Entry(label, bean, statement, format);
 					this.entries.add(entry);
@@ -177,7 +176,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				logger.info(this.getDetails());
 				this.strabon = new Strabon(databaseName, user, password, port, serverName, checkForLockTable);
 			} catch (Exception e) {
-				logger.error("Exception occured while creating Strabon.\n"+this.getDetails(), e.getStackTrace());
+				logger.error("Exception occured while creating Strabon.\n"+this.getDetails(), e);
 				return false;
 			}
 		}
