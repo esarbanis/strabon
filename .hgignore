@@ -1,9 +1,9 @@
 /target$
-.project
-.settings$
-.classpath
-pom.xml~
+\.project$
+\.settings$
+\.classpath$
+pom\.xml~
 ~$
-.extract$
-runtime/src/test/java/eu/earthobservatory/runtime/generaldb/TempClass.java
-runtime/src/test/resources/ntriples/aggregate-tests.ntriples
+\.extract$
+runtime/src/test/java/eu/earthobservatory/runtime/generaldb/TempClass\.java$
+runtime/src/test/resources/ntriples/aggregate-tests\.ntriples$
