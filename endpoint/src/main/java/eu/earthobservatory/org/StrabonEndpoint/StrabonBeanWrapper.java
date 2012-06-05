@@ -140,7 +140,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			try {
 				logger.warn("[StrabonEndpoint] Strabon not initialized yet.");
 				logger.warn("[StrabonEndpoint] Initializing Strabon.");
-				logger.info("[StrabonEndpoint]\n" + this.getDetails());
+				logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
 				
 				// initialize Strabon according to user preference
 				if (DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
@@ -255,7 +255,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 	private String getDetails() {
 		String details = "-----------------------------------------\n";
-		details += "Connection details:\n";
 		details += "host     : " + serverName + "\n";
 		details += "port     : " + port + "\n";
 		details += "database : " + databaseName + "\n";

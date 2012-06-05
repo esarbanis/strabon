@@ -28,7 +28,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		postGIS_store.setPassword(password);
 		postGIS_store.setPortNumber(port);
 		postGIS_store.setServerName(serverName);
-		postGIS_store.setMaxNumberOfTripleTables(2048);
+		postGIS_store.setMaxNumberOfTripleTables(1);
 		init();
 		logger.info("[Strabon] Initialization completed.");
 	}
