@@ -56,8 +56,8 @@ public class StrabonPolyhedron implements Value {
 	private static final long serialVersionUID = 894529468109904724L;
 	
 	public static String CACHEPATH = "";
-	public static String TABLE_COUNTS = "counts.bin";
-	public static String TABLE_SUBJ_OBJ_TYPES = "tableProperties.bin";
+	//public static String TABLE_COUNTS = "counts.bin";
+	//public static String TABLE_SUBJ_OBJ_TYPES = "tableProperties.bin";
 	public static String TABLE_SHIFTING = "groupbys.bin";
 
 

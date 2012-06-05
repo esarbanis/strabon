@@ -118,9 +118,21 @@ public abstract class Strabon {
 			cachePath = cachePath+"/";
 		}
 		StrabonPolyhedron.CACHEPATH = ""+cachePath;
-		StrabonPolyhedron.TABLE_COUNTS = cachePath + "counts.bin";
+		//StrabonPolyhedron.TABLE_COUNTS = cachePath + "counts.bin";
 		StrabonPolyhedron.TABLE_SHIFTING = cachePath + "groupbys.bin";
-		StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES = cachePath + "tableProperties.bin";
+		//StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES = cachePath + "tableProperties.bin";
+		
+		File test;
+		
+		test = new File(StrabonPolyhedron.CACHEPATH + "counts");
+		if (!test.exists()) {
+			test.mkdirs();
+		}
+		
+		test = new File(StrabonPolyhedron.CACHEPATH + "tableProperties");
+		if (!test.exists()) {
+			test.mkdirs();
+		}		
 		
 		if (checkForLockTable == true) {
 			checkAndDeleteLock(databaseName, user, password, port, serverName);

@@ -176,15 +176,16 @@ public class ValueTable  {
 		}
 			}
 
-	public void close()
+	public void flushcache(boolean force)
 			throws SQLException
 			{
 		//XXX uncomment during 1st run in order to fill properties file
 		//File will only have one line
 
 		File output = new File(StrabonPolyhedron.TABLE_SHIFTING);
-		File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
-		if((!existing.exists()) || (!output.exists()))
+		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		//if((!existing.exists()) || (!output.exists()))
+		if((!output.exists()) || force )
 		{			
 			if(isHashTable)
 			{
@@ -203,11 +204,10 @@ public class ValueTable  {
 					{
 						dos.writeLong(tmp);
 					}
-
+					
 					//dos.writeChar('\n');
 					dos.close();
 				} catch (IOException e) {
-
 					e.printStackTrace();
 				}
 			}
@@ -220,6 +220,54 @@ public class ValueTable  {
 		if (temporary != null) {
 			temporary.close();
 		}
+		table.close();
+			}
+	
+	public void close()
+			throws SQLException
+			{
+//		//XXX uncomment during 1st run in order to fill properties file
+//		//File will only have one line
+//
+//		File output = new File(StrabonPolyhedron.TABLE_SHIFTING);
+//		File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+//		if((!existing.exists()) || (!output.exists()))
+//		{			
+//			if(isHashTable)
+//			{
+//				System.out.println("["+this.getName()+"] Cache VALUETABLE file not found. Storing cache details...");
+//
+//				FileOutputStream fstream = null;
+//				DataOutputStream dos = null;
+//				try {
+//					fstream = new FileOutputStream(output,true);
+//
+//					dos = new DataOutputStream(fstream);
+//
+//					//dos.writeUTF(table.getName());
+//
+//					for(Long tmp : maxIds)
+//					{
+//						dos.writeLong(tmp);
+//					}
+//
+//					//dos.writeChar('\n');
+//					dos.close();
+//				} catch (IOException e) {
+//
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		//end of addition
+//
+//		if (insertSelect != null) {
+//			insertSelect.close();
+//		}
+//		if (temporary != null) {
+//			temporary.close();
+//		}
+		flushcache(false);
 		table.close();
 			}
 
@@ -314,7 +362,8 @@ public class ValueTable  {
 			throws SQLException
 			{
 
-		File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		File existing = new File(StrabonPolyhedron.TABLE_SHIFTING);		
 		if(!existing.exists())
 		{
 			String column = "id";
@@ -344,7 +393,7 @@ public class ValueTable  {
 					//XXX addition --> will use in close()
 					maxIds.addAll(result);
 					isHashTable = true;
-
+					
 					return result;
 				}
 
@@ -354,6 +403,7 @@ public class ValueTable  {
 			}
 			finally {
 				st.close();
+				flushcache(false);
 			}
 		}
 		else

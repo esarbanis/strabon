@@ -160,8 +160,10 @@ public class TripleTable {
 					}
 				}
 			}
+			
+			flushcache(false);
 			initialize = true;
-			//System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Initialization took "+(System.nanoTime()-start)+" nanoseconds.");
+			//System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Initialization took "+(System.nanoTime()-start)+" nanoseconds.");			
 		}
 		else
 		{
@@ -226,38 +228,37 @@ public class TripleTable {
 		}
 			}
 
-	public void close()
-			throws SQLException
-			{
-		//XXX uncomment during 1st run in order to fill properties file
-		//KKFile output = new File(StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES);
-		File output = new File(StrabonPolyhedron.CACHEPATH+"tableProperties/"+this.getName());
-		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
-		if(!output.exists()&&subjAggregates!=null)
-		{
-			System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Storing cache details...");
+	public void flushcache(boolean force) throws SQLException {
+		// XXX uncomment during 1st run in order to fill properties file
+		// KKFile output = new File(StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES);
+		File output = new File(StrabonPolyhedron.CACHEPATH + "tableProperties/"+ this.getName());
+		// File existing = new
+		// File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+		if ((!output.exists() || force) && subjAggregates != null) {
+			System.out
+					.println("["
+							+ this.getName()
+							+ "] Cache TRIPLETABLE file not found. Storing cache details...");
 			FileOutputStream fstream = null;
 			DataOutputStream dos = null;
 			try {
-				//KKfstream = new FileOutputStream(output,true);
-				fstream = new FileOutputStream(output,false);
+				// KKfstream = new FileOutputStream(output,true);
+				fstream = new FileOutputStream(output, false);
 
 				dos = new DataOutputStream(fstream);
 
-				//KKdos.writeUTF(table.getName());
-				//dos.writeChar(';');
-				for(int ii=0;ii<subjAggregates.length;ii++)
-				{
+				// KKdos.writeUTF(table.getName());
+				// dos.writeChar(';');
+				for (int ii = 0; ii < subjAggregates.length; ii++) {
 					dos.writeInt(subjAggregates[ii]);
 				}
 
-				//dos.writeChar(';');
-				for(int ii=0;ii<objAggregates.length;ii++)
-				{
+				// dos.writeChar(';');
+				for (int ii = 0; ii < objAggregates.length; ii++) {
 					dos.writeInt(objAggregates[ii]);
 				}
 
-				//KKdos.writeChar('\n');
+				// KKdos.writeChar('\n');
 				dos.close();
 
 			} catch (IOException e) {
@@ -265,8 +266,49 @@ public class TripleTable {
 				e.printStackTrace();
 			}
 		}
+	}
 
+	public void close()
+			throws SQLException
+			{
+//		//XXX uncomment during 1st run in order to fill properties file
+//		//KKFile output = new File(StrabonPolyhedron.TABLE_SUBJ_OBJ_TYPES);
+//		File output = new File(StrabonPolyhedron.CACHEPATH+"tableProperties/"+this.getName());
+//		//File existing = new File(StrabonPolyhedron.CACHEPATH+"initialized.bin");
+//		if(!output.exists()&&subjAggregates!=null)
+//		{
+//			System.out.println("["+this.getName()+"] Cache TRIPLETABLE file not found. Storing cache details...");
+//			FileOutputStream fstream = null;
+//			DataOutputStream dos = null;
+//			try {
+//				//KKfstream = new FileOutputStream(output,true);
+//				fstream = new FileOutputStream(output,false);
+//
+//				dos = new DataOutputStream(fstream);
+//
+//				//KKdos.writeUTF(table.getName());
+//				//dos.writeChar(';');
+//				for(int ii=0;ii<subjAggregates.length;ii++)
+//				{
+//					dos.writeInt(subjAggregates[ii]);
+//				}
+//
+//				//dos.writeChar(';');
+//				for(int ii=0;ii<objAggregates.length;ii++)
+//				{
+//					dos.writeInt(objAggregates[ii]);
+//				}
+//
+//				//KKdos.writeChar('\n');
+//				dos.close();
+//
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
+//		}
 
+		flushcache(false);
 
 		table.close();
 			}
