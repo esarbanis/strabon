@@ -551,11 +551,10 @@ public abstract class Strabon {
 							baos.reset();
 
 						} catch (ParseException e) {
-							//Den prokeitai gia WKT
-							//System.out.println(bindingSet.toString());
-							//e.printStackTrace();
+							// this is not WKT
+							logger.error("[Strabon.query] Invalid WKT.", e);
 						} catch (Exception e) {
-							e.printStackTrace();
+							logger.error("[Strabon.query] Received exception.", e);
 						}
 
 						//Start populating KML here
