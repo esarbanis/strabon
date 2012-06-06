@@ -96,12 +96,14 @@ function help() {
 }
 
 function help_query() {
-	echo "Usage: ${CMD} query SPARQL_QUERY"
+	echo "Usage: ${CMD} query SPARQL_QUERY [RESULT_FORMAT]"
 	echo
 	echo "Execute a SPARQL query on Strabon."
 	echo
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or an alias name such as the following:"
 	echo "				size: returns the number of triples"
+	echo "  RESULT_FROM	: the format of the result. Possible values are \`???' (default), \`xml'"
+	echo "			  \`html', \`kml', \`kmz', or \`geojson'"
 }
 
 function help_update() {
@@ -324,11 +326,12 @@ case "${1}" in
 	query)
 		CLASS="QueryOp"
 		shift
-		if ! test $# -eq 1; then
+		if ! test $# -ge 1; then
 			help_query
 			exit 1
 		fi
 		QUERY="${1}"
+		shift
 
 		# check for predefined queries
 		case "${QUERY}" in
@@ -336,6 +339,21 @@ case "${1}" in
 				QUERY="${QUERY_SIZE}"
 				;;
 		esac
+
+		# check for format of result
+		if test $# -gt 0; then
+			RESULT_FORMAT="${1}"
+			shift
+			case "${RESULT_FORMAT}" in
+				[xX][mM][lL]|[hH][tT][mM][lL]|[kK][mM][lL]|[kK][mM][zZ]|[gG][eE][oO][jJ][sS][oO][nN])
+				;;
+			*)
+				echo "${CMD}: invalid result format \"${RESULT_FORMAT}\""
+				echo "${CMD}: valid formats are \`???' (default), \`xml', \`html', \`kml', \`kmz', or \`geojson'"
+				exit 2
+				;;
+			esac
+		fi
 		;;
 	update)
 		CLASS="UpdateOp"
@@ -409,7 +427,7 @@ if test "${CLASS}" = "StoreOp"; then
 "
 	done
 else
-	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\")"
+	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\" ${RESULT_FORMAT})"
 fi
 
 # execute command or debug
