@@ -535,7 +535,7 @@ public abstract class Strabon {
 										sb.append("</td>");
 									}
 								}
-								sb.append("</table>]]>");
+								sb.append("</tr></table>]]>");
 							}
 							else
 							{
@@ -551,7 +551,7 @@ public abstract class Strabon {
 
 						} catch (ParseException e) {
 							// this is not WKT
-							logger.error("[Strabon.query] Invalid WKT.", e);
+							// this exception is not error! pass by thematic values and keep searching for geometries  
 						} catch (Exception e) {
 							logger.error("[Strabon.query] Received exception during KML construction.", e);
 						}
@@ -602,11 +602,13 @@ public abstract class Strabon {
 
 			try {
 				//String cstr = new String("aa", "UTF8");
-				String newString = new String(sb.toString().getBytes(), Charset.availableCharsets().get("UTF-8"));
+				// ggarbis: For too large strings (e.g., 44MB) it returns empty string.
+//				String newString = new String(sb.toString().getBytes(), Charset.availableCharsets().get("UTF-8"));
 
 				if(resultsFormat.equalsIgnoreCase("KML"))
 				{
-					writeOut.write(newString);
+//					writeOut.write(newString);
+					writeOut.write(sb.toString());
 					//					System.out.println(newString);
 				}
 				else //KMZ
@@ -621,7 +623,8 @@ public abstract class Strabon {
 
 					//kmzout.setLevel(6);
 					kmzout.putNextEntry(entry);
-					kmzout.write(newString.getBytes());
+//					kmzout.write(newString.getBytes());
+					kmzout.write(sb.toString().getBytes());
 					kmzout.closeEntry();
 					kmzout.close();
 
