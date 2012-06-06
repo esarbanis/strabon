@@ -403,26 +403,8 @@ public class QueryBean extends HttpServlet {
 			} else {
 				answer = (String) strabonWrapper.query(SPARQLQuery, resultFormat);
 			}
-		} catch (MalformedQueryException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
-		} catch (RepositoryException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
-		} catch (QueryEvaluationException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
-		} catch (TupleQueryResultHandlerException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
-		} catch (IOException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
-			errorMessage.append(e.getMessage());
 		} catch (Exception e) {
-			logger.error("[StrabonEndpoint.QueryBean] ", e.getStackTrace());
+			logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
 			errorMessage.append(e.getMessage());
 		}
 
