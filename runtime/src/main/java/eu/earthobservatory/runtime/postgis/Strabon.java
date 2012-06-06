@@ -47,10 +47,10 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 			st.close();
 			conn.close();
 		} catch (SQLException e) {
-			logger.error("SQL Exception occured. Connection URL is <"+url+">.", e.getStackTrace());
+			logger.error("[Strabon.checkAndDeleteLock] SQL Exception occured. Connection URL is <"+url+">: " + e.getMessage());
 			throw e;
 		} catch (ClassNotFoundException e) {
-			logger.error("Could not load postgres jdbc driver.", e.getStackTrace());
+			logger.error("[Strabon.checkAndDeleteLock] Could not load postgres jdbc driver: " + e.getMessage());
 			throw e;
 		}
 	}

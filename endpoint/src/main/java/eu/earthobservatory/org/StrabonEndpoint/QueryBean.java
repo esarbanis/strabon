@@ -266,7 +266,7 @@ public class QueryBean extends HttpServlet {
 				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
 
 			} catch(IOException e) {
-				logger.error("[StrabonEndpoint.QueryBean] " + e.getStackTrace());
+				logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
 			}
 
 			//response.setDateHeader("Expires", 0);			
