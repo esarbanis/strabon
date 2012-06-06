@@ -562,12 +562,12 @@ public abstract class Strabon {
 					//				out.writeChars(bindingSet.toString());
 				}
 			} catch (QueryEvaluationException e) {
-				logger.error("[Strabon.query]", e);
+				logger.error("[Strabon.query] Error during query evaluation.", e);
 			}
 			try {
 				dos.close();
 			} catch (IOException e) {
-				logger.error("[Strabon.query]", e);
+				logger.error("[Strabon.query] Error during querying.", e);
 			}
 
 			//Finishing the structure of the kml document
