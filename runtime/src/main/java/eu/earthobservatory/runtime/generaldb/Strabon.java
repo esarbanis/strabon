@@ -417,8 +417,7 @@ public abstract class Strabon {
 			try {
 				result = tupleQuery.evaluate();
 			} catch (QueryEvaluationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.error("[Strabon.query] Error in query evaluation.", e1);
 			}
 			//System.out.println("-------------------------------------------");
 			//System.out.println("-                RESULTS                  -");
@@ -554,7 +553,7 @@ public abstract class Strabon {
 							// this is not WKT
 							logger.error("[Strabon.query] Invalid WKT.", e);
 						} catch (Exception e) {
-							logger.error("[Strabon.query] Received exception.", e);
+							logger.error("[Strabon.query] Received exception during KML construction.", e);
 						}
 
 						//Start populating KML here
