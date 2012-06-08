@@ -1,0 +1,20 @@
+#! /bin/bash
+
+echo "This script must be executed in Strabon folder"
+
+while getopts po option
+do
+	case "$option" in
+		o)	echo "offline"; offline="-o";;
+		p)	echo "package"; package="true";;
+	esac
+done
+
+if [ "$package" == "true" ]; then
+	mvn $offline clean package
+fi
+
+sudo cp endpoint/target/strabon-endpoint-*.war /var/lib/tomcat6/webapps/endpoint.war  &&
+
+sudo service postgresql restart &&
+sudo service tomcat6 restart 
