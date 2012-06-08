@@ -1,36 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>eu.earthobservatory</groupId>
+	<parent>
+		<groupId>eu.earthobservatory</groupId>
+		<artifactId>strabon</artifactId>
+		<version>3.1.10-SNAPSHOT</version>
+	</parent>
+
 	<artifactId>strabon-endpoint</artifactId>
-	<version>0.0.11-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>strabon-endpoint</name>
+	<name>StrabonEndpoint</name>
+	<description>An endpoint for Strabon</description>
 
 	<properties>
-                <eu.earthobservatory.version>3.1.7</eu.earthobservatory.version>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sesame.version>2.6.3</sesame.version>
-		<aduna.appbase.version>3.5.0</aduna.appbase.version>
-		<slf4j.version>1.6.1</slf4j.version>
-		<spring.version>2.5.6</spring.version>
-		<geotools.version>2.6.6</geotools.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
-			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.earthobservatory</groupId>
 			<artifactId>strabon-runtime</artifactId>
-			<version>${eu.earthobservatory.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -39,31 +35,26 @@
 		<dependency>
 			<groupId>org.geotools.xsd</groupId>
 			<artifactId>gt-xsd-kml</artifactId>
-			<version>${geotools.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-xml</artifactId>
-			<version>${geotools.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
-			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-shapefile</artifactId>
-			<version>${geotools.version}</version>
 		</dependency>
 
 		<!-- Testing: JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -72,14 +63,12 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.0-801.jdbc3</version>
 		</dependency>
 
 		<!-- Spring framework -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>2.5.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -90,7 +79,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>2.5.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -98,31 +86,27 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>2.2.5</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-transports-http</artifactId>
-				<version>2.2.5</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-transports-http-jetty</artifactId>
-				<version>2.2.5</version>
-			</dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+		</dependency>
 
-			<dependency>
-				<groupId>commons-validator</groupId>
-				<artifactId>commons-validator</artifactId>
-				<version>1.3.1</version>
-			</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+		</dependency>
 	</dependencies>
-
-
 
 	<build>
 		<plugins>
@@ -168,7 +152,7 @@
 								<include>beans.xml</include>
 							</includes>
 						</resource>
-						
+
 						<resource>
 							<targetPath>/</targetPath>
 							<directory>${basedir}/WebContent</directory>
@@ -177,7 +161,7 @@
 								<include>store.jsp</include>
 							</includes>
 						</resource>
-						
+
 						<resource>
 							<targetPath>/</targetPath>
 							<directory>${basedir}/WebContent</directory>
@@ -186,22 +170,25 @@
 							</includes>
 						</resource>
 					</webResources>
-					<!-- 
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					 -->
+					<!-- <archive> <manifest> <addClasspath>true</addClasspath> </manifest> 
+						</archive> -->
 				</configuration>
 			</plugin>
+			<!-- <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId> 
+				<version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions> 
+				<pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-dependency-plugin</artifactId> <versionRange>[2.1,)</versionRange> 
+				<goals> <goal>copy-dependencies</goal> </goals> </pluginExecutionFilter> 
+				<action> <ignore /> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata> 
+				</configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
+				<version>2.4</version>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<!-- <phase>validate</phase> -->
+						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
@@ -228,81 +215,58 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>tomcat-run</id>
+						<goals>
+							<goal>exec-war-only</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<enableNaming>true</enableNaming>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!-- <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId> 
+					<version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions> 
+					<pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId> 
+					<artifactId>maven-dependency-plugin</artifactId> <versionRange>[2.3,)</versionRange> 
+					<goals> <goal>copy-dependencies</goal> </goals> </pluginExecutionFilter> 
+					<action> <ignore /> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata> 
+					</configuration> </plugin> -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.1,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
-	<scm>
-		<connection>scm:hg:http://hg.strabon.di.uoa.gr/StrabonEndpoint/</connection>
-		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr///opt/hg/StrabonEndpoint/</developerConnection>
-		<url>http://hg.strabon.di.uoa.gr/StrabonEndpoint/</url>
-	</scm>
-
-	<repositories>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>strabon</id>
-			<name>Strabon - maven repository</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/releases</url>
-		</repository>
-                <repository>
-                        <releases>
-                                <enabled>false</enabled>
-                        </releases>
-                        <snapshots>
-                                <enabled>true</enabled>
-                        </snapshots>
-                        <id>strabon.snapshot</id>
-                        <name>Strabon - maven repository - snapshots</name>
-                        <url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
-                </repository>
-
-
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>aduna-opensource.releases</id>
-			<name>Aduna Open Source - Maven releases</name>
-			<url>http://repo.aduna-software.org/maven2/releases</url>
-		</repository>
-		<repository>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>aduna-opensource.snapshots</id>
-			<name>Aduna Open Source - Maven snapshots</name>
-			<url>http://repo.aduna-software.org/maven2/snapshots</url>
-		</repository>
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>opengeo</id>
-			<name>OpenGeo Maven Repository</name>
-			<url>http://download.osgeo.org/webdav/geotools/</url>
-		</repository>
-	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>strabon</id>
-			<name>Strabon maven repo</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>strabon.snapshot</id>
-			<name>Strabon maven repo</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
