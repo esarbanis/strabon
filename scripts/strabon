@@ -143,6 +143,10 @@ fi
 # read script options
 while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 	case "${1}" in
+		--help)
+			help
+			exit 0
+			;;
 		-d)
 			shift
 			if ! ${DEBUG}; then
