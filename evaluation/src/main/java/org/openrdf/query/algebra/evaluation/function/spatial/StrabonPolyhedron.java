@@ -63,6 +63,7 @@ public class StrabonPolyhedron implements Value {
 
 	public static final boolean EnableConstraintRepresentation = false;
 
+	public static final String stRDF="http://strdf.di.uoa.gr/ontology#";
 	public static final String stRDFSemiLinearPointset="http://strdf.di.uoa.gr/ontology#SemiLinearPointSet";
 	public static final String ogcGeometry="http://strdf.di.uoa.gr/ontology#WKT";
 	public static final String geof="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
