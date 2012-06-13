@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Date;
@@ -101,7 +102,10 @@ public class QueryBean extends HttpServlet {
 
 		DataHive hive = new DataHive(); 
 
-		hive.setSPARQLQuery(request.getParameter("SPARQLQuery"));
+		String encoding = "UTF-8";
+		String q = URLDecoder.decode(request.getParameter("SPARQLQuery"), encoding);
+		
+		hive.setSPARQLQuery(q);
 
 		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
 		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
