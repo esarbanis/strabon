@@ -102,8 +102,17 @@ public class QueryBean extends HttpServlet {
 
 		DataHive hive = new DataHive(); 
 
-		String encoding = "UTF-8";
-		String q = URLDecoder.decode(request.getParameter("SPARQLQuery"), encoding);
+		String query = request.getParameter("SPARQLQuery");
+		String q = (query == null) ? null : URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
+		
+		if (query != null) {
+			String q1 = new String(q.getBytes(), "ISO-8859-1");
+			String q2 = new String(q.getBytes(), "ISO-8859-7");
+			String q3 = new String(q.getBytes(), "ISO-8859-1");
+			String q4 = new String(q.getBytes(), "UTF-8");
+			
+			System.out.println("la");
+		}
 		
 		hive.setSPARQLQuery(q);
 
@@ -420,7 +429,7 @@ public class QueryBean extends HttpServlet {
 		out.println("<html>");
 		out.println("<head>");
 		out.println("<meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\" />");
-		out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+		out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");		
 		out.println("<link href=\"http://code.google.com/apis/maps/documentation/javascript/examples/default.css\" rel=\"stylesheet\" type=\"text/css\" />");
 		out.println("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" /> ");
 		out.println("<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?sensor=false\"></script>");
@@ -479,7 +488,16 @@ public class QueryBean extends HttpServlet {
 		out.println("      <TD height=\"2\" background=\"images/top_bg_blue.gif\"></TD>");
 		out.println("	</TR>");
 		out.println("</TABLE>");
-		out.println("<form method=\"get\">");
+		out.println("<form " +
+				"enctype=\"UTF-8\" " +
+				"accept-charset=\"UTF-8\" "+
+				//"accept-charset=\"UTF-8\" " +
+				//"enctype=\"application/x-www-form-urlencoded;charset=UTF-8\" " +
+				//"enctype=\"text/plain\" " +
+				
+				//"method=\"get\"" +
+				"method=\"post\"" +
+				">");
 
 		out.println("<table border=\"0\" width=\"100%\"><tr> ");
 		out.println("<td width=\"90\" valign=\"top\" bgcolor=\"#dfe8f0\"> ");

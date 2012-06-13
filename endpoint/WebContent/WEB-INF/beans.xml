@@ -19,7 +19,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>endpoint-remote</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
@@ -29,7 +29,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>postgres</value>
+	    <value>p1r3as</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
@@ -39,7 +39,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database server -->
-            <value>localhost</value>
+            <value>kakofonix.di.uoa.gr</value>
         </constructor-arg>
 
         <constructor-arg type="boolean" >
