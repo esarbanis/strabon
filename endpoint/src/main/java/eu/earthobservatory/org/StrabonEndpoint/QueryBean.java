@@ -99,21 +99,14 @@ public class QueryBean extends HttpServlet {
 						", errormessage: " + (this.errorMessage != null ? this.errorMessage : " NULL") + ".";
  			}
 		}
+		
+		request.setCharacterEncoding("UTF-8");
 
 		DataHive hive = new DataHive(); 
 
 		String query = request.getParameter("SPARQLQuery");
 		String q = (query == null) ? null : URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
-		
-		if (query != null) {
-			String q1 = new String(q.getBytes(), "ISO-8859-1");
-			String q2 = new String(q.getBytes(), "ISO-8859-7");
-			String q3 = new String(q.getBytes(), "ISO-8859-1");
-			String q4 = new String(q.getBytes(), "UTF-8");
 			
-			System.out.println("la");
-		}
-		
 		hive.setSPARQLQuery(q);
 
 		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
