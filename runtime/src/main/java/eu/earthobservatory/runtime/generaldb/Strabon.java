@@ -171,6 +171,19 @@ public abstract class Strabon {
 		return query(queryString, "", con);	
 	}
 
+	public Object queryBindings(String queryString, SailRepositoryConnection con) throws QueryEvaluationException, MalformedQueryException
+	{
+		logger.info("[Strabon.query] Executing query: " + queryString);
+		TupleQuery tupleQuery = null;
+		try {
+			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+		} catch (RepositoryException e) {
+			logger.error("[Strabon.query] Error in preparing tuple query.", e);
+		}
+		TupleQueryResult result = tupleQuery.evaluate();
+		return result;
+	}
+	
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
 	{
