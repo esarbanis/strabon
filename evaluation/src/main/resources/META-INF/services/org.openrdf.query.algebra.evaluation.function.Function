@@ -5,7 +5,7 @@ org.openrdf.query.algebra.evaluation.function.DecimalCast
 org.openrdf.query.algebra.evaluation.function.IntegerCast
 org.openrdf.query.algebra.evaluation.function.BooleanCast
 org.openrdf.query.algebra.evaluation.function.DateTimeCast
-org.openrdf.query.algebra.evaluation.link.SimilarTermFunc
+org.openrdf.query.algebra.evaluation.function.link.SimilarTermFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CoveredByFunc
