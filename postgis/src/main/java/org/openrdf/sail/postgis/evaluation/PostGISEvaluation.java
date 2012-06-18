@@ -75,7 +75,7 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 				//
 		
 				if (logger.isDebugEnabled()) {
-					logger.debug("In PostGIS Evaluation, query is: \n" + stmt);
+					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
 				}
 				return result;
 			}

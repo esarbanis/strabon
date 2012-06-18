@@ -800,10 +800,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			query.offset(qb.getOffset());
 		}
 		parameters.addAll(query.getParameters());
-		if (logger.isDebugEnabled()) {
-			logger.debug(query.toString());
-			logger.debug(parameters.toString());
-		}
+//		if (logger.isDebugEnabled()) {
+//			logger.debug(query.toString());
+//			logger.debug(parameters.toString());
+//		}
 		return query.toString();
 	}
 
