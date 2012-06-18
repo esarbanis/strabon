@@ -32,7 +32,8 @@
         <eu.earthobservatory.version>3.1.10-SNAPSHOT</eu.earthobservatory.version>
 		<sesame.version>2.6.3</sesame.version>
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
-		<slf4j.version>1.6.1</slf4j.version>
+		<slf4j.version>1.6.4</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
 		<spring.version>2.5.6</spring.version>
 		<jts.version>1.11</jts.version>
 		<geotools.version>2.7.4</geotools.version>
@@ -324,18 +325,34 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 
+			<!-- 
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
-
+   			-->
+   			
 			<dependency>
 				<groupId>net.sf</groupId>
 				<artifactId>log4jdbc4</artifactId>
 				<version>1.2</version>
 			</dependency>
 
+			<!--  LOG4J -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			            
+			
 			<!-- Apache Commons -->
 			<dependency>
 				<groupId>commons-cli</groupId>
