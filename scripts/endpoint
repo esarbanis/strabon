@@ -14,7 +14,7 @@ function help() {
 	echo
 	echo "Execute SPARQL and SPARQL Update queries as well as store RDF triples on a Strabon endpoint."
 	echo
-	echo "	COMMAND	 : one of query, update, store, or help"
+	echo "	COMMAND	 : one of query, queryfile, update, store, or help"
 	echo "	ENDPOINT : the URL of the Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint)"
 	echo "	ARGS	 : arguments according to selected command"
 	echo 
@@ -31,6 +31,15 @@ function help_query() {
 	echo "				\`size': SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
 	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`KMLMAP\, \`GEOJSON', "
 	echo "			  \`HTML', \`KMZMAP', \`XML' (default), or \`KML'."
+}
+
+function help_queryfile() {
+        echo "Usage: ${CMD} queryfile ENDPOINT SPARQL_QUERY_FILE [RESULT_FORMAT]"
+        echo
+        echo "  ENDPOINT          : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+        echo "  SPARQL_QUERY_FILE : the file that contain the SPARQL query to execute"
+        echo "  RESULT_FORMAT     : the format of the result. Possible values are \`KMLMAP\, \`GEOJSON', "
+        echo "                      \`HTML', \`KMZMAP', \`XML' (default), or \`KML'."
 }
 
 function help_update() {
@@ -70,6 +79,9 @@ case "${1}" in
 			case "${1}" in
 				query)
 					help_query
+					;;
+				queryfile)
+					help_queryfile
 					;;
 				update)
 					help_update
@@ -123,6 +135,45 @@ case "${1}" in
 
 		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
+	queryfile)
+		shift
+		if ! test $# -ge 2; then
+			help_queryfile
+			exit 1
+		fi
+
+		if [ ! -f ${2} ];
+		then
+			echo "${CMD}: File not found."
+			exit 2
+		fi
+
+		URL="${1}/Query"
+		QUERY=`cat ${2} | sed 's/\"/\\\"/g'`
+
+		shift
+		shift
+		
+		# set default format
+		FORMAT="XML"
+		if test $# -eq 1; then
+			FORMAT="${1}"
+		fi
+
+		case "${FORMAT}" in
+			[Kk][Mm][Ll][Mm][Aa][Pp]|[Gg][Ee][Oo][Jj][Ss][Oo][Nn]|[Hh][Tt][Mm][Ll]|[Kk][mM][Zz][Mm][Aa][Pp]|[Xx][Mm][Ll]|[Kk][Mm][Ll])
+				shift
+				;;
+			*)
+				echo "${CMD}: unknown format \"${FORMAT}\"."
+				echo "${CMD}: possible values are \`KMLMAP\, \`GEOJSON' \`HTML', \`KMZMAP', \`XML' (default), or \`KML'"
+				exit 2
+				;;
+		esac
+
+		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
+		;;
+
 	update)
 		shift
 		if ! test $# -eq 2; then
