@@ -30,6 +30,6 @@ WHERE {
        noa:hasGeometry ?cGeo .
     FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
   }
-  GROUP BY ?h ?hGeo 
+  GROUP BY ?h ?hGeo ?conf ?sat
   HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))
 }

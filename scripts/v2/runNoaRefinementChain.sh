@@ -1,11 +1,12 @@
 #!/bin/bash
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ENDPOINT="http://localhost:8080/strabonendpoint"
-DB="explicit"
+ENDPOINT="http://localhost:8080/endpoint"
+DB="endpoint"
+GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
-dataUrl="http://kk.di.uoa.gr/out_triples/"
+dataDir="http://kk.di.uoa.gr/out_triples/"
 name="HMSG2_IR_039_s7_070825"
 suffix=".hotspots.n3"
 
@@ -39,10 +40,9 @@ function timer()
 #printf 'LALA %s %s\n' $((tmr2-tmr1)) $(timer $tmr1)
 
 
-deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql | sed 's/\"/\\\"/g'`
-refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql | sed 's/\"/\\\"/g'`
-refineTimePersistence=`cat ${LOC}/TimePersistence.sparql | sed 's/\"/\\\"/g'`
-
+deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
+refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
+refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
 
 # Initialize
 sudo service postgresql restart
@@ -53,11 +53,10 @@ sudo -u postgres createdb ${DB} -T template_postgis
 echo "restarting tomcat"
 sudo service tomcat7 restart
 
-
 echo "initializing database"
 echo "S D R TP" >>stderr.txt
 
- ../endpoint store ${ENDPOINT} N-Triples -u http://localhost/noa-teleios/grid_4.nt 
+ ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}" 
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
