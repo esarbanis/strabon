@@ -230,7 +230,9 @@ public class LiteralTable {
 	{
 		labels.insert(id, label);
 		datatypes.insert(id, datatype);
-		logger.debug("about to insert double value:"+value);
+		if (logger.isDebugEnabled()) {
+			logger.debug("about to insert double value: {}", value);
+		}
 		numeric.insert(id, value);
 	}
 

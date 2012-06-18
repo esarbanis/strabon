@@ -100,7 +100,9 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 			/**********************************************/
 			try {
 				if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
-					logger.debug("about to insert double value:"+literal.doubleValue());
+					if (logger.isDebugEnabled()) {
+						logger.debug("about to insert double value: {}", literal.doubleValue());
+					}
 					table.insertNumeric(id, label, dt, literal.doubleValue());
 				}
 				else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {

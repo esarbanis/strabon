@@ -805,7 +805,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			logger.debug(parameters.toString());
 		}
 		return query.toString();
-			}
+	}
 
 	/**
 	 * Function used to locate all ColumnVars from the select's spatial constructs so that they can later 

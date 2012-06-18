@@ -88,7 +88,9 @@ public class MonetDBEvaluation extends GeneralDBEvaluation {
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
 				//
 
-				logger.debug("In MonetDB Evaluation, query is: \n" + query);
+				if (logger.isDebugEnabled()) {
+					logger.debug("In MonetDB Evaluation, query is: \n{}", query);
+				}
 				// In MonetDb this stmt.toString() returns just a reference
 				return result;
 			}
