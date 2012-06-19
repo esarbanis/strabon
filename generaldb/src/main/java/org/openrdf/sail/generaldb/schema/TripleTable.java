@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 import org.openrdf.sail.rdbms.schema.ValueTypes;
 import org.openrdf.sail.rdbms.schema.ValueType;
@@ -284,10 +285,12 @@ public class TripleTable {
 			sb.append("  pred ").append(ids.getSqlType()).append(" NOT NULL,\n");
 		}
 		sb.append("  obj ").append(ids.getSqlType()).append(" NOT NULL,\n");
-		sb.append("  expl ").append("BOOL").append(" NOT NULL,\n");
+//		sb.append("  expl ").append("BOOL").append(" NOT NULL,\n");
+		sb.append("  expl ").append("BOOL").append(" NOT NULL\n");
 		//FIXME
-		sb.append("  interval_start ").append("TIMESTAMP DEFAULT NULL").append(",\n");
-		sb.append("  interval_end ").append("TIMESTAMP DEFAULT NULL").append("\n");
+//		sb.append("  interval_start ").append("TIMESTAMP DEFAULT NULL").append(",\n");
+//		sb.append("  interval_end ").append("TIMESTAMP DEFAULT NULL").append("\n");
+		
 		return sb;
 	}
 }
