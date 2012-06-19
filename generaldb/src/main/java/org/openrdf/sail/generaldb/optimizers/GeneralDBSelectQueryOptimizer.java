@@ -781,6 +781,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 
 				ValueExpr condition = null;
+//				dup=false;
 				if(!dup)
 				{
 					for (ValueExpr expr : flatten(node.getCondition())) {
