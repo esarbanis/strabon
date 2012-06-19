@@ -52,7 +52,9 @@ import org.openrdf.query.algebra.helpers.StatementPatternCollector;
  * @author James Leigh
  */
 
-public class SpatialJoinOptimizer implements QueryOptimizer {
+public class SpatialJoinOptimizer 
+//implements QueryOptimizer //Removed it consciously 
+{
 
 
 	//private Set<String> existingVars = new TreeSet<String>();
@@ -62,12 +64,21 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 	 * 
 	 * @param tupleExpr
 	 */
-	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings) {
-		tupleExpr.visit(new JoinVisitor());
+	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings, List<TupleExpr> spatialJoins) {
+		tupleExpr.visit(new JoinVisitor(spatialJoins));
 	}
 
 	protected class JoinVisitor extends QueryModelVisitorBase<RuntimeException> {
+		
+		
+		
+		public JoinVisitor(List<TupleExpr> spatialJoins) {
+			super();
+			this.spatialJoins = spatialJoins;
+		}
 
+		
+		private List<TupleExpr> spatialJoins;
 		//buffer with a var as a second argument
 		private boolean problematicBuffer = false;
 
@@ -275,6 +286,9 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 							Map.Entry entry = (Map.Entry)it.next();
 							if(count == position - varsMapSize)
 							{
+								//If I keep record of this entry, I can use the info later to avoid duplicate filters
+								spatialJoins.add((TupleExpr) entry.getKey());
+								//
 								orderedJoinArgs.add((TupleExpr) entry.getKey());
 								it.remove();
 								for(int fix = 0 ; fix < finalList.size(); fix++)
@@ -329,7 +343,11 @@ public class SpatialJoinOptimizer implements QueryOptimizer {
 			}
 		}
 
-
+		/**
+		 * General Comment: If more than one function exists in the query and can be used to perform the join, no preference is shown 
+		 * on which function will actually be used for this purpose. This could cause an issue if ST_Disjoint is the one finally used, 
+		 * as the index won't be used for the evaluation in this case. Perhaps I should include some 'priority'
+		 */
 		@Override
 		public void meet(Filter node) {
 
