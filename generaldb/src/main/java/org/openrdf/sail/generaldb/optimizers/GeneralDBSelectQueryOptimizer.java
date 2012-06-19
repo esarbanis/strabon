@@ -52,6 +52,7 @@ import org.openrdf.query.algebra.OrderElem;
 import org.openrdf.query.algebra.Projection;
 import org.openrdf.query.algebra.ProjectionElem;
 import org.openrdf.query.algebra.ProjectionElemList;
+import org.openrdf.query.algebra.QueryModelNode;
 import org.openrdf.query.algebra.Slice;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
@@ -113,16 +114,17 @@ import org.openrdf.sail.generaldb.schema.IdSequence;
  * @author James Leigh
  * 
  */
-public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> implements
-QueryOptimizer
+public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> 
+//implements QueryOptimizer //removed it consciously
 {
 
 	/**
 	 * XXX additions (manolee)
 	 */
+	private List<TupleExpr> spatialJoins;
 
 	//assuming no more than 10 uniquely-named variables will be spatial in the average case 
-	private ArrayList<String> geoNames = new ArrayList<String>(10);
+	private List<String> geoNames = new ArrayList<String>(10);
 
 	//private Map<String, GeneralDBSqlExpr> constructsForSelect = new HashMap<String, GeneralDBSqlExpr>();
 
@@ -183,29 +185,29 @@ QueryOptimizer
 		this.ids = ids;
 	}
 
-	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings) {
+	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings, List<TupleExpr> spatialJoins) {
 		this.dataset = dataset;
 		this.bindings = bindings;
+		this.spatialJoins = spatialJoins;
 		tupleExpr.visit(this);
-		//System.out.println("placeholder");
 	}
 
 	@Override
 	public void meet(Distinct node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 			query.setDistinct(true);
 			node.replaceWith(query);
 		}
-	}
+			}
 
 	@Override
 	public void meet(Union node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -225,7 +227,7 @@ QueryOptimizer
 		mergeSelectClause(query, right);
 		addProjectionsFromUnion(query, union);
 		node.replaceWith(query);
-	}
+			}
 
 	/**
 	 * This happens when both sides of the union have the same variable name with
@@ -248,8 +250,8 @@ QueryOptimizer
 
 	@Override
 	public void meet(Join node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -270,12 +272,12 @@ QueryOptimizer
 		 * This change was made before altering the spatial joins operation
 		 */
 		reference = left;
-	}
+			}
 
 	@Override
 	public void meet(LeftJoin node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -306,7 +308,7 @@ QueryOptimizer
 		}
 		node.replaceWith(left);
 		reference = left;
-	}
+			}
 
 	@Override
 	public void meet(StatementPattern sp) {
@@ -497,8 +499,8 @@ QueryOptimizer
 
 	@Override
 	public void meet(Filter node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 
 		/**
 		 * XXX 21/09/2011 addition for spatial joins
@@ -752,40 +754,69 @@ QueryOptimizer
 		/**
 		 * End of addition
 		 */
-		else //DEFAULT BEHAVIOR
+		else //DEFAULT BEHAVIOR (Enhanced with check for duplicates)
 		{
+
+			boolean dup = false;
+			ValueExpr dupFunctionCall = node.getCondition();
+			for(TupleExpr sfilter : this.spatialJoins)
+			{
+				ValueExpr tmpExpr = ((Filter)sfilter).getCondition();
+				if(tmpExpr.equals(dupFunctionCall))
+				{
+					//					QueryModelNode parent = node.getParentNode();
+					//					TupleExpr replacement = ((Filter)node).getArg();
+					//					parent.replaceChildNode(node, replacement);
+					//					//If I do reach this point, the former 'child' argument will be a traditional Join operator
+					//					super.meet((Join)replacement);
+					//					node.setCondition(null);
+					//					return;
+					dup = true;
+					break;
+				}
+			}
+
 			super.meet(node);
 			if (node.getArg() instanceof GeneralDBSelectQuery) {
 				GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 
 				ValueExpr condition = null;
-				for (ValueExpr expr : flatten(node.getCondition())) {
-					try {
-						//07/09/2011
-						//Attempt to move spatial selections and joins to FROM clause
-						//XXX removed because I followed a different approach. May come in handy later on. 09/09/11
-						//					if(node.getCondition() instanceof FunctionCall)
-						//					{
-						//						GeneralDBSqlExpr sqlExpression = sql.createBooleanExpr(expr);
-						//						query.addSpatialFilter(sqlExpression);
-						//						//query.getFrom().addFilter(sql.createBooleanExpr(expr));
-						//						query.addFilter(sqlExpression);
-						//					}
-						//					else //DEFAULT CASE
-						//					{
-						query.addFilter(sql.createBooleanExpr(expr));
-						//					}
+//				dup=false;
+				if(!dup)
+				{
+					for (ValueExpr expr : flatten(node.getCondition())) {
+						try {
+							//07/09/2011
+							//Attempt to move spatial selections and joins to FROM clause
+							//XXX removed because I followed a different approach. May come in handy later on. 09/09/11
+							//					if(node.getCondition() instanceof FunctionCall)
+							//					{
+							//						GeneralDBSqlExpr sqlExpression = sql.createBooleanExpr(expr);
+							//						query.addSpatialFilter(sqlExpression);
+							//						//query.getFrom().addFilter(sql.createBooleanExpr(expr));
+							//						query.addFilter(sqlExpression);
+							//					}
+							//					else //DEFAULT CASE
+							//					{
+							query.addFilter(sql.createBooleanExpr(expr));
+							//					}
 
-					}
-					catch (UnsupportedRdbmsOperatorException e) {
-						if (condition == null) {
-							condition = expr;
 						}
-						else {
-							condition = new And(condition, expr);
+						catch (UnsupportedRdbmsOperatorException e) {
+							if (condition == null) {
+								condition = expr;
+							}
+							else {
+								condition = new And(condition, expr);
+							}
 						}
 					}
 				}
+				else
+				{
+					condition = null;
+				}
+
 				if (condition == null) {
 					node.replaceWith(node.getArg());
 				}
@@ -838,14 +869,14 @@ QueryOptimizer
 
 
 		}
-	}
+			}
 
 
 
 	@Override
 	public void meet(Projection node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
@@ -866,15 +897,15 @@ QueryOptimizer
 			query.setSqlSelectVar(selection);
 			node.replaceWith(query);
 		}
-	}
+			}
 
 	/**
 	 * XXX used to retrieve the geoNames from the TRADITIONAL filter clauses - not the ones in Joins
 	 */
 	@Override
 	public void meet(FunctionCall node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		Function function = FunctionRegistry.getInstance().get(node.getURI());
 
 		super.meet(node);
@@ -936,7 +967,7 @@ QueryOptimizer
 			//			}
 		}
 
-	}
+			}
 
 	//
 	@Override
@@ -1042,7 +1073,7 @@ QueryOptimizer
 		else if(expr instanceof BinaryValueOperator)
 		{
 			return thematicExpression(((BinaryValueOperator) expr).getLeftArg()) &&
-				   thematicExpression(((BinaryValueOperator) expr).getRightArg());
+					thematicExpression(((BinaryValueOperator) expr).getRightArg());
 		}
 		else
 		{
@@ -1195,8 +1226,8 @@ QueryOptimizer
 
 	@Override
 	public void meet(Slice node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
@@ -1208,12 +1239,12 @@ QueryOptimizer
 			}
 			node.replaceWith(query);
 		}
-	}
+			}
 
 	@Override
 	public void meet(Order node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		int mbbCounter = 0;
 		//		super.meet(node);
 		if (!(node.getArg() instanceof GeneralDBSelectQuery))
@@ -1344,7 +1375,7 @@ QueryOptimizer
 		catch (UnsupportedRdbmsOperatorException e) {
 			// unsupported
 		}
-	}
+			}
 
 	/**
 	 * FIXME uncomment if you need sorted results based on the group by's contents!!!

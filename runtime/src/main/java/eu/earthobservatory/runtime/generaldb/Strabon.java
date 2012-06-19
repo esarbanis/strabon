@@ -90,14 +90,14 @@ public abstract class Strabon {
 	SailRepositoryConnection con1 = null;
 
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
-	throws SQLException, ClassNotFoundException 
-	{
+			throws SQLException, ClassNotFoundException 
+			{
 		if (checkForLockTable == true) {
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
 		}
 
 		initiate(databaseName, user, password, port, serverName);
-	}
+			}
 
 
 	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName) ;
@@ -128,7 +128,7 @@ public abstract class Strabon {
 
 
 	protected abstract void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName)
-	throws SQLException, ClassNotFoundException ;
+			throws SQLException, ClassNotFoundException ;
 
 	public SailRepositoryConnection getSailRepoConnection() {
 		return con1;
@@ -145,31 +145,31 @@ public abstract class Strabon {
 			con1.commit();
 			con1.close();
 			repo1.shutDown();
-			
+
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
 		}
-		
+
 		logger.info("[Strabon.close] Connection closed.");
 	}
 
 	public Object query(String queryString)
-	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-	{
+			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+			{
 		return query(queryString, "", this.getSailRepoConnection());	
-	}
+			}
 
 	public Object query(String queryString, String resultsFormat)
-	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
-	{
+			throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
+			{
 		return query(queryString, resultsFormat, this.getSailRepoConnection());
-	}
+			}
 
 	public Object query(String queryString, SailRepositoryConnection con)
-	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-	{
+			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+			{
 		return query(queryString, "", con);	
-	}
+			}
 
 	public Object queryBindings(String queryString, SailRepositoryConnection con) throws QueryEvaluationException, MalformedQueryException
 	{
@@ -183,10 +183,10 @@ public abstract class Strabon {
 		TupleQueryResult result = tupleQuery.evaluate();
 		return result;
 	}
-	
+
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
-	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
-	{
+			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
+			{
 		logger.info("[Strabon.query] Executing query: " + queryString);
 		TupleQuery tupleQuery = null;
 		try {
@@ -618,11 +618,11 @@ public abstract class Strabon {
 			try {
 				//String cstr = new String("aa", "UTF8");
 				// ggarbis: For too large strings (e.g., 44MB) it returns empty string.
-//				String newString = new String(sb.toString().getBytes(), Charset.availableCharsets().get("UTF-8"));
+				//				String newString = new String(sb.toString().getBytes(), Charset.availableCharsets().get("UTF-8"));
 
 				if(resultsFormat.equalsIgnoreCase("KML"))
 				{
-//					writeOut.write(newString);
+					//					writeOut.write(newString);
 					writeOut.write(sb.toString());
 					//					System.out.println(newString);
 				}
@@ -638,7 +638,7 @@ public abstract class Strabon {
 
 					//kmzout.setLevel(6);
 					kmzout.putNextEntry(entry);
-//					kmzout.write(newString.getBytes());
+					//					kmzout.write(newString.getBytes());
 					kmzout.write(sb.toString().getBytes());
 					kmzout.closeEntry();
 					kmzout.close();
@@ -764,7 +764,7 @@ public abstract class Strabon {
 
 		//return ret;
 		return retStream.toString();
-	}
+			}
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 	{
@@ -786,9 +786,9 @@ public abstract class Strabon {
 			logger.error("[Strabon.update]", e);
 		}
 
-//		System.out.println("-------------------------------------------");
-//		System.out.println("-            UPDATE EXECUTED              -");
-//		System.out.println("-------------------------------------------");
+		//		System.out.println("-------------------------------------------");
+		//		System.out.println("-            UPDATE EXECUTED              -");
+		//		System.out.println("-------------------------------------------");
 	}
 
 	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
@@ -833,21 +833,30 @@ public abstract class Strabon {
 		{
 			throw new InvalidDatasetFormatFault();
 		}
-		
-       try{
-    	   URL source = new URL(src);
-    	   storeURL(source, baseURI, uriContext, realFormat);
-    	   
-       } catch(MalformedURLException e) {
-    	   File file = new File(src);
-    	   if (file.exists()) {
-    		   storeURL(new URL("file://" + src), baseURI, uriContext, realFormat);
-    		   
-    	   } else {
-    		   logger.info("File \"" + src + "\" does not exist. Trying reading as String.");
-    		   storeString((String)src, baseURI, uriContext, realFormat);
-    	   }
-       }
+
+		try{
+			URL source = new URL(src);
+			storeURL(source, baseURI, uriContext, realFormat);
+
+		} catch(MalformedURLException e) {
+
+			URL fromClasspath = getClass().getResource(src);
+			if(fromClasspath!=null)
+			{
+				storeURL(fromClasspath, baseURI, uriContext, realFormat);
+			}
+			else
+			{
+				File file = new File(src);
+				if (file.exists()) {
+					storeURL(new URL("file://" + src), baseURI, uriContext, realFormat);
+
+				} else {
+					logger.info("File \"" + src + "\" does not exist. Trying reading as String.");
+					storeString((String)src, baseURI, uriContext, realFormat);
+				}
+			}
+		}
 	}
 
 	private void storeURL(URL url, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
@@ -860,14 +869,14 @@ public abstract class Strabon {
 
 		InputStream in = (InputStream) url.openStream();
 		InputStreamReader reader = new InputStreamReader(in);
-		
+
 		RDFParser parser = Rio.createParser(format);
-		
+
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
-		
+
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		
+
 		logger.info("[Strabon.storeURL] Inferred " + handler.getNumberOfTriples() + " triples.");
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeURL] Triples inferred:"+ handler.getTriples().toString());
@@ -897,14 +906,14 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
-		
+
 		RDFParser parser = Rio.createParser(format);
-		
+
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
-		
+
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
-		
+
 		logger.info("[Strabon.storeString] Inferred " + handler.getNumberOfTriples() + " triples.");
 		if (handler.getNumberOfTriples() > 0) {
 			logger.info("[Strabon.storeString] Triples inferred:"+ handler.getTriples().toString());
@@ -934,16 +943,16 @@ public abstract class Strabon {
 			logger.error("[Strabon.describe]", e);
 		}
 
-//		System.out.println("Placemark0");
-//		System.out.println("\n\n\nGot query: " + describeString + "\n\n\n");
+		//		System.out.println("Placemark0");
+		//		System.out.println("\n\n\nGot query: " + describeString + "\n\n\n");
 		logger.info("[Strabon.describe] Executing describe query:" + describeString);
-		
+
 		try {
 			OutputStream out = new FileOutputStream(outFile);
 			RDFHandler rdfHandler = new NTriplesWriter(out);
 			graphQuery.evaluate(rdfHandler);
 			out.close();
-			
+
 		} catch (FileNotFoundException e) {
 			logger.error("[Strabon.describe]", e);
 		} catch (QueryEvaluationException e) {
@@ -955,8 +964,8 @@ public abstract class Strabon {
 		}
 
 		logger.info("[Strabon.describe] Output: "+outFile);
-//		System.out.println("---------------------------------------------");
-//		System.out.println("-            DESCRIBE EXECUTED              -");
-//		System.out.println("---------------------------------------------");
+		//		System.out.println("---------------------------------------------");
+		//		System.out.println("-            DESCRIBE EXECUTED              -");
+		//		System.out.println("---------------------------------------------");
 	}
 }

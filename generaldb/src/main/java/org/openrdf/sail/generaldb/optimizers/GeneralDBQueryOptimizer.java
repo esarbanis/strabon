@@ -5,6 +5,9 @@
  */
 package org.openrdf.sail.generaldb.optimizers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.QueryRoot;
@@ -42,7 +45,11 @@ public class GeneralDBQueryOptimizer {
 	private GeneralDBSelectQueryOptimizerFactory factory;
 
 	private HashTable hashTable;
-
+	
+	//Addition to locate duplicate filters caused by the SpatialJoinOptimizer
+	List<TupleExpr> spatialJoins = new ArrayList<TupleExpr>();
+	//
+	
 	public void setSelectQueryOptimizerFactory(GeneralDBSelectQueryOptimizerFactory factory) {
 		this.factory = factory;
 	}
@@ -100,12 +107,13 @@ public class GeneralDBQueryOptimizer {
 		new SameTermFilterOptimizer().optimize(expr, dataset, bindings);
 
 		//XXX
-		new SpatialJoinOptimizer().optimize(expr, dataset, bindings);
+		new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
 	}
 
 	protected void rdbmsOptimizations(TupleExpr expr, Dataset dataset, BindingSet bindings) {
 		new GeneralDBValueIdLookupOptimizer(vf).optimize(expr, dataset, bindings);
-		factory.createRdbmsFilterOptimizer().optimize(expr, dataset, bindings);
+		factory.createRdbmsFilterOptimizer().optimize(expr, dataset, bindings,spatialJoins);
+		this.spatialJoins.clear();
 		new GeneralDBVarColumnLookupOptimizer().optimize(expr, dataset, bindings);
 		GeneralDBValueJoinOptimizer valueJoins = new GeneralDBValueJoinOptimizer();
 		valueJoins.setBnodeTable(bnodes);
