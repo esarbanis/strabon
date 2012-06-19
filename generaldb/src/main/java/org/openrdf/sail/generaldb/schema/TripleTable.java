@@ -151,16 +151,47 @@ public class TripleTable {
 	public void createIndex()
 		throws SQLException
 	{
+//		if (isPredColumnPresent()) {
+//			table.index(PRED_INDEX);
+//			total_st++;
+//		}
+//		table.index(SUBJ_INDEX);
+//		total_st++;
+//		table.index(CTX_INDEX);
+//		total_st++;
+//		table.index(EXPL_INDEX);
+//		total_st++;
+		
+		///////
 		if (isPredColumnPresent()) {
-			table.index(PRED_INDEX);
+			String[] PRED_OBJ_SUBJ_INDEX = {"pred", "obj", "subj"};
+			table.index(PRED_OBJ_SUBJ_INDEX);
+			total_st++;
+			String[] PRED_SUBJ_OBJ_INDEX = {"pred", "subj", "obj"};
+			table.index(PRED_SUBJ_OBJ_INDEX);
+			total_st++;
+			String[] OBJ_PRED_SUBJ_INDEX = { "obj", "pred", "subj"};
+			table.index(OBJ_PRED_SUBJ_INDEX);
+			total_st++;
+			String[] OBJ_SUBJ_PRED_INDEX = { "obj", "subj", "pred"};
+			table.index(OBJ_SUBJ_PRED_INDEX);
+			total_st++;
+			String[] SUBJ_OBJ_PRED_INDEX = {"subj", "obj", "pred"};
+			table.index(SUBJ_OBJ_PRED_INDEX);
+			total_st++;
+			String[] SUBJ_PRED_OBJ_INDEX = {"subj", "pred", "obj"};
+			table.index(SUBJ_PRED_OBJ_INDEX);
+			total_st++;
+		} else {
+//			String[] OBJ_SUBJ_INDEX = {"obj", "subj"};
+//			table.index(OBJ_SUBJ_INDEX);
+//			total_st++;
+			String[] SUBJ_OBJ_INDEX = {"subj", "obj"};
+			table.index(SUBJ_OBJ_INDEX);
 			total_st++;
 		}
-		table.index(SUBJ_INDEX);
-		total_st++;
-		table.index(CTX_INDEX);
-		total_st++;
-		table.index(EXPL_INDEX);
-		total_st++;
+		//////
+		
 	}
 
 	public void dropIndex()
