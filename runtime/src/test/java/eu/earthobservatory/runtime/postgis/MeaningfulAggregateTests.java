@@ -24,7 +24,7 @@ public class MeaningfulAggregateTests extends eu.earthobservatory.runtime.genera
 	@BeforeClass
 	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
-		strabon = TemplateTests.beforeClass("/grouo-tests-srid.nt");
+		strabon = TemplateTests.beforeClass("/group-tests-srid.nt");
 	}
 	
 	@AfterClass

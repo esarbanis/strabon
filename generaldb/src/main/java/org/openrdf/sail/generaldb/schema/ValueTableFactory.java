@@ -158,6 +158,9 @@ public class ValueTableFactory {
 		if (!sequenced) {
 			table.setTemporaryTable(factory.createTemporaryTable(conn, "INSERT_" + name));
 		}
+		if ( name.equals(TIMES) )
+			initValueTable(table, queue, sqlType, length, true);
+		else
 		initValueTable(table, queue, sqlType, length, INDEX_VALUES);
 		return table;
 	}
