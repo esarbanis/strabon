@@ -161,6 +161,14 @@
 						</resource>
 
 						<resource>
+							<targetPath>/WEB-INF/classes</targetPath>
+							<directory>${basedir}/src</directory>
+							<includes>
+								<include>log4j.properties</include>
+							</includes>
+						</resource>
+
+						<resource>
 							<targetPath>/</targetPath>
 							<directory>${basedir}/WebContent</directory>
 							<includes>
