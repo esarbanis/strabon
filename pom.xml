@@ -411,6 +411,7 @@
 			</dependency>
 
 			<!-- Apache CXF framework -->
+			<!--
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxws</artifactId>
@@ -428,7 +429,7 @@
 				<artifactId>cxf-rt-transports-http-jetty</artifactId>
 				<version>2.2.5</version>
 			</dependency>
-
+			-->
 			<!-- Compliance tests -->
 			<dependency>
 				<groupId>edu.lehigh.swat.bench</groupId>
