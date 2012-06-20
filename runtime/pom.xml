@@ -17,6 +17,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-sail-memory</artifactId>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryresultio-sparqlxml-spatial</artifactId>
 		</dependency>
 
@@ -273,11 +278,34 @@
 		<dependency>
 			<groupId>monetdb</groupId>
 			<artifactId>jdbcclient</artifactId>
-			<version>3.4.0</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>net.sf</groupId> <artifactId>log4jdbc3</artifactId> 
-			<version>1.2beta2</version> </dependency> -->
+		<!-- Geotools -->
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-wkt</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-geometry</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-data</artifactId>
+		</dependency>
+				
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-swing</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi-pending</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
