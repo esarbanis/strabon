@@ -239,7 +239,8 @@
 						<goals>
 							<goal>exec-war-only</goal>
 						</goals>
-						<phase>package</phase>
+						<!-- <phase>package</phase> -->
+						<phase>integration-test</phase>
 						<configuration>
 							<enableNaming>true</enableNaming>
 						</configuration>
