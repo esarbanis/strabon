@@ -175,7 +175,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	}
 
 	public void destroy() throws Exception {
-		strabon.close();
+		if (strabon != null) {
+			strabon.close();
+		}
 	}
 
 	public Object query(String queryString, String answerFormatStrabon)
