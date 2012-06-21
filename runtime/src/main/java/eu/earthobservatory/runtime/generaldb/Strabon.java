@@ -50,6 +50,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriter;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
@@ -172,22 +173,22 @@ public abstract class Strabon {
 	}
 
 	public Object query(String queryString)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query(queryString, "", this.getSailRepoConnection());	
-			}
+	}
 
 	public Object query(String queryString, String resultsFormat)
-			throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query(queryString, resultsFormat, this.getSailRepoConnection());
-			}
+	}
 
 	public Object query(String queryString, SailRepositoryConnection con)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
-			{
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException
+	{
 		return query(queryString, "", con);	
-			}
+	}
 
 	public Object queryBindings(String queryString, SailRepositoryConnection con) throws QueryEvaluationException, MalformedQueryException
 	{
@@ -203,8 +204,8 @@ public abstract class Strabon {
 	}
 
 	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
-			throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
-			{
+	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException 
+	{
 		logger.info("[Strabon.query] Executing query: " + queryString);
 		TupleQuery tupleQuery = null;
 		try {
@@ -436,6 +437,15 @@ public abstract class Strabon {
 
 		} 
 		else if ( resultsFormat.equalsIgnoreCase("KML") || resultsFormat.equalsIgnoreCase("KMZ")) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Serializing results (KML/KMZ)");
+			}
+			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(retStream));
+			if (true) {
+				System.out.println(retStream);
+				return retStream.toString();
+			}
+			
 			//GeometryFactory gf = JTSFactoryFinder.getGeometryFactory(null);
 			GeometryFactory gf = new GeometryFactory(new PrecisionModel(),4326);
 			WKTReader reader = new WKTReader(gf);
@@ -776,13 +786,13 @@ public abstract class Strabon {
 		} catch (IOException e) {
 			logger.error("[Strabon.query]", e);
 		}
-
+		
 		// Print results.
 		//System.out.println(retStream.toString());
 
 		//return ret;
 		return retStream.toString();
-			}
+	}
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 	{
