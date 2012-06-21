@@ -436,18 +436,17 @@ public abstract class Strabon {
 			System.out.println(retStream.toString());
 
 		} 
-		else if ( resultsFormat.equalsIgnoreCase("KML") || resultsFormat.equalsIgnoreCase("KMZ")) {
+		else if (resultsFormat.equalsIgnoreCase("KML")) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Serializing results (KML/KMZ)");
+				logger.debug("Serializing results (KML)");
 			}
+
 			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(retStream));
-			if (true) {
-				System.out.println(retStream);
-				return retStream.toString();
-			}
+			System.out.println(retStream.toString());
 			
+		} else if (resultsFormat.equalsIgnoreCase("KMZ")) {
 			//GeometryFactory gf = JTSFactoryFinder.getGeometryFactory(null);
-			GeometryFactory gf = new GeometryFactory(new PrecisionModel(),4326);
+			GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
 			WKTReader reader = new WKTReader(gf);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -462,9 +461,6 @@ public abstract class Strabon {
 			} catch (QueryEvaluationException e1) {
 				logger.error("[Strabon.query] Error in query evaluation.", e1);
 			}
-			//System.out.println("-------------------------------------------");
-			//System.out.println("-                RESULTS                  -");
-			//System.out.println("-------------------------------------------");
 
 			int resultCounter = 0;
 			try {
@@ -617,32 +613,6 @@ public abstract class Strabon {
 			sb.insert(0,"<?xml version=\"1.0\" encoding=\"UTF-8\"?> <kml xmlns=\"http://www.opengis.net/kml/2.2\"> <Folder>");
 			sb.append("</Folder></kml>");
 
-			//System.out.println(sb.toString());
-			//System.out.println(baos.toString());
-
-			//			StringBuilder sb = new StringBuilder(); 
-			//			sb.append(baos.toString().replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>",""));
-			//			sb.insert(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
-			//					"<kml:Placemark xmlns:kml=\"http://www.opengis.net/kml/2.2\">");
-			//			sb.append("</kml:Placemark></kml>");
-
-
-			//System.out.println("*******************************");
-			//sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			//System.out.println(sb.toString());
-
-			//System.out.println(sb.toString());
-
-			//XXX Probably not needed after all
-			//			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			//			DocumentBuilder builder = factory.newDocumentBuilder();
-			//			StringReader sr = new StringReader(sb.toString());
-			//			Document document = builder.parse(new InputSource(sr));
-
-
-			//System.out.println("-------------------------------------------");
-			System.out.flush();
-
 			try {
 				//String cstr = new String("aa", "UTF8");
 				// ggarbis: For too large strings (e.g., 44MB) it returns empty string.
@@ -657,11 +627,7 @@ public abstract class Strabon {
 				else //KMZ
 				{
 					//compress
-					//File zfile = new File("/tmp/deleteme.kmz");
-					//retStream.reset();
-					//FileOutputStream fos = new FileOutputStream(zfile);
 					ZipOutputStream kmzout = new ZipOutputStream(retStream);
-					//ZipOutputStream kmzout = new ZipOutputStream(fos);
 					ZipEntry entry = new ZipEntry("doc.kml");
 
 					//kmzout.setLevel(6);
@@ -671,47 +637,6 @@ public abstract class Strabon {
 					kmzout.closeEntry();
 					kmzout.close();
 
-					//String kmzString = FileUtils.readFileToString(zfile);
-					//writeOut.write(kmzString);
-					/*
-					try {
-						File file = new File("/tmp/tmp.kml");
-						String filename = "/tmp/tmp.kml";
-						FileUtils.writeStringToFile(file, newString);
-
-						File zfile = new File("/tmp/tmp.kmz");
-			            String zipfilename = "/tmp/tmp.kmz";
-
-			            byte[] buf = new byte[1024];
-			            FileInputStream fis = new FileInputStream(filename);
-			            fis.read(buf,0,buf.length);
-
-			            CRC32 crc = new CRC32();
-			            ZipOutputStream s = new ZipOutputStream(
-			                    (OutputStream)new FileOutputStream(zipfilename));
-
-			            //s.setLevel(6);
-
-			            ZipEntry entry = new ZipEntry(filename);
-			            entry.setSize((long)buf.length);
-			            crc.reset();
-			            crc.update(buf);
-			            entry.setCrc( crc.getValue());
-			            s.putNextEntry(entry);
-			            s.write(buf, 0, buf.length);
-			            s.finish();
-			            s.close();
-
-			            String kmzString = FileUtils.readFileToString(zfile);
-			            writeOut.write(kmzString);
-
-			            //FileUtils.forceDelete(file);
-			            //FileUtils.forceDelete(zfile);
-
-			        } catch (Exception e) {
-			            e.printStackTrace();
-			        }
-					 */				
 				}
 
 			} catch (IOException e) {

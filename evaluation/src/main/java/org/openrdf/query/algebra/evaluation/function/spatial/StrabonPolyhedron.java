@@ -1,35 +1,13 @@
 package org.openrdf.query.algebra.evaluation.function.spatial;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
-import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.geotools.feature.collection.AbstractFeatureVisitor;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.geotools.util.NullProgressListener;
-import org.geotools.GML;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.geotools.xml.Parser;
-import org.geotools.xml.Configuration;
-import org.geotools.gml3.GMLConfiguration;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
@@ -51,7 +29,6 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 
 public class StrabonPolyhedron implements Value {
-
 
 	private static final long serialVersionUID = 894529468109904724L;
 	
