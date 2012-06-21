@@ -113,7 +113,9 @@ public abstract class Strabon {
 	}
 
 
-	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName) ;
+	protected abstract void deregisterDriver();
+	
+	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName);
 
 	protected void init() {
 
@@ -158,6 +160,9 @@ public abstract class Strabon {
 			con1.commit();
 			con1.close();
 			repo1.shutDown();
+			
+			// deregister jdbc driver
+			deregisterDriver();
 
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
