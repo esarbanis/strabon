@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Set;
@@ -85,19 +84,33 @@ public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
 
+	/**
+	 * Connection details
+	 */
+	protected String databaseName;
+	protected String user;
+	protected String password;
+	protected int port;
+	protected String serverName;
+	
 	protected SailBase db_store;
-	SailRepository repo1;
-	SailRepositoryConnection con1 = null;
+	private SailRepository repo1;
+	private SailRepositoryConnection con1 = null;
 
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
-			throws SQLException, ClassNotFoundException 
-			{
+			throws SQLException, ClassNotFoundException {
+		this.databaseName = databaseName;
+		this.user = user;
+		this.password = password;
+		this.port = port;
+		this.serverName = serverName;
+		
 		if (checkForLockTable == true) {
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
 		}
 
 		initiate(databaseName, user, password, port, serverName);
-			}
+	}
 
 
 	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName) ;
