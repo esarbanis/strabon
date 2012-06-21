@@ -179,36 +179,8 @@ public class StrabonPolyhedron implements Value {
 		return new StrabonPolyhedron(jts.WKBread((byteArray)));
 	}
 
-	public static Geometry convertSRID(Geometry A, int sourceSRID, int targetSRID)
-	{
-
-		if(sourceSRID != targetSRID)
-		{
-			CoordinateReferenceSystem sourceCRS = null;
-			CoordinateReferenceSystem targetCRS = null;
-			
-			MathTransform transform;
-			try {
-				//EPSG supported currently - is there a way to be more general??
-				sourceCRS = CRS.decode("EPSG:"+sourceSRID);
-				targetCRS = CRS.decode("EPSG:"+targetSRID);
-				transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-
-				Geometry x = JTS.transform(A, transform);
-				x.setSRID(targetSRID);
-				return x;
-			} catch (FactoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MismatchedDimensionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformException e) {
-				System.out.println("Transformation is not possible!!");
-				e.printStackTrace();
-			} 
-		}
-		return A;
+	public static Geometry convertSRID(Geometry A, int sourceSRID, int targetSRID) {
+		return JTSWrapper.getInstance().transform(A, sourceSRID, targetSRID);
 	}
 
 	//public StrabonPolyhedron(int partitionAlgorithmIgnored, String constraints) throws Exception {
