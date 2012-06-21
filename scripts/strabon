@@ -47,6 +47,7 @@ FORMAT="ntriples"
 # predefined queries
 QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
 QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
+QUERY_HOTSPOT_SIZE="SELECT (COUNT(*) as ?C) WHERE {?h <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Hotspot>}"
 
 # debug option for log4j configuration:
 #-Dlog4j.debug
@@ -102,6 +103,7 @@ function help_query() {
 	echo
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or an alias name such as the following:"
 	echo "				size: returns the number of triples"
+	echo "				hotspots: returns the number of hotspots"
 	echo "  RESULT_FROM	: the format of the result. Possible values are \`???' (default), \`xml'"
 	echo "			  \`html', \`kml', \`kmz', or \`geojson'"
 }
@@ -341,6 +343,9 @@ case "${1}" in
 		case "${QUERY}" in
 			size)
 				QUERY="${QUERY_SIZE}"
+				;;
+			hotspots)
+				QUERY="${QUERY_HOTSPOT_SIZE}"
 				;;
 		esac
 
