@@ -38,6 +38,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
 import eu.earthobservatory.org.StrabonEndpoint.ResponseMessages;
+import eu.earthobservatory.runtime.generaldb.Strabon;
 
 
 public class QueryBean extends HttpServlet {
@@ -113,77 +114,85 @@ public class QueryBean extends HttpServlet {
 		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
 		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");
 		
-		//System.out.println("request format: " + reqFormat);
-		//System.out.println("request accept: " + reqAccept);
-		//System.out.println("request functionality: " + reqFuncionality);
-
 		// check whether Update submit button was fired
 		if (reqFuncionality.equals("Update")) { // only for executions from web browsers
-			//System.out.println("Running update");
-			//System.out.println("Datahive: " + hive.toString());
 			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
-			response.sendRedirect("Update?SPARQLQuery=" +URLEncoder.encode(hive.getSPARQLQuery(), "UTF-8"));
+			response.sendRedirect("Update?SPARQLQuery=" + URLEncoder.encode(hive.getSPARQLQuery(), "UTF-8"));
 
 			return;
 		}
 
 		if ((reqFormat == "") && (reqAccept == "")) {
-			hive.setFormat("HTML");
-			response.setContentType("text/html; charset=UTF-8");			
+			hive.setFormat(Strabon.FORMAT_HTML);
+			response.setContentType("text/html; charset=UTF-8");
+			
 		} else if (reqAccept.contains("application/vnd.google-earth.kml+xml")) {
 			response.setContentType("application/vnd.google-earth.kml+xml");
-			hive.setFormat("KML");
+			hive.setFormat(Strabon.FORMAT_KML);
+			
 		} else if (reqAccept.contains("application/vnd.google-earth.kmz")) {
 			response.setContentType("application/vnd.google-earth.kmz");
-			hive.setFormat("KMZ");
+			hive.setFormat(Strabon.FORMAT_KMZ);
+			
 		} else if (reqAccept.contains("application/sparql-results+xml")) {			
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
-			hive.setFormat("XML");
+			hive.setFormat(Strabon.FORMAT_XML);
+			
 		} else if (reqAccept.contains("text/xml")) {
 			response.setContentType("text/xml; charset=UTF-8");
-			hive.setFormat("XML");
+			hive.setFormat(Strabon.FORMAT_XML);
+			
 		} else if (reqAccept.contains("application/json"))  {
 			response.setContentType("application/json; charset=UTF-8");
-			hive.setFormat("GEOJSON");
+			hive.setFormat(Strabon.FORMAT_GEOJSON);
 
 		} else if (reqFormat.equalsIgnoreCase("KML file")) {
 			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-		        response.setHeader("Content-Disposition","attachment;filename=pico.kml");
-			hive.setFormat("KML");
+		    response.setHeader("Content-Disposition","attachment;filename=pico.kml");
+			hive.setFormat(Strabon.FORMAT_KML);
+			
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
 			response.setContentType("text/plain; charset=UTF-8");
-			hive.setFormat("KML");
+			hive.setFormat(Strabon.FORMAT_KML);
+			
 		} else if (reqFormat.equalsIgnoreCase("KMZ file")) {
 			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
 			response.setHeader("Content-Disposition","attachment;filename=pico.kmz");
-			hive.setFormat("KMZ");
+			hive.setFormat(Strabon.FORMAT_KMZ);
+			
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
 			response.setContentType("text/plain; charset=UTF-8");
-			hive.setFormat("KMZ");
+			hive.setFormat(Strabon.FORMAT_KMZ);
+			
 		} else if (reqFormat.equalsIgnoreCase("SPARQLRESULTS"))  {
 			response.setContentType("application/sparql-results+xml; charset=UTF-8");
-			hive.setFormat("XML");
-		} else if (reqFormat.equalsIgnoreCase("XML"))  {
+			hive.setFormat(Strabon.FORMAT_XML);
+			
+		} else if (reqFormat.equalsIgnoreCase(Strabon.FORMAT_XML))  {
 			response.setContentType("text/xml; charset=UTF-8");
-			hive.setFormat("XML");
+			hive.setFormat(Strabon.FORMAT_XML);
+			
 		} else if (reqFormat.equalsIgnoreCase("KMLMAP"))  {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("KMLMAP");
+			
 		} else if (reqFormat.equalsIgnoreCase("KMZMAP"))  {
 			response.setContentType("text/html; charset=UTF-8");
 			hive.setFormat("KMZMAP");
-		} else if (reqFormat.equalsIgnoreCase("GEOJSON"))  {
+			
+		} else if (reqFormat.equalsIgnoreCase(Strabon.FORMAT_GEOJSON))  {
 			response.setContentType("application/json; charset=UTF-8");
-			hive.setFormat("GEOJSON");
+			hive.setFormat(Strabon.FORMAT_GEOJSON);
+			
 		} else {
 			response.setContentType("text/html; charset=UTF-8");
-			hive.setFormat("HTML");
+			hive.setFormat(Strabon.FORMAT_HTML);
 		}
 
 		PrintWriter out = response.getWriter();
         out.flush();
 
-		if ((hive.getFormat().equalsIgnoreCase("KML")) || (hive.getFormat().equalsIgnoreCase("KMZ"))) {
+		if ((hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_KML)) || (hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_KMZ))) {
 			int status_code = HttpServletResponse.SC_OK;
 			String answer = "";
 
@@ -215,21 +224,23 @@ public class QueryBean extends HttpServlet {
             response.setStatus(status_code);
 			if (status_code == HttpServletResponse.SC_OK) {
                out.append(answer.toString());
+               
 			} else {
 				response.getWriter().append(ResponseMessages.getXMLHeader());
 				response.getWriter().append(ResponseMessages.getXMLException(answer));
 				response.getWriter().append(ResponseMessages.getXMLFooter());
+				
 			}
 
 		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
 
 			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, hive.getFormat().equalsIgnoreCase("KMLMAP") ? "KML" : "KML", reqFuncionality, hive.getSPARQLQuery(), errorMessage);
+			String answer = evaluateQuery(strabonWrapper, Strabon.FORMAT_KML, reqFuncionality, hive.getSPARQLQuery(), errorMessage);
 			hive.setErrorMessage(errorMessage.toString());
 			SecureRandom random = new SecureRandom();
 			String temp = new BigInteger(130, random).toString(32);  			
 			String basePath = context.getRealPath("/") + "/../ROOT/tmp/"; 
-			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? "kml" : "kmz");
+			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? Strabon.FORMAT_KML.toLowerCase() : Strabon.FORMAT_KMZ.toLowerCase());
 
 			try{
 				Date date = new Date();
@@ -267,7 +278,7 @@ public class QueryBean extends HttpServlet {
 				   kmzout.write(answer.getBytes());
 			       kmzout.closeEntry();
 				   kmzout.close();
-				   }
+				}
 				bw.close();
 				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
 
@@ -331,7 +342,7 @@ public class QueryBean extends HttpServlet {
 			}
 
 			// write response to client
-			if(hive.getFormat().equalsIgnoreCase("XML"))
+			if(hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_XML))
 			{
 				response.setContentType("text/xml; charset=UTF-8");
 			}
@@ -352,7 +363,7 @@ public class QueryBean extends HttpServlet {
 		} 
 		else { // HTML
 
-			appendHTML1a(out,"");
+			appendHTML1a(out, "");
 
 			appendHTMLQ(out, strabonWrapper);
 

@@ -1,5 +1,6 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -14,7 +15,6 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,15 +180,18 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		}
 	}
 
-	public Object query(String queryString, String answerFormatStrabon)
-	throws MalformedQueryException, RepositoryException, QueryEvaluationException, 
-	TupleQueryResultHandlerException, IOException, ClassNotFoundException {
+	public String query(String queryString, String answerFormatStrabon)
+	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
 		logger.info("[StrabonEndpoint] Received SELECT query.");
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 
-		return strabon.query(queryString, answerFormatStrabon, strabon.getSailRepoConnection());
+		ByteArrayOutputStream answer = new ByteArrayOutputStream();
+		
+		strabon.query(queryString, answerFormatStrabon, strabon.getSailRepoConnection(), answer);
+		
+		return answer.toString();
 	}
 
 	public Object update(String updateString, String answerFormatStrabon) 
