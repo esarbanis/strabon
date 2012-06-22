@@ -150,14 +150,8 @@ public class StrabonPolyhedron implements Value {
 		this.geometry = geometry;
 	}
 
-
-
 	public static StrabonPolyhedron ConstructFromWKB(byte[] byteArray) throws Exception {
 		return new StrabonPolyhedron(jts.WKBread((byteArray)));
-	}
-
-	public static Geometry convertSRID(Geometry A, int sourceSRID, int targetSRID) {
-		return JTSWrapper.getInstance().transform(A, sourceSRID, targetSRID);
 	}
 
 	//public StrabonPolyhedron(int partitionAlgorithmIgnored, String constraints) throws Exception {
@@ -714,14 +708,12 @@ public class StrabonPolyhedron implements Value {
 		return jts.WKBwrite(this.geometry);
 	}
 
-
-
 	public static StrabonPolyhedron union(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
 		StrabonPolyhedron poly = new StrabonPolyhedron();
 
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
-		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
+		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 
 		poly.geometry = A.geometry.union(x);
 		poly.geometry.setSRID(targetSRID);
@@ -760,7 +752,7 @@ public class StrabonPolyhedron implements Value {
 
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
-		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
+		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 		Geometry geo = A.geometry.intersection(x);
 		geo.setSRID(targetSRID);
 		return new StrabonPolyhedron(geo);
@@ -771,7 +763,7 @@ public class StrabonPolyhedron implements Value {
 
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
-		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
+		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 
 		poly.geometry = A.geometry.difference(x);
 		poly.geometry.setSRID(targetSRID);
@@ -782,7 +774,7 @@ public class StrabonPolyhedron implements Value {
 		StrabonPolyhedron poly = new StrabonPolyhedron();
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
-		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
+		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 		poly.geometry = A.geometry.symDifference(x);
 		poly.geometry.setSRID(targetSRID);
 		return poly;
@@ -795,7 +787,7 @@ public class StrabonPolyhedron implements Value {
 	public static double distance(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
-		Geometry x = convertSRID(B.getGeometry(), sourceSRID, targetSRID);
+		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 		return A.geometry.distance(x);
 	}
 
@@ -811,7 +803,7 @@ public class StrabonPolyhedron implements Value {
 	public static StrabonPolyhedron transform(StrabonPolyhedron A, URI srid) throws Exception {
 		
 		int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
-		Geometry converted = StrabonPolyhedron.convertSRID(A.getGeometry(),A.getGeometry().getSRID(), parsedSRID);
+		Geometry converted = JTSWrapper.getInstance().transform(A.getGeometry(), A.getGeometry().getSRID(), parsedSRID);
 		return new StrabonPolyhedron(converted);
 	}
 

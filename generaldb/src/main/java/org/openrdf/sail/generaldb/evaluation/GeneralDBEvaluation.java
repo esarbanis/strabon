@@ -85,6 +85,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.T
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
+import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.algebra.evaluation.util.StSPARQLOrderComparator;
 import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
@@ -377,77 +378,77 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightConverted.getEnvelopeInternal().getMaxY();
 				}
 				else if(function instanceof AnyInteractFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.intersects(rightConverted);
 				}
 				else if(function instanceof BelowFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMaxY() < rightConverted.getEnvelopeInternal().getMinY();
 				}
 				else if(function instanceof ContainsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.contains(rightConverted);
 				}
 				else if(function instanceof CoveredByFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.coveredBy(rightConverted);
 				}
 				else if(function instanceof CoversFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.covers(rightConverted);
 				}
 				else if(function instanceof DisjointFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.disjoint(rightConverted);
 				}
 				else if(function instanceof EqualsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.equals(rightConverted);
 				}
 				else if(function instanceof InsideFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.within(rightConverted);
 				}
 				else if(function instanceof LeftFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightConverted.getEnvelopeInternal().getMinX();
 				}
 				else if(function instanceof OverlapFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					//System.out.println(rightConverted.toString());
 					funcResult = leftGeom.overlaps(rightConverted);
 				}
@@ -455,14 +456,14 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightConverted.getEnvelopeInternal().getMaxX();
 				}
 				else if(function instanceof TouchFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = StrabonPolyhedron.convertSRID(rightGeom, sourceSRID, targetSRID);
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.touches(rightConverted);
 				}
 
@@ -519,7 +520,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			{
 				RdbmsURI srid = (RdbmsURI) right;
 				int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
-				Geometry converted = StrabonPolyhedron.convertSRID(leftArg.getGeometry(),leftArg.getGeometry().getSRID(), parsedSRID);
+				Geometry converted = JTSWrapper.getInstance().transform(leftArg.getGeometry(),leftArg.getGeometry().getSRID(), parsedSRID);
 				return new StrabonPolyhedron(converted);
 			}
 
