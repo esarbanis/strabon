@@ -12,6 +12,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
@@ -189,7 +190,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 		ByteArrayOutputStream answer = new ByteArrayOutputStream();
 		
-		strabon.query(queryString, answerFormatStrabon, strabon.getSailRepoConnection(), answer);
+		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), answer);
 		
 		return answer.toString();
 	}

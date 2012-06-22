@@ -45,7 +45,12 @@ public enum Format {
 	/**
 	 * HTML format
 	 */
-	HTML("HTML");
+	HTML("HTML"),
+	
+	/**
+	 * Invalid format.
+	 */
+	INVALID("INVALID");
 	
 	/**
 	 * The string representation of this format
@@ -60,7 +65,9 @@ public enum Format {
 	
 	static { // initialize map from constant name to enum constant
 		for (Format format : values()) {
+			// add both upper- and lower-case versions of the format 
 			stringToEnum.put(format.toString(), format);
+			stringToEnum.put(format.toString().toLowerCase(), format);
 		}
 	}
 	
@@ -79,12 +86,12 @@ public enum Format {
 	}
 	
 	/**
-	 * Returns a Format enum given a language string.
+	 * Returns a Format enum given a format string.
 	 * 
 	 * @param lang
 	 * @return
 	 */
-	public static Format fromString(String lang) {
-		return stringToEnum.get(lang);
+	public static Format fromString(String format) {
+		return (stringToEnum.get(format) == null) ? INVALID:stringToEnum.get(format);
 	}
 }

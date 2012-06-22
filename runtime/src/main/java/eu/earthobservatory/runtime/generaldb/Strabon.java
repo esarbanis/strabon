@@ -44,6 +44,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriter;
 import org.openrdf.repository.RepositoryException;
@@ -187,10 +188,10 @@ public abstract class Strabon {
 
 	public Object query(String queryString, OutputStream out)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
-		return query(queryString, "", this.getSailRepoConnection(), out);	
+		return query(queryString, Format.DEFAULT, this.getSailRepoConnection(), out);	
 	}
 
-	public Object query(String queryString, String resultsFormat, OutputStream out)
+	public Object query(String queryString, Format resultsFormat, OutputStream out)
 	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		return query(queryString, resultsFormat, this.getSailRepoConnection(), out);
 	}
@@ -218,7 +219,7 @@ public abstract class Strabon {
 		return ret;	
 	}
 
-	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con, OutputStream out)
+	public Object query(String queryString, Format resultsFormat, SailRepositoryConnection con, OutputStream out)
 	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		boolean status = true;
 		
@@ -238,289 +239,301 @@ public abstract class Strabon {
 			logger.error("[Strabon.query] Error in preparing tuple query.", e);
 			status = false;
 		}
-
-		if (FORMAT_EXP.equalsIgnoreCase(resultsFormat)) {
-			long results = 0;
-			
-			long t1 = System.nanoTime();
-			TupleQueryResult result = tupleQuery.evaluate();
-			long t2 = System.nanoTime();
-			
-			while (result.hasNext()) {
-				results++;
-			}
-			
-			long t3 = System.nanoTime();
-
-			//return new long[]{t2-t1, t3-t2, t3-t1, results};
-			
-		} else if (FORMAT_DEFAULT.equalsIgnoreCase(resultsFormat)) {
-			
-			TupleQueryResult result = null;
-			result = tupleQuery.evaluate();
-
-			while (result.hasNext()) {
-				BindingSet bindingSet = result.next();
+		
+		TupleQueryResult result = null;
+		
+		switch (resultsFormat) {
+			case DEFAULT:
 				
-				writeString(out, bindingSet.toString());
+				result = tupleQuery.evaluate();
+				while (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					
+					writeString(out, bindingSet.toString());
+					writeString(out, NEWLINE);
+				}
+
+				break;
+				
+			case EXP:
+				long results = 0;
+				
+				long t1 = System.nanoTime();
+				result = tupleQuery.evaluate();
+				long t2 = System.nanoTime();
+				
+				while (result.hasNext()) {
+					results++;
+				}
+				
+				long t3 = System.nanoTime();
+	
+				//return new long[]{t2-t1, t3-t2, t3-t1, results};
+				break;
+				
+			case XML:
+				if (logger.isDebugEnabled()) {
+					logger.debug("Serializing results (XML)");
+				}
+				
+				tupleQuery.evaluate(new stSPARQLResultsXMLWriter(out));
+				break;
+				
+			case KML:
+				if (logger.isDebugEnabled()) {
+					logger.debug("Serializing results (KML)");
+				}
+
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(out));
+				
+				break;
+				
+			case KMZ:
+				// create a zip entry
+				ZipEntry entry = new ZipEntry("sparql_results.kml");
+				
+				// create a zip stream on standard output
+				ZipOutputStream kmzout = new ZipOutputStream(out);
+				
+				// add the zip entry in it
+				kmzout.putNextEntry(entry);
+				
+				// pass the zip stream for evaluation
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
+
+				// close the zip entry
+				kmzout.closeEntry();
+				
+				// close the zip stream
+				kmzout.close();
+				break;
+				
+			case GEOJSON:
+
+				DataOutputStream dos = new DataOutputStream(out);
+	
+				try {
+					result = tupleQuery.evaluate();
+					
+				} catch (QueryEvaluationException e) {
+					logger.error("[Strabon.query] Error during query evaluation.", e);
+					status = false;
+					
+					return status;
+				}
+	
+				int resultsCounter = 0;
+	
+				//Setting a Feature Collection
+				SimpleFeatureCollection sfCollection = FeatureCollections.newCollection("geomOutput");
+	
+				int spatialBindingsNo=0;
+	
+				//May not need that much - still initializing it
+				String[] spatialBindings = new String[result.getBindingNames().size()];
+				SimpleFeatureTypeBuilder[] tb = new SimpleFeatureTypeBuilder[result.getBindingNames().size()];
+	
+				for(int i=0;i<result.getBindingNames().size();i++)
+				{
+					tb[i] = new SimpleFeatureTypeBuilder(); 
+				}
+	
+				BindingSet bindingSet;
+				if(result.hasNext())
+				{
+					//Sneak Peek to obtain info on which bindings are spatial
+					bindingSet = result.next();
+					boolean spatial = false;
+					for(String bindingName : bindingSet.getBindingNames())
+					{
+						Value val = bindingSet.getValue(bindingName);
+	
+						if(val instanceof RdbmsLiteral)
+						{
+							if(((RdbmsLiteral) val).getDatatype()!=null)
+							{
+								if(((RdbmsLiteral) val).getDatatype().toString().equals(StrabonPolyhedron.ogcGeometry))
+								{
+									spatial = true;
+								}
+							}
+						}
+	
+						if(val instanceof GeneralDBPolyhedron)
+						{
+							spatial = true;
+	
+						}
+	
+						if(spatial)
+						{
+							spatial = false;
+							spatialBindings[spatialBindingsNo] = bindingName;
+							spatialBindingsNo++;
+						}
+					}
+	
+				} else {
+					return status;//empty
+				}
+	
+				boolean firstLineParsed = false;
+	
+				do {
+					if(firstLineParsed)
+					{
+						bindingSet = result.next();
+					}
+	
+					firstLineParsed = true;
+	
+					//How many features will occur from a single result? --> spatialBindingsNo
+					for(int i=0; i<spatialBindingsNo;i++)
+					{
+						tb[i].setName("Feature_"+(++resultsCounter));
+	
+						//Every time a featureType is built, the builder is nullified!!
+						//Can't avoid re-iterating...
+						for(String otherBinding : bindingSet.getBindingNames())
+						{
+							if(!otherBinding.equals(spatialBindings[i]))
+							{
+								tb[i].add(otherBinding,String.class);
+							}
+						}
+	
+	
+						int SRID=4326;
+						Geometry geom = null;
+						Value unparsedGeometry = bindingSet.getValue(spatialBindings[i]);
+						//Regardless of our geometry's input, we need its SRID
+						if(unparsedGeometry instanceof GeneralDBPolyhedron)
+						{
+							geom = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry();
+							SRID = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry().getSRID();
+						}
+						else //RdbmsLiteral
+							//TODO GML support to be added
+						{
+							String unparsedWKT = ((RdbmsLiteral)unparsedGeometry).getLabel();
+							try {
+								int pos = unparsedWKT.indexOf(";");
+								if(pos!=-1)
+								{
+									geom = new WKTReader().read(unparsedWKT.substring(0,pos));
+									int whereToCut = unparsedWKT.lastIndexOf('/');
+									SRID = Integer.parseInt(unparsedWKT.substring(whereToCut+1));
+								}
+								else
+								{
+									geom = new WKTReader().read(unparsedWKT);
+									SRID=4326;
+								}
+	
+							} 
+							catch (ParseException e) {
+								logger.error("[Strabon.query] Faults detected in spatial literal representation.", e);
+								status = false;
+							}
+						}
+	
+						CoordinateReferenceSystem geomCRS = null;
+						try {
+							geomCRS = CRS.decode("EPSG:"+SRID);
+							
+						} catch (NoSuchAuthorityCodeException e) {
+							logger.error("[Strabon.query] Error decoding returned geometry's SRID", e);
+							status = false;
+							
+							return status;
+						} catch (FactoryException e) {
+							logger.error("[Strabon.query]", e);
+							status = false;
+							
+							return status;
+						}
+	
+						tb[i].setCRS(geomCRS);
+						tb[i].setSRS("EPSG:" + SRID);
+						tb[i].add("geometry", Geometry.class);
+	
+						SimpleFeatureType featureType = tb[i].buildFeatureType();
+						SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
+	
+						for(String otherBinding : bindingSet.getBindingNames())
+						{
+							if(!otherBinding.equals(spatialBindings[i]))
+							{
+								featureBuilder.add(bindingSet.getValue(otherBinding));
+							}
+						}
+	
+						featureBuilder.add(geom);
+	
+	
+						SimpleFeature feature = featureBuilder.buildFeature(null);
+						sfCollection.add(feature);
+					}
+	
+				}
+				
+				while((result.hasNext()));
+	
+				FeatureJSON fjson = new FeatureJSON();
+				fjson.setEncodeFeatureCRS(true);
+				fjson.writeFeatureCollection(sfCollection, dos);
 				writeString(out, NEWLINE);
-			}
-			
-		} else if (FORMAT_XML.equalsIgnoreCase(resultsFormat)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Serializing results (XML)");
-			}
-			
-			tupleQuery.evaluate(new stSPARQLResultsXMLWriter(out));
-			
-		} else if (FORMAT_KML.equalsIgnoreCase(resultsFormat)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Serializing results (KML/KMZ)");
-			}
+				
+				break;
 
-			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(out));
-			
-		} else if (FORMAT_KMZ.equalsIgnoreCase(resultsFormat)) {
-			// create a zip entry
-			ZipEntry entry = new ZipEntry("sparql_results.kml");
-			
-			// create a zip stream on standard output
-			ZipOutputStream kmzout = new ZipOutputStream(out);
-			
-			// add the zip entry in it
-			kmzout.putNextEntry(entry);
-			
-			// pass the zip stream for evaluation
-			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
-
-			// close the zip entry
-			kmzout.closeEntry();
-			
-			// close the zip stream
-			kmzout.close();
-			
-		} else if (FORMAT_GEOJSON.equalsIgnoreCase(resultsFormat)) {
-
-			DataOutputStream dos = new DataOutputStream(out);
-
-			TupleQueryResult result = null;
-			try {
+			case HTML:
+		
 				result = tupleQuery.evaluate();
 				
-			} catch (QueryEvaluationException e) {
-				logger.error("[Strabon.query] Error during query evaluation.", e);
-				status = false;
-				
-				return status;
-			}
-
-			int resultsCounter = 0;
-
-			//Setting a Feature Collection
-			SimpleFeatureCollection sfCollection = FeatureCollections.newCollection("geomOutput");
-
-			int spatialBindingsNo=0;
-
-			//May not need that much - still initializing it
-			String[] spatialBindings = new String[result.getBindingNames().size()];
-			SimpleFeatureTypeBuilder[] tb = new SimpleFeatureTypeBuilder[result.getBindingNames().size()];
-
-			for(int i=0;i<result.getBindingNames().size();i++)
-			{
-				tb[i] = new SimpleFeatureTypeBuilder(); 
-			}
-
-			BindingSet bindingSet;
-			if(result.hasNext())
-			{
-				//Sneak Peek to obtain info on which bindings are spatial
-				bindingSet = result.next();
-				boolean spatial = false;
-				for(String bindingName : bindingSet.getBindingNames())
-				{
-					Value val = bindingSet.getValue(bindingName);
-
-					if(val instanceof RdbmsLiteral)
-					{
-						if(((RdbmsLiteral) val).getDatatype()!=null)
-						{
-							if(((RdbmsLiteral) val).getDatatype().toString().equals(StrabonPolyhedron.ogcGeometry))
-							{
-								spatial = true;
-							}
-						}
-					}
-
-					if(val instanceof GeneralDBPolyhedron)
-					{
-						spatial = true;
-
-					}
-
-					if(spatial)
-					{
-						spatial = false;
-						spatialBindings[spatialBindingsNo] = bindingName;
-						spatialBindingsNo++;
-					}
-				}
-
-			} else {
-				return status;//empty
-			}
-
-			boolean firstLineParsed = false;
-
-			do {
-				if(firstLineParsed)
-				{
-					bindingSet = result.next();
-				}
-
-				firstLineParsed = true;
-
-				//How many features will occur from a single result? --> spatialBindingsNo
-				for(int i=0; i<spatialBindingsNo;i++)
-				{
-					tb[i].setName("Feature_"+(++resultsCounter));
-
-					//Every time a featureType is built, the builder is nullified!!
-					//Can't avoid re-iterating...
-					for(String otherBinding : bindingSet.getBindingNames())
-					{
-						if(!otherBinding.equals(spatialBindings[i]))
-						{
-							tb[i].add(otherBinding,String.class);
-						}
-					}
-
-
-					int SRID=4326;
-					Geometry geom = null;
-					Value unparsedGeometry = bindingSet.getValue(spatialBindings[i]);
-					//Regardless of our geometry's input, we need its SRID
-					if(unparsedGeometry instanceof GeneralDBPolyhedron)
-					{
-						geom = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry();
-						SRID = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry().getSRID();
-					}
-					else //RdbmsLiteral
-						//TODO GML support to be added
-					{
-						String unparsedWKT = ((RdbmsLiteral)unparsedGeometry).getLabel();
-						try {
-							int pos = unparsedWKT.indexOf(";");
-							if(pos!=-1)
-							{
-								geom = new WKTReader().read(unparsedWKT.substring(0,pos));
-								int whereToCut = unparsedWKT.lastIndexOf('/');
-								SRID = Integer.parseInt(unparsedWKT.substring(whereToCut+1));
-							}
-							else
-							{
-								geom = new WKTReader().read(unparsedWKT);
-								SRID=4326;
-							}
-
-						} 
-						catch (ParseException e) {
-							logger.error("[Strabon.query] Faults detected in spatial literal representation.", e);
-							status = false;
-						}
-					}
-
-					CoordinateReferenceSystem geomCRS = null;
-					try {
-						geomCRS = CRS.decode("EPSG:"+SRID);
-						
-					} catch (NoSuchAuthorityCodeException e) {
-						logger.error("[Strabon.query] Error decoding returned geometry's SRID", e);
-						status = false;
-						
-						return status;
-					} catch (FactoryException e) {
-						logger.error("[Strabon.query]", e);
-						status = false;
-						
-						return status;
-					}
-
-					tb[i].setCRS(geomCRS);
-					tb[i].setSRS("EPSG:" + SRID);
-					tb[i].add("geometry", Geometry.class);
-
-					SimpleFeatureType featureType = tb[i].buildFeatureType();
-					SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
-
-					for(String otherBinding : bindingSet.getBindingNames())
-					{
-						if(!otherBinding.equals(spatialBindings[i]))
-						{
-							featureBuilder.add(bindingSet.getValue(otherBinding));
-						}
-					}
-
-					featureBuilder.add(geom);
-
-
-					SimpleFeature feature = featureBuilder.buildFeature(null);
-					sfCollection.add(feature);
-				}
-
-			}
-			
-			while((result.hasNext()));
-
-			FeatureJSON fjson = new FeatureJSON();
-			fjson.setEncodeFeatureCRS(true);
-			fjson.writeFeatureCollection(sfCollection, dos);
-			writeString(out, NEWLINE);
-
-		} else if(FORMAT_HTML.equalsIgnoreCase(resultsFormat)) {
-			TupleQueryResult result = tupleQuery.evaluate();
-			
-			if (result.hasNext()) {
-				BindingSet set = result.next();
-				Set<String> bindingNames = set.getBindingNames();			
-				writeString(out, "<tr>");
-				for (String bindingName: bindingNames) {
-					writeString(out, "<th>");
-					writeString(out, bindingName);
-					writeString(out, "</th>");
-				}
-				
-				writeString(out, "</tr>");
-				writeString(out, "<tr>");
-
-				for (String bindingName: bindingNames) {
-					writeString(out, "<td>");
-					writeString(out, set.getValue(bindingName).stringValue());
-					writeString(out, "</td>");
-				}
-				writeString(out, "</tr>");
-
-
-				while (result.hasNext()) {
+				if (result.hasNext()) {
+					BindingSet set = result.next();
+					Set<String> bindingNames = set.getBindingNames();			
 					writeString(out, "<tr>");
-					BindingSet bindingSet = result.next();
-
+					for (String bindingName: bindingNames) {
+						writeString(out, "<th>");
+						writeString(out, bindingName);
+						writeString(out, "</th>");
+					}
+					
+					writeString(out, "</tr>");
+					writeString(out, "<tr>");
+	
 					for (String bindingName: bindingNames) {
 						writeString(out, "<td>");
-						Binding binding = bindingSet.getBinding(bindingName); 
-						if (binding != null) {
-							Value val = binding.getValue();
-							writeString(out, val.stringValue());
-						}					
+						writeString(out, set.getValue(bindingName).stringValue());
 						writeString(out, "</td>");
 					}
-
 					writeString(out, "</tr>");
+	
+	
+					while (result.hasNext()) {
+						writeString(out, "<tr>");
+						BindingSet bindingSet1 = result.next();
+	
+						for (String bindingName: bindingNames) {
+							writeString(out, "<td>");
+							Binding binding = bindingSet1.getBinding(bindingName); 
+							if (binding != null) {
+								Value val = binding.getValue();
+								writeString(out, val.stringValue());
+							}					
+							writeString(out, "</td>");
+						}
+	
+						writeString(out, "</tr>");
+					}
+					writeString(out, NEWLINE);
 				}
-				writeString(out, NEWLINE);
-			}
+				
+				break;
 			
-		} else {
-			logger.warn("[Strabon.query] No such format available \"" + resultsFormat + "\".");
+		default:
+			logger.warn("[Strabon.query] Invalid format.");
 			status = false;
 		}
 

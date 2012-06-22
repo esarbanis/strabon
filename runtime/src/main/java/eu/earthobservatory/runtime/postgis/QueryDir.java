@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
+import org.openrdf.query.resultio.sparqlxml.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class QueryDir {
 						logger.info("[Strabon.QueryDir] Evaluating query from '" + path + System.getProperty("file.separator") + filename  +"'.");
 						String queryString = readFile(path + System.getProperty("file.separator") + filename);
 						logger.info("[Strabon.QueryDir] Evaluating stSPARQL query: \n"+queryString+"\n");
-						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection(), System.out);
+						strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
 						
 					} catch (IOException e) {
 						logger.error("[Strabon.QueryDir] IOException while reading " + filename, e);

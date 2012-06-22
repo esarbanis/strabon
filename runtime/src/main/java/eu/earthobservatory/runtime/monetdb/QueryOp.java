@@ -1,5 +1,6 @@
 package eu.earthobservatory.runtime.monetdb;
 
+import org.openrdf.query.resultio.sparqlxml.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class QueryOp {
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, true);
-			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection(), System.out);
+			strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query.", e);
