@@ -18,18 +18,13 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.kml.KML;
-import org.geotools.kml.KMLConfiguration;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
@@ -69,15 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -436,214 +422,35 @@ public abstract class Strabon {
 			System.out.println(retStream.toString());
 
 		} 
-		else if (resultsFormat.equalsIgnoreCase("KML")) {
+		else if (resultsFormat.equalsIgnoreCase("KML") || resultsFormat.equalsIgnoreCase("KMZ")) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Serializing results (KML)");
+				logger.debug("Serializing results (KML/KMZ)");
 			}
 
-			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(retStream));
-			System.out.println(retStream.toString());
+			if (resultsFormat.equalsIgnoreCase("KML")) { 
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(System.out));
+				
+			} else {
+				// create a zip entry
+				ZipEntry entry = new ZipEntry("sparql_results.kml");
+				
+				// create a zip stream on standard output
+				ZipOutputStream kmzout = new ZipOutputStream(System.out);
+				
+				// add the zip entry in it
+				kmzout.putNextEntry(entry);
+				
+				// pass the zip stream for evaluation
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
+
+				// close the zip entry
+				kmzout.closeEntry();
+				
+				// close the zip stream
+				kmzout.close();
+			}
 			
-		} else if (resultsFormat.equalsIgnoreCase("KMZ")) {
-			//GeometryFactory gf = JTSFactoryFinder.getGeometryFactory(null);
-			GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
-			WKTReader reader = new WKTReader(gf);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			DataOutputStream dos = new DataOutputStream(baos);
-
-			//used to construct the entire kml document
-			StringBuilder sb = new StringBuilder();
-
-			TupleQueryResult result = null;
-			try {
-				result = tupleQuery.evaluate();
-			} catch (QueryEvaluationException e1) {
-				logger.error("[Strabon.query] Error in query evaluation.", e1);
-			}
-
-			int resultCounter = 0;
-			try {
-				while (result.hasNext()) {
-					BindingSet bindingSet = result.next();	
-					ret.add(bindingSet.toString());
-					Set<String> bindingNames = bindingSet.getBindingNames();
-					resultCounter++;
-					int geometryCounter = 0;
-					for(String bindingName : bindingNames)
-					{
-						String unparsed = bindingSet.getBinding(bindingName).getValue().toString();
-						String corrResult = unparsed.substring(1,unparsed.length()-1);
-
-						try {
-							Geometry geom = reader.read(corrResult);
-							//Integer s = new Integer(4326);
-							//geom.setSRID(4326);
-
-							//geom.setSRID(32630);
-
-							//CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:32630");
-							//CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
-
-							//MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-
-							//geom = JTS.transform(geom, transform);
-							//geom.geometryChanged();
-							geometryCounter++;
-							//Only way to reach this point is if the corrResult is indeed in the form of WKT
-							QName geometryType = null;
-							if(geom instanceof Point)
-							{
-								geometryType = KML.Point;
-							}
-							else if(geom instanceof Polygon)
-							{
-								geometryType = KML.Polygon;
-							}
-							else if(geom instanceof LineString)
-							{
-								geometryType = KML.LineString;
-							}
-							else if(geom instanceof MultiPoint)
-							{
-								geometryType = KML.MultiGeometry;
-							}
-							else if(geom instanceof MultiLineString)
-							{
-								geometryType = KML.MultiGeometry;
-
-							}
-							else if(geom instanceof MultiPolygon)
-							{
-								geometryType = KML.MultiGeometry;
-
-							}
-							else if(geom instanceof GeometryCollection)
-							{
-								geometryType = KML.MultiGeometry;
-
-							}
-							else //TODO exception should be thrown here --> Specialize it
-							{
-								//System.out.println("Wrong Handling--> "+geometryType.toString());
-								throw new Exception("Wrong Handling--> "+geom.toString());
-
-							}
-
-							//Encoding to KML
-							Encoder encoder = new Encoder(new KMLConfiguration());
-							encoder.setIndenting(true);
-							//encoder.encode(geom, geometryType, dos);
-							encoder.encode(geom, geometryType, baos);
-							//storing the freshly produced kml element
-							corrResult = baos.toString();
-							//removing the xml header
-							corrResult = corrResult.substring(38);
-
-							//Constructing each individual element
-							sb.append("\n<Placemark>");
-							corrResult = corrResult.replaceAll("xmlns:kml=\"http://earth.google.com/kml/2.1\"","").replaceAll("kml:","");
-							sb.append("\n<name> Geometry"+resultCounter+"_"+geometryCounter+"</name>");
-							sb.append("\n<description>");
-							//Time to fill the description
-
-							if(bindingNames.size() > 1)
-							{
-								//Creating Row1 --> names
-								sb.append("<![CDATA[<table border=\"1\"> <tr>");
-								for(String otherBinding: bindingNames)
-								{
-									if(!otherBinding.equals(bindingName))
-									{
-										sb.append("<td>");
-										sb.append(otherBinding);
-										sb.append("</td>");
-									}
-								}
-								sb.append("</tr>");
-
-								sb.append("<tr>");
-								for(String otherBinding: bindingNames)
-								{
-									if(!otherBinding.equals(bindingName))
-									{
-										sb.append("<td>");
-
-										String bindingValue = bindingSet.getBinding(otherBinding).getValue().toString();
-										sb.append(bindingValue);
-										sb.append("</td>");
-									}
-								}
-								sb.append("</tr></table>]]>");
-							}
-							else
-							{
-								sb.append("mantalakia");
-							}
-							sb.append("</description>");
-
-							sb.append(corrResult);
-							sb.append("\n</Placemark>\n");
-
-							//emptying the buffer
-							baos.reset();
-
-						} catch (ParseException e) {
-							// this is not WKT
-							// this exception is not error! pass by thematic values and keep searching for geometries  
-						} catch (Exception e) {
-							logger.error("[Strabon.query] Received exception during KML construction.", e);
-						}
-
-						//Start populating KML here
-					}
-					//				System.out.println(bindingSet.toString());
-					//				out.writeChars(bindingSet.toString());
-				}
-			} catch (QueryEvaluationException e) {
-				logger.error("[Strabon.query] Error during query evaluation.", e);
-			}
-			try {
-				dos.close();
-			} catch (IOException e) {
-				logger.error("[Strabon.query] Error during querying.", e);
-			}
-
-			//Finishing the structure of the kml document
-			sb.insert(0,"<?xml version=\"1.0\" encoding=\"UTF-8\"?> <kml xmlns=\"http://www.opengis.net/kml/2.2\"> <Folder>");
-			sb.append("</Folder></kml>");
-
-			try {
-				//String cstr = new String("aa", "UTF8");
-				// ggarbis: For too large strings (e.g., 44MB) it returns empty string.
-				//				String newString = new String(sb.toString().getBytes(), Charset.availableCharsets().get("UTF-8"));
-
-				if(resultsFormat.equalsIgnoreCase("KML"))
-				{
-					//					writeOut.write(newString);
-					writeOut.write(sb.toString());
-					//					System.out.println(newString);
-				}
-				else //KMZ
-				{
-					//compress
-					ZipOutputStream kmzout = new ZipOutputStream(retStream);
-					ZipEntry entry = new ZipEntry("doc.kml");
-
-					//kmzout.setLevel(6);
-					kmzout.putNextEntry(entry);
-					//					kmzout.write(newString.getBytes());
-					kmzout.write(sb.toString().getBytes());
-					kmzout.closeEntry();
-					kmzout.close();
-
-				}
-
-			} catch (IOException e) {
-				logger.error("[Strabon.query]", e);
-			}
-		}
-		else if(resultsFormat.equalsIgnoreCase("HTML")) {
+		} else if(resultsFormat.equalsIgnoreCase("HTML")) {
 			//System.out.println("Placemark1!!");
 			TupleQueryResult result = tupleQuery.evaluate();
 			//			List<String> bindingNames = result.getBindingNames();

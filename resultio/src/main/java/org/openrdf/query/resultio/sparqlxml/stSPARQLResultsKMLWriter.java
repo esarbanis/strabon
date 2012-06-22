@@ -26,16 +26,13 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * 
@@ -115,9 +112,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	
 	/**
 	 * Creates an stSPARQLResultsKMLWriter that encodes the SPARQL
-	 * results in KML/KMZ.
-	 * 
-	 * TODO: KMZ
+	 * results in KML.
 	 * 
 	 * @param out
 	 * @throws UnsupportedEncodingException
