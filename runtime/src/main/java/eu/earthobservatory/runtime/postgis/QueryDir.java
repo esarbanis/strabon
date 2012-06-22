@@ -64,7 +64,7 @@ public class QueryDir {
 						logger.info("[Strabon.QueryDir] Evaluating query from '" + path + System.getProperty("file.separator") + filename  +"'.");
 						String queryString = readFile(path + System.getProperty("file.separator") + filename);
 						logger.info("[Strabon.QueryDir] Evaluating stSPARQL query: \n"+queryString+"\n");
-						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection(), System.out);
 						
 					} catch (IOException e) {
 						logger.error("[Strabon.QueryDir] IOException while reading " + filename, e);

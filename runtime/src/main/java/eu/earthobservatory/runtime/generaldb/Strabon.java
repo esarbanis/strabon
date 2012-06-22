@@ -8,17 +8,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -71,8 +70,18 @@ public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
 
+	public static final String FORMAT_DEFAULT	= "";
+	public static final String FORMAT_XML		= "XML";
+	public static final String FORMAT_KML		= "KML";
+	public static final String FORMAT_KMZ		= "KMZ";
+	public static final String FORMAT_GEOJSON	= "GeoJSON";
+	public static final String FORMAT_EXP		= "EXP";
+	public static final String FORMAT_HTML		= "HTML";
+	
+	public static final String NEWLINE	= "\n";
+	
 	/**
-	 * Connection details
+	 * Connection details (shared with subclasses)
 	 */
 	protected String databaseName;
 	protected String user;
@@ -84,8 +93,7 @@ public abstract class Strabon {
 	private SailRepository repo1;
 	private SailRepositoryConnection con1 = null;
 
-	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
-			throws SQLException, ClassNotFoundException {
+	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws SQLException, ClassNotFoundException {
 		this.databaseName = databaseName;
 		this.user = user;
 		this.password = password;
@@ -100,8 +108,21 @@ public abstract class Strabon {
 	}
 
 
+	/**
+	 * Called by Strabon.close() to deregister the underlying JDBC driver used.
+	 */
 	protected abstract void deregisterDriver();
 	
+	/**
+	 * Called in Strabon constructor to initialize Strabon (establish connection to the
+	 * underlying database, etc.).
+	 * 
+	 * @param databaseName
+	 * @param user
+	 * @param password
+	 * @param port
+	 * @param serverName
+	 */
 	protected abstract void initiate(String databaseName, String user, String password, int port, String serverName);
 
 	protected void init() {
@@ -143,6 +164,9 @@ public abstract class Strabon {
 		this.con1 = con1;
 	}
 
+	/**
+	 * Close connection to Strabon.
+	 */
 	public void close() {
 		logger.info("[Strabon.close] Closing connection...");
 
@@ -161,121 +185,133 @@ public abstract class Strabon {
 		logger.info("[Strabon.close] Connection closed.");
 	}
 
-	public Object query(String queryString)
+	public Object query(String queryString, OutputStream out)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
-		return query(queryString, "", this.getSailRepoConnection());	
+		return query(queryString, "", this.getSailRepoConnection(), out);	
 	}
 
-	public Object query(String queryString, String resultsFormat)
+	public Object query(String queryString, String resultsFormat, OutputStream out)
 	throws  MalformedQueryException , QueryEvaluationException, IOException, TupleQueryResultHandlerException {
-		return query(queryString, resultsFormat, this.getSailRepoConnection());
+		return query(queryString, resultsFormat, this.getSailRepoConnection(), out);
 	}
 
-	public Object query(String queryString, SailRepositoryConnection con)
+	public ArrayList<String> query(String queryString, SailRepositoryConnection con)
 	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
-		return query(queryString, "", con);	
-	}
-
-	public Object queryBindings(String queryString, SailRepositoryConnection con) throws QueryEvaluationException, MalformedQueryException
-	{
-		logger.info("[Strabon.query] Executing query: {}", queryString);
-		
 		TupleQuery tupleQuery = null;
-		try {
-			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-			
-		} catch (RepositoryException e) {
-			logger.error("[Strabon.query] Error in preparing tuple query.", e);
-		}
-		
-		return tupleQuery.evaluate();
-	}
-
-	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con)
-	throws  MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
-		logger.info("[Strabon.query] Executing query: {}", queryString);
-		
-		TupleQuery tupleQuery = null;
-		try {
-			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-			
-		} catch (RepositoryException e) {
-			logger.error("[Strabon.query] Error in preparing tuple query.", e);
-		}
-
 		ArrayList<String> ret = new ArrayList<String>();
-		ByteArrayOutputStream retStream = new ByteArrayOutputStream();
-		OutputStreamWriter writeOut = new OutputStreamWriter(retStream, "UTF-8");
 		
-		if (resultsFormat.equalsIgnoreCase("EXP")) {
+		try {
+
+			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				ret.add(bindingSet.toString());
+			}
+			
+		} catch (RepositoryException e) {
+			logger.error("[Strabon.query] Error in preparing tuple query.", e);
+			
+		}
+		
+		return ret;	
+	}
+
+	public Object query(String queryString, String resultsFormat, SailRepositoryConnection con, OutputStream out)
+	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
+		boolean status = true;
+		
+		if (out == null) {
+			logger.error("[Strabon.query] Cannot write to null stream.");
+			
+			return false;
+		}
+		
+		logger.info("[Strabon.query] Executing query: {}", queryString);
+		
+		TupleQuery tupleQuery = null;
+		try {
+			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+			
+		} catch (RepositoryException e) {
+			logger.error("[Strabon.query] Error in preparing tuple query.", e);
+			status = false;
+		}
+
+		if (FORMAT_EXP.equalsIgnoreCase(resultsFormat)) {
 			long results = 0;
+			
 			long t1 = System.nanoTime();
 			TupleQueryResult result = tupleQuery.evaluate();
 			long t2 = System.nanoTime();
+			
 			while (result.hasNext()) {
 				results++;
 			}
+			
 			long t3 = System.nanoTime();
 
-			return new long[]{t2-t1, t3-t2, t3-t1, results};
+			//return new long[]{t2-t1, t3-t2, t3-t1, results};
 			
-		} else if (resultsFormat.equalsIgnoreCase("")) {
+		} else if (FORMAT_DEFAULT.equalsIgnoreCase(resultsFormat)) {
+			
 			TupleQueryResult result = null;
 			result = tupleQuery.evaluate();
 
 			while (result.hasNext()) {
-
 				BindingSet bindingSet = result.next();
-				System.out.println(bindingSet.toString());
-				ret.add(bindingSet.toString());
+				
+				writeString(out, bindingSet.toString());
+				writeString(out, NEWLINE);
 			}
-
-			return ret;
 			
-		} else if (resultsFormat.equalsIgnoreCase("XML")) {
+		} else if (FORMAT_XML.equalsIgnoreCase(resultsFormat)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Serializing results (XML)");
 			}
 			
-			tupleQuery.evaluate(new stSPARQLResultsXMLWriter(System.out));
+			tupleQuery.evaluate(new stSPARQLResultsXMLWriter(out));
 			
-		} else if (resultsFormat.equalsIgnoreCase("KML") || resultsFormat.equalsIgnoreCase("KMZ")) {
+		} else if (FORMAT_KML.equalsIgnoreCase(resultsFormat)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Serializing results (KML/KMZ)");
 			}
 
-			if (resultsFormat.equalsIgnoreCase("KML")) { 
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(System.out));
-				
-			} else { // KMZ
-				// create a zip entry
-				ZipEntry entry = new ZipEntry("sparql_results.kml");
-				
-				// create a zip stream on standard output
-				ZipOutputStream kmzout = new ZipOutputStream(System.out);
-				
-				// add the zip entry in it
-				kmzout.putNextEntry(entry);
-				
-				// pass the zip stream for evaluation
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
-
-				// close the zip entry
-				kmzout.closeEntry();
-				
-				// close the zip stream
-				kmzout.close();
-			}
+			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(out));
 			
-		} else if (resultsFormat.equalsIgnoreCase("GeoJSON")) {
+		} else if (FORMAT_KMZ.equalsIgnoreCase(resultsFormat)) {
+			// create a zip entry
+			ZipEntry entry = new ZipEntry("sparql_results.kml");
+			
+			// create a zip stream on standard output
+			ZipOutputStream kmzout = new ZipOutputStream(out);
+			
+			// add the zip entry in it
+			kmzout.putNextEntry(entry);
+			
+			// pass the zip stream for evaluation
+			tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
 
-			DataOutputStream dos = new DataOutputStream(retStream);
+			// close the zip entry
+			kmzout.closeEntry();
+			
+			// close the zip stream
+			kmzout.close();
+			
+		} else if (FORMAT_GEOJSON.equalsIgnoreCase(resultsFormat)) {
+
+			DataOutputStream dos = new DataOutputStream(out);
 
 			TupleQueryResult result = null;
 			try {
 				result = tupleQuery.evaluate();
-			} catch (QueryEvaluationException e1) {
-				e1.printStackTrace();
+				
+			} catch (QueryEvaluationException e) {
+				logger.error("[Strabon.query] Error during query evaluation.", e);
+				status = false;
+				
+				return status;
 			}
 
 			int resultsCounter = 0;
@@ -330,7 +366,7 @@ public abstract class Strabon {
 				}
 
 			} else {
-				return retStream.toString(); //empty
+				return status;//empty
 			}
 
 			boolean firstLineParsed = false;
@@ -389,21 +425,29 @@ public abstract class Strabon {
 						} 
 						catch (ParseException e) {
 							logger.error("[Strabon.query] Faults detected in spatial literal representation.", e);
+							status = false;
 						}
 					}
 
 					CoordinateReferenceSystem geomCRS = null;
 					try {
 						geomCRS = CRS.decode("EPSG:"+SRID);
+						
 					} catch (NoSuchAuthorityCodeException e) {
 						logger.error("[Strabon.query] Error decoding returned geometry's SRID", e);
+						status = false;
+						
+						return status;
 					} catch (FactoryException e) {
 						logger.error("[Strabon.query]", e);
+						status = false;
+						
+						return status;
 					}
 
 					tb[i].setCRS(geomCRS);
-					tb[i].setSRS("EPSG:"+SRID);
-					tb[i].add("geometry",Geometry.class);
+					tb[i].setSRS("EPSG:" + SRID);
+					tb[i].add("geometry", Geometry.class);
 
 					SimpleFeatureType featureType = tb[i].buildFeatureType();
 					SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
@@ -421,78 +465,66 @@ public abstract class Strabon {
 
 					SimpleFeature feature = featureBuilder.buildFeature(null);
 					sfCollection.add(feature);
-
-					//					FeatureJSON fjson22 = new FeatureJSON();
-					//					fjson22.setEncodeFeatureCRS(true);
-					//					fjson22.writeFeatureCollection(sfCollection, dos);
-					//					System.out.println(retStream.toString());
 				}
 
 			}
+			
 			while((result.hasNext()));
 
 			FeatureJSON fjson = new FeatureJSON();
 			fjson.setEncodeFeatureCRS(true);
 			fjson.writeFeatureCollection(sfCollection, dos);
-			System.out.println(retStream.toString());
+			writeString(out, NEWLINE);
 
-		} else if(resultsFormat.equalsIgnoreCase("HTML")) {
+		} else if(FORMAT_HTML.equalsIgnoreCase(resultsFormat)) {
 			TupleQueryResult result = tupleQuery.evaluate();
 			
-			if(result.hasNext())
-			{
+			if (result.hasNext()) {
 				BindingSet set = result.next();
 				Set<String> bindingNames = set.getBindingNames();			
-				writeOut.write("<tr>");
+				writeString(out, "<tr>");
 				for (String bindingName: bindingNames) {
-					writeOut.write("<th>");
-					writeOut.write(bindingName);
-					writeOut.write("</th>");
-				}			
-				writeOut.write("</tr>");
-
-				writeOut.write("<tr>");
-
-				for (String bindingName: bindingNames) {
-					writeOut.write("<td>");
-					writeOut.write(set.getValue(bindingName).stringValue());
-					writeOut.write("</td>");
+					writeString(out, "<th>");
+					writeString(out, bindingName);
+					writeString(out, "</th>");
 				}
-				writeOut.write("</tr>");
+				
+				writeString(out, "</tr>");
+				writeString(out, "<tr>");
+
+				for (String bindingName: bindingNames) {
+					writeString(out, "<td>");
+					writeString(out, set.getValue(bindingName).stringValue());
+					writeString(out, "</td>");
+				}
+				writeString(out, "</tr>");
 
 
 				while (result.hasNext()) {
-					writeOut.write("<tr>");
+					writeString(out, "<tr>");
 					BindingSet bindingSet = result.next();
 
 					for (String bindingName: bindingNames) {
-						writeOut.write("<td>");
+						writeString(out, "<td>");
 						Binding binding = bindingSet.getBinding(bindingName); 
 						if (binding != null) {
 							Value val = binding.getValue();
-							writeOut.write(val.stringValue());
+							writeString(out, val.stringValue());
 						}					
-						writeOut.write("</td>");
+						writeString(out, "</td>");
 					}
 
-					writeOut.write("</tr>");
+					writeString(out, "</tr>");
 				}
+				writeString(out, NEWLINE);
 			}
 			
 		} else {
-			//			System.exit(-1);// throw new InvalidDatasetFormatFault(); // TODO
 			logger.warn("[Strabon.query] No such format available \"" + resultsFormat + "\".");
-			return null;
+			status = false;
 		}
 
-		try {
-			writeOut.flush();
-			retStream.flush();
-		} catch (IOException e) {
-			logger.error("[Strabon.query]", e);
-		}
-
-		return retStream.toString();
+		return status;
 	}
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
@@ -691,5 +723,11 @@ public abstract class Strabon {
 		}
 
 		logger.info("[Strabon.describe] Output: {}", outFile);
+	}
+	
+	private static void writeString(OutputStream out, String str) throws IOException {
+		if (str != null && str.length() > 0) {
+			out.write(str.getBytes(Charset.defaultCharset()));
+		}
 	}
 }

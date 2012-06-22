@@ -40,7 +40,7 @@ public class QueryOp {
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, true);
-			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+			strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query.", e);

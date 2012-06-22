@@ -62,7 +62,7 @@ public class QueryDir {
 					String filename = children[i];
 					try {
 						String queryString = readFile(path + System.getProperty("file.separator") + filename);
-						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection());
+						strabon.query(queryString, resultsFormat, strabon.getSailRepoConnection(), System.out);
 						
 					} catch (IOException e) {
 						logger.error("[Strabon.QueryDir] IOException while reading " + filename, e);
