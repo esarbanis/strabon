@@ -1,4 +1,4 @@
-package org.openrdf.query.resultio.sparqlxml;
+package org.openrdf.query.resultio.sparqljson;
 
 import java.util.List;
 
