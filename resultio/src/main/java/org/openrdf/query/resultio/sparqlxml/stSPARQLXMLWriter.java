@@ -8,7 +8,7 @@ import java.io.Writer;
 import info.aduna.xml.XMLWriter;
 
 /**
- * @author charnik
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
 public class stSPARQLXMLWriter extends XMLWriter {

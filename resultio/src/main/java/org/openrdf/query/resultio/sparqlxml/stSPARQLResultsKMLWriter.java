@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 
 /**
- * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
