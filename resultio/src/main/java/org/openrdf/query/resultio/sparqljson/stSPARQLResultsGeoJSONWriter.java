@@ -1,13 +1,16 @@
 package org.openrdf.query.resultio.sparqljson;
 
+import java.io.OutputStream;
 import java.util.List;
 
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.resultio.TupleQueryResultFormat;
-import org.openrdf.query.resultio.TupleQueryResultWriter;
 
-public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
+public class stSPARQLResultsGeoJSONWriter extends SPARQLResultsJSONWriter {
+
+	public stSPARQLResultsGeoJSONWriter(OutputStream out) {
+		super(out);
+	}
 
 	@Override
 	public void startQueryResult(List<String> bindingNames)
@@ -23,10 +26,4 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 	public void handleSolution(BindingSet bindingSet)
 			throws TupleQueryResultHandlerException {
 	}
-
-	@Override
-	public TupleQueryResultFormat getTupleQueryResultFormat() {
-		return TupleQueryResultFormat.JSON;
-	}
-
 }
