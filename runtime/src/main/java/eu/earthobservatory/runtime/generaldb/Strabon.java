@@ -44,6 +44,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriter;
 import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriter;
@@ -309,183 +310,13 @@ public abstract class Strabon {
 				break;
 				
 			case GEOJSON:
+				if (logger.isDebugEnabled()) {
+					logger.debug("Serializing results (GEOJSON)");
+				}
 
-				DataOutputStream dos = new DataOutputStream(out);
-	
-				try {
-					result = tupleQuery.evaluate();
-					
-				} catch (QueryEvaluationException e) {
-					logger.error("[Strabon.query] Error during query evaluation.", e);
-					status = false;
-					
-					return status;
-				}
-	
-				int resultsCounter = 0;
-	
-				//Setting a Feature Collection
-				SimpleFeatureCollection sfCollection = FeatureCollections.newCollection("geomOutput");
-	
-				int spatialBindingsNo=0;
-	
-				//May not need that much - still initializing it
-				String[] spatialBindings = new String[result.getBindingNames().size()];
-				SimpleFeatureTypeBuilder[] tb = new SimpleFeatureTypeBuilder[result.getBindingNames().size()];
-	
-				for(int i=0;i<result.getBindingNames().size();i++)
-				{
-					tb[i] = new SimpleFeatureTypeBuilder(); 
-				}
-	
-				BindingSet bindingSet;
-				if(result.hasNext())
-				{
-					//Sneak Peek to obtain info on which bindings are spatial
-					bindingSet = result.next();
-					boolean spatial = false;
-					for(String bindingName : bindingSet.getBindingNames())
-					{
-						Value val = bindingSet.getValue(bindingName);
-	
-						if(val instanceof RdbmsLiteral)
-						{
-							if(((RdbmsLiteral) val).getDatatype()!=null)
-							{
-								if(((RdbmsLiteral) val).getDatatype().toString().equals(StrabonPolyhedron.ogcGeometry))
-								{
-									spatial = true;
-								}
-							}
-						}
-	
-						if(val instanceof GeneralDBPolyhedron)
-						{
-							spatial = true;
-	
-						}
-	
-						if(spatial)
-						{
-							spatial = false;
-							spatialBindings[spatialBindingsNo] = bindingName;
-							spatialBindingsNo++;
-						}
-					}
-	
-				} else {
-					return status;//empty
-				}
-	
-				boolean firstLineParsed = false;
-	
-				do {
-					if(firstLineParsed)
-					{
-						bindingSet = result.next();
-					}
-	
-					firstLineParsed = true;
-	
-					//How many features will occur from a single result? --> spatialBindingsNo
-					for(int i=0; i<spatialBindingsNo;i++)
-					{
-						tb[i].setName("Feature_"+(++resultsCounter));
-	
-						//Every time a featureType is built, the builder is nullified!!
-						//Can't avoid re-iterating...
-						for(String otherBinding : bindingSet.getBindingNames())
-						{
-							if(!otherBinding.equals(spatialBindings[i]))
-							{
-								tb[i].add(otherBinding,String.class);
-							}
-						}
-	
-	
-						int SRID=4326;
-						Geometry geom = null;
-						Value unparsedGeometry = bindingSet.getValue(spatialBindings[i]);
-						//Regardless of our geometry's input, we need its SRID
-						if(unparsedGeometry instanceof GeneralDBPolyhedron)
-						{
-							geom = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry();
-							SRID = ((GeneralDBPolyhedron) unparsedGeometry).getPolyhedron().getGeometry().getSRID();
-						}
-						else //RdbmsLiteral
-							//TODO GML support to be added
-						{
-							String unparsedWKT = ((RdbmsLiteral)unparsedGeometry).getLabel();
-							try {
-								int pos = unparsedWKT.indexOf(";");
-								if(pos!=-1)
-								{
-									geom = new WKTReader().read(unparsedWKT.substring(0,pos));
-									int whereToCut = unparsedWKT.lastIndexOf('/');
-									SRID = Integer.parseInt(unparsedWKT.substring(whereToCut+1));
-								}
-								else
-								{
-									geom = new WKTReader().read(unparsedWKT);
-									SRID=4326;
-								}
-	
-							} 
-							catch (ParseException e) {
-								logger.error("[Strabon.query] Faults detected in spatial literal representation.", e);
-								status = false;
-							}
-						}
-	
-						CoordinateReferenceSystem geomCRS = null;
-						try {
-							geomCRS = CRS.decode("EPSG:"+SRID);
-							
-						} catch (NoSuchAuthorityCodeException e) {
-							logger.error("[Strabon.query] Error decoding returned geometry's SRID", e);
-							status = false;
-							
-							return status;
-						} catch (FactoryException e) {
-							logger.error("[Strabon.query]", e);
-							status = false;
-							
-							return status;
-						}
-	
-						tb[i].setCRS(geomCRS);
-						tb[i].setSRS("EPSG:" + SRID);
-						tb[i].add("geometry", Geometry.class);
-	
-						SimpleFeatureType featureType = tb[i].buildFeatureType();
-						SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
-	
-						for(String otherBinding : bindingSet.getBindingNames())
-						{
-							if(!otherBinding.equals(spatialBindings[i]))
-							{
-								featureBuilder.add(bindingSet.getValue(otherBinding));
-							}
-						}
-	
-						featureBuilder.add(geom);
-	
-	
-						SimpleFeature feature = featureBuilder.buildFeature(null);
-						sfCollection.add(feature);
-					}
-	
-				}
-				
-				while((result.hasNext()));
-	
-				FeatureJSON fjson = new FeatureJSON();
-				fjson.setEncodeFeatureCRS(true);
-				fjson.writeFeatureCollection(sfCollection, dos);
-				writeString(out, NEWLINE);
-				
+				tupleQuery.evaluate(new stSPARQLResultsGeoJSONWriter(out));
 				break;
-
+				
 			case HTML:
 		
 				result = tupleQuery.evaluate();
