@@ -8,12 +8,33 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 import com.vividsolutions.jts.io.ParseException;
 
+/**
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ *
+ */
+public class GeneralDBPolyhedron extends RdbmsValue {
 
-public class GeneralDBPolyhedron extends RdbmsValue{
-
+	private static final long serialVersionUID = -7751266742783048766L;
+	
+	/**
+	 * The string representation of this value. The representation
+	 * may be one of the Constraint-based, WKT, or GML encodings.
+	 * 
+	 * @see #setPolyhedronStringRep(StrabonPolyhedron)
+	 */
 	private String polyhedronStringRep;
+	
+	/**
+	 * The underlying strabon polyhedron
+	 */
 	private StrabonPolyhedron polyhedron;
+	
+	/**
+	 * The datatype of the polyhedron
+	 */
 	private URI datatype;
+	
 	/**
 	 * CONSTRUCTOR
 	 */
@@ -29,6 +50,7 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 
 			e.printStackTrace();
 		}
+		
 		setPolyhedronStringRep(this.polyhedron);
 		this.datatype = datatype;
 	}
@@ -56,11 +78,13 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 		return polyhedronStringRep;
 	}
 
-	public void setPolyhedronStringRep(StrabonPolyhedron polyhedron) throws  IOException, ClassNotFoundException {
+	public void setPolyhedronStringRep(StrabonPolyhedron polyhedron) throws IOException, ClassNotFoundException {
 		//TODO kkyzir prepares this method
-
+		// TODO add GML
+		
 		if (StrabonPolyhedron.EnableConstraintRepresentation) {
 			this.polyhedronStringRep = polyhedron.toConstraints();	
+			
 		} else {
 			this.polyhedronStringRep = polyhedron.toWKT();
 		}		
@@ -93,7 +117,7 @@ public class GeneralDBPolyhedron extends RdbmsValue{
 		return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
 				+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" + 
 				((StrabonPolyhedron.EnableConstraintRepresentation)  ? 
-						StrabonPolyhedron.stRDFSemiLinearPointset : StrabonPolyhedron.ogcGeometry)
+						StrabonPolyhedron.stRDFSemiLinearPointset : StrabonPolyhedron.WKT)
 						+">");
 	}
 
