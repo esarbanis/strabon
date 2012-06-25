@@ -300,7 +300,7 @@ WHERE { ?r rdf:type ?rType ;
         FILTER(?rType = lgdo:Primary) .
         FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05,21.027 38.36))"^^strdf:WKT, ?rGeo) ). 
 }]]></value>
-<value>get all primary roads in Pelloponnese using the linked geodata ontology </value>
+<value>Get all primary roads in Pelloponnese using the linked geodata ontology </value>
 	            </list>
 	            <list>
 	                <!-- Bean -->

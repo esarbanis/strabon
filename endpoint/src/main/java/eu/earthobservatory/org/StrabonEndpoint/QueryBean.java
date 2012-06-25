@@ -526,7 +526,7 @@ public class QueryBean extends HttpServlet {
 		out.println("</textarea></td>");
 		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
 		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
-		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\">");
+		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\" title=\"select one of the following output format types\">");
 		
 		Map<String, String> selections = new HashMap<String, String>();
 		selections.put("KMZMAP", "HTML with google maps (kmz)");
