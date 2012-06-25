@@ -1,4 +1,4 @@
-package org.openrdf.query.resultio.sparqljson;
+package org.openrdf.query.resultio.sparqlgeojson;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriter.class);
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriter.class);
 	
 	/**
 	 * The underlying output stream to write
@@ -68,10 +68,9 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 	private FeatureJSON fjson;
 	
 	/**
-	 * True to write a warning when there are no features
-	 * in the answer
+	 * Keep track of the number of features
 	 */
-	private boolean warn;
+	private int nfeatures;
 	
 	public stSPARQLResultsGeoJSONWriter(OutputStream out) {
 		this.out = out;
@@ -82,10 +81,9 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 		// get the instance of JTSWrapper
 		jts = JTSWrapper.getInstance();
 		
-		// initialize results
+		// initialize results/features
 		nresults = 0;
-		
-		warn = false;
+		nfeatures = 0;
 	}
 
 	@Override
@@ -100,7 +98,8 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 			fjson.writeFeatureCollection(sfCollection, out);
 			out.write("\n".getBytes(Charset.defaultCharset()));
 			
-			if (warn) {
+			// write a warning when there are no features in the answer
+			if (nfeatures < nresults) {
 				logger.warn("[Strabon.GeoJSONWriter] No spatial binding found in the result, hence the result is empty eventhough query evaluation produced {} results. GeoJSON requires that at least one binding maps to a geometry.", nresults);
 				
 			}
@@ -112,9 +111,6 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 	@Override
 	public void handleSolution(BindingSet bindingSet) throws TupleQueryResultHandlerException {
 		try {
-			// we might have more than one feature in the result, so we count them
-			int nfeatures = 0;
-			
 			nresults++;
 			
 			// list keeping binding names that are not binded to geometries
@@ -212,10 +208,6 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 				
 				SimpleFeature feature = featureBuilder.buildFeature(null);
 				sfCollection.add(feature);	
-			}
-			
-			if (nfeatures == 0) {
-				warn = true;
 			}
 			
 		} catch (Exception e) {

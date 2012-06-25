@@ -1,4 +1,4 @@
-package org.openrdf.query.resultio.sparqljson;
+package org.openrdf.query.resultio.sparqlgeojson;
 
 import java.io.OutputStream;
 
