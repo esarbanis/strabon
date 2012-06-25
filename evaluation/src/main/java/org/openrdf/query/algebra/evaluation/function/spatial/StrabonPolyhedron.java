@@ -28,6 +28,11 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 
+/**
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Kostis Kyzirakos <kk@di.uoa.gr>
+ *
+ */
 public class StrabonPolyhedron implements Value {
 
 	private static final long serialVersionUID = 894529468109904724L;
@@ -42,11 +47,11 @@ public class StrabonPolyhedron implements Value {
 
 	public static final String stRDF="http://strdf.di.uoa.gr/ontology#";
 	public static final String stRDFSemiLinearPointset="http://strdf.di.uoa.gr/ontology#SemiLinearPointSet";
-	public static final String ogcGeometry="http://strdf.di.uoa.gr/ontology#WKT";
+	public static final String WKT="http://strdf.di.uoa.gr/ontology#WKT";
 	public static final String geof="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
 	//Extended functions
 	//Spatial Relationships
-	public static final String gml="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
+	public static final String GML="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
 	public static final String anyInteract="http://strdf.di.uoa.gr/ontology#anyInteract";
 	public static final String contains="http://strdf.di.uoa.gr/ontology#contains";
 	public static final String coveredBy="http://strdf.di.uoa.gr/ontology#coveredBy";
@@ -134,17 +139,19 @@ public class StrabonPolyhedron implements Value {
 	private static int MAX_POINTS = Integer.MAX_VALUE;//40000;//Integer.MAX_VALUE;//10000;
 
 	/**
-	 * Get JTS singleton instance.
+	 * Get Java Topology Suite wrapper instance.
 	 */
 	private static JTSWrapper jts = JTSWrapper.getInstance();
 	
+	/**
+	 * The underlying geometry
+	 */
 	private Geometry geometry;
 
 	public StrabonPolyhedron() {
 		this.geometry = null;
 
 	}
-
 
 	public void setGeometry(Geometry geometry) {
 		this.geometry = geometry;
@@ -158,8 +165,6 @@ public class StrabonPolyhedron implements Value {
 	//	Polyhedron poly = new Polyhedron(constraints);
 	//	this.geometry = jts.WKTread(poly.toWKT());
 	//}
-
-
 
 	public StrabonPolyhedron(Geometry geo) throws Exception {
 		this.geometry = new StrabonPolyhedron(geo, 1).geometry;
