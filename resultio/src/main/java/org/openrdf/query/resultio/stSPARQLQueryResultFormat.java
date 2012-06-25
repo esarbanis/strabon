@@ -41,7 +41,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	public static final stSPARQLQueryResultFormat GEOJSON = new stSPARQLQueryResultFormat("GeoJSON", 
 			Arrays.asList("application/json", "application/json"), Charset.forName("UTF-8"), Arrays.asList("json"));
 	
-	// registers stSPARQL formats
+	// registers stSPARQL/GeoSPARQL formats
 	static {
 		register(KML);
 		register(KMZ);

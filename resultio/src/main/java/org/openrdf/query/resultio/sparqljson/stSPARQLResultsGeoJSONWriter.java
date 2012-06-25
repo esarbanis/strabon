@@ -24,6 +24,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,6 +235,6 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 
 	@Override
 	public TupleQueryResultFormat getTupleQueryResultFormat() {
-		return TupleQueryResultFormat.JSON;
+		return stSPARQLQueryResultFormat.GEOJSON;
 	}
 }
