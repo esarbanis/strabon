@@ -1,6 +1,5 @@
 package eu.earthobservatory.runtime.generaldb;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,17 +17,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -43,11 +31,11 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
-import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriter;
+import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.Format;
-import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter;
-import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriter;
+import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
+import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
+import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
@@ -58,15 +46,9 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.ntriples.NTriplesWriter;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.helpers.SailBase;
-import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 public abstract class Strabon {
 
@@ -241,19 +223,14 @@ public abstract class Strabon {
 			status = false;
 		}
 		
-		TupleQueryResult result = null;
+		if (logger.isDebugEnabled()) {
+			logger.debug("Serializing results ({})", resultsFormat.name());
+		}
 		
+		TupleQueryResult result = null;
 		switch (resultsFormat) {
 			case DEFAULT:
-				
-				result = tupleQuery.evaluate();
-				while (result.hasNext()) {
-					BindingSet bindingSet = result.next();
-					
-					writeString(out, bindingSet.toString());
-					writeString(out, NEWLINE);
-				}
-
+				tupleQuery.evaluate(new stSPARQLResultsTSVWriterFactory().getWriter(out));
 				break;
 				
 			case EXP:
@@ -273,21 +250,17 @@ public abstract class Strabon {
 				break;
 				
 			case XML:
-				if (logger.isDebugEnabled()) {
-					logger.debug("Serializing results (XML)");
-				}
-				
-				tupleQuery.evaluate(new stSPARQLResultsXMLWriter(out));
+				tupleQuery.evaluate(new stSPARQLResultsXMLWriterFactory().getWriter(out));
 				break;
 				
 			case KML:
-				if (logger.isDebugEnabled()) {
-					logger.debug("Serializing results (KML)");
-				}
-
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(out));
-				
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriterFactory().getWriter(out));
 				break;
+				
+			case GEOJSON:
+				tupleQuery.evaluate(new stSPARQLResultsGeoJSONWriterFactory().getWriter(out));
+				break;
+				
 				
 			case KMZ:
 				// create a zip entry
@@ -300,7 +273,7 @@ public abstract class Strabon {
 				kmzout.putNextEntry(entry);
 				
 				// pass the zip stream for evaluation
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriter(kmzout));
+				tupleQuery.evaluate(new stSPARQLResultsKMLWriterFactory().getWriter(kmzout));
 
 				// close the zip entry
 				kmzout.closeEntry();
@@ -309,16 +282,7 @@ public abstract class Strabon {
 				kmzout.close();
 				break;
 				
-			case GEOJSON:
-				if (logger.isDebugEnabled()) {
-					logger.debug("Serializing results (GEOJSON)");
-				}
-
-				tupleQuery.evaluate(new stSPARQLResultsGeoJSONWriter(out));
-				break;
-				
 			case HTML:
-		
 				result = tupleQuery.evaluate();
 				
 				if (result.hasNext()) {
@@ -391,12 +355,12 @@ public abstract class Strabon {
 		}
 	}
 
-	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
+	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		storeInRepo(src, null, null, format);
 	}
 
-	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException,InvalidDatasetFormatFault, RDFHandlerException
+	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		RDFFormat realFormat = null;
 
