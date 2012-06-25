@@ -33,7 +33,7 @@ import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultWriterFactory;
-import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriterFactory;
+import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;

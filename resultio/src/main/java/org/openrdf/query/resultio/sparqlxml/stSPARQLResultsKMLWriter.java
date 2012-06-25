@@ -80,12 +80,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 * The number of geometries seen.
 	 */
 	private int ngeometries;
-	
-	/**
-	 * factory for geometry objects
-	 */
-	//private GeometryFactory gf;
-	
+
 	/**
 	 * The JTS wrapper
 	 */
@@ -129,7 +124,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		
 		depth = 4;
 				
-		//gf = new GeometryFactory(new PrecisionModel(), 4326);
 		jts = JTSWrapper.getInstance();
 		
 		baos = new ByteArrayOutputStream();
@@ -165,7 +159,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			
 			baos.close();
 			
-			if (nresults > 0 && ngeometries == 0) {
+			if (ngeometries < nresults) {
 				logger.warn("[Strabon.KMLWriter] No spatial binding found in the result. KML requires that at least one binding maps to a geometry.", nresults);
 			}
 		}

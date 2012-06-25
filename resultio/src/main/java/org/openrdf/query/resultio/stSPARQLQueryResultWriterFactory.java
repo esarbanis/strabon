@@ -5,7 +5,7 @@ package org.openrdf.query.resultio;
 
 import java.io.OutputStream;
 
-import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriterFactory;
+import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
