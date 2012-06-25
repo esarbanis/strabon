@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.openrdf.query.resultio.sparqlxml.Format;
+import org.openrdf.query.resultio.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

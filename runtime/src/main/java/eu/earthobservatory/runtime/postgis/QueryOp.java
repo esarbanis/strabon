@@ -1,6 +1,6 @@
 package eu.earthobservatory.runtime.postgis;
 
-import org.openrdf.query.resultio.sparqlxml.Format;
+import org.openrdf.query.resultio.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

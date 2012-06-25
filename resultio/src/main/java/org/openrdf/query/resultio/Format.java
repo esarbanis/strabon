@@ -1,4 +1,4 @@
-package org.openrdf.query.resultio.sparqlxml;
+package org.openrdf.query.resultio;
 
 import java.util.HashMap;
 import java.util.Map;

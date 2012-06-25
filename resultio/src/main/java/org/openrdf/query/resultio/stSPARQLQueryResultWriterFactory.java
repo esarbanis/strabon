@@ -7,7 +7,6 @@ import java.io.OutputStream;
 
 import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlhtml.stSPARQLResultsHTMLWriterFactory;
-import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
 import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
