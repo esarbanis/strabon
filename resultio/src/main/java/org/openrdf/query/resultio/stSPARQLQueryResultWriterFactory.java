@@ -5,13 +5,13 @@ import java.io.OutputStream;
 import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlhtml.stSPARQLResultsHTMLWriterFactory;
 import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMZWriterFactory;
-import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
+import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
 import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
 
 /**
  * This is a factory class for creating stSPARQLQueryResultWriter
- * instances according to a format in @{link org.openrdf.query.resultio.sparqlxml.Format}.
+ * instances according to a format in {@link org.openrdf.query.resultio.sparqlxml.Format}.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *

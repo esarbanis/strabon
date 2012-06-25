@@ -11,7 +11,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
-import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter;
+import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>

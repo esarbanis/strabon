@@ -1,4 +1,4 @@
-package org.openrdf.query.resultio.sparqlxml;
+package org.openrdf.query.resultio.sparqlkml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
+import org.openrdf.query.resultio.sparqlxml.stSPARQLXMLWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ import com.vividsolutions.jts.io.ParseException;
  */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriter.class);
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter.class);
 	
 	private static final String ROOT_TAG 			= "kml";
 	private static final String NAMESPACE 			= "http://www.opengis.net/kml/2.2";
