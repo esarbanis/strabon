@@ -59,7 +59,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	 * HTML format (encoded as an HTML table, without the <tt>&lt;TABLE&gt;</tt> tag)  
 	 */
 	public static final stSPARQLQueryResultFormat HTML = new stSPARQLQueryResultFormat("HTML", 
-			Arrays.asList("text/tab-separated-values"), Charset.forName("UTF-8"), Arrays.asList("html", "htm"));
+			Arrays.asList("text/html"), Charset.forName("UTF-8"), Arrays.asList("html", "htm"));
 	
 	// registers stSPARQL/GeoSPARQL formats
 	static {
