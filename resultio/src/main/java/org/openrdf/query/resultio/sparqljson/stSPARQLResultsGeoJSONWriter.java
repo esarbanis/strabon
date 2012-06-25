@@ -19,12 +19,13 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,30 +132,28 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 			// parse binding set
 			for (Binding binding : bindingSet) {
 				Value value = binding.getValue();
-				if (value instanceof Literal) {
-					Literal litValue = (Literal) value;
-
-					// it's a spatial literal
-					if (litValue.getDatatype().stringValue().equals(StrabonPolyhedron.ogcGeometry)) {
-						// TODO Check for GML (when added to StrabonPolyhedron)
+				
+				if (XMLGSDatatypeUtil.isGeometryValue(value)) {
+					// it's a spatial value
+					if (logger.isDebugEnabled()) {
+						logger.debug("[Strabon.GeoJSON] Found geometry: {}", value);
+					}
+					
+					nfeatures++;
+					
+					// we need the geometry and the SRID 
+					Geometry geom = null;
+					int srid = -1;
+					
+					if (value instanceof GeneralDBPolyhedron) {
+						GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) value;
 						
-						nfeatures++;
+						geom = dbpolyhedron.getPolyhedron().getGeometry();
+						srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
 						
-						if (logger.isDebugEnabled()) {
-							logger.debug("[Strabon] Found geometry: {}", litValue);
-						}
+					} else { // spatial literal WKT or GML
 						
-						// get the geometry and SRID
-						Geometry geom = null;
-						int srid = -1;
-						
-						// TODO add dependency to pom.xml for GeneralDBPolyhedron 
-						// Regardless of our geometry's input, we need its SRID
-//						if (unparsedGeometry instanceof GeneralDBPolyhedron) {
-//							geom = ((GeneralDBPolyhedron) value).getPolyhedron().getGeometry();
-//							srid = ((GeneralDBPolyhedron) value).getPolyhedron().getGeometry().getSRID();
-//							
-//						} else { // WKT
+						if (XMLGSDatatypeUtil.isWKTLiteral((Literal) value)) {// WKT
 							// get the WKT as it is present in the result
 							String wkt = value.stringValue();
 							
@@ -163,35 +162,27 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 							
 							// get its SRID
 							srid = WKTHelper.getSRID(wkt);
-								
-							// TODO: GML support to be added
-						//}
-					
-						SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
-						sftb.setName("Feature_" + nresults + "_" + nfeatures);
-						sftb.setCRS(CRS.decode("EPSG:" + srid));
-						sftb.setSRS("EPSG:" + srid);
-						sftb.add("geometry", Geometry.class);
-						
-						// add the feature in the list of features
-						features.add(sftb);
-						
-						// add the geometry of the feature in the list of geometries
-						geometries.add(geom);
-						
-					
-					} else { // Literal other than geometry
-						if (logger.isDebugEnabled()) {
-							logger.debug("[Strabon.GeoJSONWriter] Found Literal: {}", value);
+							
+						} else { // TODO GML
+							logger.warn("[Strabon.GeoJSON] GML is not supported yet.");
 						}
-
-						properties.add(binding.getName());
-						values.add(value);
 					}
 					
-				} else { // URI or BlankNode
+					SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
+					sftb.setName("Feature_" + nresults + "_" + nfeatures);
+					sftb.setCRS(CRS.decode("EPSG:" + srid));
+					sftb.setSRS("EPSG:" + srid);
+					sftb.add("geometry", Geometry.class);
+					
+					// add the feature in the list of features
+					features.add(sftb);
+					
+					// add the geometry of the feature in the list of geometries
+					geometries.add(geom);
+					
+				} else { // URI, BlankNode, or Literal other than geometry
 					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon.GeoJSONWriter] Found URI/BlankNode: {}", value);
+						logger.debug("[Strabon.GeoJSON] Found resource: {}", value);
 					}
 					
 					properties.add(binding.getName());
