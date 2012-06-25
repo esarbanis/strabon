@@ -18,7 +18,7 @@ import java.util.Collection;
  * as an additional description for a feature (e.g., a tuple query result with
  * a projected variable corresponding to a geometry). 
  * 
- * @author Charlampos Nikolaou <charnik@di.uoa.gr>
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
 public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {

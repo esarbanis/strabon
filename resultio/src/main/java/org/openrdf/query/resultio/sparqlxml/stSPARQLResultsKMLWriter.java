@@ -3,7 +3,6 @@ package org.openrdf.query.resultio.sparqlxml;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -116,10 +115,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 * results in KML.
 	 * 
 	 * @param out
-	 * @throws UnsupportedEncodingException
 	 */
-	public stSPARQLResultsKMLWriter(OutputStream out) throws UnsupportedEncodingException {
-		this(new stSPARQLXMLWriter(out, "UTF-8"));
+	public stSPARQLResultsKMLWriter(OutputStream out) {
+		this(new stSPARQLXMLWriter(out));
 	}
 	
 	public stSPARQLResultsKMLWriter(stSPARQLXMLWriter writer) {
