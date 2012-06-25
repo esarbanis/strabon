@@ -6,6 +6,7 @@ package org.openrdf.query.resultio;
 import java.io.OutputStream;
 
 import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
+import org.openrdf.query.resultio.sparqlhtml.stSPARQLResultsHTMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
@@ -20,6 +21,7 @@ import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
  */
 public class stSPARQLQueryResultWriterFactory {
 
+	private static TupleQueryResultWriterFactory html = new stSPARQLResultsHTMLWriterFactory();
 	private static TupleQueryResultWriterFactory xml = new stSPARQLResultsXMLWriterFactory();
 	private static TupleQueryResultWriterFactory kml = new stSPARQLResultsKMLWriterFactory();
 	private static TupleQueryResultWriterFactory tsv = new stSPARQLResultsTSVWriterFactory();
@@ -48,10 +50,14 @@ public class stSPARQLQueryResultWriterFactory {
 			case GEOJSON:
 				writer = geojson.getWriter(out);
 				break;
-				
-				// TODO: add for the following two
+
 			case EXP:
+				// TODO: add
+				break;
+				
 			case HTML:
+				writer = html.getWriter(out);
+				break;
 		}
 		
 		return writer;

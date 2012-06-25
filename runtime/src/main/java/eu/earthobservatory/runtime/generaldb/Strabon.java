@@ -267,51 +267,6 @@ public abstract class Strabon {
 				// close the zip stream
 				kmzout.close();
 				break;
-				
-			case HTML:
-				result = tupleQuery.evaluate();
-				
-				if (result.hasNext()) {
-					BindingSet set = result.next();
-					Set<String> bindingNames = set.getBindingNames();			
-					writeString(out, "<tr>");
-					for (String bindingName: bindingNames) {
-						writeString(out, "<th>");
-						writeString(out, bindingName);
-						writeString(out, "</th>");
-					}
-					
-					writeString(out, "</tr>");
-					writeString(out, "<tr>");
-	
-					for (String bindingName: bindingNames) {
-						writeString(out, "<td>");
-						writeString(out, set.getValue(bindingName).stringValue());
-						writeString(out, "</td>");
-					}
-					writeString(out, "</tr>");
-	
-	
-					while (result.hasNext()) {
-						writeString(out, "<tr>");
-						BindingSet bindingSet1 = result.next();
-	
-						for (String bindingName: bindingNames) {
-							writeString(out, "<td>");
-							Binding binding = bindingSet1.getBinding(bindingName); 
-							if (binding != null) {
-								Value val = binding.getValue();
-								writeString(out, val.stringValue());
-							}					
-							writeString(out, "</td>");
-						}
-	
-						writeString(out, "</tr>");
-					}
-					writeString(out, NEWLINE);
-				}
-				
-				break;
 			
 		default:
 			// get the writer for the specified format

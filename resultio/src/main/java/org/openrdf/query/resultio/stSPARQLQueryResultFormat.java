@@ -55,6 +55,12 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	public static final stSPARQLQueryResultFormat TSV = new stSPARQLQueryResultFormat("TSV", 
 			Arrays.asList("text/tab-separated-values"), Charset.forName("UTF-8"), Arrays.asList("tsv"));
 	
+	/**
+	 * HTML format (encoded as an HTML table, without the <tt>&lt;TABLE&gt;</tt> tag)  
+	 */
+	public static final stSPARQLQueryResultFormat HTML = new stSPARQLQueryResultFormat("HTML", 
+			Arrays.asList("text/tab-separated-values"), Charset.forName("UTF-8"), Arrays.asList("html", "htm"));
+	
 	// registers stSPARQL/GeoSPARQL formats
 	static {
 		register(XML);
@@ -62,6 +68,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 		register(KMZ);
 		register(GEOJSON);
 		register(TSV);
+		register(HTML);
 	}
 	
 	public stSPARQLQueryResultFormat(String name, String mimeType, String fileExt) {
