@@ -18,7 +18,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>newdemo</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
@@ -28,7 +28,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>postgres</value>
+	    <value>p1r3as</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
@@ -86,6 +86,7 @@ WHERE {?file rdf:type noa:ShpFile ;
 	 ?file noa:producedFromProcessingChain ?chain .
 	 FILTER( str(?chain) = "StaticThresholds" ) . 
 }]]></value>
+<value>Find all shapefiles derived from sensor MSG2 between [2007-08-26T12:00:00,2007-08-26T12:30:00], using dynamic thresholds.</value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -125,6 +126,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
 	FILTER(?hAcqTime = "2007-08-24T14:45:00"^^xsd:dateTime) .
 	FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)) . 
 }]]></value>
+<value>Find all hotspots in Pelloponesus derived from the dynamic thresholds processing chain at 2007-08-24T14:45:00.  </value>
 	            </list>
 				<list>
 	                <!-- Bean -->
@@ -164,6 +166,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
         }
         FILTER(!bound(?c)). 
 }]]></value>
+<value>Delete all hotspots produced by the static thresholds processing chain and are acquired at 2007-08-24T14:45:00 which are located in the sea</value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -205,6 +208,7 @@ WHERE { ?h rdf:type noa:Hotspot;
         GROUP BY ?h ?hGeo
         HAVING strdf:overlap(?hGeo, strdf:union(?cGeo)) 
 }]]></value>
+	      <value>Refine hotspots acquired at 2007-08-24T14:45:00 removing the part that lies in the sea. </value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -236,6 +240,7 @@ WHERE{ ?a rdf:type clc:Area;
        FILTER(?aLandUseType = clc:ConiferousForest).
        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^strdf:WKT,?aGeo)). 
 }]]></value>
+<value>Discover all coniferous forests using the clc ontology </value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -265,6 +270,7 @@ WHERE { ?d rdf:type gag:Dhmos;
            rdfs:label ?dLabel. 
            FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?dGeo)). 
 }]]></value>
+<value>Find all municipalities of Pelloponnese using kallikratis ontology </value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -294,6 +300,7 @@ WHERE { ?r rdf:type ?rType ;
         FILTER(?rType = lgdo:Primary) .
         FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05,21.027 38.36))"^^strdf:WKT, ?rGeo) ). 
 }]]></value>
+<value>Get all primary roads in Pelloponnese using the linked geodata ontology </value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -335,6 +342,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
         FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^strdf:WKT,?aGeo)). 
         FILTER(strdf:overlap(?aGeo, ?hGeo)) . 
 }]]></value>
+<value>Find all hotspots located in Pelloponnesian forests and acquired at 2007-08-24T14:45:00 using static thresholds processing chain </value>
 	            </list>
 <!-- 	            <list> -->
 <!-- 	                Bean -->

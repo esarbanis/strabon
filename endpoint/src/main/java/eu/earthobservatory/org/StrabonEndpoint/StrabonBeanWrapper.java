@@ -35,12 +35,14 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		private String bean;
 		private String statement;
 		private String format;
+		private String title;
 
-		public Entry(String label, String bean, String statement, String format) {
+		public Entry(String label, String bean, String statement, String format, String title) {
 			this.label = label;
 			this.bean = bean;
 			this.statement = statement;
 			this.format = format;
+			this.title=title;
 		}
 		
 		public String getLabel() {
@@ -59,6 +61,15 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			this.bean = bean;
 		}
 		
+		
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
 		public String getStatement() {
 			return statement;
 		}
@@ -107,7 +118,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			
 			while (it.hasNext()) {
 				int items = 0;
-				String label = "", bean = "", statement = "", format = ""; 
+				String label = "", bean = "", statement = "", format = "", title=""; 
 	
 				if (it.hasNext()) {
 					bean = it.next();
@@ -125,11 +136,17 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					statement = it.next();
 					items++;
 				}
-				
-				if (items == 4) {
-					Entry entry = new Entry(label, bean, statement, format);
+				if (it.hasNext()) {
+					title = it.next();
+					System.out.println("TITLE= "+title);
+					items++;
+				}
+				if (items == 5) {
+					Entry entry = new Entry(label, bean, statement, format, title);
 					this.entries.add(entry);
 				}
+			
+				
 			}
 		}
 

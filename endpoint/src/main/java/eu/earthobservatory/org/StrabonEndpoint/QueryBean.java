@@ -471,7 +471,7 @@ public class QueryBean extends HttpServlet {
 		out.println("      <TD height=\"16\" background=\"images/pixi_white.gif\"><img src=\"images/pixi_white.gif\" width=\"16\" height=\"16\"></TD>");
 		out.println("	</TR>");
 		out.println("	<TR>");
-		out.println("      <TD height=\"1\" background=\"images/top_bg_blue.gif\"></TD>");
+		out.println("      <TD height=\"1\"></TD>");
 		out.println("	</TR>		");
 		out.println("	<TR>");
 		out.println("      <TD height=\"60\" background=\"images/nav2_bg.gif\"> ");
@@ -485,11 +485,11 @@ public class QueryBean extends HttpServlet {
 		out.println("        </table> </TD>");
 		out.println("	</TR>");
 		out.println("	<TR>");
-		out.println("      <TD height=\"21\" background=\"images/nav1_bg1.gif\">");
+		out.println("      <TD height=\"21\" >");
 		out.println("      </TD>");
 		out.println("	</TR>");
 		out.println("	<TR>");
-		out.println("      <TD height=\"2\" background=\"images/top_bg_blue.gif\"></TD>");
+		out.println("      <TD height=\"2\" ></TD>");
 		out.println("	</TR>");
 		out.println("</TABLE>");
 		out.println("<form " +
@@ -510,8 +510,8 @@ public class QueryBean extends HttpServlet {
 	}
 
 	protected static void appendHTML1b(PrintWriter out) {	
-		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"store.jsp\" class=\"navText\">Store</a></td></tr> ");
-		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"javascript:history.go(0)\" class=\"navText\">Clear</a></td></tr> ");
+		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"store.jsp\" class=\"navText\" title=\"Store triples\">Store</a></td></tr> ");
+		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"javascript:history.go(0)\" class=\"navText\" title=\"Clear editor\">Clear</a></td></tr> ");
 		out.println("</table>");
 		out.println("</td>");
 		out.println("<td width=\"*\" valign=\"top\" >"); 
@@ -519,14 +519,14 @@ public class QueryBean extends HttpServlet {
 		out.println("<table cellspacing=\"5\">");
 		out.println("<tr>");
 		out.println("<td style=\"border: 1px dashed #bbbbbb;\">stSPARQL Query:</td>");
-		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><textarea name=\"SPARQLQuery\" rows=\"15\" cols=\"100\">");
+		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><textarea name=\"SPARQLQuery\" title=\"pose your query/update here\" rows=\"15\" cols=\"100\">");
 	}
 
 	protected static void appendHTML2(PrintWriter out, String format) {
 		out.println("</textarea></td>");
 		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
 		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
-		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\">");
+		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><center>Output Format:<br/><select name=\"format\" title=\"select one of the following output format types\">");
 		
 		Map<String, String> selections = new HashMap<String, String>();
 		selections.put("KMZMAP", "HTML with google maps (kmz)");
@@ -553,7 +553,7 @@ public class QueryBean extends HttpServlet {
 		out.println("</select></center></td>");
 		out.println("</tr>");
 		out.println("<tr>");
-		out.println("<td colspan=2 style=\"border: 1px dashed #bbbbbb;\"><br/><center><input type=\"submit\" value=\"Query\" name=\"submit\" style=\"width: 400px\"/><br/><input type=\"submit\" value=\"Update\" name=\"submit\" style=\"width: 400px\"/></center><br/></td>");
+		out.println("<td colspan=2 style=\"border: 1px dashed #bbbbbb;\"><br/><center><input type=\"submit\" title=\"execute query\" value=\"Query\" name=\"submit\" style=\"width: 400px\"/><br/><input type=\"submit\" title=\"execute update\" value=\"Update\" name=\"submit\" style=\"width: 400px\"/></center><br/></td>");
 		out.println("</tr>");
 	}
 
@@ -594,7 +594,8 @@ public class QueryBean extends HttpServlet {
 		buf.append("?SPARQLQuery=");
 		buf.append(URLEncoder.encode(entry.getStatement(), "UTF-8"));
 		buf.append("&format=");
-		buf.append(entry.getFormat());
+		buf.append(entry.getFormat()+"\"");
+		buf.append("title="+"\""+entry.getTitle());
 		buf.append("\">&nbsp;&middot;&nbsp;");
 		buf.append(entry.getLabel());
 		buf.append("</a><br/>");
