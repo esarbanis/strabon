@@ -19,12 +19,11 @@ import static org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLConstants.ROO
 import static org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLConstants.URI_TAG;
 import static org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLConstants.VAR_NAME_ATT;
 import static org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLConstants.VAR_TAG;
+import info.aduna.xml.XMLWriter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
-import info.aduna.xml.XMLWriter;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
@@ -38,11 +37,14 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 
 /**
  * A {@link TupleQueryResultWriter} that writes tuple query results in the <a
  * href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML
  * Format</a>.
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 
@@ -67,13 +69,9 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		this.xmlWriter = xmlWriter;
 		this.xmlWriter.setPrettyPrint(true);
 	}
-
-	/*---------*
-	 * Methods *
-	 *---------*/
-
+	
 	public final TupleQueryResultFormat getTupleQueryResultFormat() {
-		return TupleQueryResultFormat.SPARQL;
+		return stSPARQLQueryResultFormat.XML;
 	}
 
 	/**
@@ -148,20 +146,6 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		}
 	}
 
-//	private void writeValue(Value value)
-//		throws IOException
-//	{
-//		if (value instanceof URI) {
-//			writeURI((URI)value);
-//		}
-//		else if (value instanceof BNode) {
-//			writeBNode((BNode)value);
-//		}
-//		else if (value instanceof Literal) {
-//			writeLiteral((Literal)value);
-//		}
-//	}
-	
 	private void writeValue(Value value) throws IOException {
 		if (value instanceof URI) {
 			writeURI((URI) value);

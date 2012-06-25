@@ -24,6 +24,12 @@ import java.util.Collection;
 public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 
 	/**
+	 * XML format (extension of {@link TupleQueryResultFormat#SPARQL} format to include geometries)
+	 */
+	public static final stSPARQLQueryResultFormat XML = new stSPARQLQueryResultFormat("XML", 
+			Arrays.asList("application/sparql-results+xml", "application/xml"), Charset.forName("UTF-8"), Arrays.asList("xml"));
+	
+	/**
 	 * KML format (see http://www.opengeospatial.org/standards/kml/)
 	 */
 	public static final stSPARQLQueryResultFormat KML = new stSPARQLQueryResultFormat("KML", 
@@ -43,6 +49,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	
 	// registers stSPARQL/GeoSPARQL formats
 	static {
+		register(XML);
 		register(KML);
 		register(KMZ);
 		register(GEOJSON);
