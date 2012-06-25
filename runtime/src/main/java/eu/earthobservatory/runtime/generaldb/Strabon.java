@@ -31,6 +31,8 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
+import org.openrdf.query.resultio.TupleQueryResultWriter;
+import org.openrdf.query.resultio.stSPARQLQueryResultWriterFactory;
 import org.openrdf.query.resultio.sparqljson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.Format;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsKMLWriterFactory;
@@ -206,13 +208,14 @@ public abstract class Strabon {
 	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		boolean status = true;
 		
+		logger.info("[Strabon.query] Executing query: {}", queryString);
+		
+		// check for null stream
 		if (out == null) {
 			logger.error("[Strabon.query] Cannot write to null stream.");
 			
 			return false;
 		}
-		
-		logger.info("[Strabon.query] Executing query: {}", queryString);
 		
 		TupleQuery tupleQuery = null;
 		try {
@@ -229,10 +232,6 @@ public abstract class Strabon {
 		
 		TupleQueryResult result = null;
 		switch (resultsFormat) {
-			case DEFAULT:
-				tupleQuery.evaluate(new stSPARQLResultsTSVWriterFactory().getWriter(out));
-				break;
-				
 			case EXP:
 				long results = 0;
 				
@@ -248,19 +247,6 @@ public abstract class Strabon {
 	
 				//return new long[]{t2-t1, t3-t2, t3-t1, results};
 				break;
-				
-			case XML:
-				tupleQuery.evaluate(new stSPARQLResultsXMLWriterFactory().getWriter(out));
-				break;
-				
-			case KML:
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriterFactory().getWriter(out));
-				break;
-				
-			case GEOJSON:
-				tupleQuery.evaluate(new stSPARQLResultsGeoJSONWriterFactory().getWriter(out));
-				break;
-				
 				
 			case KMZ:
 				// create a zip entry
@@ -328,8 +314,16 @@ public abstract class Strabon {
 				break;
 			
 		default:
-			logger.warn("[Strabon.query] Invalid format.");
-			status = false;
+			// get the writer for the specified format
+			TupleQueryResultWriter resultWriter = stSPARQLQueryResultWriterFactory.createstSPARQLQueryResultWriter(resultsFormat, out);
+			
+			// check for null format
+			if (resultWriter == null) {
+				logger.error("[Strabon.query] Invalid format.");
+				return false;
+			}
+			
+			tupleQuery.evaluate(resultWriter);
 		}
 
 		return status;
