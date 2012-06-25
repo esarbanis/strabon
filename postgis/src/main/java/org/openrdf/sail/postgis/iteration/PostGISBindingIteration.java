@@ -19,7 +19,7 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class PostGISBindingIteration extends GeneralDBBindingIteration {
