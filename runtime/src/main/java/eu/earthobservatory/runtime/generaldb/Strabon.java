@@ -248,26 +248,6 @@ public abstract class Strabon {
 				//return new long[]{t2-t1, t3-t2, t3-t1, results};
 				break;
 				
-			case KMZ:
-				// create a zip entry
-				ZipEntry entry = new ZipEntry("sparql_results.kml");
-				
-				// create a zip stream on standard output
-				ZipOutputStream kmzout = new ZipOutputStream(out);
-				
-				// add the zip entry in it
-				kmzout.putNextEntry(entry);
-				
-				// pass the zip stream for evaluation
-				tupleQuery.evaluate(new stSPARQLResultsKMLWriterFactory().getWriter(kmzout));
-
-				// close the zip entry
-				kmzout.closeEntry();
-				
-				// close the zip stream
-				kmzout.close();
-				break;
-			
 		default:
 			// get the writer for the specified format
 			TupleQueryResultWriter resultWriter = stSPARQLQueryResultWriterFactory.createstSPARQLQueryResultWriter(resultsFormat, out);
