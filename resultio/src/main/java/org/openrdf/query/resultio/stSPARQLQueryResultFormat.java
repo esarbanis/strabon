@@ -12,7 +12,9 @@ import java.util.Collection;
  * character encoding.
  * 
  * In contrast to formats mentioned in class {@link #TupleQueryResultFormat},
- * stSPARQL/GeoSPARQL formats do not adhere to any specification for SPARQL.
+ * stSPARQL/GeoSPARQL formats do not adhere to any specification for SPARQL
+ * except for those that are extension of the respective formats in class 
+ * {@link #TupleQueryResultFormat}, such as TSV.
  * For example, the projected variables in a stSPARQL/GeoSPARQL query are
  * not included in the beginning of these formats. Instead, they are provided
  * as an additional description for a feature (e.g., a tuple query result with
