@@ -32,7 +32,13 @@
 			<artifactId>sesame-queryresultio-sparqljson</artifactId>
 			<version>${sesame.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-text</artifactId>
+			<version>${sesame.version}</version>
+		</dependency>
+				
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryalgebra-model</artifactId>
