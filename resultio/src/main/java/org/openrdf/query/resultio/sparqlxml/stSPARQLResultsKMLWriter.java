@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
@@ -21,6 +22,8 @@ import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,6 +164,10 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.endDocument();
 			
 			baos.close();
+			
+			if (nresults > 0 && ngeometries == 0) {
+				logger.warn("[Strabon.KMLWriter] No spatial binding found in the result. KML requires that at least one binding maps to a geometry.", nresults);
+			}
 		}
 		catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
@@ -170,7 +177,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	@Override
 	public void handleSolution(BindingSet bindingSet) throws TupleQueryResultHandlerException {
 		try {
+			// true if there are bindings that do not correspond to geometries
 			boolean hasDesc = false;
+			
+			// increase result size
+			nresults++;
 			
 			// create description table and header
 			indent(descHeader, depth);
@@ -190,35 +201,20 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// parse binding set
 			for (Binding binding : bindingSet) {
 				Value value = binding.getValue();
-				if (value instanceof Literal) {
-					Literal litValue = (Literal) value;
 
-					// it's a spatial literal
-					if (litValue.getDatatype().stringValue().equals(StrabonPolyhedron.ogcGeometry)) {
-						// TODO Check for GML (when added to StrabonPolyhedron)
-						ngeometries++;
+				// check for geometry value
+				if (XMLGSDatatypeUtil.isGeometryValue(value)) {
+					ngeometries++;
 						
-						if (logger.isDebugEnabled()) {
-							logger.debug("[Strabon] Found geometry: {}", litValue);
-						}
-						
-						xmlWriter.unescapedText(getKML(value));
-						
-					} else { // Literal other than geometry
-						if (logger.isDebugEnabled()) {
-							logger.debug("[Strabon.KMLWriter] Found Literal: {}", value);
-						}
-						
-						// mark that we found sth corresponding to the description
-						hasDesc = true;
-						
-						// write description
-						writeDesc(binding);
+					if (logger.isDebugEnabled()) {
+						logger.debug("[Strabon] Found geometry: {}", value);
 					}
 					
-				} else { // URI or BlankNode
+					xmlWriter.unescapedText(getKML(value));
+				
+				} else { // URI, BlankNode, or Literal other than spatial literal 
 					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode: {}", value);
+						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal: {}", value);
 					}
 					
 					// mark that we found sth corresponding to the description
@@ -266,9 +262,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 
 			// write the placemark
 			xmlWriter.endTag(PLACEMARK_TAG);
-			
-			// increase result size
-			nresults++;
 		}
 		catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
@@ -278,7 +271,12 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private String getKML(Value value) {
 		String kml = "";
 		QName geometryType = null;
+		
+		// the underlying geometry in value
 		Geometry geom = null;
+		
+		// the underlying SRID of the geometry
+		int srid = -1;
 		
 		// get the KML encoder
 		Encoder encoder = null;
@@ -286,11 +284,29 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		try {
 			encoder = new Encoder(new KMLConfiguration());
 			encoder.setIndenting(true);
-			geom = jts.WKTread(WKTHelper.getWithoutSRID(value.stringValue()));
-			//geom = new WKTReader(gf).read(value.stringValue());
+			
+			if (value instanceof GeneralDBPolyhedron) {
+				GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) value;
+				
+				geom = dbpolyhedron.getPolyhedron().getGeometry();
+				srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
+				
+			} else { // spatial literal
+				Literal spatial = (Literal) value;
+				
+				if (XMLGSDatatypeUtil.isWKTLiteral(spatial)) { // WKT
+					String wkt = spatial.stringValue();
+					
+					geom = jts.WKTread(WKTHelper.getWithoutSRID(wkt));
+					srid = WKTHelper.getSRID(wkt);
+					
+				} else { // GML
+					logger.warn("[Strabon.KMLWriter] GML is not supported yet");
+				}
+			}
 			
 			// transform the geometry to 4326
-			geom = jts.transform(geom, WKTHelper.getSRID(value.stringValue()), StrabonPolyhedron.defaultSRID);
+			geom = jts.transform(geom, srid, StrabonPolyhedron.defaultSRID);
 			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;
@@ -350,6 +366,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		descData.append(NEWLINE);
 		indent(descData, depth + 1);
 		descData.append(TABLE_DATA_BEGIN);
+		if (binding.getValue() instanceof BNode) {
+			descData.append("_:");
+		}
 		descData.append(binding.getValue().stringValue());
 		descData.append(TABLE_DATA_END);
 		

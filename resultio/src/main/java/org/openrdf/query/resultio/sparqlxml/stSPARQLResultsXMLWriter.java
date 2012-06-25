@@ -156,7 +156,7 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		} 
 		else { // spatial literal
 			// else if (value instanceof RdbmsPolyhedron)
-			URI datatype = new URIImpl(StrabonPolyhedron.ogcGeometry);
+			URI datatype = new URIImpl(StrabonPolyhedron.WKT);
 			Literal literal = new LiteralImpl(value.stringValue(), datatype);
 			writeLiteral(literal);
 		}

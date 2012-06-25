@@ -48,7 +48,7 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 			Blob labelBlob = rs.getBlob(index + 1);
     		byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
     		int srid = rs.getInt(index + 2);
-			return vf.getRdbmsPolyhedron(id, StrabonPolyhedron.ogcGeometry, label, srid);
+			return vf.getRdbmsPolyhedron(id, StrabonPolyhedron.WKT, label, srid);
 
 		}
 
@@ -64,6 +64,6 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 		Blob labelBlob = rs.getBlob(index + 1); 
 		byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label, srid);
+		return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.WKT, label, srid);
 	}
 }

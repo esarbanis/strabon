@@ -357,7 +357,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					if(val instanceof StrabonPolyhedron)
 					{
 						String label = val.toString()+";http://www.opengis.net/def/crs/EPSG/0/"+((StrabonPolyhedron)val).getGeometry().getSRID();
-						Literal wkt = new LiteralImpl(label,new URIImpl(StrabonPolyhedron.ogcGeometry));
+						Literal wkt = new LiteralImpl(label,new URIImpl(StrabonPolyhedron.WKT));
 						sol.setBinding(name,wkt);
 					}
 					else

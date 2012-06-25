@@ -239,7 +239,7 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
     /****************************************************/
     public RdbmsLiteral asRdbmsLiteral(GeneralDBPolyhedron polyhedron) {
             try {
-                    URI wkt = new URIImpl(StrabonPolyhedron.ogcGeometry);
+                    URI wkt = new URIImpl(StrabonPolyhedron.WKT);
                     RdbmsLiteral literal = new RdbmsLiteral(polyhedron.getInternalId(), polyhedron.getVersion(),new LiteralImpl(polyhedron.stringValue(), wkt));
 
                     if (polyhedron instanceof GeneralDBPolyhedron) {
@@ -262,7 +262,7 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
     
     public RdbmsLiteral asRdbmsLiteral(StrabonPolyhedron polyhedron) {
         try {
-                URI wkt = new URIImpl(StrabonPolyhedron.ogcGeometry);
+                URI wkt = new URIImpl(StrabonPolyhedron.WKT);
                 RdbmsLiteral literal = new RdbmsLiteral(new LiteralImpl(polyhedron.stringValue(), wkt));
 
                 if (polyhedron instanceof StrabonPolyhedron) {

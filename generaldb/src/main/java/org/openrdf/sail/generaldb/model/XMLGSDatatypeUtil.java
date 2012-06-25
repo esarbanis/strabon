@@ -10,7 +10,9 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.datatypes.XMLDateTime;
 import org.openrdf.model.vocabulary.XMLSchema;
 
@@ -36,6 +38,50 @@ public class XMLGSDatatypeUtil {
 	 * Datatype checking *
 	 *-------------------*/
 
+	/**
+	 * Returns true when the given value is an instance of class @{link GeneralDBPolyhedron} 
+	 * or @{link Literal} with datatype @{link StrabonPolyhedron#ogcGeometry} (WKT) or 
+	 * @{link StrabonPolyhedron#gml} (GML).  
+	 * 
+	 * @param value
+	 * @return
+	 * @author Charalampos Nikolaou <charniK@di.uoa.gr>
+	 */
+	public static boolean isGeometryValue(Value value) {
+		if (value instanceof Literal) {
+			if (StrabonPolyhedron.WKT.equals(((Literal) value).getDatatype().stringValue()) || 
+				StrabonPolyhedron.GML.equals(((Literal) value).getDatatype().stringValue())) {
+				return true;
+			}
+		} else if (value instanceof GeneralDBPolyhedron) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Returns true when the given literal has as datatype the WKT URI as it is
+	 * in @{link StrabonPolyhedron.ogcGeometry}.
+	 * 
+	 * @param literal
+	 * @return
+	 */
+	public static boolean isWKTLiteral(Literal literal) {
+		return StrabonPolyhedron.WKT.equals(literal.getDatatype().stringValue());
+	}
+	
+	/**
+	 * Returns true when the given literal has as datatype the GML URI as it is
+	 * in @{link StrabonPolyhedron.gml}.
+	 * 
+	 * @param literal
+	 * @return
+	 */
+	public static boolean isGMLLiteral(Literal literal) {
+		return StrabonPolyhedron.GML.equals(literal.getDatatype().stringValue());
+	}
+	
 	/**
 	 * FIXME needs retouching
 	 * My addition!!
