@@ -9,8 +9,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
  
 /**
- * A spatial function returning a geometry as text.
- * FIXME: (WKT or GML?)
+ * A spatial function returning a geometry as text (in WKT format).
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */

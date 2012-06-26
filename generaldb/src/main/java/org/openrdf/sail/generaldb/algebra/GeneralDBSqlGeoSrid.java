@@ -5,11 +5,16 @@
  */
 package org.openrdf.sail.generaldb.algebra;
 
-  
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlGeoSrid extends GeneralDBSqlSpatialProperty{
+/**
+ * 
+ * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.SridFunc}
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
+public class GeneralDBSqlGeoSrid extends GeneralDBSqlSpatialProperty {
 
 	public GeneralDBSqlGeoSrid(GeneralDBSqlExpr expr) {
 		super(expr);
@@ -21,5 +26,4 @@ public class GeneralDBSqlGeoSrid extends GeneralDBSqlSpatialProperty{
 	{
 		visitor.meet(this);
 	}
-
 }

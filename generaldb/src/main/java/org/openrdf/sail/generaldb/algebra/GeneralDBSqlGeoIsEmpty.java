@@ -4,12 +4,17 @@
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.algebra;
-
   
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlGeoIsEmpty extends GeneralDBSqlSpatialProperty{
+/**
+ * 
+ * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyFunc}
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
+public class GeneralDBSqlGeoIsEmpty extends GeneralDBSqlSpatialProperty {
 
 	public GeneralDBSqlGeoIsEmpty(GeneralDBSqlExpr expr) {
 		super(expr);

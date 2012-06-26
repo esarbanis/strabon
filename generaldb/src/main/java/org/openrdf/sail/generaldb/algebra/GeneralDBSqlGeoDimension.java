@@ -9,7 +9,13 @@ package org.openrdf.sail.generaldb.algebra;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlGeoDimension extends GeneralDBSqlSpatialProperty{
+/**
+ * 
+ * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.DimensionFunc}
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
+public class GeneralDBSqlGeoDimension extends GeneralDBSqlSpatialProperty {
 
 	public GeneralDBSqlGeoDimension(GeneralDBSqlExpr expr) {
 		super(expr);
@@ -21,5 +27,4 @@ public class GeneralDBSqlGeoDimension extends GeneralDBSqlSpatialProperty{
 	{
 		visitor.meet(this);
 	}
-
 }

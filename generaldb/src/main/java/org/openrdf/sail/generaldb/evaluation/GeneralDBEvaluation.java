@@ -956,6 +956,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		//return allVars;
 	}
 
+	/**
+	 * Given an expression get the type of the result. 
+	 * 
+	 * @param expr
+	 * @return
+	 */
 	private int constructReturnType(GeneralDBSqlExpr expr)
 	{
 		if(expr instanceof GeneralDBSqlSpatialProperty)

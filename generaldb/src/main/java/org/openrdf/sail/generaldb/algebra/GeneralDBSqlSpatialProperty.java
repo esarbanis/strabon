@@ -5,17 +5,14 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
+ * This class represents a unary operator in a SQL expression for returning various 
+ * properties of a geometry.
  * 
- * @author manolee
- * The following functions have been defined for returning some properties of a
- *geometry
+ * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc} 
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-
-public class GeneralDBSqlSpatialProperty extends UnaryGeneralDBOperator
-{
-
-
-	/*CONSTRUCTOR*/
+public class GeneralDBSqlSpatialProperty extends UnaryGeneralDBOperator {
 
 	public GeneralDBSqlSpatialProperty(GeneralDBSqlExpr arg) {
 		super(arg);
