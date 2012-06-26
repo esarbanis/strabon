@@ -5,25 +5,14 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import org.openrdf.model.Literal;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.datatypes.XMLDatatypeUtil;
-import org.openrdf.model.vocabulary.XMLSchema;
-import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
-import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
-import org.openrdf.query.algebra.evaluation.util.QueryEvaluationUtil;
  
 /**
- * A {@link Function} that tries to cast its argument to an <tt>xsd:boolean</tt>.
+ * A spatial function returning a geometry as text.
+ * FIXME: (WKT or GML?)
  * 
- * @author Arjohn Kampman
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class AsTextFunc extends SpatialPropertyFunc {
 
@@ -31,7 +20,4 @@ public class AsTextFunc extends SpatialPropertyFunc {
 	public String getURI() {
 		return StrabonPolyhedron.asText;
 	}
-
-	 
- 
 }

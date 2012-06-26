@@ -11,7 +11,10 @@ import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
-
+/**
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
 public class SimilarTermFunc extends GeoSparqlRelation {
 	
 	protected static String name = "similarTerm";
@@ -19,7 +22,7 @@ public class SimilarTermFunc extends GeoSparqlRelation {
 	@Override
 	public String getURI() {
 		return StrabonPolyhedron.stRDF+name;
-		}
+	}
 
     public Value evaluate(ValueFactory valueFactory, Value... args)
             throws ValueExprEvaluationException {

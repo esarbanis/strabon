@@ -8,12 +8,14 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
-
+/**
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
 public class SimpleFeaturesIntersectsFunc extends GeoSparqlRelation {
 
 	@Override
 	public String getURI() {
 		return StrabonPolyhedron.sfIntersects;
-		}
-
+	}
 }

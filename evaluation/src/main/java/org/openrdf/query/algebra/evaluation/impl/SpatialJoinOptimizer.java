@@ -7,20 +7,17 @@
 package org.openrdf.query.algebra.evaluation.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.Compare;
 import org.openrdf.query.algebra.Extension;
-import org.openrdf.query.algebra.ExtensionElem;
 import org.openrdf.query.algebra.Filter;
 import org.openrdf.query.algebra.FunctionCall;
 import org.openrdf.query.algebra.Join;
@@ -28,30 +25,25 @@ import org.openrdf.query.algebra.LeftJoin;
 import org.openrdf.query.algebra.MathExpr;
 import org.openrdf.query.algebra.Or;
 import org.openrdf.query.algebra.QueryModelNode;
-import org.openrdf.query.algebra.QueryModelNodeBase;
 import org.openrdf.query.algebra.StatementPattern;
-import org.openrdf.query.algebra.MathExpr.MathOp;
 import org.openrdf.query.algebra.StatementPattern.Scope;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
-import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.function.Function;
-import org.openrdf.query.algebra.evaluation.function.FunctionRegistry; 
+import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc; 
+import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
-import org.openrdf.query.algebra.helpers.StatementPatternCollector; 
+import org.openrdf.query.algebra.helpers.StatementPatternCollector;
 
 /**
  * A query optimizer that re-orders nested Joins.
  * 
- * @author Arjohn Kampman
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-
 public class SpatialJoinOptimizer 
 //implements QueryOptimizer //Removed it consciously 
 {

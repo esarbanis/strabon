@@ -39,10 +39,9 @@ import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import org.openrdf.query.impl.EmptyBindingSet;
 
 /**
- * A query optimizer that optimizes constant value expressions.
+ * A query optimizer that optimizes constant value expressions for stSPARQL.
  * 
- * @author James Leigh
- * @author Arjohn Kampman
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLConstantOptimizer implements QueryOptimizer {
 

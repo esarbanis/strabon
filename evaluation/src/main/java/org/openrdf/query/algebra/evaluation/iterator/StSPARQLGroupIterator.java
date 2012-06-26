@@ -5,6 +5,10 @@
  */
 package org.openrdf.query.algebra.evaluation.iterator;
 
+import info.aduna.iteration.CloseableIteration;
+import info.aduna.iteration.CloseableIteratorIteration;
+import info.aduna.lang.ObjectUtil;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,16 +18,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import info.aduna.iteration.CloseableIteration;
-import info.aduna.iteration.CloseableIteratorIteration;
-import info.aduna.lang.ObjectUtil;
-
-import org.openrdf.model.URI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.datatypes.XMLDatatypeUtil;
 import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -43,7 +41,6 @@ import org.openrdf.query.algebra.Max;
 import org.openrdf.query.algebra.Min;
 import org.openrdf.query.algebra.Sample;
 import org.openrdf.query.algebra.Sum;
-import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.EvaluationStrategy;
@@ -71,10 +68,8 @@ import org.openrdf.query.impl.EmptyBindingSet;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * @author David Huynh
- * @author Arjohn Kampman
- * @author Jeen Broekstra
- * @author James Leigh
+ * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet, QueryEvaluationException> {
 
