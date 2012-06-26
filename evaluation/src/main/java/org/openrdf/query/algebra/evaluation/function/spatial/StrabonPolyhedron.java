@@ -45,96 +45,102 @@ public class StrabonPolyhedron implements Value {
 
 	public static final boolean EnableConstraintRepresentation = false;
 
-	public static final String stRDF="http://strdf.di.uoa.gr/ontology#";
+	public static final String stRDF			= "http://strdf.di.uoa.gr/ontology#";
 	public static final String stRDFSemiLinearPointset="http://strdf.di.uoa.gr/ontology#SemiLinearPointSet";
-	public static final String WKT="http://strdf.di.uoa.gr/ontology#WKT";
-	public static final String geof="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
-	//Extended functions
-	//Spatial Relationships
-	public static final String GML="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
-	public static final String anyInteract="http://strdf.di.uoa.gr/ontology#anyInteract";
-	public static final String contains="http://strdf.di.uoa.gr/ontology#contains";
-	public static final String coveredBy="http://strdf.di.uoa.gr/ontology#coveredBy";
-	public static final String covers="http://strdf.di.uoa.gr/ontology#covers";
-	public static final String disjoint="http://strdf.di.uoa.gr/ontology#disjoint";
-	public static final String equals="http://strdf.di.uoa.gr/ontology#equals";
-	public static final String inside="http://strdf.di.uoa.gr/ontology#inside";
-	public static final String overlap="http://strdf.di.uoa.gr/ontology#overlap";
-	public static final String touch="http://strdf.di.uoa.gr/ontology#touch";
-	public static final String relate="http://strdf.di.uoa.gr/ontology#relate";
-	public static final String left="http://strdf.di.uoa.gr/ontology#left";
-	public static final String right="http://strdf.di.uoa.gr/ontology#right";
-	public static final String above="http://strdf.di.uoa.gr/ontology#above";
-	public static final String below="http://strdf.di.uoa.gr/ontology#below";
-	//Spatial Constructs
-	public static final String union="http://strdf.di.uoa.gr/ontology#union";
-	public static final String buffer="http://strdf.di.uoa.gr/ontology#buffer";
-	public static final String envelope="http://strdf.di.uoa.gr/ontology#envelope";
-	public static final String convexHull="http://strdf.di.uoa.gr/ontology#convexHull";
-	public static final String boundary="http://strdf.di.uoa.gr/ontology#boundary";
-	public static final String intersection="http://strdf.di.uoa.gr/ontology#intersection";
-	public static final String difference="http://strdf.di.uoa.gr/ontology#difference";
-	public static final String symDifference="http://strdf.di.uoa.gr/ontology#symDifference";
-	public static final String transform="http://strdf.di.uoa.gr/ontology#transform";
-	//Spatial Metric Functions
-	public static final String distance="http://strdf.di.uoa.gr/ontology#distance";
-	public static final String area="http://strdf.di.uoa.gr/ontology#area";
-	//Spatial Properties
-	public static final String dimension="http://strdf.di.uoa.gr/ontology#dimension";
-	public static final String geometryType="http://strdf.di.uoa.gr/ontology#geometryType";
-	public static final String asText="http://strdf.di.uoa.gr/ontology#asText";
-	public static final String srid="http://strdf.di.uoa.gr/ontology#srid";
-	public static final Integer defaultSRID=4326; //default srid. 
-	public static final String isEmpty="http://strdf.di.uoa.gr/ontology#isEmpty";
-	public static final String isSimple="http://strdf.di.uoa.gr/ontology#isSimple";
-	//Spatial Aggregate Functions
-	public static final String extent="http://strdf.di.uoa.gr/ontology#extent";
-	////
+	public static final String WKT 				= stRDF + "WKT";
+	public static final String GML				="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
+	public static final String geof				= "http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+	
+	/* 						Extended functions 							*/
+	
+	// Spatial Relationships
+	public static final String anyInteract 		= stRDF + "anyInteract";
+	public static final String contains 		= stRDF + "contains";
+	public static final String coveredBy 		= stRDF + "coveredBy";
+	public static final String covers 			= stRDF + "covers";
+	public static final String disjoint 		= stRDF + "disjoint";
+	public static final String equals 			= stRDF + "equals";
+	public static final String inside 			= stRDF + "inside";
+	public static final String overlap 			= stRDF + "overlap";
+	public static final String touch 			= stRDF + "touch";
+	public static final String relate 			= stRDF + "relate";
+	public static final String left 			= stRDF + "left";
+	public static final String right			= stRDF + "right";
+	public static final String above 			= stRDF + "above";
+	public static final String below			= stRDF + "below";
+	
+	// Spatial Constructs
+	public static final String union 			= stRDF + "union";
+	public static final String buffer 			= stRDF + "buffer";
+	public static final String envelope 		= stRDF + "envelope";
+	public static final String convexHull		= stRDF + "convexHull";
+	public static final String boundary 		= stRDF + "boundary";
+	public static final String intersection 	= stRDF + "intersection";
+	public static final String difference 		= stRDF + "difference";
+	public static final String symDifference	= stRDF + "symDifference";
+	public static final String transform 		= stRDF + "transform";
+	
+	// Spatial Metric Functions
+	public static final String distance 		= stRDF + "distance";
+	public static final String area 			= stRDF + "area";
+	
+	// Spatial Properties
+	public static final String dimension 		= stRDF + "dimension";
+	public static final String geometryType 	= stRDF + "geometryType";
+	public static final String asText 			= stRDF + "asText";
+	public static final String asGML 			= stRDF + "asGML";
+	public static final String srid 			= stRDF + "srid";
+	public static final String isEmpty 			= stRDF + "isEmpty";
+	public static final String isSimple 		= stRDF + "isSimple";
+	public static final Integer defaultSRID 	= 4326; //default srid.
+	
+	// Spatial Aggregate Functions
+	public static final String extent 			=stRDF + "extent";
 
-	//GEOSPARQL
+	// GEOSPARQL
 
-	//Non-topological
-	public static final String geoSparqlDistance = geof+"distance"; //3 arguments
-	public static final String geoSparqlBuffer = geof+"buffer"; //3 arguments
-	public static final String geoSparqlConvexHull = geof+"convexHull";
-	public static final String geoSparqlIntersection = geof+"intersection";
-	public static final String geoSparqlUnion = geof+"union";
-	public static final String geoSparqlDifference = geof+"difference";
-	public static final String geoSparqlSymmetricDifference = geof+"symmetricDifference";
-	public static final String geoSparqlEnvelope = geof+"envelope";
-	public static final String geoSparqlBoundary = geof+"boundary";
+	// Non-topological
+	public static final String geoSparqlDistance 			= geof + "distance"; //3 arguments
+	public static final String geoSparqlBuffer 				= geof + "buffer"; //3 arguments
+	public static final String geoSparqlConvexHull 			= geof + "convexHull";
+	public static final String geoSparqlIntersection 		= geof + "intersection";
+	public static final String geoSparqlUnion 				= geof + "union";
+	public static final String geoSparqlDifference 			= geof + "difference";
+	public static final String geoSparqlSymmetricDifference = geof + "symmetricDifference";
+	public static final String geoSparqlEnvelope 			= geof + "envelope";
+	public static final String geoSparqlBoundary 			= geof + "boundary";
 
-	//Simple Features - 8 functions - all with 2 arguments + boolean
-	public static final String sfEquals = geof+"sf-equals";  
-	public static final String sfDisjoint = geof+"sf-disjoint";  
-	public static final String sfIntersects = geof+"sf-intersects";
-	public static final String sfTouches = geof+"sf-touches";
-	public static final String sfCrosses = geof+"sf-crosses";
-	public static final String sfWithin = geof+"sf-within";
-	public static final String sfContains = geof+"sf-contains";
-	public static final String sfOverlaps = geof+"sf-overlaps";
+	// Simple Features - 8 functions - all with 2 arguments + boolean
+	public static final String sfEquals 					= geof + "sf-equals";  
+	public static final String sfDisjoint 					= geof + "sf-disjoint";  
+	public static final String sfIntersects 				= geof + "sf-intersects";
+	public static final String sfTouches 					= geof + "sf-touches";
+	public static final String sfCrosses 					= geof + "sf-crosses";
+	public static final String sfWithin 					= geof + "sf-within";
+	public static final String sfContains 					= geof + "sf-contains";
+	public static final String sfOverlaps 					= geof + "sf-overlaps";
 
-	//Egenhofer - 8 functions - all with 2 arguments + boolean
-	public static final String ehEquals = geof+"eh-equals";  
-	public static final String ehDisjoint = geof+"eh-disjoint";  
-	public static final String ehMeet = geof+"eh-meet";
-	public static final String ehOverlap = geof+"eh-overlap";
-	public static final String ehCovers = geof+"eh-covers";
-	public static final String ehCoveredBy = geof+"eh-coveredBy";
-	public static final String ehInside = geof+"eh-inside";
-	public static final String ehContains = geof+"eh-contains";
+	// Egenhofer - 8 functions - all with 2 arguments + boolean
+	public static final String ehEquals 					= geof + "eh-equals";  
+	public static final String ehDisjoint 					= geof + "eh-disjoint";  
+	public static final String ehMeet 						= geof + "eh-meet";
+	public static final String ehOverlap 					= geof + "eh-overlap";
+	public static final String ehCovers 					= geof + "eh-covers";
+	public static final String ehCoveredBy 					= geof + "eh-coveredBy";
+	public static final String ehInside 					= geof + "eh-inside";
+	public static final String ehContains 					= geof + "eh-contains";
 
-	//RCC8 - 8 functions - all with 2 arguments + boolean
-	public static final String rccEquals = geof+"rcc8-eq";  
-	public static final String rccDisconnected = geof+"rcc8-dc";  
-	public static final String rccExternallyConnected = geof+"rcc8-ec";
-	public static final String rccPartiallyOverlapping = geof+"rcc8-po";
-	public static final String rccTangentialProperPartInverse = geof+"rcc8-tppi";
-	public static final String rccTangentialProperPart = geof+"rcc8-tpp";
-	public static final String rccNonTangentialProperPart = geof+"rcc8-ntpp";
-	public static final String rccNonTangentialProperPartInverse = geof+"rcc8-ntppi";
+	// RCC8 - 8 functions - all with 2 arguments + boolean
+	public static final String rccEquals 						 = geof + "rcc8-eq";  
+	public static final String rccDisconnected 					 = geof + "rcc8-dc";  
+	public static final String rccExternallyConnected 			 = geof + "rcc8-ec";
+	public static final String rccPartiallyOverlapping 			 = geof + "rcc8-po";
+	public static final String rccTangentialProperPartInverse 	 = geof + "rcc8-tppi";
+	public static final String rccTangentialProperPart 			 = geof + "rcc8-tpp";
+	public static final String rccNonTangentialProperPart 		 = geof + "rcc8-ntpp";
+	public static final String rccNonTangentialProperPartInverse = geof + "rcc8-ntppi";
 
-	public static final String geoSparqlRelate = geof+"relate";
+	public static final String geoSparqlRelate 					 = geof + "relate";
 
 	private static int MAX_POINTS = Integer.MAX_VALUE;//40000;//Integer.MAX_VALUE;//10000;
 
