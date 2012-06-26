@@ -5,33 +5,15 @@
  */
 package org.openrdf.sail.generaldb.evaluation;
 
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoSymDifference;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUnion;
+import info.aduna.iteration.CloseableIteration;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.aduna.iteration.CloseableIteration;
-import info.aduna.iteration.EmptyIteration;
-
-import org.opengis.filter.spatial.Disjoint;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
@@ -42,8 +24,6 @@ import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.Avg;
 import org.openrdf.query.algebra.Distinct;
-import org.openrdf.query.algebra.Extension;
-import org.openrdf.query.algebra.ExtensionElem;
 import org.openrdf.query.algebra.FunctionCall;
 import org.openrdf.query.algebra.Group;
 import org.openrdf.query.algebra.GroupElem;
@@ -52,7 +32,6 @@ import org.openrdf.query.algebra.QueryModelNode;
 import org.openrdf.query.algebra.Reduced;
 import org.openrdf.query.algebra.Slice;
 import org.openrdf.query.algebra.TupleExpr;
-import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
@@ -60,15 +39,8 @@ import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
-import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
@@ -83,13 +55,11 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.O
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
-import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
+import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.algebra.evaluation.util.StSPARQLOrderComparator;
-import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
-import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo.typeOfField;
 import org.openrdf.sail.generaldb.GeneralDBTripleRepository;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -98,32 +68,34 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBLongLabelColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoDimension;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.sail.generaldb.schema.IdSequence;
+import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsURI;
-import org.openrdf.sail.generaldb.schema.IdSequence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -131,8 +103,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
  * them on a database.
  * 
- * @author James Leigh
- * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
@@ -149,6 +120,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer,String>();
 
 	protected List<GeneralDBSqlExpr> thematicExpressions = new ArrayList<GeneralDBSqlExpr>(5);
+	
+	/**
+	 * Enumeration of the possible types of the results of spatial functions.
+	 * A <tt>NULL</tt> result type is to be interpreted as error.   
+	 */ 
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, NULL};
 
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -183,7 +160,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((Order)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-					}
+	}
+	
 	@Override
 	public Value evaluate(ValueExpr expr, BindingSet bindings)
 			throws ValueExprEvaluationException, QueryEvaluationException
@@ -750,30 +728,14 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				boolean increaseIndex = false;
 
 				GeneralDBSpatialFuncInfo info = null;
-				switch(constructReturnType(expr))
-				{
-				case 1:
-					//Integer
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Integer);
-					break;
-				case 2: 
-					//String
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.String);
-					break;
-				case 3: 
-					//Boolean
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Boolean);
-					break;
-				case 4: 
-					//WKB
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.WKB);
-					increaseIndex = true;
-					break;
-				case 5: 
-					//DOUBLE
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), typeOfField.Double);
-					break;
-				default: throw new UnsupportedRdbmsOperatorException("No such spatial expression exists!");
+				
+				ResultType type = getResultType(expr);
+				if (type == ResultType.NULL) {
+					throw new UnsupportedRdbmsOperatorException("No such spatial expression exists!");
+					
+				} else {
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
+					
 				}
 
 				//constructIndexesAndNames.put((String) pairs.getKey(),index++);
@@ -801,10 +763,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			query.offset(qb.getOffset());
 		}
 		parameters.addAll(query.getParameters());
-//		if (logger.isDebugEnabled()) {
-//			logger.debug(query.toString());
-//			logger.debug(parameters.toString());
-//		}
+
 		return query.toString();
 	}
 
@@ -962,38 +921,38 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * @param expr
 	 * @return
 	 */
-	private int constructReturnType(GeneralDBSqlExpr expr)
+	private ResultType getResultType(GeneralDBSqlExpr expr)
 	{
 		if(expr instanceof GeneralDBSqlSpatialProperty)
 		{
 			if(expr instanceof GeneralDBSqlGeoDimension ||
 					expr instanceof GeneralDBSqlGeoSrid	)
 			{
-				return 1; //INTEGER
+				return ResultType.INTEGER;
 			}
 			else if(expr instanceof GeneralDBSqlGeoGeometryType ||
 					expr instanceof GeneralDBSqlGeoAsText	)
 			{
-				return 2; //STRING
+				return ResultType.STRING;
 			}
 			else if(expr instanceof GeneralDBSqlGeoIsSimple ||
 					expr instanceof GeneralDBSqlGeoIsEmpty	)
 			{
-				return 3; //Boolean
+				return ResultType.BOOLEAN;
 			}
 
 		}
 		else if(expr instanceof GeneralDBSqlSpatialConstructBinary ||
 				expr instanceof GeneralDBSqlSpatialConstructUnary)
 		{
-			return 4; //WKB
+			return ResultType.WKB;
 		}
 		else if(expr instanceof GeneralDBSqlSpatialMetricBinary ||
 				expr instanceof GeneralDBSqlSpatialMetricUnary ||
 				expr instanceof GeneralDBSqlMathExpr)
 		{
-			return 5; //FLOAT
+			return ResultType.DOUBLE;
 		}
-		return 0;//SHOULD NEVER REACH THIS CASE
+		return ResultType.NULL;//SHOULD NEVER REACH THIS CASE
 	}
 }

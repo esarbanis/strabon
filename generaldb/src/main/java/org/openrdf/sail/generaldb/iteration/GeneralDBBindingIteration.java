@@ -158,16 +158,16 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			Value value = null;
 			switch(construct.getType())
 			{
-			case Boolean: 
+			case BOOLEAN: 
 				value = createBooleanGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case Double: 
+			case DOUBLE: 
 				value = createDoubleGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case Integer: 
+			case INTEGER: 
 				value = createIntegerGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case String: 
+			case STRING: 
 				value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
 			case WKB: 
