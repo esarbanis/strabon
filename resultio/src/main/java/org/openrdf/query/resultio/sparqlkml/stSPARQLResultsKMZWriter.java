@@ -19,7 +19,12 @@ import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter;
  */
 public class stSPARQLResultsKMZWriter implements TupleQueryResultWriter {
 
-	private static final String ZIP_ENTRY_FILENAME = "sparql_results.kml";
+	/**
+	 * The name of the KML file that shall be zipped
+	 * (by convention corresponds to "doc")
+	 */
+	private static final String ZIP_ENTRY_FILENAME = "doc.kml";
+
 	/**
 	 * After all a KMZ file is a zipped KML one
 	 */
