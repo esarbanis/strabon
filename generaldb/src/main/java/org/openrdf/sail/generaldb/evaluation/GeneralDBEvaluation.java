@@ -70,6 +70,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoDimension;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
@@ -931,7 +932,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				return ResultType.INTEGER;
 			}
 			else if(expr instanceof GeneralDBSqlGeoGeometryType ||
-					expr instanceof GeneralDBSqlGeoAsText	)
+					expr instanceof GeneralDBSqlGeoAsText ||
+					expr instanceof GeneralDBSqlGeoAsGML)
 			{
 				return ResultType.STRING;
 			}

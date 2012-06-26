@@ -5,36 +5,92 @@
  */
 package org.openrdf.sail.generaldb.algebra.factories;
 
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.above;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.abs;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.and;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.anyInteract;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.asGML;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.asText;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.below;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.cmp;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.concat;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.contains;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.coveredBy;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.covers;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.dimension;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.disjoint;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehContains;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehCoveredBy;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehCovers;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehDisjoint;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehEquals;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehInside;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehMeet;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehOverlap;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.eq;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.eqComparingNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.eqIfNotNull;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.equalsGeo;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoArea;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoSymDifference;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoTransform;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUnion;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geometryType;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.gt;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.inside;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isEmpty;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isNotNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isNull;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSimple;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.left;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.like;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.lowercase;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.neq;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.not;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.num;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.or;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.overlap;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccDisconnected;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccEquals;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccExternallyConnected;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccNonTangentialProperPart;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccNonTangentialProperPartInverse;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccPartiallyOverlapping;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccTangentialProperPart;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccTangentialProperPartInverse;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.regex;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.relate;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.right;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfContains;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfCrosses;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfDisjoint;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfEquals;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfIntersects;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfOverlaps;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfTouches;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfWithin;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.simple;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sqlNull;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.str;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sub;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.touch;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
 
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.vocabulary.XMLSchema;
-import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.And;
 import org.openrdf.query.algebra.Bound;
 import org.openrdf.query.algebra.Compare;
+import org.openrdf.query.algebra.Compare.CompareOp;
 import org.openrdf.query.algebra.FunctionCall;
 import org.openrdf.query.algebra.IsBNode;
 import org.openrdf.query.algebra.IsLiteral;
@@ -50,7 +106,6 @@ import org.openrdf.query.algebra.SameTerm;
 import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
-import org.openrdf.query.algebra.Compare.CompareOp;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
@@ -65,7 +120,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
@@ -77,70 +131,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
-
-
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.anyInteract;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.touch;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.contains;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.coveredBy;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.covers;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.disjoint;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.equalsGeo;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.overlap;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.inside;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.relate;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.left;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.right;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.above;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.below;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfContains;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfCrosses;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfDisjoint;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfEquals;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfIntersects;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfOverlaps;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfTouches;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfWithin;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccDisconnected;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccEquals;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccExternallyConnected;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccNonTangentialProperPart;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccNonTangentialProperPartInverse;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccPartiallyOverlapping;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccTangentialProperPart;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.rccTangentialProperPartInverse;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehContains;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehCoveredBy;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehCovers;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehDisjoint;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehEquals;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehInside;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehMeet;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.ehOverlap;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUnion;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoTransform;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoSymDifference;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoArea;
-
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.dimension;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geometryType;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.asText;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isEmpty;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSimple;
 
 /**
  * Boolean SQL expression factory. This factory can convert a number of core
@@ -1219,6 +1209,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(StrabonPolyhedron.isSimple))
 		{
 			return isSimple(arg);
+			
+		} else if (function.getURI().equals(StrabonPolyhedron.asGML)) {
+			return asGML(arg);
 		}
 
 		//Should never reach this place

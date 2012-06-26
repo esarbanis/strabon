@@ -5,38 +5,30 @@
  */
 package org.openrdf.sail.generaldb.iteration;
 
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
-import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
+import org.openrdf.sail.generaldb.schema.IdSequence;
+import org.openrdf.sail.generaldb.schema.ValueTable;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
-import org.openrdf.sail.generaldb.schema.IdSequence;
-import org.openrdf.sail.generaldb.schema.ValueTable;
-
-import com.vividsolutions.jts.io.ParseException;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
