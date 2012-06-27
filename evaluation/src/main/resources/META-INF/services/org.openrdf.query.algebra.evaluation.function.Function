@@ -34,6 +34,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.DimensionFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.GeometryTypeFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsTextFunc
+org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsGMLFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.SridFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsSimpleFunc

@@ -277,13 +277,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		Value rightResult = null;
 
 		// evaluate first argument
-		leftResult = evaluate(left,bindings);
+		leftResult = evaluate(left, bindings);
 
 		// function call with 2 arguments, evaluate the second one now
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
-			rightResult = evaluate(right,bindings);
+			rightResult = evaluate(right, bindings);
 		}
 
 		try {
