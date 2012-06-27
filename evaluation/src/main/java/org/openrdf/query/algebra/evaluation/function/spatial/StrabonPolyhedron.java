@@ -1,17 +1,9 @@
 package org.openrdf.query.algebra.evaluation.function.spatial;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
-import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
