@@ -124,7 +124,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					}
 					else if(XMLGSDatatypeUtil.isGMLDatatype(datatype)) //GML case
 					{
-						table.insertWKT(id, label, dt, null, null);
+						table.insertGML(id, label, dt, null, null);
 					} 
 					else if(XMLGSDatatypeUtil.isSemiLinearPointSetDatatype(datatype)) // SemiLinearPointSet case
 					{

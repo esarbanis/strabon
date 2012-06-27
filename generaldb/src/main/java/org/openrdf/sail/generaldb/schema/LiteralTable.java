@@ -197,13 +197,11 @@ public class LiteralTable {
 		
 		try {
 			
-			/***XXX new stuff dictated by kkyzir's StrabonPolyhedron***/
-			
-			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label,2);//current algorithm selected: approx convex partition
-			if(polyhedron.getGeometry().getSRID()>0)
+			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label);//current algorithm selected: approx convex partition
+			if(polyhedron.getGeometry().getSRID() > 0)
 			{
 				srid = polyhedron.getGeometry().getSRID();
-				System.out.println("SRID="+srid);
+				//System.out.println("SRID="+srid);
 			}
 			geomWKB = polyhedron.toWKB();
 	
@@ -212,12 +210,26 @@ public class LiteralTable {
 		}
 	     srid= findSRID(label);
 		geoSpatialTable.insert(id,srid,/* start,end,*/ geomWKB);
-		
-		//XXX not needed currently because this method is called AFTER an insertDatatype()
-		//		insertSimple(id, label);
-		//		datatypes.insert(id, datatype);
 	}
 	
+	/**
+	 * Inserts a the given geometry represented in GML into the geo_values table.
+	 * 
+	 * @param id
+	 * @param label
+	 * @param datatype
+	 * @param start
+	 * @param end
+	 * @throws SQLException
+	 * @throws NullPointerException
+	 * @throws InterruptedException
+	 * @throws IllegalArgumentException
+	 */
+	public void insertGML(Number id, String gml, String datatype, Timestamp start, Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException {
+		StrabonPolyhedron geomValue = new StrabonPolyhedron(gml); 
+			
+		geoSpatialTable.insert(id, geomValue.getGeometry().getSRID(),/* start,end,*/ geomValue.toByteArray());
+	}
 	
 	
 	/********************************************************************/

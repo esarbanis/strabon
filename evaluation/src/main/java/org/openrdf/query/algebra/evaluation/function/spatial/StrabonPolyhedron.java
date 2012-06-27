@@ -365,6 +365,8 @@ public class StrabonPolyhedron implements Value {
 	 * Return the geometry of {@link StrabonPolyhedron} in Well-Known
 	 * Binary (WKB).
 	 * 
+	 * This method is equivalent to {@link #toByteArray()}.
+	 * 
 	 * @return
 	 */
 	public byte[] toWKB() {
@@ -382,6 +384,8 @@ public class StrabonPolyhedron implements Value {
 
 	/**
 	 * Return the geometry of {@link StrabonPolyhedron} as a byte array.
+	 * 
+	 * This method is equivalent to {@link #toWKB()}.
 	 * 
 	 * @return
 	 */
