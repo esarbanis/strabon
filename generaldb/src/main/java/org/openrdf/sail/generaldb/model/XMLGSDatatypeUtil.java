@@ -55,6 +55,7 @@ public class XMLGSDatatypeUtil {
 			if (StrabonPolyhedron.WKT.equals(datatype) || StrabonPolyhedron.GML.equals(datatype)) {
 				return true;
 			}
+			
 		} else if (value instanceof GeneralDBPolyhedron) {
 			return true;
 		}
