@@ -21,6 +21,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryBase;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.managers.BNodeManager;
 import org.openrdf.sail.generaldb.managers.LiteralManager;
@@ -239,7 +240,7 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
     /****************************************************/
     public RdbmsLiteral asRdbmsLiteral(GeneralDBPolyhedron polyhedron) {
             try {
-                    URI wkt = new URIImpl(StrabonPolyhedron.WKT);
+                    URI wkt = new URIImpl(GeoConstants.WKT);
                     RdbmsLiteral literal = new RdbmsLiteral(polyhedron.getInternalId(), polyhedron.getVersion(),new LiteralImpl(polyhedron.stringValue(), wkt));
 
                     if (polyhedron instanceof GeneralDBPolyhedron) {
@@ -262,7 +263,7 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
     
     public RdbmsLiteral asRdbmsLiteral(StrabonPolyhedron polyhedron) {
         try {
-                URI wkt = new URIImpl(StrabonPolyhedron.WKT);
+                URI wkt = new URIImpl(GeoConstants.WKT);
                 RdbmsLiteral literal = new RdbmsLiteral(new LiteralImpl(polyhedron.stringValue(), wkt));
 
                 if (polyhedron instanceof StrabonPolyhedron) {

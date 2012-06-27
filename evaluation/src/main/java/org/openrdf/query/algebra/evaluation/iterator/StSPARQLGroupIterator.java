@@ -48,6 +48,7 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
@@ -352,7 +353,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					if(val instanceof StrabonPolyhedron)
 					{
 						String label = val.toString()+";http://www.opengis.net/def/crs/EPSG/0/"+((StrabonPolyhedron)val).getGeometry().getSRID();
-						Literal wkt = new LiteralImpl(label,new URIImpl(StrabonPolyhedron.WKT));
+						Literal wkt = new LiteralImpl(label,new URIImpl(GeoConstants.WKT));
 						sol.setBinding(name,wkt);
 					}
 					else

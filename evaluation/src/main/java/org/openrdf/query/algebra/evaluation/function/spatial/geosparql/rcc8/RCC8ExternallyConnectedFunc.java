@@ -5,7 +5,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.rcc8;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
 /**
@@ -16,6 +16,6 @@ public class RCC8ExternallyConnectedFunc extends GeoSparqlRelation {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.rccExternallyConnected;
+		return GeoConstants.rccExternallyConnected;
 	}
 }

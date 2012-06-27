@@ -3,6 +3,7 @@ package org.openrdf.sail.generaldb.model;
 import java.io.IOException;
 
 import org.openrdf.model.URI;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
@@ -117,7 +118,7 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
 				+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" + 
 				((StrabonPolyhedron.EnableConstraintRepresentation)  ? 
-						StrabonPolyhedron.stRDFSemiLinearPointset : StrabonPolyhedron.WKT)
+						GeoConstants.stRDFSemiLinearPointset : GeoConstants.WKT)
 						+">");
 	}
 

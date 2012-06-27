@@ -64,11 +64,11 @@ import org.openrdf.query.algebra.StatementPattern.Scope;
 import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry; 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
@@ -1265,7 +1265,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							String originalName = copy.getName();
 							//((Var) expr).setName(originalName+"?spatial");
 
-							FunctionCall fc = new FunctionCall(StrabonPolyhedron.envelope,copy);
+							FunctionCall fc = new FunctionCall(GeoConstants.envelope,copy);
 							//XXX volatile - using an extra arg to 'hang' the name I need
 							fc.addArg(new Var("-mbb-"+originalName));
 							ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+originalName);
@@ -1300,7 +1300,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				}
 				else //Function call met
 				{
-					FunctionCall fc = new FunctionCall(StrabonPolyhedron.envelope,expr);
+					FunctionCall fc = new FunctionCall(GeoConstants.envelope,expr);
 
 					fc.addArg(new Var("-mbb-"+(++mbbCounter)));
 					ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+(mbbCounter));

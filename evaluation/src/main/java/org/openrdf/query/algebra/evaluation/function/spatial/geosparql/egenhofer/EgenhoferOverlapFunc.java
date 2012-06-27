@@ -5,7 +5,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.egenhofer;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
 
@@ -13,7 +13,7 @@ public class EgenhoferOverlapFunc extends GeoSparqlRelation {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.ehOverlap;
+		return GeoConstants.ehOverlap;
 		}
 
 }

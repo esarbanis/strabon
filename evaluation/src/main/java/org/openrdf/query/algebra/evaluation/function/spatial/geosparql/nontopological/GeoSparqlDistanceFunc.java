@@ -5,7 +5,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlNonTopologicalMetric;
 
 /**
@@ -16,6 +16,6 @@ public class GeoSparqlDistanceFunc extends GeoSparqlNonTopologicalMetric {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.geoSparqlDistance;
+		return GeoConstants.geoSparqlDistance;
 	}
 }

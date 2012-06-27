@@ -34,7 +34,7 @@ import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
@@ -156,7 +156,7 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		} 
 		else { // spatial literal
 			// else if (value instanceof RdbmsPolyhedron)
-			URI datatype = new URIImpl(StrabonPolyhedron.WKT);
+			URI datatype = new URIImpl(GeoConstants.WKT);
 			Literal literal = new LiteralImpl(value.stringValue(), datatype);
 			writeLiteral(literal);
 		}

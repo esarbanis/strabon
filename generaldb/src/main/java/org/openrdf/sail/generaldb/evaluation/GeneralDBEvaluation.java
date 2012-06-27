@@ -38,6 +38,7 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
@@ -436,12 +437,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
 	{
 		StrabonPolyhedron leftArg = ((GeneralDBPolyhedron) left).getPolyhedron();
-		if(function.getURI().equals(StrabonPolyhedron.union))
+		if(function.getURI().equals(GeoConstants.union))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.buffer))
+		else if(function.getURI().equals(GeoConstants.buffer))
 		{
 			if(right instanceof LiteralImpl)
 			{
@@ -455,7 +456,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.transform))
+		else if(function.getURI().equals(GeoConstants.transform))
 		{
 			if(right instanceof URIImpl)
 			{
@@ -471,29 +472,29 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.envelope))
+		else if(function.getURI().equals(GeoConstants.envelope))
 		{
 			return StrabonPolyhedron.envelope(leftArg);
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.convexHull))
+		else if(function.getURI().equals(GeoConstants.convexHull))
 		{
 			return StrabonPolyhedron.convexHull(leftArg);
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.boundary))
+		else if(function.getURI().equals(GeoConstants.boundary))
 		{
 			return StrabonPolyhedron.boundary(leftArg);
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.intersection))
+		else if(function.getURI().equals(GeoConstants.intersection))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.difference))
+		else if(function.getURI().equals(GeoConstants.difference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
-		else if(function.getURI().equals(StrabonPolyhedron.symDifference))
+		else if(function.getURI().equals(GeoConstants.symDifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.symDifference(leftArg, rightArg);		

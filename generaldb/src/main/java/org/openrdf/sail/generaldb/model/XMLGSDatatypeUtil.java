@@ -17,7 +17,7 @@ import org.openrdf.model.datatypes.XMLDateTime;
 import org.openrdf.model.vocabulary.XMLSchema;
 
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 
 
 
@@ -53,7 +53,7 @@ public class XMLGSDatatypeUtil {
 			Literal literal = (Literal) value;
 			String datatype = literal.getDatatype() == null ? "":literal.getDatatype().stringValue();
 			
-			if (StrabonPolyhedron.WKT.equals(datatype) || StrabonPolyhedron.GML.equals(datatype)) {
+			if (GeoConstants.WKT.equals(datatype) || GeoConstants.GML.equals(datatype)) {
 				return true;
 			}
 			
@@ -97,7 +97,7 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 		
-		return StrabonPolyhedron.WKT.equals(datatype.stringValue());
+		return GeoConstants.WKT.equals(datatype.stringValue());
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 	
-		return StrabonPolyhedron.GML.equals(datatype.stringValue());
+		return GeoConstants.GML.equals(datatype.stringValue());
 	}
 	
 	/**

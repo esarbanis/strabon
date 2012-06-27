@@ -16,7 +16,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -301,7 +301,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			}
 			
 			// transform the geometry to 4326
-			geom = jts.transform(geom, srid, StrabonPolyhedron.defaultSRID);
+			geom = jts.transform(geom, srid, GeoConstants.defaultSRID);
 			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;

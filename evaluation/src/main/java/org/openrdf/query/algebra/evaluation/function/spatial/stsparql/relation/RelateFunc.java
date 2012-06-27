@@ -5,8 +5,8 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
@@ -15,7 +15,7 @@ public class RelateFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.relate;
+		return GeoConstants.relate;
 	}
 
 //	public Literal evaluate(ValueFactory valueFactory, Value... args)

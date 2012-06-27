@@ -5,8 +5,8 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
  
 /**
  * A spatial function for testing whether a geometry is empty.
@@ -17,6 +17,6 @@ public class IsEmptyFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.isEmpty;
+		return GeoConstants.isEmpty;
 	}
 }

@@ -43,7 +43,7 @@ public class WKTHelper {
 	 * @return
 	 */
 	public static Integer getSRID(String wkt) {
-		int srid = StrabonPolyhedron.defaultSRID;
+		int srid = GeoConstants.defaultSRID;
 		
 		if (wkt == null) return srid;
 		

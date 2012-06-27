@@ -7,7 +7,7 @@ package org.openrdf.sail.postgis;
 
 import java.sql.SQLException;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
 /**
@@ -46,7 +46,7 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	
 	@Override
 	public String buildInsertGeometryValue() {
-		Integer srid=  StrabonPolyhedron.defaultSRID;
+		Integer srid=  GeoConstants.defaultSRID;
 		return " (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),"+srid+"),?)";
 	}
 	

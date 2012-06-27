@@ -5,8 +5,8 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
  
 /**
  * 
@@ -16,6 +16,6 @@ public class LeftFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.left;
+		return GeoConstants.left;
 	}
 }

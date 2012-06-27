@@ -5,8 +5,8 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
  
 /**
  * A spatial function returning the dimension of a geometry.
@@ -17,6 +17,6 @@ public class DimensionFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.dimension;
+		return GeoConstants.dimension;
 	}
 }

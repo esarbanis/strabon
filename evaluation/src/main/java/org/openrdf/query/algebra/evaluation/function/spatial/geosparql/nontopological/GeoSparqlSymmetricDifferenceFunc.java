@@ -1,6 +1,6 @@
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlNonTopologicalConstruct;
 
 /**
@@ -11,6 +11,6 @@ public class GeoSparqlSymmetricDifferenceFunc extends GeoSparqlNonTopologicalCon
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.geoSparqlSymmetricDifference;
+		return GeoConstants.geoSparqlSymmetricDifference;
 	}
 }

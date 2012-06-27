@@ -5,8 +5,8 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 
 /**
  * A spatial function computing the distance between two geometries.
@@ -17,6 +17,6 @@ public class DistanceFunc extends SpatialMetricFunc {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.distance;
+		return GeoConstants.distance;
 		}
 }

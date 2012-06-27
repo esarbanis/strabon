@@ -8,7 +8,7 @@ package org.openrdf.query.algebra.evaluation.function.link;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
 /**
@@ -21,7 +21,7 @@ public class SimilarTermFunc extends GeoSparqlRelation {
 	
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.stRDF+name;
+		return GeoConstants.stRDF+name;
 	}
 
     public Value evaluate(ValueFactory valueFactory, Value... args)

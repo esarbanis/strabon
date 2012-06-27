@@ -5,7 +5,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.egenhofer;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
 
@@ -13,7 +13,7 @@ public class EgenhoferDisjointFunc extends GeoSparqlRelation {
 
 	@Override
 	public String getURI() {
-		return StrabonPolyhedron.ehDisjoint;
+		return GeoConstants.ehDisjoint;
 		}
 
 }

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
@@ -47,7 +47,7 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		{
 			byte[] label = rs.getBytes(index + 1);
 			int srid = rs.getInt(index + 2);
-			return vf.getRdbmsPolyhedron(id, StrabonPolyhedron.WKT, label, srid);
+			return vf.getRdbmsPolyhedron(id, GeoConstants.WKT, label, srid);
 
 		}
 
@@ -62,7 +62,7 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.WKT, label, srid);
+		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
 
 	}
 }
