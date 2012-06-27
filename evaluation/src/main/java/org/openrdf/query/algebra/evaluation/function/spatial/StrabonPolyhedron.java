@@ -309,6 +309,7 @@ public class StrabonPolyhedron implements Value {
 		this.geometry = new StrabonPolyhedron(geo, algorithm, MAX_POINTS).geometry;
 	}
 
+	@SuppressWarnings("unused")
 	public StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
 		if (geo.isEmpty()) {
 			this.geometry = geo;
@@ -631,7 +632,6 @@ public class StrabonPolyhedron implements Value {
 
 		System.out.println("ConvexifyTime " + (System.nanoTime()-start));
 
-		int[] sizes = new int[255];
 		double min = Double.MAX_VALUE;
 		double max = Double.MIN_VALUE;
 
