@@ -49,8 +49,10 @@ public class XMLGSDatatypeUtil {
 	 */
 	public static boolean isGeometryValue(Value value) {
 		if (value instanceof Literal) {
-			if (StrabonPolyhedron.WKT.equals(((Literal) value).getDatatype().stringValue()) || 
-				StrabonPolyhedron.GML.equals(((Literal) value).getDatatype().stringValue())) {
+			Literal literal = (Literal) value;
+			String datatype = literal.getDatatype() == null ? "":literal.getDatatype().stringValue();
+			
+			if (StrabonPolyhedron.WKT.equals(datatype) || StrabonPolyhedron.GML.equals(datatype)) {
 				return true;
 			}
 		} else if (value instanceof GeneralDBPolyhedron) {
