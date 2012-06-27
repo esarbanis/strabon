@@ -240,34 +240,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 		}
 
+		// get the function corresponding to the function call
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
-
-		//		if(fc.getParentNode() instanceof Filter)
-		//		{
-		//			//Traditional Behavior!
-		//			try {
-		//				if (function == null) {
-		//					throw new QueryEvaluationException("Unknown function '" + fc.getURI() + "'");
-		//				}
-		//
-		//				List<ValueExpr> args = fc.getArgs();
-		//
-		//				Value[] argValues = new Value[args.size()];
-		//
-		//				for (int i = 0; i < args.size(); i++) {
-		//
-		//					argValues[i] = evaluate(args.get(i), bindings);
-		//
-		//				}
-		//
-		//				return function.evaluate(tripleSource.getValueFactory(), argValues);} catch (ValueExprEvaluationException e) {
-		//					e.printStackTrace();
-		//				} catch (QueryEvaluationException e) {
-		//					e.printStackTrace();
-		//				}
-		//		}
 		
-		// get the first argument of the function
+		// get the first argument of the function call
 		ValueExpr left = fc.getArgs().get(0);
 
 		// evaluated first argument of function
@@ -286,16 +262,20 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			rightResult = evaluate(right, bindings);
 		}
 
+		// having evaluated the arguments of the function, evaluate the function
 		try {
-			if ( function instanceof SpatialConstructFunc ) 
+			if ( function instanceof SpatialConstructFunc ) {
 				return spatialConstructPicker(function, leftResult, rightResult);
-			//Any boolean function present in HAVING - Must evaluate here!
-			else if(function instanceof SpatialRelationshipFunc)
-			{
+
+			}  else if(function instanceof SpatialRelationshipFunc)	{
+				// Any boolean function present in HAVING - Must evaluate here!
+				
 				boolean funcResult = false;
+				
 				//For the time being I only include stSPARQL ones
 				Geometry leftGeom = null;
 				Geometry rightGeom = null;
+				
 				if(leftResult instanceof StrabonPolyhedron)
 				{
 					leftGeom = ((StrabonPolyhedron) leftResult).getGeometry();
@@ -415,7 +395,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					//System.out.println(rightConverted.toString());
 					funcResult = leftGeom.overlaps(rightConverted);
 				}
 				else if(function instanceof RightFunc)
@@ -444,6 +423,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				for (int i = 0; i < args.size(); i++) {
 					argValues[i] = evaluate(args.get(i), bindings);
 				}
+				
 				return function.evaluate(tripleSource.getValueFactory(), argValues);
 			}
 		} catch (Exception e) {
