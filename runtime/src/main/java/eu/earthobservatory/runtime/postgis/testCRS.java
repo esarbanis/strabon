@@ -18,7 +18,7 @@ public class testCRS {
 			strabon = new Strabon("tut","postgres","p1r3as", 5432, "localhost", true);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			strabon.close();
+		
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -37,7 +37,7 @@ public class testCRS {
 	String statement2= "<http://example.org/CoastLine5> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#hasGeometry> " +
 				"\"POLYGON((34.80 19.37,41.74 19.37,41.74 29.64 ,34.80 29.64,34.80 19.37));http://www.opengis.net/def/crs/EPSG/0/32630" +
 				"\"^^<http://strdf.di.uoa.gr/ontology#WKT> .";
-		String gml =  "<http://example.org/rcc8Obj1> <http://example.org/hasGeometry> \"<gml:Point> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>\"^^<http://strdf.di.uoa.gr/ontology#GML> .\n";
+		String gml =  "<http://example.org/rcc8Obj1> <http://example.org/hasGeometry> \"<gml:Point> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>\"^^<http://strdf.di.uoa.gr/ontology#GML> .";
 				
 		String file = "/home/konstantina/gmlread.nt";
 		URL url = new URL("http://www.di.uoa.gr/~pms509/rdf-data/streason.nt");
@@ -48,9 +48,9 @@ public class testCRS {
 		try {
 			//strabon.storeInRepo(statement1, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(statement2, stringBaseURI, null, stringRDFFormat);
-			//strabon.storeInRepo(text, null, null, "NTRIPLES");
-			strabon.storeInRepo(file, fileRDFFormat);
-			//strabon.storeInRepo(gml, null, null, fileRDFFormat);
+			strabon.storeInRepo(text, null, null, "NTRIPLES");
+			//strabon.storeInRepo(file, fileRDFFormat);
+			//strabon.storeInRepo(gml, null, null, stringRDFFormat);
 			
 		} catch (RDFParseException e) {
 			e.printStackTrace();

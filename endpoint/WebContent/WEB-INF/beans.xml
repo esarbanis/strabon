@@ -134,7 +134,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
 	                <!-- Format -->
 	                <value>HTML</value>
 	                <!-- Label -->
-	                <value>Update A: Remove hotspots in sea</value> 
+	                <value>Update A: Invalidate hotspots in sea</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[# Delete hotspots that lie in sea
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
@@ -166,7 +166,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
         }
         FILTER(!bound(?c)). 
 }]]></value>
-<value>Delete all hotspots produced by the static thresholds processing chain and are acquired at 2007-08-24T14:45:00 which are located in the sea</value>
+<value>Mark as invalid all hotspots produced by the static thresholds processing chain and are acquired at 2007-08-24T14:45:00 which are located in the sea</value>
 	            </list>
 	            <list>
 	                <!-- Bean -->
@@ -177,37 +177,42 @@ WHERE { ?h 	rdf:type noa:Hotspot;
 	                <value>Update B: Refine hotspots in sea</value>
 	                <!-- Statement -->
 	                <value><![CDATA[# Refine the geometry of hotspots that partially lie in sea
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-DELETE { ?h noa:hasGeometry ?hGeo}
-INSERT { ?h noa:hasGeometry ?dif}
-WHERE {
-SELECT DISTINCT ?h ?hGeo (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif)
-WHERE { ?h rdf:type noa:Hotspot;
-           noa:hasAcquisitionTime ?hAcqTime;
-           noa:producedFromProcessingChain ?hChain;
-           noa:hasGeometry ?hGeo.
-        FILTER("2007-08-24T14:45:00"^^xsd:dateTime = ?hAcqTime).
-        FILTER(str(?hChain) = "StaticThresholds").
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)).
-        ?c rdf:type noa:Coastline ;
-           noa:hasGeometry ?cGeo .
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?cGeo)).
-        FILTER(strdf:anyInteract(?hGeo, ?cGeo)).}
-        GROUP BY ?h ?hGeo
-        HAVING strdf:overlap(?hGeo, strdf:union(?cGeo)) 
-}]]></value>
+
+INSERT { ?h noa:isDiscarded "1"^^xsd:int . 
+	 ?valid rdf:type noa:Hotspot ;
+		noa:hasConfidence ?conf ;
+	        noa:hasGeometry ?dif ;
+		noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
+	        noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+		noa:hasConfirmation noa:unknown ;
+	        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
+		noa:isProducedBy noa:noa ;
+		noa:isDerivedFromSatellite ?sat .
+}
+WHERE { 
+  SELECT DISTINCT ?h ?hGeo (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf ?sat
+  WHERE { 
+    ?h rdf:type noa:Hotspot ; 
+       noa:hasAcquisitionTime ?hAcqTime ; 
+       noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
+       noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+       noa:hasGeometry ?hGeo ;
+       noa:hasConfidence ?conf ;
+       noa:isDerivedFromSatellite ?sat .
+    FILTER("TIMESTAMP"^^xsd:dateTime = ?hAcqTime) .
+    ?c rdf:type noa:Coastline ;
+       noa:hasGeometry ?cGeo .
+    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
+  }
+  GROUP BY ?h ?hGeo ?conf ?sat
+  HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))
+}
+]]></value>
 	      <value>Refine hotspots acquired at 2007-08-24T14:45:00 removing the part that lies in the sea. </value>
 	            </list>
 	            <list>
