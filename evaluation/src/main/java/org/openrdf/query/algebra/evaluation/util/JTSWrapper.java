@@ -3,6 +3,14 @@
  */
 package org.openrdf.query.algebra.evaluation.util;
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -12,6 +20,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -55,6 +64,7 @@ public class JTSWrapper {
 	 * Writer for WKB
 	 */
 	private WKBWriter wkbw;
+	
 	
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
@@ -138,4 +148,26 @@ public class JTSWrapper {
 		return output;
 	}
 	
+	/**
+	 * Parses and returns a {@link Geometry} object constructed from the given GML representation.
+	 * 
+	 * @param gml
+	 * @return
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws JAXBException
+	 */
+	public static Geometry GMLReader(String gml) throws IOException, SAXException, ParserConfigurationException, JAXBException {
+        StringReader reader = new StringReader(gml);
+		
+        JAXBContext context = JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	
+		
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+		
+        Geometry geometry = (Geometry) unmarshaller.unmarshal(reader);
+		
+		reader.close();
+        return geometry;
+	}
 }

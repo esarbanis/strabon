@@ -173,7 +173,7 @@ public class LiteralTable {
 			geomWKB = polyhedron.toByteArray();
 			
 		
-		} catch (conversionException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			throw new SQLException("An issue occurred in the underlying StrabonPolyhedron's constructor!");
@@ -206,11 +206,7 @@ public class LiteralTable {
 				System.out.println("SRID="+srid);
 			}
 			geomWKB = polyhedron.toWKB();
-			
-		}  catch (conversionException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
