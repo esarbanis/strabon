@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
@@ -27,6 +29,7 @@ import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -288,19 +291,20 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				
 			} else { // spatial literal
 				Literal spatial = (Literal) value;
+				String geomRep = spatial.stringValue();
 				
 				if (XMLGSDatatypeUtil.isWKTLiteral(spatial)) { // WKT
-					String wkt = spatial.stringValue();
-					
-					geom = jts.WKTread(WKTHelper.getWithoutSRID(wkt));
-					srid = WKTHelper.getSRID(wkt);
+					geom = jts.WKTread(WKTHelper.getWithoutSRID(geomRep));
+					srid = WKTHelper.getSRID(geomRep);
 					
 				} else { // GML
-					logger.warn("[Strabon.KMLWriter] GML is not supported yet");
+					geom = jts.GMLread(geomRep);
+					srid = geom.getSRID();
+					
 				}
 			}
 			
-			// transform the geometry to 4326
+			// transform the geometry to {@link GeoConstants#defaultSRID}
 			geom = jts.transform(geom, srid, GeoConstants.defaultSRID);
 			
 			if (geom instanceof Point) {
@@ -341,6 +345,10 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			
 		} catch (IOException e) {
 			logger.error("[Strabon.KMLWriter] IOException during KML encoding of geometry: {}", e.getMessage());
+			
+		} catch (JAXBException e) {
+			logger.error("[Strabon.KMLWriter] Exception during GML parsing: {}", e.getMessage());
+			
 		}
 		
 		return kml;
