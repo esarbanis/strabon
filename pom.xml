@@ -55,16 +55,10 @@
 
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryresultio-sparqlxml-spatial</artifactId>
+				<artifactId>sesame-queryresultio-spatial</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
-<!-- 
-			<dependency>
-				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryresultio-sparqljson-spatial</artifactId>
-				<version>${eu.earthobservatory.version}</version>
-			</dependency>
- -->			
+
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-sail-generaldb</artifactId>

@@ -9,9 +9,9 @@
 	</parent>
 
 	<groupId>org.openrdf.sesame</groupId>
-	<artifactId>sesame-queryresultio-sparqlxml-spatial</artifactId>
-	<name>OpenRDF Sesame: Query result IO - SPARQL/XML - Spatial</name>
-	<description> Minimal spatial extensions of Query result parser and writer implementation for the SPARQL Query Results XML Format. </description>
+	<artifactId>sesame-queryresultio-spatial</artifactId>
+	<name>OpenRDF Sesame: Query result IO - Spatial</name>
+	<description>Minimal spatial extensions of Query result parser and writer implementation for the SPARQL Query Results Format.</description>
 	<packaging>jar</packaging>
 	
 	<dependencies>
