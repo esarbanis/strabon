@@ -93,10 +93,10 @@
 %>
 	<tr>
 	<!--  direct input form -->
-		<td style="border: 1px dashed #bbbbbb;">Direct Input:</td>
-		<td style="border: 1px dashed #bbbbbb;">
+		<td id="output">Direct Input:</td>
+		<td id="output>
 			<textarea name="<%=StoreBean.PARAM_DATA%>" rows="15" cols="100"></textarea></td>
-		<td rowspan=4 style="border: 1px dashed #bbbbbb;">
+		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
 				<SELECT name="<%=StoreBean.PARAM_FORMAT%>">
 				<% for (String format : StoreBean.registeredFormats) {%>
@@ -107,7 +107,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan=2 style="border: 1px dashed #bbbbbb;"><br/>
+		<td colspan=2 id="output><br/>
 		<CENTER>
 			<input type="submit" value="Store Input" name="<%=StoreBean.SUBMIT_INPUT%>" style="width: 400px"/>
 		</CENTER><br/>
@@ -115,14 +115,14 @@
 	</tr>
 	
 	<tr>
-		<td style="border: 1px dashed #bbbbbb;">URI Input:</td>
-		<td style="border: 1px dashed #bbbbbb;">
+		<td id="output" >URI Input:</td>
+		<td id="output">
 			<textarea name="<%=StoreBean.PARAM_DATA_URL%>" rows="1" cols="100"></textarea>
 		</td>
 	</tr>
 	
 	<tr>
-		<td colspan=2 style="border: 1px dashed #bbbbbb;"><br/>
+		<td colspan=2 id="output"><br/>
 			<CENTER>
 				<INPUT type="submit" value="Store from URI" name="<%=StoreBean.SUBMIT_URL%>" style="width: 400px"/>
 			</CENTER><br/>
