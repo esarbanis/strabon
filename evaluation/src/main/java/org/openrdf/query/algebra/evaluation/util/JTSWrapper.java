@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.gml2.GMLReader;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
@@ -63,12 +65,6 @@ public class JTSWrapper {
 	 */
 	private WKBWriter wkbw;
 	
-	/**
-	 * Reader for GML
-	 */
-	private GMLReader gmlr;
-	
-	
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
 		wktr = new WKTReader();
@@ -76,7 +72,6 @@ public class JTSWrapper {
 		wkbr = new WKBReader();
 		wkbw = new WKBWriter(); // PostGIS
 //		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
-		gmlr = new GMLReader();
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -150,40 +145,26 @@ public class JTSWrapper {
 		}
 		
 		return output;
-	}
+	}		
 	
 	/**
 	 * Parses and returns a {@link Geometry} object constructed from the given GML representation.
 	 * 
-	 * @param gml
-	 * @return
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public Geometry GMLread(String gml) throws SAXException, IOException, ParserConfigurationException {
-			return gmlr.read(gml, null);
-	}
-		
-	
-	/**
-	 * Parses and returns a {@link Geometry} object constructed from the given GML representation.
-	 * 
-	 * Why not use the class {@link GMLReader} that does the job and need to load on our own
-	 * the XML parser of JTS?
+	 * We do not use class {@link GMLReader} that does the job transparently (i.e. we wouldn't 
+	 * need to load the XML parser of JTS on our own), since in such a case we are enforced to 
+	 * mention a specific SRID, otherwise the #getSRID() function returns a value of 0. Doing 
+	 * it the hard way, the SRID field is filled with the SRID that is present in the GML 
+	 * representation. 
 	 * 
 	 * @param gml
 	 * @return
 	 * @throws JAXBException
 	 */
-	@Deprecated
-	private static Geometry GMLReader(String gml) throws JAXBException {
+	public Geometry GMLread(String gml) throws JAXBException {
         StringReader reader = new StringReader(gml);
 		
         JAXBContext context = JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	
-		
         Unmarshaller unmarshaller = context.createUnmarshaller();
-		
         Geometry geometry = (Geometry) unmarshaller.unmarshal(reader);
 		
 		reader.close();
