@@ -110,44 +110,32 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					table.insertDateTime(id, label, dt, value);
 				}
 				else {
-					//System.out.println("NOT  NUMERIC:::"+label+" "+literal);
 					table.insertDatatype(id, label, dt);
 					
 					/**
-					 * XXX Additions here
+					 * FIXME
 					 * NOTE: Cannot support the intervalStart and intervalEnd here!! 
 					 * Will need some other place to add them if this approach does work
 					 * 
 					 */
-					if(XMLGSDatatypeUtil.isGeoSpatialDatatype(datatype))
+					if(XMLGSDatatypeUtil.isWKTDatatype(datatype)) //WKT case
 					{
-						table.insertGeoSpatial(id, label,dt,null,null);
-					}
-					else if(XMLGSDatatypeUtil.isNestedWKT(datatype)) //WKT case
-					
-					{
-					//	System.out.println(label);
 						table.insertWKT(id, label, dt, null, null);
 					}
 					else if(XMLGSDatatypeUtil.isGMLDatatype(datatype)) //GML case
-						
 					{
-					//	System.out.println(label);
 						table.insertWKT(id, label, dt, null, null);
+					} 
+					else if(XMLGSDatatypeUtil.isSemiLinearPointSetDatatype(datatype)) // SemiLinearPointSet case
+					{
+						table.insertGeoSpatial(id, label,dt,null,null);
 					}
-					
 				}
 				
 			}
 			catch (NumberFormatException e) {
 				table.insertDatatype(id, label, dt);
 			}
-			//catch (IllegalArgumentException e) {
-			//	table.insertDatatype(id, label, dt);
-			//} //catch (IOException e) {
-				// TODO removed it while experimenting with the correct spot to deal with geospatial
-				//e.printStackTrace();
-			//} 
 		}
 	}
 
@@ -157,7 +145,6 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 	}
 
 	/**
-	 * my addition
 	 * @return the literal table linked with the manager
 	 */
 	public LiteralTable getLiteralTable()

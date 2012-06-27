@@ -29,6 +29,28 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 
 /**
+ * A {@link StrabonPolyhedron} is a @{link Value} that is used to represent geometries.
+ * Therefore, a {@link StrabonPolyhedron} wraps around the construct of an RDF @{link Value}
+ * the notion of geometry. This geometry can be expressed in different kinds of
+ * representations, such as linear constraints over the reals with addition
+ * (Semi-linear point sets), Well-Known Text (WKT), or Geography Markup Language (GML).
+ * 
+ * The former kind of representation, i.e., Semi-linear point sets, was the first
+ * representation to be supported by StrabonPolyhedron and now has been deprecated and
+ * not supported any more. It can be enabled by setting the value for variable
+ * {@link #EnableConstraintRepresentation} to <tt>true</tt>. However, this is hardly 
+ * suggested and it is discouraged. 
+ * 
+ * The other two kinds of representation is WKT and GML which are representations
+ * standardized by the Open Geospatial Consortium (OGC). Both representations can be
+ * used to represent a geometry and they are enabled by default.
+ * 
+ * {@link StrabonPolyhedron} does not store a specific representation for a geometry. In
+ * contrast, it stores the plain geometry as a byte array using a {@link Geometry} object.
+ * However, {@link StrabonPolyhedron} offers constructors and methods for getting a
+ * {@link StrabonPolyhedron} instance through any kind of representation and of course
+ * getting a {@link StrabonPolyhedron} instance in a specific representation.
+ * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Kostis Kyzirakos <kk@di.uoa.gr>
  *
@@ -45,11 +67,33 @@ public class StrabonPolyhedron implements Value {
 
 	public static final boolean EnableConstraintRepresentation = false;
 
-	public static final String stRDF			= "http://strdf.di.uoa.gr/ontology#";
-	public static final String stRDFSemiLinearPointset="http://strdf.di.uoa.gr/ontology#SemiLinearPointSet";
-	public static final String WKT 				= stRDF + "WKT";
-	public static final String GML				="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
-	public static final String geof				= "http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+	/**
+	 * The namespace for stRDF data model
+	 */
+	public static final String stRDF					= "http://strdf.di.uoa.gr/ontology#";
+	
+	/**
+	 * The URI for the datatype SemiLinearPointSet
+	 * (linear constraint-based representation of geometries)
+	 */
+	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
+	
+	/**
+	 * The URI for the datatype Well-Known Text (WKT)
+	 */
+	public static final String WKT 						= stRDF + "WKT";
+	
+	/**
+	 * The URI for the datatype Geography Markup Langague (GML)
+	 */
+	public static final String GML						= stRDF + "GML";
+	
+	//private static final String GML					= "http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
+	
+	/**
+	 * The namespace for geometry functions declared by GeoSPARQL
+	 */
+	public static final String geof						= "http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
 	
 	/* 						Extended functions 							*/
 	
@@ -157,6 +201,90 @@ public class StrabonPolyhedron implements Value {
 	public StrabonPolyhedron() {
 		this.geometry = null;
 
+	}
+	
+	public StrabonPolyhedron(Polygon polygon) throws Exception {
+		this.geometry = new StrabonPolyhedron(polygon, 1).geometry;
+	}
+
+	public StrabonPolyhedron(String geometry) throws Exception {
+		int geomSRID = 4326;
+		if(geometry.contains(";"))
+		{
+			int whereToCut = geometry.lastIndexOf('/');
+			geomSRID = Integer.parseInt(geometry.substring(whereToCut+1));
+			whereToCut = geometry.indexOf(';');
+			geometry.substring(0,whereToCut);
+		}
+		if (geometry.startsWith("POINT") || 
+				geometry.startsWith("LINESTRING") || 
+				geometry.startsWith("POLYGON") || 
+				geometry.startsWith("MULTIPOINT") || 
+				geometry.startsWith("MULTILINESTRING") || 
+				geometry.startsWith("MULTIPOLYGON") || 
+				geometry.startsWith("GEOMETRYCOLLECTION")) {
+			Geometry geo = jts.WKTread(geometry);
+			this.geometry = new StrabonPolyhedron(geo).geometry;
+			//Default 
+			this.geometry.setSRID(geomSRID);
+		} else {
+		
+			if(geometry.contains("gml"))
+			{
+				Geometry geo = GMLReader(geometry);
+				this.geometry = new StrabonPolyhedron(geo).geometry;
+			}
+			
+			//Polyhedron polyhedron = new Polyhedron(geometry);
+			//String polyhedronWKT = polyhedron.toWKT();
+			//Geometry geo = jts.WKTread(polyhedronWKT);
+			//
+			//if (!EnableConstraintRepresentation) {
+			//	this.geometry = geo.union(geo);
+			//}
+		}
+	}
+
+	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
+		if(WKT.contains("gml"))
+		{
+			Geometry geo = GMLReader(WKT);
+			this.geometry = new StrabonPolyhedron(geo).geometry;
+		}
+		else
+		{
+			//System.out.println("	new StrabonPolyhedron: before WKTReader");
+			Geometry geo = jts.WKTread(WKT);
+			//System.out.println("	new StrabonPolyhedron: after WKTReader");
+			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
+		}
+	
+	}
+
+	public StrabonPolyhedron(String WKT, int algorithm, int maxPoints) throws Exception {
+
+		if(WKT.contains("gml"))
+		{
+			System.err.println("**************** THIS IS NOT A GOOD PLACE/WARY FOR THIS CONVERSION /////////");
+			Geometry geo = GMLReader(WKT);
+			this.geometry = new StrabonPolyhedron(geo).geometry;
+		}
+		else
+		{
+
+			Geometry geo = jts.WKTread(WKT);
+			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;	
+		}
+	}
+
+	public StrabonPolyhedron(byte[] byteArray) throws ParseException {
+		this.geometry = jts.WKBread(byteArray);
+	}
+
+	public StrabonPolyhedron(byte[] byteArray, int srid) throws ParseException {
+
+		this.geometry = jts.WKBread(byteArray);
+		this.geometry.setSRID(srid);
 	}
 
 	public void setGeometry(Geometry geometry) {
@@ -596,95 +724,7 @@ public class StrabonPolyhedron implements Value {
 		this.geometry = new MultiPolygon(collection, new GeometryFactory());
 		this.geometry.normalize();
 	}
-
-	public StrabonPolyhedron(Polygon polygon) throws Exception {
-		this.geometry = new StrabonPolyhedron(polygon, 1).geometry;
-	}
-
-	public StrabonPolyhedron(String geometry) throws Exception {
-		int geomSRID = 4326;
-		if(geometry.contains(";"))
-		{
-			int whereToCut = geometry.lastIndexOf('/');
-			geomSRID = Integer.parseInt(geometry.substring(whereToCut+1));
-			whereToCut = geometry.indexOf(';');
-			geometry.substring(0,whereToCut);
-		}
-		if (geometry.startsWith("POINT") || 
-				geometry.startsWith("LINESTRING") || 
-				geometry.startsWith("POLYGON") || 
-				geometry.startsWith("MULTIPOINT") || 
-				geometry.startsWith("MULTILINESTRING") || 
-				geometry.startsWith("MULTIPOLYGON") || 
-				geometry.startsWith("GEOMETRYCOLLECTION")) {
-			Geometry geo = jts.WKTread(geometry);
-			this.geometry = new StrabonPolyhedron(geo).geometry;
-			//Default 
-			this.geometry.setSRID(geomSRID);
-		} else {
-		
-			if(geometry.contains("gml"))
-			{
-				Geometry geo = GMLReader(geometry);
-				this.geometry = new StrabonPolyhedron(geo).geometry;
-			}
-			
-			//Polyhedron polyhedron = new Polyhedron(geometry);
-			//String polyhedronWKT = polyhedron.toWKT();
-			//Geometry geo = jts.WKTread(polyhedronWKT);
-			//
-			//if (!EnableConstraintRepresentation) {
-			//	this.geometry = geo.union(geo);
-			//}
-		}
-	}
-
-	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		if(WKT.contains("gml"))
-		{
-			Geometry geo = GMLReader(WKT);
-			this.geometry = new StrabonPolyhedron(geo).geometry;
-		}
-		else
-		{
-			//System.out.println("	new StrabonPolyhedron: before WKTReader");
-			Geometry geo = jts.WKTread(WKT);
-			//System.out.println("	new StrabonPolyhedron: after WKTReader");
-			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
-		}
 	
-	}
-
-	public StrabonPolyhedron(String WKT, int algorithm, int maxPoints) throws Exception {
-
-		if(WKT.contains("gml"))
-		{
-			//GMLReader gmlreader= new GMLReader();
-			//GeometryFactory gf = new GeometryFactory();
-			//Geometry geo = gmlreader.read(WKT,gf);
-			Geometry geo = GMLReader(WKT);
-			this.geometry = new StrabonPolyhedron(geo).geometry;
-		}
-		else
-		{
-
-			Geometry geo = jts.WKTread(WKT);
-			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;	
-		}
-	}
-
-	public StrabonPolyhedron(byte[] byteArray) throws ParseException {
-
-		this.geometry = jts.WKBread(byteArray);
-		//		System.out.println(geometry.toString()+" "+geometry.getSRID());
-	}
-
-	public StrabonPolyhedron(byte[] byteArray, int srid) throws ParseException {
-
-		this.geometry = jts.WKBread(byteArray);
-		this.geometry.setSRID(srid);
-	}
-
 	public String toConstraints() //throws ConversionException 
 	{
 		if (this.geometry.isEmpty())
@@ -879,19 +919,16 @@ public class StrabonPolyhedron implements Value {
 
 	public StrabonPolyhedron getBuffer(double distance) throws Exception {
 		Geometry geo = this.geometry.buffer(distance);
-		System.out.println("TEMPORARY ----> BUFFER EXECUTED!!");
 		return new StrabonPolyhedron(geo);
 	}
 
 	public StrabonPolyhedron getBoundary() throws Exception {
 		Geometry geo = this.geometry.getBoundary();
-		System.out.println("TEMPORARY ----> BOUNDARY EXECUTED!!");
 		return new StrabonPolyhedron(geo);
 	}
 
 	public StrabonPolyhedron getEnvelope() throws Exception {
 		Geometry geo = this.geometry.getEnvelope();
-		System.out.println("TEMPORARY ----> BB EXECUTED!!");
 		return new StrabonPolyhedron(geo);
 	}
 
@@ -917,73 +954,6 @@ public class StrabonPolyhedron implements Value {
 									MultiPolygon.class.isInstance(geo) ? "MultiPolygon" :
 										GeometryCollection.class.isInstance(geo) ? "GeometryCollection" : 
 											"Unknown";
-	}
-
-	public static void main(String[] args) {		
-		double start, stop;
-		double construct = 0;
-		double constructWKT = 0;
-		double tostring = 0;
-		double toconstraints = 0;
-
-		for (int i = 0; i < 100; i++) {
-			try {			
-				String WKT = "POLYGON(("
-						+ "342164.38954080583 5536425.686612717 , "
-						+ "341626.21626698505 5536449.481769281 , "
-						+ "341533.2278808594  5536525.216353727 , "
-						+ "341233.98619135865 5536475.226529011 , "
-						+ "341127.21075357014 5536983.653040268 , "
-						+ "341215.02899532224 5537144.780243294 , "
-						+ "340955.95747845445 5537799.537709246 , "
-						+ "343211.19068847306 5537879.8934287615, "
-						+ "343442.00065602345 5537324.533655008 , "
-						+ "343314.06638177147 5537172.864526819 , "
-						+ "343297.4180221379  5536922.705445975 , "
-						+ "342969.57149877446 5536768.366861146 , "
-						+ "342464.2661603174  5536951.549574836 , "
-						+ "342296.77657097764 5536842.341803761 , "
-						+ "342222.48151387094 5536641.402704332 , "
-						+ "342286.9145411997  5536458.319970291 , "
-						+ "342164.38954080583 5536425.686612717" + "))";
-
-				start = System.nanoTime();
-				Geometry geo = jts.WKTread(WKT);
-				geo.isValid();
-				geo.isSimple();
-				geo.normalize();
-				constructWKT += System.nanoTime() - start;
-
-				start = System.nanoTime();
-				StrabonPolyhedron poly = new StrabonPolyhedron(WKT);
-				construct += System.nanoTime() - start;
-
-				//System.out.println("-------------------S-T-R-I-N-G-----------------start");
-				start = System.nanoTime();
-				String polyString = poly.toString();
-				tostring += System.nanoTime() - start;
-				//System.out.println(polyString);
-
-				//System.out.println("-------------------S-T-R-I-N-G-----------------end");
-				//System.out.println("-------------C-O-N-S-T-R-A-I-N-T-S-------------start");
-				start = System.nanoTime();
-				//String constraintString = poly.toConstraints();
-				toconstraints += System.nanoTime() - start;
-				//System.out.println(constraintString);
-				//System.out.println("-----------------------------------------------end");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		System.out.println("Construct (WKT): " + constructWKT);
-		System.out.println("Construct      : " + construct);
-		System.out.println("To String      : " + tostring);
-		System.out.println("To Constraints : " + toconstraints);
-		System.out.println("-------------------------------------------------");
-		System.out.println("Costruct/Construct(WKT):" + (100*construct/constructWKT));
-		System.out.println("To Constraints/To String:" + (100*toconstraints/tostring));
 	}
 
 	public String stringValue() {
