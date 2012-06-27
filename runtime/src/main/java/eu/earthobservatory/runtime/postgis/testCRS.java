@@ -48,8 +48,8 @@ public class testCRS {
 		try {
 			//strabon.storeInRepo(statement1, stringBaseURI, null, stringRDFFormat);
 			//strabon.storeInRepo(statement2, stringBaseURI, null, stringRDFFormat);
-			strabon.storeInRepo(text, null, null, "NTRIPLES");
-			//strabon.storeInRepo(file, fileRDFFormat);
+			//strabon.storeInRepo(text, null, null, "NTRIPLES");
+			strabon.storeInRepo(file, fileRDFFormat);
 			//strabon.storeInRepo(gml, null, null, stringRDFFormat);
 			
 		} catch (RDFParseException e) {
