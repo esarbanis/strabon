@@ -437,6 +437,16 @@ public class QueryBean extends HttpServlet {
 		out.println("<link href=\"http://code.google.com/apis/maps/documentation/javascript/examples/default.css\" rel=\"stylesheet\" type=\"text/css\" />");
 		out.println("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" /> ");
 		out.println("<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?sensor=false\"></script>");
+		out.println("<script type=\"text/javascript\">" +
+				"function toggleMe(a){" +
+				"var e=document.getElementById(a);" +
+				"if(!e)return true;" +
+				"if(e.style.display==\"none\"){" +
+						"e.style.display=\"block\"" +
+						"}else{" +
+						"e.style.display=\"none\"}" +
+						"return true;}" +
+						"</script>");
 		out.println("<script type=\"text/javascript\">");
 		out.println("function initialize() {");
 		out.println("  var brahames = new google.maps.LatLng(37.92253, 23.72275);");
@@ -496,15 +506,16 @@ public class QueryBean extends HttpServlet {
 				"<a href=\"http://labs.mondeca.com/dataset/lov/details/vocabulary_lgdo.html\" > Linked Geodata </a> " +
 				" and <a href=\"http://www.geonames.org/search.html?q=ontology&country=\" >  geonames </a>." +
 				"We also use the <a href=\"images/graph.png\">NOA ontology</a> we developed for the <a href=\"http://www.space.noa.gr/ \">NOA </a> use case of the European FP7 project " +
-				"<a href=\"http://www.earthobservatory.eu/\" >TELEIOS </a>. </br> </br>") ;
-		out.println(" In this context NOA has been developing a real-time fire hotspot detection service for effectively monitoring a " +
+				"<a href=\"http://www.earthobservatory.eu/\" >TELEIOS </a>. ") ;
+		out.println("<a onclick=\"return toggleMe('par')\" />(More) </a> <br>");
+		out.println(" <p id=\"par\"> In this context NOA has been developing a real-time fire hotspot detection service for effectively monitoring a " +
 				"fire-front. The technique is based on the use of acquisitions originating from the SEVIRI (Spinning Enhanced Visible and " +
 				"Infrared Imager) sensor, on top of MSG-1 (Meteosat Second Generation satellite, renamed to Meteosat-8) and MSG-2 (renamed to " +
 				"Meteosat-9) satellite platforms. Since 2007, NOA operates an MSG/SEVIRI acquisition station, and has been systematically archiving" +
 				" raw satellite images on a 5 and 15 minutes basis, the respective temporal resolutions of MSG-1 and MSG-2. The acquired data are then annotated " +
-				"using the stRDF model and can be queried using the stSPARQL query language.</br> </br> ");
+				"using the stRDF model and can be queried using the stSPARQL query language. </p>  ");
 		out.println("On the left sidebar, some example stSPARQL queries are provided. The NOA use case is described in more detail in the VLDB application paper " +
-				"<a href=\"\"> here </a> ");
+				"<a href=\"\"> here. </a> ");
 		out.println("      </TD>");
 		out.println("	</TR>");
 		out.println("</TABLE>");
@@ -542,6 +553,9 @@ public class QueryBean extends HttpServlet {
 		out.println("</textarea></td>");
 		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
 		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
+		out.println("</tr>");
+		out.println("<tr>");
+
 		out.println("<td id=\"output\";\"><center>Output Format:<br/><select name=\"format\" title=\"select one of the following output format types\">");
 		
 		Map<String, String> selections = new HashMap<String, String>();
@@ -567,8 +581,8 @@ public class QueryBean extends HttpServlet {
 		}
 		
 		out.println("</select></center></td>");
-		out.println("</tr>");
-		out.println("<tr>");
+		//out.println("</tr>");
+		//out.println("<tr>");
 		out.println("<td colspan=2 \"><br/><center><input type=\"submit\" title=\"execute query\" value=\"Query\" name=\"submit\" /><br/><input type=\"submit\" title=\"execute update\" value=\"Update\" name=\"submit\" style=\"width: 400px\"/></center><br/></td>");
 		out.println("</tr>");
 	}

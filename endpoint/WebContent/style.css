@@ -30,7 +30,7 @@ a
 
 a:hover 
 {
-	color: #E6A685;
+	color: blue;
 	}
 
 p {
@@ -54,6 +54,13 @@ border-bottom:10px solid #D1D1BA;
 	border:3px solid #E6A685;
 	border-radius:5px;
 	padding:5px;
+	font-size:13px;
+
+}
+
+#par
+{
+	display:none;
 }
 #output
 {
@@ -84,7 +91,10 @@ input[type=submit]
 
 	}
 
-	
+#navigation
+{
+	background:#D1D1BA;
+}	
 #navigation a {
 	font: bold 11px Arial, Helvetica, sans-serif;
 	color: #5f7383;
@@ -92,12 +102,13 @@ input[type=submit]
 	letter-spacing:.1em;
 	text-decoration: none;
 	display:block;
-	padding:8px 6px 10px 20px;
+	padding:8px 6px 10px 20px;	
+	background:#D1D1BA;
 	}
 	
-#navigation a:hover {
+#navigation a:hover  {
 #	background: #5f7383;
-	background:#D1D1BA;
+	background:#F9E9E1;
 #	background-color:#B8B894;
 #	color:#dfe8f0;
 	border: 1px solid #E6A685;
