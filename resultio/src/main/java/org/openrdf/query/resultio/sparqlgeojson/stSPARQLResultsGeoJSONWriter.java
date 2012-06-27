@@ -148,19 +148,23 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 						srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
 						
 					} else { // spatial literal WKT or GML
+						// get the textual representation of the geometry (WKT or GML)
+						String geoText = value.stringValue();
 						
 						if (XMLGSDatatypeUtil.isWKTLiteral((Literal) value)) {// WKT
-							// get the WKT as it is present in the result
-							String wkt = value.stringValue();
-							
 							// get its geometry
-							geom = jts.WKTread(WKTHelper.getWithoutSRID(wkt));
+							geom = jts.WKTread(WKTHelper.getWithoutSRID(geoText));
 							
 							// get its SRID
-							srid = WKTHelper.getSRID(wkt);
+							srid = WKTHelper.getSRID(geoText);
 							
-						} else { // TODO GML
-							logger.warn("[Strabon.GeoJSON] GML is not supported yet.");
+						} else { // GML
+							// get its geometry
+							geom = jts.GMLread(geoText);
+							
+							// get its SRID
+							srid = geom.getSRID();
+								
 						}
 					}
 					
