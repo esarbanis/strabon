@@ -1496,6 +1496,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Dimension: filter.appendFunction("ST_Dimension"); break;
 			case ST_GeometryType: filter.appendFunction("ST_GeometryType"); break;
 			case ST_AsText: filter.appendFunction("ST_AsText"); break;
+			case ST_AsGML: filter.appendFunction("ST_AsGML"); break;
 			case ST_SRID: filter.appendFunction("ST_SRID"); break;
 			case ST_IsEmpty: filter.appendFunction("ST_IsEmpty"); break;
 			case ST_IsSimple: filter.appendFunction("ST_IsSimple"); break;
