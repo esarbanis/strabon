@@ -150,8 +150,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr,
 			BindingSet bindings)
-					throws QueryEvaluationException
-					{
+	throws QueryEvaluationException
+	{
 		if (expr instanceof GeneralDBSelectQuery)
 			return evaluate((GeneralDBSelectQuery)expr, bindings);
 		else if (expr instanceof Group) {
@@ -165,8 +165,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	
 	@Override
 	public Value evaluate(ValueExpr expr, BindingSet bindings)
-			throws ValueExprEvaluationException, QueryEvaluationException
-			{
+	throws ValueExprEvaluationException, QueryEvaluationException
+	{
 		if (expr instanceof Var) {
 			return evaluate((Var)expr, bindings);
 		}
@@ -174,7 +174,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return evaluate((FunctionCall)expr, bindings);
 		}
 		return super.evaluate(expr, bindings);
-			}
+	}
 
 	/**
 	 * Had to use it for the cases met in group by (Union as an aggregate)
@@ -227,8 +227,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	@Override
 	public Value evaluate(FunctionCall fc, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
-		//System.out.println("FunctionCall placeholder");
-
 		if(fc.getParentNode() instanceof Avg)
 		{
 			if(fc.getParentNode().getParentNode() instanceof GroupElem)
@@ -268,34 +266,24 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		//					e.printStackTrace();
 		//				}
 		//		}
+		
+		// get the first argument of the function
 		ValueExpr left = fc.getArgs().get(0);
 
-
+		// evaluated first argument of function
 		Value leftResult = null;
+		
+		// evaluated second argument of function (if any)
 		Value rightResult = null;
 
-		//		try {
+		// evaluate first argument
 		leftResult = evaluate(left,bindings);
-		//		} catch (ValueExprEvaluationException e) {
-		//			e.printStackTrace();
-		//		} catch (QueryEvaluationException e) {
-		//			e.printStackTrace();
-		//		}
 
-
-		//		if(!(function instanceof EnvelopeFunc) 
-		//				&& !(function instanceof ConvexHullFunc) 
-		//				&& !(function instanceof BoundaryFunc))
+		// function call with 2 arguments, evaluate the second one now
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
-			//			try {
 			rightResult = evaluate(right,bindings);
-			//			} catch (ValueExprEvaluationException e) {
-			//				e.printStackTrace();
-			//			} catch (QueryEvaluationException e) {
-			//				e.printStackTrace();
-			//			}
 		}
 
 		try {
@@ -351,7 +339,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{	//SHOULD NEVER REACH THIS CASE!
 					return null;
 				}
-
 
 				if(function instanceof AboveFunc)
 				{
