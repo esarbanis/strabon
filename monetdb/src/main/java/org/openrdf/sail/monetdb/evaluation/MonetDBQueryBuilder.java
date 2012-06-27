@@ -25,6 +25,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoBoundary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoBuffer;
@@ -121,11 +122,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_CoveredBy,
 		ST_Overlaps,
 		ST_Relate,
+		
 		// These Spatial Relations are implemented in MonetDB as operands and they apply in MBB of a geometry
 		anyInteract, 
 		equals, 
 		contains, 
 		inside,		
+		
 		//Spatial Constructs - Binary
 		ST_Union,
 		ST_Intersection,
@@ -133,21 +136,27 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
+		
 		//Spatial Constructs - Unary
 		ST_Envelope,
 		ST_ConvexHull,
 		ST_Boundary,
+		
 		//Spatial Metrics - Binary
 		ST_Distance,
+		
 		//Spatial Metrics - Unary
 		ST_Area,
+		
 		//Spatial Properties - All Unary
 		ST_Dimension,
 		ST_GeometryType,
+		ST_AsGML,
 		ST_AsText,
 		ST_SRID,
 		ST_IsEmpty,
 		ST_IsSimple,
+		
 		//GeoSPARQL
 		//Simple Features
 		SF_Equals,
@@ -167,6 +176,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		RCC8_Tpp,
 		RCC8_Ntppi,
 		RCC8_Ntpp,
+		
 		//Egenhofer
 		EH_Equals,
 		EH_Disjoint,
@@ -751,6 +761,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_AsText);
 	}
+	
+	@Override
+	protected void append(GeneralDBSqlGeoAsGML expr, GeneralDBSqlExprBuilder filter)
+	throws UnsupportedRdbmsOperatorException {
+		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_AsGML);
+	}	
 
 	@Override
 	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
@@ -2025,5 +2041,5 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			//			filter.closeBracket();
 		}
 		filter.closeBracket();
-	}	
+	}
 }

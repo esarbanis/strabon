@@ -24,6 +24,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoBoundary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoBuffer;
@@ -61,7 +62,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
 import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBFromItem;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
-import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 import org.openrdf.sail.generaldb.algebra.base.TripleGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.egenhofer.GeneralDBSqlEgenhofer_Contains;
@@ -99,11 +99,15 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
  * 
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
+	public static final String STRDFGEO_FIELD = "strdfgeo";
+	public static final String SRID_FIELD = "srid";
+	public static final String ST_TRANSFORM = "ST_Transform";
+	public static final String ST_ASBINARY = "ST_AsBinary";
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -122,6 +126,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Intersects,
 		ST_Equals,
 		ST_Relate, 
+		
 		//Spatial Constructs - Binary
 		ST_Union, 
 		ST_Intersection, 
@@ -129,21 +134,27 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
+		
 		//Spatial Constructs - Unary
 		ST_Envelope,
 		ST_ConvexHull,
 		ST_Boundary,
+		
 		//Spatial Metrics - Binary
 		ST_Distance,
+		
 		//Spatial Metrics - Unary
 		ST_Area,
+		
 		//Spatial Properties - All Unary
 		ST_Dimension,
 		ST_GeometryType,
+		ST_AsGML,
 		ST_AsText,
 		ST_SRID,
 		ST_IsEmpty,
 		ST_IsSimple,
+		
 		//GeoSPARQL
 		//Simple Features
 		SF_Equals,
@@ -154,6 +165,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		SF_Contains,
 		SF_Overlaps,
 		SF_Crosses,
+		
 		//RCC8
 		RCC8_Eq,
 		RCC8_Dc,
@@ -163,6 +175,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		RCC8_Tpp,
 		RCC8_Ntppi,
 		RCC8_Ntpp,
+		
 		//Egenhofer
 		EH_Equals,
 		EH_Disjoint,
@@ -222,25 +235,25 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		else {
 			if(var.isSpatial())
 			{
-				filter.appendFunction("ST_AsBinary");
+				filter.appendFunction(ST_ASBINARY);
 				filter.openBracket();
 				//XXX SRID
-				filter.appendFunction("ST_Transform");
+				filter.appendFunction(ST_TRANSFORM);
 				filter.openBracket();
 				//
 				String alias = getLabelAlias(var.getRdbmsVar());
 
-				filter.column(alias, "strdfgeo");
+				filter.column(alias, STRDFGEO_FIELD);
 				//XXX SRID
 				filter.appendComma();
-				filter.column(alias, "srid");
+				filter.column(alias, SRID_FIELD);
 				filter.closeBracket();
 				//
 				filter.closeBracket();
 
 				//Adding srid field explicitly for my StrabonPolyhedron constructor later on!
 				filter.appendComma();
-				filter.column(alias, "srid");
+				filter.column(alias, SRID_FIELD);
 			}
 			else
 			{
@@ -308,7 +321,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty))
 		{
-			query.select().appendFunction("ST_AsBinary");
+			query.select().appendFunction(ST_ASBINARY);
 		}
 		else
 		{
@@ -699,6 +712,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsText);
 	}
+	
+	@Override
+	protected void append(GeneralDBSqlGeoAsGML expr, GeneralDBSqlExprBuilder filter)
+	throws UnsupportedRdbmsOperatorException
+	{
+		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
+	}
 
 	//	@Override
 	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
@@ -1052,7 +1072,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		String sridExpr = null;
 
 		filter.openBracket();
-		filter.appendFunction("ST_Transform");
+		filter.appendFunction(ST_TRANSFORM);
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1111,7 +1131,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				}
 				if(sridNeeded)
 				{
-					filter.appendFunction("ST_Transform");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}
 			}
@@ -1256,7 +1276,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				}
 				if(sridNeeded)
 				{
-					filter.appendFunction("ST_Transform");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}
 			}
@@ -1461,7 +1481,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				}
 				if(sridNeeded)
 				{
-					filter.appendFunction("ST_Transform");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}
 			}
