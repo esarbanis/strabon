@@ -33,10 +33,29 @@ public class GeoConstants {
 	public static final String WKT 						= stRDF + "WKT";
 
 	/**
-	 * The URI for the datatype Geography Markup Langague (GML)
+	 * The URI for the datatype Geography Markup Language (GML) as it defined
+	 * in the model stRDF and query language stSPARQL
 	 */
 	public static final String GML						= stRDF + "GML";
 
+	/**
+	 * 
+	 * The URI for the namespace of GML.
+	 * 
+	 * Initially, it was set to "http://www.opengis.net/def/geometryType/OGC-GML/3.2/".
+	 * Afterwards, it was set to "http://www.opengis.net/gml/3.2/" in order to be compliant
+	 * with GML version 3.3, as defined by OGC in the document with title
+	 * <tt>"OGC® Geography Markup Language (GML) — Extended schemas and encoding rules"</tt>
+	 * ({@link https://portal.opengeospatial.org/files/?artifact_id=46568}). However, none
+	 * of these work with the parser provided by JTS, which assumes that the namespace for
+	 * GML should be only "http://www.opengis.net/gml" and nothing else. In every other case,
+	 * an exception is thrown by the GML parser.
+	 * 
+	 * 
+	 * @see {@link org.openrdf.query.algebra.evaluation.util.JTSWrapper.GMLReader}, {@link GMLReader}
+	 */
+	public static final String GML_OGC					= "http://www.opengis.net/gml";
+	
 	/**
 	 * The namespace for geometry functions declared by GeoSPARQL
 	 */

@@ -113,7 +113,7 @@ public class StrabonPolyhedron implements Value {
 		} catch (ParseException e) {
 			try {
 				// try as GML
-				geometry = JTSWrapper.GMLReader(representation);
+				geometry = jts.GMLread(representation);
 				
 			} catch (Exception e1) {
 				throw new IllegalArgumentException(e1);
@@ -172,7 +172,7 @@ public class StrabonPolyhedron implements Value {
 	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
 		if(WKT.contains("gml"))
 		{
-			Geometry geo = JTSWrapper.GMLReader(WKT);
+			Geometry geo = jts.GMLread(WKT);
 			this.geometry = new StrabonPolyhedron(geo).geometry;
 		}
 		else

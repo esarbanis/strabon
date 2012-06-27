@@ -209,7 +209,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				
 				} else { // URI, BlankNode, or Literal other than spatial literal 
 					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal: {}", value);
+						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
 					}
 					
 					// mark that we found sth corresponding to the description

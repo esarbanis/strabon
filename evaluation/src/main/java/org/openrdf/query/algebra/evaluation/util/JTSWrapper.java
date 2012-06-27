@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.openrdf.query.algebra.evaluation.util;
 
 import java.io.IOException;
@@ -23,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.gml2.GMLReader;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
@@ -65,6 +63,11 @@ public class JTSWrapper {
 	 */
 	private WKBWriter wkbw;
 	
+	/**
+	 * Reader for GML
+	 */
+	private GMLReader gmlr;
+	
 	
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
@@ -73,6 +76,7 @@ public class JTSWrapper {
 		wkbr = new WKBReader();
 		wkbw = new WKBWriter(); // PostGIS
 //		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
+		gmlr = new GMLReader();
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -153,12 +157,27 @@ public class JTSWrapper {
 	 * 
 	 * @param gml
 	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
+	 * @throws ParserConfigurationException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 */
+	public Geometry GMLread(String gml) throws SAXException, IOException, ParserConfigurationException {
+			return gmlr.read(gml, null);
+	}
+		
+	
+	/**
+	 * Parses and returns a {@link Geometry} object constructed from the given GML representation.
+	 * 
+	 * Why not use the class {@link GMLReader} that does the job and need to load on our own
+	 * the XML parser of JTS?
+	 * 
+	 * @param gml
+	 * @return
 	 * @throws JAXBException
 	 */
-	public static Geometry GMLReader(String gml) throws IOException, SAXException, ParserConfigurationException, JAXBException {
+	@Deprecated
+	private static Geometry GMLReader(String gml) throws JAXBException {
         StringReader reader = new StringReader(gml);
 		
         JAXBContext context = JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	

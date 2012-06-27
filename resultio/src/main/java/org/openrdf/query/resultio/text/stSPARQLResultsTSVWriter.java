@@ -20,12 +20,12 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 
 	@Override
 	protected void writeValue(Value val) throws IOException {
-		// catch the spatial case and create a new literal
-		// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 		if (val instanceof GeneralDBPolyhedron) {
+			// catch the spatial case and create a new literal
+			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
 			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep(), dbpolyhedron.getDatatype());
-		} 
+		}
 		
 		// write value
 		super.writeValue(val);

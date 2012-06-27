@@ -49,11 +49,9 @@ public class XMLGSDatatypeUtil {
 	 */
 	public static boolean isGeometryValue(Value value) {
 		if (value instanceof Literal) {
-			// TODO: use #isGMLDatatype instead
 			Literal literal = (Literal) value;
-			String datatype = literal.getDatatype() == null ? "":literal.getDatatype().stringValue();
-			
-			if (GeoConstants.WKT.equals(datatype) || GeoConstants.GML.equals(datatype)) {
+
+			if (isWKTLiteral(literal) || isGMLLiteral(literal)) {
 				return true;
 			}
 			
