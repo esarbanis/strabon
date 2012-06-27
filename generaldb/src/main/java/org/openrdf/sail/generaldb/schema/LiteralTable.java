@@ -9,10 +9,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.lang.IllegalArgumentException;
+
+import javax.xml.bind.JAXBException;
+
 import org.openrdf.sail.generaldb.exceptions.conversionException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
+import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 
 /**
  * A Facade to the five literal value tables. Which are labels, languages,
@@ -192,24 +200,17 @@ public class LiteralTable {
 	//the new version will actually deal with WKB
 	public void insertWKT(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
-		Integer srid;
-		byte[] geomWKB = null;
-		
 		try {
-			
-			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label);//current algorithm selected: approx convex partition
-			if(polyhedron.getGeometry().getSRID() > 0)
-			{
-				srid = polyhedron.getGeometry().getSRID();
-				//System.out.println("SRID="+srid);
+			Geometry geom = JTSWrapper.getInstance().WKTread(label);
+			if (geom == null) {
+				throw new IllegalArgumentException("Invalid WKT.");
+				
 			}
-			geomWKB = polyhedron.toWKB();
-	
-		} catch (Exception e) {
-			e.printStackTrace();
+			geoSpatialTable.insert(id, WKTHelper.getSRID(label),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
+			
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
 		}
-	     srid= findSRID(label);
-		geoSpatialTable.insert(id,srid,/* start,end,*/ geomWKB);
 	}
 	
 	/**
@@ -226,13 +227,17 @@ public class LiteralTable {
 	 * @throws IllegalArgumentException
 	 */
 	public void insertGML(Number id, String gml, String datatype, Timestamp start, Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException {
-		StrabonPolyhedron geomValue = new StrabonPolyhedron(gml); 
+		Geometry geom;
+		try {
+			geom = JTSWrapper.getInstance().GMLread(gml);
+			geoSpatialTable.insert(id, geom.getSRID(),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
 			
-		geoSpatialTable.insert(id, geomValue.getGeometry().getSRID(),/* start,end,*/ geomValue.toByteArray());
+		} catch (JAXBException e) {
+			logger.error("[Strabon.insertGML] Error during insertion of GML literal.", e);
+		}
+		
 	}
 	
-	
-	/********************************************************************/
 	public void insertNumeric(Number id, String label, String datatype, double value)
 	throws SQLException, InterruptedException
 	{

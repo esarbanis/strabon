@@ -97,11 +97,19 @@ public class StrabonPolyhedron implements Value {
 	 * @param representation
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(String representation) {
+	public StrabonPolyhedron(String representation) throws IllegalArgumentException {
 		try {
 			// try first as WKT
 			geometry = jts.WKTread(representation);
 			
+			/**
+			 * SPECIAL NOTICE: When <tt>representation</tt> is in GML,
+			 * WKTReader does not throw any ParseException! It silently
+			 * returns NULL. That's why we have the following check. 
+			 */
+			if (geometry == null) {
+				throw new ParseException("Invalid WKT.");
+			}
 		} catch (ParseException e) {
 			try {
 				// try as GML
