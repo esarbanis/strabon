@@ -2,6 +2,8 @@
 
 body {
 	margin:0px;
+	background-color:#EFEDEA;
+	color:black;
 	}
 	
 td {
@@ -12,7 +14,8 @@ td {
 
 form
 {
-border-top: 12px solid #E6A685;
+#border-top: 12px solid #E6A685;
+padding-top: 5px;
 }
 
 table
@@ -20,17 +23,22 @@ table
 	background-color:#EFEDEA;
 }
 
+a
+{
+	color:black;
+}
 
-a {
-	color: green;
-	}	
 a:hover 
 {
-	color: green;
+	color: #E6A685;
 	}
 
 p {
 	text-align: justify
+}
+option:hover
+{
+	background:#E6A685;
 }
 
 /* ID Styles */
@@ -40,6 +48,35 @@ p {
 border-bottom:10px solid #D1D1BA;
 }
 
+#intro
+{
+	background:#D1D1BA;
+	border:3px solid #E6A685;
+	border-radius:5px;
+	padding:5px;
+}
+#output
+{
+	border: 1px dashed #bbbbbb;
+}
+
+input[type=submit]
+{
+	width: 400px;
+	background:#D1D1BA;
+	border:1px dotted;
+	border-radius:5px;
+}
+ input[type=submit]:hover
+{
+	border: 1px solid #E6A685;
+	border-radius:5px;
+}
+
+#twidth
+{	
+	width:90px;
+}
 
 #navigation td {
 	border: 1px dotted #A7A795;
@@ -63,6 +100,8 @@ border-bottom:10px solid #D1D1BA;
 	background:#D1D1BA;
 #	background-color:#B8B894;
 #	color:#dfe8f0;
+	border: 1px solid #E6A685;
+	border-radius:5px;
 	}
 	
 .logo 	{
