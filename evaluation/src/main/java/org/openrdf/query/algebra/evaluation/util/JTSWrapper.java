@@ -76,8 +76,16 @@ public class JTSWrapper {
 		return instance;
 	}
 	
-	public synchronized Geometry WKTread(String wkt) throws ParseException {		
-		return wktr.read(wkt);
+	public synchronized Geometry WKTread(String wkt) throws ParseException {
+		Geometry geometry = wktr.read(wkt);
+		
+		 /* SPECIAL NOTICE: When <tt>wkt</tt> is in GML,
+		  *  WKTReader does not throw any ParseException! It silently
+		  *  returns NULL. That's why we have the following check.    */
+		if (geometry == null) {
+			throw new ParseException("Invalid WKT.");
+		}
+		return geometry;
 	}
 	
 	public synchronized String WKTwrite(Geometry geom) {

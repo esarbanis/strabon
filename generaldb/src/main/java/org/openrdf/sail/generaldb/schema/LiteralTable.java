@@ -202,10 +202,6 @@ public class LiteralTable {
 	{
 		try {
 			Geometry geom = JTSWrapper.getInstance().WKTread(label);
-			if (geom == null) {
-				throw new IllegalArgumentException("Invalid WKT.");
-				
-			}
 			geoSpatialTable.insert(id, WKTHelper.getSRID(label),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
 			
 		} catch (ParseException e) {
