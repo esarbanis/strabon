@@ -2,6 +2,7 @@ package org.openrdf.query.resultio.sparqlhtml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.openrdf.model.BNode;
@@ -28,6 +29,11 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 	 */
 	private stSPARQLXMLWriter xmlWriter;
 	
+	/**
+	 * The ordered list of binding names of the result.
+	 */
+	private List<String> bindingNames;
+	
 	public stSPARQLResultsHTMLWriter(OutputStream out) {
 		this(new stSPARQLXMLWriter(out));
 	}
@@ -42,6 +48,9 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			throws TupleQueryResultHandlerException {
 		
 		try {
+			// keep the order of binding names
+			this.bindingNames = bindingNames;
+			
 			// write Table header containing the bindings
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName: bindingNames) {
@@ -72,7 +81,8 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			StringBuilder value = new StringBuilder();
 			
 			xmlWriter.startTag(TABLE_ROW_TAG);
-			for (Binding binding : bindingSet) {
+			for (String bindingName : bindingNames) {
+				Binding binding = bindingSet.getBinding(bindingName);
 				value.append(binding.getValue().stringValue());
 				
 				if (binding.getValue() instanceof BNode) {

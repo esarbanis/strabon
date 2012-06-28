@@ -705,7 +705,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				} else {
 					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
 					
-					// set increaseIndex to <tt>true</tt> for geometries onlye (see commend below)
+					// set increaseIndex to <tt>true</tt> for geometries only (see commend below)
 					if (type == ResultType.WKB) {
 						increaseIndex = true;
 					}
