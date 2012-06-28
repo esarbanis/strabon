@@ -94,7 +94,7 @@
 	<tr>
 	<!--  direct input form -->
 		<td id="output">Direct Input:</td>
-		<td id="output>
+		<td id="output">
 			<textarea name="<%=StoreBean.PARAM_DATA%>" rows="15" cols="100"></textarea></td>
 		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
@@ -107,7 +107,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan=2 id="output><br/>
+		<td colspan=2 id="output"><br/>
 		<CENTER>
 			<input type="submit" value="Store Input" name="<%=StoreBean.SUBMIT_INPUT%>" style="width: 400px"/>
 		</CENTER><br/>
