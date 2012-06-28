@@ -86,9 +86,17 @@ public abstract class Strabon {
 
 
 	/**
-	 * Called by Strabon.close() to deregister the underlying JDBC driver used.
+	 * Deregisters the JDBC driver. This is advisable when running <tt>Strabon</tt>
+	 * through the <tt>strabon-endpoint</tt>, i.e., in a container, such as Apache Tomcat.
+	 * Earlier versions of Tomcat would not deregister the JDBC drivers leading
+	 * to memory leaks.
+	 * 
+	 * Deregistering the JDBC driver when running Strabon through <tt>Java</tt> is not required.
+	 * Instead, it might lead to unexpected errors when creating many <tt>Strabon</tt> instances,
+	 * one after the other, and deregistering the driver. Subsequent instantiations of
+	 * <tt>Strabon</tt> in the same <tt>Java</tt> run would fail to load the driver again.
 	 */
-	protected abstract void deregisterDriver();
+	public abstract void deregisterDriver();
 	
 	/**
 	 * Called in Strabon constructor to initialize Strabon (establish connection to the
@@ -152,9 +160,6 @@ public abstract class Strabon {
 			con1.close();
 			repo1.shutDown();
 			
-			// deregister jdbc driver
-			deregisterDriver();
-
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
 		}

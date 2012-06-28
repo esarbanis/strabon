@@ -64,7 +64,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 	}
 	
 	@Override
-	protected void deregisterDriver() {
+	public void deregisterDriver() {
 		try {
 			logger.info("[Strabon.deregisterDriver] Deregistering JDBC driver...");
 	        java.sql.Driver driver = DriverManager.getDriver("jdbc:monetdb://" + serverName + ":" + port + "/");

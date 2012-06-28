@@ -195,6 +195,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	public void destroy() throws Exception {
 		if (strabon != null) {
 			strabon.close();
+			
+			// deregister jdbc driver
+			strabon.deregisterDriver();
 		}
 	}
 
