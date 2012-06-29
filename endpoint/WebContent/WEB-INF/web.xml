@@ -44,6 +44,11 @@
 		<url-pattern>/Update</url-pattern>
 	</servlet-mapping>
 		
+	<servlet>
+		<servlet-name>store.jsp</servlet-name>
+		<jsp-file>/store.jsp</jsp-file>
+	</servlet>
+	
 <!-- 	<servlet> -->
 <!-- 		<display-name>QueryServlet</display-name> -->
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->

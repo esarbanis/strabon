@@ -1,19 +1,9 @@
-<%@ page import = "eu.earthobservatory.org.StrabonEndpoint.StoreBean" %>
+<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.StoreBean"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="style.css" type="text/css" /> 
-<style type="text/css"> 
-<!--
-.style3 {font-size: 15px}
-.style4 {font-size: 12px}
-.style5 {font-size: 15px;font-weight: bold;}
-.style6 {color: #FF0000}
-.style7 {font-size: 14px}
- .hidden { visibility: hidden }
--->
-</style> 
 <title>TELEIOS: Strabon Endpoint</title>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
