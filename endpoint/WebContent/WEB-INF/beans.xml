@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:jaxws="http://cxf.apache.org/jaxws"
-    xmlns="http://www.springframework.org/schema/beans"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
-						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
-						http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd" >
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+		xmlns:jaxws="http://cxf.apache.org/jaxws"
+		jaxws:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
 <!--
     <import resource="classpath:META-INF/cxf/cxf.xml" />
@@ -28,7 +28,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>p1r3as</value>
+	    <value>postgres</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
