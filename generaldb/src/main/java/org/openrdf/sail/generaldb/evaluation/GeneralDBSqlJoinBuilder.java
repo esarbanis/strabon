@@ -149,6 +149,15 @@ public class GeneralDBSqlJoinBuilder {
 		StringBuilder from = new StringBuilder();
 		from.append(getTable()).append(" ").append(alias);
 		for (GeneralDBSqlJoinBuilder join : joins) {
+			/**
+			 * Reverting datetime_values join to LEFT. 
+			 * Had previously made it INNER to change
+			 * when it would be executed
+			 */
+			if(join.getTable().equals("datetime_values"))
+			{
+				join.setLeft(true);
+			}
 			appendJoin(from, join);
 		}
 		for (GeneralDBSqlJoinBuilder left : getLeftJoins()) {

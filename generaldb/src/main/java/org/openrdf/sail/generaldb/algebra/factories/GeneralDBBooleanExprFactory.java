@@ -148,8 +148,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	private GeneralDBSqlExprFactory sql;
 
 	public GeneralDBSqlExpr createBooleanExpr(ValueExpr expr)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = null;
 		if (expr == null)
 			return new GeneralDBSqlNull();
@@ -157,21 +157,21 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		if (result == null)
 			return new GeneralDBSqlNull();
 		return result;
-	}
+			}
 
 	@Override
 	public void meet(And node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = and(bool(node.getLeftArg()), bool(node.getRightArg()));
-	}
+			}
 
 	@Override
 	public void meet(Bound node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = not(isNull(new GeneralDBRefIdColumn(node.getArg())));
-	}
+			}
 
 
 	/**
@@ -180,8 +180,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 */
 	@Override
 	public void meet(Compare compare)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		ValueExpr left = compare.getLeftArg();
 		ValueExpr right = compare.getRightArg();
 		CompareOp op = compare.getOperator();
@@ -313,7 +313,13 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				GeneralDBSqlExpr within = cmp(time(left), op, sub(time(right), num(HR14)));
 				GeneralDBSqlExpr comp = or(eq(zoned(left), zoned(right)), within);
 				GeneralDBSqlExpr dateTime = and(eq(type(left), type(right)), and(comp, time));
+				/**
+				 * In case you need to remove the operations involving MOD,
+				 * use the following line for datetime instead:
+				 */
+//				GeneralDBSqlExpr dateTime = and(eq(type(left), type(right)), time);
 				result = or(cmp(numeric(left), op, numeric(right)), or(dateTime, labels));
+
 			}
 			else
 			{
@@ -332,41 +338,41 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 			break;
 		}
-	}
+			}
 
 	@Override
 	public void meet(IsBNode node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = isNotNull(sql.createBNodeExpr(node.getArg()));
-	}
+			}
 
 	@Override
 	public void meet(IsLiteral node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = isNotNull(sql.createLabelExpr(node.getArg()));
-	}
+			}
 
 	@Override
 	public void meet(IsResource node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlExpr isBNode = isNotNull(sql.createBNodeExpr(node.getArg()));
 		result = or(isBNode, isNotNull(sql.createUriExpr(node.getArg())));
-	}
+			}
 
 	@Override
 	public void meet(IsURI node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = isNotNull(sql.createUriExpr(node.getArg()));
-	}
+			}
 
 	@Override
 	public void meet(LangMatches node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		ValueExpr left = node.getLeftArg();
 		ValueExpr right = node.getRightArg();
 		GeneralDBSqlCase sqlCase = new GeneralDBSqlCase();
@@ -374,33 +380,33 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		GeneralDBSqlExpr pattern = concat(lowercase(label(right)), str("%"));
 		sqlCase.when(new GeneralDBTrueValue(), like(label(left), pattern));
 		result = sqlCase;
-	}
+			}
 
 	@Override
 	public void meet(Not node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = not(bool(node.getArg()));
-	}
+			}
 
 	@Override
 	public void meet(Or node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = or(bool(node.getLeftArg()), bool(node.getRightArg()));
-	}
+			}
 
 	@Override
 	public void meet(Regex node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = regex(label(node.getArg()), label(node.getPatternArg()), label(node.getFlagsArg()));
-	}
+			}
 
 	@Override
 	public void meet(SameTerm node)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		ValueExpr left = node.getLeftArg();
 		ValueExpr right = node.getRightArg();
 		boolean leftIsVar = left instanceof Var;
@@ -423,132 +429,132 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			GeneralDBSqlExpr literals = and(langs, and(datatype, labels));
 			result = and(bnodes, and(uris, literals));
 		}
-	}
+			}
 
 	@Override
 	public void meet(ValueConstant vc)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		result = valueOf(vc.getValue());
-	}
+			}
 
 	@Override
 	public void meet(Var var)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if (var.getValue() == null) {
 			result = effectiveBooleanValue(var);
 		}
 		else {
 			result = valueOf(var.getValue());
 		}
-	}
+			}
 
 	public void setSqlExprFactory(GeneralDBSqlExprFactory sql) {
 		this.sql = sql;
 	}
 
 	protected GeneralDBSqlExpr bNode(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createBNodeExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr bool(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createBooleanExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr label(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createLabelExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr lang(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createLanguageExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr hash(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createHashExpr(arg);
-	}
+			}
 
 	@Override
 	protected void meetNode(QueryModelNode arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if (arg instanceof ValueExpr) {
 			result = effectiveBooleanValue((ValueExpr)arg);
 		}
 		else {
 			throw unsupported(arg);
 		}
-	}
+			}
 
 	protected GeneralDBSqlExpr numeric(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createNumericExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr time(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createTimeExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr type(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createDatatypeExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr uri(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createUriExpr(arg);
-	}
+			}
 
 	protected GeneralDBSqlExpr zoned(ValueExpr arg)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		return sql.createZonedExpr(arg);
-	}
+			}
 
 	private GeneralDBSqlExpr effectiveBooleanValue(ValueExpr v)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		String bool = XMLSchema.BOOLEAN.stringValue();
 		GeneralDBSqlCase sqlCase = new GeneralDBSqlCase();
 		sqlCase.when(eq(type(v), str(bool)), eq(label(v), str("true")));
 		sqlCase.when(simple(type(v)), not(eq(label(v), str(""))));
 		sqlCase.when(isNotNull(numeric(v)), not(eq(numeric(v), num(0))));
 		return sqlCase;
-	}
+			}
 
 	private GeneralDBSqlExpr equal(ValueExpr left, ValueExpr right)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlExpr bnodes = eq(bNode(left), bNode(right));
 		GeneralDBSqlExpr uris = eq(uri(left), uri(right));
 		GeneralDBSqlCase scase = new GeneralDBSqlCase();
 		scase.when(or(isNotNull(bNode(left)), isNotNull(bNode(right))), bnodes);
 		scase.when(or(isNotNull(uri(left)), isNotNull(uri(right))), uris);
 		return literalEqual(left, right, scase);
-	}
+			}
 
 	private boolean isTerm(ValueExpr node) {
 		return node instanceof Var || node instanceof ValueConstant;
 	}
 
 	private GeneralDBSqlExpr literalEqual(ValueExpr left, ValueExpr right, GeneralDBSqlCase scase)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlExpr labels = eq(label(left), label(right));
 		GeneralDBSqlExpr langs = and(eqIfNotNull(lang(left), lang(right)), labels.clone());
 		GeneralDBSqlExpr numeric = eq(numeric(left), numeric(right));
@@ -564,18 +570,18 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		scase.when(comparable, time);
 		scase.when(and(eq(type(left), type(right)), labels.clone()), new GeneralDBTrueValue());
 		return scase;
-	}
+			}
 
 	private GeneralDBSqlExpr termsEqual(ValueExpr left, ValueExpr right)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlExpr bnodes = eqIfNotNull(bNode(left), bNode(right));
 		GeneralDBSqlExpr uris = eqIfNotNull(uri(left), uri(right));
 		GeneralDBSqlCase scase = new GeneralDBSqlCase();
 		scase.when(or(isNotNull(bNode(left)), isNotNull(bNode(right))), bnodes);
 		scase.when(or(isNotNull(uri(left)), isNotNull(uri(right))), uris);
 		return literalEqual(left, right, scase);
-	}
+			}
 
 	private GeneralDBSqlExpr valueOf(Value value) {
 		if (value instanceof Literal) {
@@ -592,8 +598,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 */
 	@Override
 	public void meet(FunctionCall functionCall)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
 
 		if(function instanceof SpatialConstructFunc)
@@ -746,7 +752,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			meetNode(functionCall);
 		}
 
-	}
+			}
 
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
@@ -1179,7 +1185,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return geoArea(leftArg);
 		}
 		//GeoSPARQL's distance must be added at this place
-		
+
 		//Should never reach this place
 		return null;
 	}
@@ -1209,7 +1215,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.isSimple))
 		{
 			return isSimple(arg);
-			
+
 		} else if (function.getURI().equals(GeoConstants.asGML)) {
 			return asGML(arg);
 		}

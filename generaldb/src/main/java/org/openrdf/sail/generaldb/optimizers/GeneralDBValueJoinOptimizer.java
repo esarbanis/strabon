@@ -36,6 +36,8 @@ import org.openrdf.sail.generaldb.schema.BNodeTable;
 import org.openrdf.sail.generaldb.schema.HashTable;
 import org.openrdf.sail.generaldb.schema.LiteralTable;
 import org.openrdf.sail.generaldb.schema.URITable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adds LEFT JOINs to the query for value tables.
@@ -115,29 +117,29 @@ QueryOptimizer
 
 	@Override
 	public void meetFromItem(GeneralDBFromItem node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBFromItem top = parent;
 		parent = join;
 		join = node;
 		super.meetFromItem(node);
 		join = parent;
 		parent = top;
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBUnionItem node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		stack.add(node);
 		super.meet(node);
 		stack.remove(stack.size() - 1);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBSelectQuery node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		query = node;
 		parent = node.getFrom();
 		join = node.getFrom();
@@ -145,12 +147,12 @@ QueryOptimizer
 		join = null;
 		parent = null;
 		query = null;
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBHashColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		if (hashes == null || hashes.getName() == null) {
 			super.meet(node);
 		}
@@ -160,22 +162,22 @@ QueryOptimizer
 			String tableName = hashes.getName();
 			join(var, alias, tableName, false);
 		}
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBBNodeColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "b" + getDBName(var);
 		String tableName = bnodes.getName();
 		join(var, alias, tableName);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBDatatypeColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		//XXX If spatial, I don't want this action to take place
 		if(!var.isSpatial())
@@ -184,24 +186,35 @@ QueryOptimizer
 			String tableName = literals.getDatatypeTable().getName();
 			join(var, alias, tableName);
 		}
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBDateTimeColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "t" + getDBName(var);
 		String tableName = literals.getDateTimeTable().getName();
-		join(var, alias, tableName);
-	}
+
+		/**
+		 * XXX in the default case this should be true!!
+		 * Have changed to false to interleave these types of join with
+		 * others involving predicate tables (i.e. hasAcquisitionTime)
+		 * 
+		 * -> By default, left joins are added to query after the inner ones
+		 * 
+		 * -> Reverting this in GeneralDBSqlJoinBuilder. The join actually 
+		 * executed will be LEFT after all
+		 */
+		join(var, alias, tableName,false);
+			}
 
 
 	//Careful! Changes at the alias' name can cause great problems in the query plan!
 	@Override
 	public void meet(GeneralDBLabelColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		//
 		String alias = "l" + getDBName(var);
@@ -224,57 +237,57 @@ QueryOptimizer
 
 		}
 
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBLongLabelColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "ll" + getDBName(var);
 		String tableName = literals.getLongLabelTable().getName();
 		join(var, alias, tableName);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBLanguageColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "g" + getDBName(var);
 		String tableName = literals.getLanguageTable().getName();
 		join(var, alias, tableName);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBNumericColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "n" + getDBName(var);
 		String tableName = literals.getNumericTable().getName();
 		join(var, alias, tableName);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBLongURIColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "lu" + getDBName(var);
 		String tableName = uris.getLongTableName();
 		join(var, alias, tableName);
-	}
+			}
 
 	@Override
 	public void meet(GeneralDBURIColumn node)
-	throws RuntimeException
-	{
+			throws RuntimeException
+			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		String alias = "u" + getDBName(var);
 		String tableName = uris.getShortTableName();
 		join(var, alias, tableName);
-	}
+			}
 
 	private CharSequence getDBName(GeneralDBColumnVar var) {
 		String name = var.getName();
@@ -290,18 +303,45 @@ QueryOptimizer
 	private void join(GeneralDBColumnVar var, String alias, String tableName, boolean left) {
 		if (!isJoined(alias)) {
 			GeneralDBFromItem valueJoin = valueJoin(alias, tableName, var, left);
+
+			if(tableName.equals("datetime_values"))//The object I just created involves a datetime value
+			{
+				int counter = 0;
+				//Must now find a connection with previous tables
+				for(GeneralDBFromItem tmp : join.getJoins())
+				{
+					GeneralDBFromItem result = tmp.getFromItem(var.getAlias());
+					if (result == null)
+						counter++;
+					else
+					{
+						break;
+					}
+
+				}
+
+				if(counter==join.getJoins().size())
+				{
+					//If failure to locate an appropriate entry upwards -> revert to default behavior
+					Logger logger = LoggerFactory.getLogger(GeneralDBValueJoinOptimizer.class);
+					logger.error("[GeneralDBValueJoinOptimizer.info] Failed to push datetime join upwards");
+				}
+				else
+				{
+					join.getJoins().add(counter+1,valueJoin);
+					return;
+				}
+			}
+
+			//DEFAULT BEHAVIOR
 			if (join == parent || join.getFromItem(var.getAlias()) != null) {
 				join.addJoin(valueJoin);
 			}
 			else {
 				parent.addJoinBefore(valueJoin, join);
 			}
+
 		}
-//		else
-//		{
-//			//XXX here for debugging purposes, remove afterwards
-//			System.out.println("Quite a common phenomenon");
-//		}
 	}
 
 	private boolean isJoined(String alias) {
@@ -318,19 +358,19 @@ QueryOptimizer
 
 		//FIXME must find I way so that this code runs on the LAST
 		//occurrence of geo_values!!! => Fill structures used by next optimizer -> SpatialJoinOptimizer
-		
+
 		//Commented code because another approach was followed on 09/09/2011. 
 		//Switched effort to creating a new optimizer dealing with TupleExpressions
-//		if(tableName.equals("geo_values"))
-//		{
-//			geo_values_occurences++;
-//			if(!spatiallyEnabled)
-//			{
-//				exprToAppend.addAll(query.getSpatialFilters());
-//				query.getFilters().removeAll(query.getSpatialFilters());
-//				spatiallyEnabled = true;
-//			}
-//		}
+		//		if(tableName.equals("geo_values"))
+		//		{
+		//			geo_values_occurences++;
+		//			if(!spatiallyEnabled)
+		//			{
+		//				exprToAppend.addAll(query.getSpatialFilters());
+		//				query.getFilters().removeAll(query.getSpatialFilters());
+		//				spatiallyEnabled = true;
+		//			}
+		//		}
 
 		//
 		return j;
