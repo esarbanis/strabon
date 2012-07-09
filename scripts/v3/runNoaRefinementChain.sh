@@ -1,8 +1,8 @@
 #!/bin/bash
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ENDPOINT="http://localhost:8080/endpoint"
-DB="strabon27"
+ENDPOINT="http://localhost:8080/strabon24V3"
+DB="strabon24V3"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
 CHECKDIR="/home/konstantina/allhot/"
 
@@ -45,6 +45,7 @@ function timer()
 deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
 refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
 refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
+ValidateInLand=`cat ${LOC}/ValidateInLand.sparql` # | sed 's/\"/\\\"/g'`
 
 # Initialize
 sudo service postgresql restart
@@ -59,7 +60,6 @@ echo "initializing database"
 echo "S D R TP" >>stderr.txt
 
  ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
-
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}" 
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
@@ -115,6 +115,20 @@ tmr1=$(timer)
             
 tmr2=$(timer)
 printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+
+#validate hotspots in land
+     echo -n "Going to VaidateLandHotspots 2007-${month}-${day}T${time2}:00 " ;echo; echo; echo;
+ query=`echo "${ValidateInLand}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+                sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+               sed "s/SENSOR/MSG2/g"`
+		tmr1=$(timer)           
+  		../endpoint update ${ENDPOINT} "${query}"  
+            
+		tmr2=$(timer)
+		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+
+            echo;echo;echo;echo "File ${file} Validate Hotspots in Land done!"
+
 
             echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
 #            echo "Continue?"

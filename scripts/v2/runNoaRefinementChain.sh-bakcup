@@ -2,15 +2,13 @@
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ENDPOINT="http://localhost:8080/endpoint"
-DB="strabon27"
+DB="endpoint"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
-CHECKDIR="/home/konstantina/allhot/"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
-#dataDir="http://kk.di.uoa.gr/out_triples/"
-dataDir="http://godel.di.uoa.gr/allhot/"
-name="HMSG2_IR_039_s7_07"
-suffix=".hotspots.nt"
+dataDir="http://godel.di.uoa.gr/hotspots/"
+name="HMSG2_IR_039_s7_070825"
+suffix=".hotspots.n3"
 
 logFile="chain.log"
 #countWTime="/usr/bin/time -p   %e"
@@ -51,7 +49,7 @@ sudo service postgresql restart
 echo "Dropping endpoint database";
 sudo -u postgres dropdb ${DB}
 echo "Creating endpoint database"
-sudo -u postgres createdb ${DB} -T postgistemplate
+sudo -u postgres createdb ${DB} -T template_postgis
 echo "restarting tomcat"
 sudo service tomcat7 restart
 
@@ -59,7 +57,6 @@ echo "initializing database"
 echo "S D R TP" >>stderr.txt
 
  ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
-
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}" 
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
@@ -70,23 +67,15 @@ echo "S D R TP" >>stderr.txt
 #read a
 
 
-for mon in `seq 7 10`; do
-for d in `seq 1 30`; do
+
+
 for h in `seq 0 23 `; do
     for m in `seq 0 15 45`; do
             time=`printf "%02d%02d\n" $h $m`
             time2=`printf "%02d:%02d\n" $h $m`
-	    day=`printf "%02d" $d`
-            month=`printf "%02d" $mon`
-            file=${dataDir}${name}${month}${day}_${time}$suffix
+            file=${dataDir}${name}_${time}$suffix
 #            file=${dataUrl}${name}_${time}$suffix
     
-    check=${CHECKDIR}${name}${month}${day}_${time}$suffix
-
-	      if [[ !  -e $check ]];
-              then echo "FILE" $check "NOT EXISTS" ; continue
-	      fi
-
             # store file
             echo -n "storing " $file; echo; echo; 
 	  # echo "Hotspot : " $h:$m >> stderr.txt
@@ -104,8 +93,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            read a
          
             # deleteSeaHotspots
-            echo -n "Going to deleteSeaHotspots 2007-${month}-${day}T${time2}:00 " ;echo; echo; echo;
-            query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "Going to deleteSeaHotspots 2007-08-25T${time2}:00 " ;echo; echo; echo;
+            query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/2007-08-25T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g"`
 #            ${countTime} ./strabon -db endpoint update "${query}"
@@ -121,8 +110,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            read a
             
             # refinePartialSeaHotspots
-            echo -n "refinePartialSeaHotspots 2007-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-            query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "refinePartialSeaHotspots 2007-08-25T${time2}:00 "  ; echo; echo ; echo;
+            query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/2007-08-25T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g"`
 #            ${countTime} ./strabon -db endpoint update "${query}"
@@ -137,9 +126,9 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            read a
 
             # refineTimePersistence
-            echo -n "Going to refineTimePersistence 2007-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-            min_acquisition_time=`date --date="2007-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
-            query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "Going to refineTimePersistence 2007-08-25T${time2}:00 ";echo;echo;echo; 
+            min_acquisition_time=`date --date="2007-08-25 ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
+            query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/2007-08-25T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g" | \
                 sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
@@ -164,8 +153,6 @@ printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
 #            echo "Continue?"
 #            read a
     done
-done
-done
 done
 
 

@@ -2,7 +2,7 @@
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ENDPOINT="http://localhost:8080/endpoint"
-DB="strabon27"
+DB="v21"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
 CHECKDIR="/home/konstantina/allhot/"
 
@@ -124,7 +124,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
             echo -n "refinePartialSeaHotspots 2007-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
             query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-                sed "s/SENSOR/MSG2/g"`
+                sed "s/SENSOR/MSG2/g" |\
+		sed "s/SAT/METEOSAT9/g"`
 #            ${countTime} ./strabon -db endpoint update "${query}"
 tmr1=$(timer)
               ../endpoint update ${ENDPOINT} "${query}"
@@ -143,7 +144,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g" | \
                 sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
-                sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g"`
+                sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g"` |\
+		sed "s/SAT/METEOSAT9/g"`
 
 #            echo "Query:"
 #            echo "${query}"
