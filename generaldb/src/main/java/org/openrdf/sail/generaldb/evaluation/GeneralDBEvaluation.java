@@ -315,6 +315,18 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					 * in order to have them appear in Select Clause along with the appropriate datatype.
 					 */
 					rightGeom = new StrabonPolyhedron(((Literal) rightResult).getLabel()).getGeometry();
+					int sridPosition = ((Literal) rightResult).getLabel().indexOf(';');
+					//Default case
+					if(sridPosition == -1)
+					{
+						rightGeom.setSRID(4326);
+					}
+					else
+					{
+						sridPosition = ((Literal) rightResult).getLabel().lastIndexOf('/');
+						int srid = Integer.parseInt(((Literal) rightResult).getLabel().substring(sridPosition+1));
+						rightGeom.setSRID(srid);
+					}
 				}
 				else
 				{	//SHOULD NEVER REACH THIS CASE!
