@@ -5,6 +5,7 @@ ENDPOINT="http://localhost:8080/endpoint"
 DB="v21"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
 CHECKDIR="/home/konstantina/allhot/"
+POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
@@ -51,7 +52,7 @@ sudo service postgresql restart
 echo "Dropping endpoint database";
 sudo -u postgres dropdb ${DB}
 echo "Creating endpoint database"
-sudo -u postgres createdb ${DB} -T postgistemplate
+sudo -u postgres createdb ${DB} -T ${POSTGISTEMPLATE}
 echo "restarting tomcat"
 sudo service tomcat7 restart
 
@@ -60,8 +61,8 @@ echo "S D R TP" >>stderr.txt
 
 # ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
 
-sudo -u postgres -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz  | tar xz -O |   psql -d ${DB}"   
-#./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}" 
+sudo -u postgres bash -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz|tar xz -O|psql -d ${DB}"
+#./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
