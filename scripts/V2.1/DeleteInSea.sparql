@@ -5,8 +5,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 INSERT {?h noa:isDiscarded "1"^^xsd:int} 
 WHERE {
-  ?h rdf:type noa:Hotspot; 
-     noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime; 
+?h   noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime; 
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string; 
      noa:isDerivedFromSensor "SENSOR"^^xsd:string;
      noa:hasGeometry ?hGeo.

@@ -11,13 +11,12 @@ PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#>
 
 SELECT ?h ?geo ?conf (GROUP_CONCAT(?dLabel ; SEPARATOR=', ') AS ?dimoi )
 WHERE { 
-  ?h rdf:type noa:Hotspot ; 
-     noa:hasGeometry ?hGeo ;
+?h   noa:hasGeometry ?hGeo ;
      noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
      noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
      noa:hasConfidence ?conf .
-  ?d rdf:type gag:Dhmos;
+?d   rdf:type gag:Dhmos;
      strdf:hasGeometry ?dGeo;
      rdfs:label ?dLabel.
   FILTER(strdf:anyInteract(?dGeo, ?hGeo)).

@@ -20,18 +20,15 @@ WHERE {
   (SUM(?hConfidence1)/ACQUISITIONS_IN_HALF_AN_HOUR AS ?hConfidence)
   ?hGeometry1
   WHERE {
-    ?H1 rdf:type noa:Hotspot .
     ?H1 noa:hasConfidence ?hConfidence1 .
     ?H1 noa:hasGeometry ?hGeometry1 .
     ?H1 noa:hasAcquisitionTime ?hAcquisitionTime1 .
     ?H1 noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-    ?H1 noa:hasConfirmation noa:unknown .
     ?H1 noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string .
     OPTIONAL { ?H1 noa:isDiscarded ?z } .
     FILTER (!BOUND(?z)) .
     FILTER( "MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hAcquisitionTime1 && ?hAcquisitionTime1 < "TIMESTAMP"^^xsd:dateTime ) .
     OPTIONAL {
-      ?H2 rdf:type noa:Hotspot .
       ?H2 noa:hasGeometry ?HGEO2 .
       ?H2 noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime .
       ?H2 noa:isDerivedFromSensor "SENSOR"^^xsd:string .
