@@ -319,7 +319,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					//Default case
 					if(sridPosition == -1)
 					{
-						rightGeom.setSRID(4326);
+						rightGeom.setSRID(GeoConstants.defaultSRID);
 					}
 					else
 					{
