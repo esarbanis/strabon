@@ -432,6 +432,11 @@ esac
 if test "${CLASS}" = "StoreOp"; then
 	STRABON_EXEC=
 	for file in "${@}"; do
+		# check whether a relative path was given
+		if ! test "${file:0:7}" == "file://" -o "${file:0:7}" == "http://" -o "${file:0:1}" == "/"; then
+			file="$(pwd)/${file}"
+		fi
+
 		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" ${FORMAT});
 "
 	done
