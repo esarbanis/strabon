@@ -2,14 +2,10 @@
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ENDPOINT="http://localhost:8080/endpoint"
-DB="endpoint"
+DB="v21"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
-
 CHECKDIR="/home/konstantina/allhot/"
-#CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
-
-POSTGISTEMPLATE="postgistemplate"
-#POSTGISTEMPLATE="template_postgis"
+POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
@@ -58,17 +54,18 @@ sudo -u postgres dropdb ${DB}
 echo "Creating endpoint database"
 sudo -u postgres createdb ${DB} -T ${POSTGISTEMPLATE}
 echo "restarting tomcat"
-sudo service tomcat restart
+sudo service tomcat7 restart
 
 echo "initializing database"
 echo "S D R TP" >>stderr.txt
 
 # ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
 
-sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz|tar xz -O|psql -d ${DB}"
+sudo -u postgres bash -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz|tar xz -O|psql -d ${DB}"
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
+
 
 #echo "Continue?"
 #read a
@@ -84,7 +81,7 @@ for h in `seq 0 23 `; do
             month=`printf "%02d" $mon`
             file=${dataDir}${name}${month}${day}_${time}$suffix
 #            file=${dataUrl}${name}_${time}$suffix
-
+    
     check=${CHECKDIR}${name}${month}${day}_${time}$suffix
 
 	      if [[ !  -e $check ]];
@@ -94,19 +91,19 @@ for h in `seq 0 23 `; do
             # store file
             echo -n "storing " $file; echo; echo; 
 	  # echo "Hotspot : " $h:$m >> stderr.txt
-#            ${countTime} ./strabon -db endpoint store $file
+#            ${countTime} ./strabon -db endpoint store $file      
 
  tmr1=$(timer)
-            ../endpoint store ${ENDPOINT} N-Triples -u ${file}
+            ../endpoint store ${ENDPOINT} N-Triples -u ${file} 
  tmr2=$(timer)
 printf '%s ' $((tmr2-tmr1)) >>stderr.txt
-
+           
 	   # sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
             echo;echo;echo;echo "File ${file} stored!" >> ${logFile}
 #            echo "Continue?"
 #            read a
-
+         
             # deleteSeaHotspots
             echo -n "Going to deleteSeaHotspots 2007-${month}-${day}T${time2}:00 " ;echo; echo; echo;
             query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
@@ -114,16 +111,16 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
                 sed "s/SENSOR/MSG2/g"`
 #            ${countTime} ./strabon -db endpoint update "${query}"
 
-tmr1=$(timer)
-  ../endpoint update ${ENDPOINT} "${query}"
-
+tmr1=$(timer)           
+  ../endpoint update ${ENDPOINT} "${query}"  
+            
 tmr2=$(timer)
 printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
             echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
 #            echo "Continue?"
 #            read a
-
+            
             # refinePartialSeaHotspots
             echo -n "refinePartialSeaHotspots 2007-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
             query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
@@ -133,6 +130,7 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            ${countTime} ./strabon -db endpoint update "${query}"
 tmr1=$(timer)
               ../endpoint update ${ENDPOINT} "${query}"
+            
 tmr2=$(timer)
 printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
@@ -147,7 +145,7 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g" | \
                 sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
-                sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
+                sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g"` |\
 		sed "s/SAT/METEOSAT9/g"`
 
 #            echo "Query:"
@@ -164,6 +162,7 @@ tmr1=$(timer)
               ../endpoint update ${ENDPOINT} "${query}"
  tmr2=$(timer)
 printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
+           
             echo;echo;echo;echo "File ${file} timePersistence done!"
 #            echo "Continue?"
 #            read a
@@ -178,7 +177,7 @@ done
 
 #    echo "Store $f"
 #	${countTime} ./scripts/strabon -db endpoint store $f
-#
-#
+#	
+#	
 #done
 
