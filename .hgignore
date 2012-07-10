@@ -7,3 +7,5 @@ pom\.xml~
 \.extract$
 runtime/src/test/java/eu/earthobservatory/runtime/generaldb/TempClass\.java$
 runtime/src/test/resources/ntriples/aggregate-tests\.ntriples$
+stderr\.txt
+stdout\.txt
