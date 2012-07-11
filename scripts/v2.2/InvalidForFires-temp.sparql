@@ -1,0 +1,19 @@
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX clc: <http://www.linkedgeodata.gr/corine/ontology#>
+
+INSERT {?h noa:isDiscarded "1"^^xsd:int} 
+WHERE {
+?h   noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ;
+     noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
+     noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+     noa:hasGeometry ?hGeo.
+?a   clc:hasLanduse  example:InvalidForFires;
+	 clc:hasGeometry ?aGeo.
+	 #clc:hasCode_Level1 ?code1.
+	 #clc:hasCode_Level2 ?code2.
+#FILTER(?code1 = "1"^^xsd:integer || ?code2 = "21"^^xsd:integer || ?code2 = "22"^^xsd:integer || ?code1 = "4"^^xsd:integer || ?code2 = "51"^^xsd:integer).
+FILTER(strdf:contains(?aGeo,?hGeo)).
+}
