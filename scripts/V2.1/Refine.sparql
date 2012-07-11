@@ -1,12 +1,10 @@
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
 
 INSERT { ?h noa:isDiscarded "1"^^xsd:int . 
-	?valid rdf:type noa:Hotspot ;
+	 ?valid rdf:type noa:Hotspot ;
 		noa:hasConfidence ?conf ;
 	        noa:hasGeometry ?dif ;
 		noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
@@ -14,23 +12,18 @@ INSERT { ?h noa:isDiscarded "1"^^xsd:int .
 		noa:hasConfirmation noa:unknown ;
 	        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
 		noa:isProducedBy noa:noa ;
-		noa:isDerivedFromSatellite "SAT"^^xsd:string ;
-		gag:hasMunicipality ?muni .
+		noa:isDerivedFromSatellite "SAT"^^xsd:string .
 }
 WHERE { 
-  SELECT ?h (SAMPLE(?mLabel) AS ?muni) (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf 
-  WHERE {
-	?h  noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime; 
-		noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
-		noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
-		noa:hasGeometry ?hGeo ;
-		noa:hasConfidence ?conf .
-	?c  rdf:type noa:Coastline ;
-		noa:hasGeometry ?cGeo .
-	?m	rdf:type gag:Dhmos ;
-		rdfs:label ?mLabel ;
-		strdf:hasGeometry ?mGeo .
-	FILTER(strdf:anyInteract(?hGeo, ?mGeo)) .
+  SELECT ?h  (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf 
+  WHERE { 
+?h     noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime; 
+       noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
+       noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+       noa:hasGeometry ?hGeo ;
+       noa:hasConfidence ?conf .
+?c     rdf:type noa:Coastline ;
+       noa:hasGeometry ?cGeo .
     FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
   }
   GROUP BY ?h ?hGeo ?conf 
