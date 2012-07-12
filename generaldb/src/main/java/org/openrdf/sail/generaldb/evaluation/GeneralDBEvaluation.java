@@ -51,10 +51,13 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.C
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.DisjointFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.EqualsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.InsideFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.LeftFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
@@ -347,6 +350,13 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.intersects(rightConverted);
 				}
+				else if(function instanceof IntersectsFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.intersects(rightConverted);
+				}
 				else if(function instanceof BelowFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
@@ -423,6 +433,20 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.touches(rightConverted);
+				}
+				else if(function instanceof MbbIntersectsFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelope().intersects(rightConverted.getEnvelope());
+				}
+				else if(function instanceof MbbEqualsFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelope().equals(rightConverted.getEnvelope());
 				}
 
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;

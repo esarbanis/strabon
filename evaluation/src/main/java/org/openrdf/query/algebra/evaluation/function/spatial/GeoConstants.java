@@ -67,6 +67,7 @@ public class GeoConstants {
 	 * 																		*/
 	// Spatial Relationships
 	public static final String anyInteract 		= stRDF + "anyInteract";
+	public static final String intersects 		= stRDF + "intersects";
 	public static final String contains 		= stRDF + "contains";
 	public static final String coveredBy 		= stRDF + "coveredBy";
 	public static final String covers 			= stRDF + "covers";
@@ -81,6 +82,10 @@ public class GeoConstants {
 	public static final String above 			= stRDF + "above";
 	public static final String below			= stRDF + "below";
 	
+	// Spatial Relationships utilizing mbb
+	public static final String mbbIntersects 	= stRDF + "mbbIntersects";
+	public static final String mbbEquals 	= stRDF + "mbbEquals";
+
 	// Spatial Constructs
 	public static final String union 			= stRDF + "union";
 	public static final String buffer 			= stRDF + "buffer";

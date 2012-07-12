@@ -43,9 +43,12 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
@@ -110,9 +113,9 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
 	 */
-	
+
 	boolean nullLabel = false;
-	
+
 	public enum SpatialOperandsMonetDB { left, right, above, below; }
 	public enum SpatialFunctionsMonetDB 
 	{ 	//Spatial Relationships
@@ -122,13 +125,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_CoveredBy,
 		ST_Overlaps,
 		ST_Relate,
-		
+
 		// These Spatial Relations are implemented in MonetDB as operands and they apply in MBB of a geometry
 		anyInteract, 
 		equals, 
 		contains, 
 		inside,		
-		
+
 		//Spatial Constructs - Binary
 		ST_Union,
 		ST_Intersection,
@@ -136,18 +139,18 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
-		
+
 		//Spatial Constructs - Unary
 		ST_Envelope,
 		ST_ConvexHull,
 		ST_Boundary,
-		
+
 		//Spatial Metrics - Binary
 		ST_Distance,
-		
+
 		//Spatial Metrics - Unary
 		ST_Area,
-		
+
 		//Spatial Properties - All Unary
 		ST_Dimension,
 		ST_GeometryType,
@@ -156,7 +159,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_SRID,
 		ST_IsEmpty,
 		ST_IsSimple,
-		
+
 		//GeoSPARQL
 		//Simple Features
 		SF_Equals,
@@ -176,7 +179,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		RCC8_Tpp,
 		RCC8_Ntppi,
 		RCC8_Ntpp,
-		
+
 		//Egenhofer
 		EH_Equals,
 		EH_Disjoint,
@@ -192,32 +195,32 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	public MonetDBQueryBuilder() {
 		super();
 	}
-	
+
 	public MonetDBQueryBuilder(GeneralDBSqlQueryBuilder builder) {
 		super(builder);
 		this.query = builder;
 	}
-	
+
 	@Override
 	protected void append(GeneralDBSqlNull expr, GeneralDBSqlExprBuilder filter) {
 		QueryModelNode parent = expr.getParentNode();
 		String	before = null,
 				after = null;
-		
+
 		if (	parent instanceof GeneralDBSqlOr ||
 				parent instanceof GeneralDBSqlAnd
-			) {
+				) {
 			before = " CAST(";
 			after= " AS boolean) ";
 		}
-		
+
 		if ( before != null )
 			filter.append(before);
 		filter.appendNull();
 		if ( after != null )
 			filter.append(after);
 	}
-	
+
 	protected void appendWithCastDouble(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
 		if (var.getRdbmsVar().isResource()) {
 			filter.appendNull();
@@ -230,7 +233,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.append(" AS DOUBLE) ");
 		}
 	}
-	
+
 	@Override
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
 		if (var.getRdbmsVar().isResource()) {
@@ -269,29 +272,29 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	protected void append(GeneralDBSqlAnd expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlBracketBuilder open = filter.open();
 		dispatch(expr.getLeftArg(), (GeneralDBSqlExprBuilder) open);
 		open.and();
 		dispatch(expr.getRightArg(), (GeneralDBSqlExprBuilder) open);
 		open.close();
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		GeneralDBSqlBracketBuilder open = filter.open();
 		dispatch(expr.getArg(), (GeneralDBSqlExprBuilder) open);
 		open.isNull();
 		open.close();
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if (expr.getArg() instanceof GeneralDBSqlIsNull) {
 			GeneralDBSqlBracketBuilder open = filter.open();
 			GeneralDBSqlIsNull arg = (GeneralDBSqlIsNull)expr.getArg();
@@ -304,12 +307,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr.getArg(), (GeneralDBSqlExprBuilder) open);
 			open.close();
 		}
-	}
+			}
 
 	@Override
 	protected GeneralDBSqlJoinBuilder subJoinAndFilter(GeneralDBSqlJoinBuilder query, GeneralDBFromItem from)
-	throws RdbmsException, UnsupportedRdbmsOperatorException
-	{
+			throws RdbmsException, UnsupportedRdbmsOperatorException
+			{
 		if (from instanceof GeneralDBUnionItem) {
 			GeneralDBUnionItem union = (GeneralDBUnionItem)from;
 			List<String> names = union.getSelectVarNames();
@@ -343,14 +346,14 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr, query.on().and());
 		}
 		return query;
-	}
+			}
 
-	
+
 	//FIXME my addition from here on
 	@Override
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
@@ -370,408 +373,435 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, (MonetDBSqlExprBuilder)query.select);
 		}
-		
+
 		//SRID support must be explicitly added!
 		return this;
-	}
+			}
 
 	//Spatial Relationship Functions
 	@Override
 	protected void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
-//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.anyInteract);
+		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.anyInteract);
+			}
+
+
+	@Override
+	protected void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
+
 	}
 
 	@Override
 	protected void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.contains);
-//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.contains);
+		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.contains);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.equals);
-//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.inside);
+		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.inside);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.inside);
-//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.inside);
+		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.inside);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendgeoSPARQLSpatialRelation(expr, filter, SpatialFunctionsMonetDB.ST_Covers);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendgeoSPARQLSpatialRelation(expr, filter, SpatialFunctionsMonetDB.ST_CoveredBy);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlTouch expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Touches);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlOverlap expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Overlaps);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlDisjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Disjoint);
 	}
 
 	@Override
 	protected void append(GeneralDBSqlRelate expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionTriple(expr, filter, SpatialFunctionsMonetDB.ST_Relate);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlLeft expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		// FIXME
 		throw new UnsupportedRdbmsOperatorException("left operator not supported in MonetDB");
-//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.left);
-	}
-	
+		//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.left);
+			}
+
 	@Override
 	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		// FIXME
 		throw new UnsupportedRdbmsOperatorException("right operator not supported in MonetDB");
-//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.right);
-	}
-	
+		//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.right);
+			}
+
 	@Override
 	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		// FIXME
 		throw new UnsupportedRdbmsOperatorException("above operator not supported in MonetDB");
-//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.above);
+		//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.above);
+			}
+
+
+	//XXX Careful: These two functions work with the actual geometries in MonetDB!!
+	//The only function in MonetDB that works on mbbs is mbrOverlaps!
+	@Override
+	protected void append(GeneralDBSqlMbbIntersects expr,
+			GeneralDBSqlExprBuilder filter)
+					throws UnsupportedRdbmsOperatorException {
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
+
+	}
+
+	@Override
+	protected void append(GeneralDBSqlMbbEquals expr,
+			GeneralDBSqlExprBuilder filter)
+					throws UnsupportedRdbmsOperatorException {
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.equals);
+
 	}
 
 	@Override
 	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		// FIXME
 		throw new UnsupportedRdbmsOperatorException("below operator not supported in MonetDB");
-//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.above);
-	}
-	
+		//		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsMonetDB.above);
+			}
+
 	//GeoSPARQL - Spatial Relationship Functions 
 	//Simple Features
 	@Override
 	protected void append(GeneralDBSqlSF_Contains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Contains);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Crosses expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Crosses);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Disjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Disjoint);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Equals expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Equals);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Intersects expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Intersects);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Overlaps expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Overlaps);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Touches expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Touches);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Within expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.SF_Within);
-	}
+			}
 
 	//Egenhofer
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_CoveredBy expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_CoveredBy);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Covers expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Covers);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Contains expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Contains);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Disjoint expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Disjoint);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Equals expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Equals);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Inside expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Inside);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Meet expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Meet);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlEgenhofer_Overlap expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.EH_Overlap);
-	}
-	
+			}
+
 	//RCC8
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Dc expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Dc);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Eq expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Eq);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ec expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Ec);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Po expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Po);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Tppi expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Tppi);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Tpp expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Tpp);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ntpp expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Ntpp);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlRCC8_Ntppi expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsMonetDB.RCC8_Ntppi);
-	}
-	
+			}
+
 	//Spatial Construct Functions
 	@Override
 	protected void append(GeneralDBSqlGeoUnion expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Union);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Buffer);
-	}
-	
+			}
+
 	//XXX Different Behavior
 	@Override
 	protected void append(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
-//		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Transform);
+			throws UnsupportedRdbmsOperatorException
+			{
+		//		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Transform);
 		appendTransformFunc(expr, filter);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoEnvelope expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_Envelope);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoConvexHull expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_ConvexHull);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoBoundary expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_Boundary);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Intersection);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Difference);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_SymDifference);
-	}
+			}
 
 	@Override
 	//Spatial Metric Functions
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Distance);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoArea expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_Area);
-	}
+			}
 
 	@Override
 	//Spatial Property Functions
 	protected void append(GeneralDBSqlGeoDimension expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_Dimension);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoGeometryType expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_GeometryType);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoAsText expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_AsText);
-	}
-	
+			}
+
 	@Override
 	protected void append(GeneralDBSqlGeoAsGML expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException {
+			throws UnsupportedRdbmsOperatorException {
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_AsGML);
 	}	
 
 	@Override
 	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		//		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_SRID);
 
 		boolean sridNeeded = true;
@@ -888,21 +918,21 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_IsSimple);
-	}
+			}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsEmpty expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_IsEmpty);
-	}
+			}
 
 
 	/**
@@ -929,8 +959,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendTransformFunc(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
 		//XXX Incorporating SRID
@@ -1067,19 +1097,19 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.append(sridExpr);
 		}
 
-	}
-	
-	
+			}
+
+
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	//EXCEPT ST_Transform!!!
 	protected void appendMonetDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
 		//XXX Incorporating SRID
 		String sridExpr = null;
-		
+
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
@@ -1090,7 +1120,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
-			
+
 			GeneralDBSqlExpr tmp = expr;
 			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
 			{
@@ -1139,8 +1169,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				}
 			}
 			/////
-			
-			
+
+
 			switch(func)
 			{
 			//XXX Careful: ST_Transform support MISSING!!!
@@ -1227,8 +1257,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 				{
 					appendWithCastDouble(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					appendCastToDouble(filter);
+					//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+					//					appendCastToDouble(filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
 				{
@@ -1263,16 +1293,16 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.appendComma();
 			filter.append(sridExpr);
 		}
-	}
+			}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
 	protected void appendMonetDBSpatialFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
 		String sridExpr = null;
-		
+
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
@@ -1339,7 +1369,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				}
 			}
 			/////
-			
+
 			switch(func)
 			{
 			case ST_Envelope: filter.appendFunction("Envelope"); break;
@@ -1377,7 +1407,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			filter.closeBracket();
-//			//SRID Support
+			//			//SRID Support
 			if(sridNeeded)
 			{
 				if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
@@ -1398,12 +1428,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.appendComma();
 			filter.append(sridExpr);
 		}
-	}
-	
+			}
+
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendMonetDBSpatialFunctionTriple(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
@@ -1477,8 +1507,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 				{
 					appendWithCastDouble(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					appendCastToDouble(filter);
+					//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+					//					appendCastToDouble(filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
 				{
@@ -1503,7 +1533,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			else
 			{
-				
+
 				if(expr.getThirdArg() instanceof GeneralDBStringValue)
 				{
 					append(((GeneralDBStringValue)expr.getThirdArg()),filter);	
@@ -1515,24 +1545,24 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				//case met in buffer when in select -> buffer(?spatial,?thematic)
 				else if(expr.getThirdArg() instanceof GeneralDBLabelColumn )//&& !((GeneralDBLabelColumn)expr.getThirdArg()).isSpatial())
 				{
-					
+
 					append(((GeneralDBLabelColumn)expr.getThirdArg()),filter);
 				}
-				
+
 
 			}
 			filter.closeBracket();
 		}
 
 		filter.closeBracket();
-	}
-	
+			}
+
 	//GeoSPARQL
 	//XXX
-	
+
 	protected void appendRelate(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, char[] intersectionPattern)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
@@ -1605,8 +1635,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 				{
 					appendWithCastDouble(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-//					appendCastToDouble(filter);
+					//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+					//					appendCastToDouble(filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
 				{
@@ -1637,12 +1667,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-	}
-	
-	
+			}
+
+
 	protected void appendgeoSPARQLSpatialRelation(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
-	throws UnsupportedRdbmsOperatorException
-	{
+			throws UnsupportedRdbmsOperatorException
+			{
 		filter.openBracket();
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.GeneralDBSqlNull");
 		if(check1)
@@ -2041,5 +2071,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			//			filter.closeBracket();
 		}
 		filter.closeBracket();
-	}
+			}
+
 }

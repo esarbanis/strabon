@@ -60,11 +60,14 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
@@ -528,9 +531,12 @@ public abstract class GeneralDBQueryBuilder {
 		 * my additions
 		 * FIXME
 		 */
-		//Relationships - all 9 boolean of them - stSPARQL++
+		//Relationships - boolean - stSPARQL
 		else if (expr instanceof GeneralDBSqlAnyInteract) {
 			append((GeneralDBSqlAnyInteract)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlIntersects) {
+			append((GeneralDBSqlIntersects)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlContains) {
 			append((GeneralDBSqlContains)expr, filter);
@@ -567,6 +573,12 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if (expr instanceof GeneralDBSqlBelow) {
 			append((GeneralDBSqlBelow)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlMbbIntersects) {
+			append((GeneralDBSqlMbbIntersects)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlMbbEquals) {
+			append((GeneralDBSqlMbbEquals)expr, filter);
 		}
 		//GeoSPARQL
 		//Simple Features
@@ -931,6 +943,9 @@ public abstract class GeneralDBQueryBuilder {
 	//Spatial Relationship Functions
 	protected abstract void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
+	
+	protected abstract void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
@@ -969,6 +984,10 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlMbbIntersects expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlMbbEquals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
 	//GeoSPARQL - Spatial Relationship Functions 

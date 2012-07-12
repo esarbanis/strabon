@@ -45,6 +45,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUn
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geometryType;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.gt;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.inside;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.intersects;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isEmpty;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isNotNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isNull;
@@ -52,6 +53,8 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSim
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.left;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.like;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.lowercase;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.mbbEqualsGeo;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.mbbIntersects;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.neq;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.not;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.num;
@@ -934,10 +937,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 
 			GeneralDBSqlExpr thirdArg)
 	{
-		//XXX stSPARQL++
+		//XXX stSPARQL
 		if(function.getURI().equals(GeoConstants.anyInteract))
 		{
 			return anyInteract(leftArg,rightArg);
+		}
+		if(function.getURI().equals(GeoConstants.intersects))
+		{
+			return intersects(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.contains))
 		{
@@ -990,6 +997,18 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.below))
 		{
 			return below(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(GeoConstants.touch))
+		{
+			return touch(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(GeoConstants.mbbIntersects))
+		{
+			return mbbIntersects(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(GeoConstants.mbbEquals))
+		{
+			return mbbEqualsGeo(leftArg,rightArg);
 		}
 		//XXX GeoSPARQL
 		//Simple Features

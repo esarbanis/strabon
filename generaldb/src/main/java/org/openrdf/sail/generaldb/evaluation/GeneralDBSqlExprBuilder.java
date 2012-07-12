@@ -267,43 +267,43 @@ public abstract class GeneralDBSqlExprBuilder {
 		where.append(")");
 	}
 
-	public void anyInteract() {
+	public void intersectsMBB() {
 
 		//XXX
 		//edw prepei na ginei allou eidous douleia!! oxi na mpei to anyinteract, 
 		//alla na prostethei kati pou tha mou pei o kwstis
 		where.append(" && ");
 	}
-
-	public void equals() {
+	
+	public void equalsMBB() {
 
 		where.append(" = ");
 	}
 
-	public void contains() {
+	public void containsMBB() {
 
 		where.append(" ~ ");
 	}
 
-	public void inside() {
+	public void insideMBB() {
 
 		//den xerw akoma ti symbolo xreiazetai
 		where.append(" @ ");
 	}
 
-	public void left() {
+	public void leftMBB() {
 		where.append(" << ");
 	}
 
-	public void right() {
+	public void rightMBB() {
 		where.append(" >> ");
 	}
 
-	public void above() {
+	public void aboveMBB() {
 		where.append(" |>> ");
 	}
 
-	public void below() {
+	public void belowMBB() {
 		where.append(" <<|");
 	}
 

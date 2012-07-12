@@ -15,6 +15,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
  * Assemblies an SQL expression.
  * 
  * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public interface GeneralDBSqlExprBuilderInterface {
@@ -100,23 +101,23 @@ public interface GeneralDBSqlExprBuilderInterface {
 	
 	public void closeBracket();
 
-	public void anyInteract();
+	public void intersectsMBB();
 	
-	public void equals();
+	public void equalsMBB();
 	
-	public void contains();
+	public void containsMBB();
 	
-	public void inside();
+	public void insideMBB();
 	
-	public void left();
+	public void leftMBB();
 	
 
-	public void right();
+	public void rightMBB();
 	
-	public void above();
+	public void aboveMBB();
 	
-	public void below();
-
+	public void belowMBB();
+	
 	public void doubleCast();
 	
 	//	public void overlap();
