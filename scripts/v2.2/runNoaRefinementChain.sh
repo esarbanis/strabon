@@ -4,6 +4,7 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
+GRIDURL="http://jose.di.uoa.gr/rdf/coastline/grid_4.nt"
 
 CHECKDIR="/home/konstantina/allhot/"
 #CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
@@ -13,7 +14,8 @@ POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
-dataDir="http://godel.di.uoa.gr/allhot/"
+#dataDir="http://godel.di.uoa.gr/allhot/"
+dataDir="http://jose.di.uoa.gr/rdf/hotspots/2007/"
 name="HMSG2_IR_039_s7_07"
 suffix=".hotspots.nt"
 
@@ -52,7 +54,7 @@ function chooseTomcat()
 			tomcat="tomcat7"
 	elif test -s /etc/debian_version ; then
 			tomcat="tomcat"
-	fi	
+	fi
 }
 
 #prin
