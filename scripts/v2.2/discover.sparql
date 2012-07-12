@@ -15,10 +15,7 @@ WHERE {
      noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
      noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
-     noa:hasConfidence ?conf .
-?d   rdf:type gag:Dhmos;
-     strdf:hasGeometry ?dGeo;
-     rdfs:label ?dLabel.
-  FILTER(strdf:anyInteract(?dGeo, ?hGeo)).
+     noa:hasConfidence ?conf ;
+	 gag:hasMunicipality ?muni .
 }
 GROUP BY ?h (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) AS ?geo) ?conf 
