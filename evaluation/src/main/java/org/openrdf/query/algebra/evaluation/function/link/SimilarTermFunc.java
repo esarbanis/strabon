@@ -8,6 +8,7 @@ package org.openrdf.query.algebra.evaluation.function.link;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
+import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
@@ -15,7 +16,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparql
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-public class SimilarTermFunc extends GeoSparqlRelation {
+public class SimilarTermFunc implements Function {
 	
 	protected static String name = "similarTerm";
 	
@@ -31,7 +32,7 @@ public class SimilarTermFunc extends GeoSparqlRelation {
                     + " requires exactly 2 arguments, got " + args.length);
         }
 
-        return null;
+        return valueFactory.createLiteral(true);
     }
 
 }
