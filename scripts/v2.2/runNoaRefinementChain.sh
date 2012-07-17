@@ -82,8 +82,7 @@ echo "IM S D R TP" >>stderr.txt
  ../endpoint store ${ENDPOINT} N-Triples -u ${INIT}
 
 
-sudo -u postgres psql -d ${DB} -f ${INIT}
-sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz|tar xz -O|psql -d ${DB}"
+sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump.tgz|tar xz -O|psql -d ${DB}"
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
