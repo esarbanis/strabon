@@ -5,18 +5,20 @@ ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
 GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
 GRIDURL="http://jose.di.uoa.gr/rdf/coastline/grid_4.nt"
+#INIT="http://jose.di.uoa.gr/rdf/Kallikratis-Coastline.ntriples"
+INIT="../Kalli_coast.sql"
 
-CHECKDIR="/home/konstantina/allhot/"
+#CHECKDIR="/home/konstantina/allhot/"
 #CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
 
-#POSTGISTEMPLATE="postgistemplate"
-POSTGISTEMPLATE="template_postgis"
+POSTGISTEMPLATE="postgistemplate"
+#POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
 #dataDir="http://godel.di.uoa.gr/allhot/"
-dataDir="http://jose.di.uoa.gr/rdf/hotspots/2007/"
-name="HMSG2_IR_039_s7_07"
+dataDir="http://jose.di.uoa.gr/rdf/hotspots/20"
+name="HMSG2_IR_039_s7_"
 suffix=".hotspots.nt"
 
 logFile="chain.log"
@@ -57,17 +59,12 @@ function chooseTomcat()
 	fi
 }
 
-#prin
-#tmr1=$(timer)
-#meta
-#tmr2=$(timer)
-#ektypwsi
-#printf 'LALA %s %s\n' $((tmr2-tmr1)) $(timer $tmr1)
-
-
+insertMunicipalities=`cat ${LOC}/InsertMunicipalities.sparql`
 deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
 refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
 refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
+#InsertMunicipalities =`cat ${LOC}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
+
 
 # Initialize
 chooseTomcat
@@ -75,15 +72,17 @@ sudo service postgresql restart
 echo "Dropping endpoint database";
 sudo -u postgres dropdb ${DB}
 echo "Creating endpoint database"
-sudo -u postgres createdb ${DB} #-T ${POSTGISTEMPLATE}
+sudo -u postgres createdb ${DB} 
 echo "restarting tomcat"
 sudo service ${tomcat} restart
 
 echo "initializing database"
-echo "S D R TP" >>stderr.txt
+echo "IM S D R TP" >>stderr.txt
 
-# ../endpoint store ${ENDPOINT} N-Triples -u ${GRIDURL}
+ ../endpoint store ${ENDPOINT} N-Triples -u ${INIT}
 
+
+sudo -u postgres psql -d ${DB} -f ${INIT}
 sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-dump.tgz|tar xz -O|psql -d ${DB}"
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
@@ -92,7 +91,19 @@ sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Co
 #echo "Continue?"
 #read a
 
+            # insertMunicipalities
+            echo -n "inserting Municipalities " ;echo; echo; echo;
+           # query=`echo "${insertMunicipalities}" `
+#            ${countTime} ./strabon -db endpoint update "${query}"
 
+tmr1=$(timer)
+  ../endpoint update ${ENDPOINT} "${query}"
+
+tmr2=$(timer)
+
+            echo;echo;echo;echo "File ${file} inserted Municipalities!"
+
+for y in 7 8 10 11 ;do
 for mon in `seq 7 10`; do
 for d in `seq 1 30`; do
 for h in `seq 0 23 `; do
@@ -101,10 +112,11 @@ for h in `seq 0 23 `; do
             time2=`printf "%02d:%02d\n" $h $m`
 	    	day=`printf "%02d" $d`
             month=`printf "%02d" $mon`
-            file=${dataDir}${name}${month}${day}_${time}$suffix
+            year=`printf "%02d" $y`
+            file=${dataDir}${year}/${name}${year}${month}${day}_${time}$suffix
 #            file=${dataUrl}${name}_${time}$suffix
 
-   		 check=${CHECKDIR}${name}${month}${day}_${time}$suffix
+   		 check=${dataDir}${year}/${name}${year}${month}${day}_${time}$suffix
 		 wget -q --spider $check
    	
 	      if [[ !  $? -ne 0 ]];
@@ -124,12 +136,10 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 	   # sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
             echo;echo;echo;echo "File ${file} stored!" >> ${logFile}
-#            echo "Continue?"
-#            read a
 
             # deleteSeaHotspots
-            echo -n "Going to deleteSeaHotspots 2007-${month}-${day}T${time2}:00 " ;echo; echo; echo;
-            query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "Going to deleteSeaHotspots 20${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
+            query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g"`
 #            ${countTime} ./strabon -db endpoint update "${query}"
@@ -145,8 +155,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            read a
 
             # refinePartialSeaHotspots
-            echo -n "refinePartialSeaHotspots 2007-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-            query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "refinePartialSeaHotspots 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+            query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g" |\
 		sed "s/SAT/METEOSAT9/g"`
@@ -161,24 +171,16 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 #            read a
 
             # refineTimePersistence
-            echo -n "Going to refineTimePersistence 2007-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-            min_acquisition_time=`date --date="2007-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
-            query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/2007-${month}-${day}T${time2}:00/g" | \
+            echo -n "Going to refineTimePersistence 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+            min_acquisition_time=`date --date="20${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
+            query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
                 sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
                 sed "s/SENSOR/MSG2/g" | \
                 sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
                 sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
 		sed "s/SAT/METEOSAT9/g"`
 
-#            echo "Query:"
-#            echo "${query}"
-#            echo "Continue?"
-#            read a
-#            ${countTime} ./strabon -db endpoint update "${query}"
-#            ${countTime} ../endpoint update ${ENDPOINT} "${query}"
-
  sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
-
 
 tmr1=$(timer)
               ../endpoint update ${ENDPOINT} "${query}"
@@ -191,14 +193,4 @@ printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
 done
 done
 done
-
-
-#for f in `ls /home/konstantina/noa-teleios/out_triples/HMSG2_IR_039_s7_070825_*.hotspots.n3`
-#do
-
-#    echo "Store $f"
-#	${countTime} ./scripts/strabon -db endpoint store $f
-#
-#
-#done
-
+done
