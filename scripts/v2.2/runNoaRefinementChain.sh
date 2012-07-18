@@ -74,11 +74,11 @@ function chooseTomcat()
 	fi
 }
 
-insertMunicipalities=`cat ${LOC}/InsertMunicipalities.sparql` 
-deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
-refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
-refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
-invalidForFires=`cat ${LOC}/InvalidForFires.sparql`
+insertMunicipalities=`cat ${LOC}/insertMunicipalities.sparql` 
+deleteSeaHotspots=`cat ${LOC}/deleteSeaHotspots.sparql` # | sed 's/\"/\\\"/g'`
+refinePartialSeaHotspots=`cat ${LOC}/refinePartialSeaHotspots.sparql` # | sed 's/\"/\\\"/g'`
+refineTimePersistence=`cat ${LOC}/refineTimePersistence.sparql` # | sed 's/\"/\\\"/g'`
+invalidForFires=`cat ${LOC}/landUseInvalidForFires.sparql`
 discover=`cat ${LOC}/discover.sparql`
 #InsertMunicipalities =`cat ${LOC}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
 
