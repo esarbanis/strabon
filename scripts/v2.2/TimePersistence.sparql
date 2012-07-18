@@ -2,7 +2,7 @@ PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#>
 
 
 INSERT {
