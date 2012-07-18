@@ -85,7 +85,7 @@ echo "restarting tomcat"
 sudo service ${tomcat} restart
 
 echo "initializing database"
-echo "IM S D R TP" >stderr.txt
+echo "Store Municipalities DeleteInSea Corine RefineInCoastline TimePersistence" >stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
@@ -151,6 +151,7 @@ tmr1=$(timer)
   ../endpoint update ${ENDPOINT} "${query}"
                 
 tmr2=$(timer)
+printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
             echo;echo;echo;echo "File ${file} inserted Municipalities!"
             
