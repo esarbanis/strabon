@@ -3,16 +3,16 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
-GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
-GRIDURL="http://jose.di.uoa.gr/rdf/coastline/grid_4.nt"
+#GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
+#GRIDURL="http://jose.di.uoa.gr/rdf/coastline/grid_4.nt"
 #INIT="http://jose.di.uoa.gr/rdf/Kallikratis-Coastline.ntriples"
-INIT="../Kalli_coast.sql"
+#INIT="../Kalli_coast.sql"
 
 #CHECKDIR="/home/konstantina/allhot/"
 #CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
 
-POSTGISTEMPLATE="postgistemplate"
-#POSTGISTEMPLATE="template_postgis"
+#POSTGISTEMPLATE="postgistemplate"
+POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
@@ -97,14 +97,19 @@ echo "IM S D R TP" >stderr.txt
 
 
 
-for y in 7 8 10 11 ;do
-for mon in `seq 4 10`; do
-for d in `seq 1 30`; do
+#for y in 7 8 10 11 ;do
+#for mon in `seq 4 10`; do
+#for d in `seq 1 30`; do
+#for h in `seq 0 23 `; do
+#    for m in `seq 0 15 45`; do
+for y in 7  ;do
+for mon in 8; do
+for d in 25; do
 for h in `seq 0 23 `; do
     for m in `seq 0 15 45`; do
             time=`printf "%02d%02d\n" $h $m`
             time2=`printf "%02d:%02d\n" $h $m`
-	    	day=`printf "%02d" $d`
+	    day=`printf "%02d" $d`
             month=`printf "%02d" $mon`
             year=`printf "%02d" $y`
             file=${dataDir}${year}/${name}${year}${month}${day}_${time}$suffix
