@@ -98,14 +98,14 @@ sudo service ${postgres} restart
 POSTGRES_MAIN_VERSION=$(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
 
 echo "Dropping endpoint database";
-dropdb -U postgres ${DB}
+dropdb  ${DB}
 
 echo "Creating endpoint database"
-createdb -U postgres ${DB} 
+createdb  ${DB} 
 
 # load data
-curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -U postgres -d ${DB}
-psql ${DB} -U postgres -c 'VACUUM ANALYZE '
+curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql  -d ${DB}
+psql ${DB}  -c 'VACUUM ANALYZE ' 
 
 echo "starting tomcat"
 if test -z "${tomcat}"; then
@@ -159,7 +159,7 @@ for y in 2007 2008 2010 2011 ;do
 
 		tmr1=$(timer)
 
-		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/MSG2/g"`
 
@@ -170,8 +170,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo;echo;echo;echo "File ${file} inserted Municipalities!"
 		
 		# deleteSeaHotspots
-		echo -n "Going to deleteSeaHotspots 20${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
-		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "Going to deleteSeaHotspots ${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
+		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/MSG2/g"`
 		# ${countTime} ./strabon -db endpoint update "${query}"
@@ -186,8 +186,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		# echo "Continue?"
 		# read a
 			# invalidForFires
-		echo -n "invalidForFires 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "invalidForFires ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/MSG2/g" |\
 		sed "s/SAT/METEOSAT9/g"`
@@ -199,8 +199,8 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo "File ${file} invalidForFires done!"
  
 		# refinePartialSeaHotspots
-		echo -n "refinePartialSeaHotspots 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "refinePartialSeaHotspots ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/MSG2/g" |\
 		sed "s/SAT/METEOSAT9/g"`
@@ -215,9 +215,9 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		# read a
 
 		# refineTimePersistence
-		echo -n "Going to refineTimePersistence 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-		min_acquisition_time=`date --date="20${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
-		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "Going to refineTimePersistence ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
+		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/MSG2/g" | \
 		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
@@ -236,9 +236,9 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
 
 		# discover
-		echo -n "Going to discover 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-		min_acquisition_time=`date --date="20${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%m:00`
-		max_acquisition_time=`date --date="20${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%m:00`
+		echo -n "Going to discover ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		min_acquisition_time=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%m:00`
+		max_acquisition_time=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%m:00`
 		query=`echo "${discover}" | \
 			sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 			sed "s/SENSOR/MSG2/g" | \
