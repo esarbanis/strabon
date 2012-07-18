@@ -11,7 +11,7 @@ INIT="../Kalli_coast.sql"
 #CHECKDIR="/home/konstantina/allhot/"
 #CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
 
-POSTGISTEMPLATE="postgistemplate"
+#POSTGISTEMPLATE="postgistemplate"
 #POSTGISTEMPLATE="template_postgis"
 
 #dataDir="http://localhost/noa-teleios/out_triples/"
@@ -103,6 +103,7 @@ echo "Creating endpoint database"
 createdb -U postgres ${DB} 
 
 # load data
+echo "initializing database"
 curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -U postgres -d ${DB}
 psql ${DB} -U postgres -c 'VACUUM ANALYZE '
 
@@ -114,11 +115,8 @@ else
 	sudo service ${tomcat} start
 fi
 
-exit
-
-echo "initializing database"
-echo "IM S D R TP" >stderr.txt
-
+#echo "IM S D R TP" >stderr.txt
+echo "Store Municipalities DeleteInSea Corine RefineInCoast TimePersistency" >stderr.txt
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
@@ -126,8 +124,6 @@ echo "IM S D R TP" >stderr.txt
 
 #echo "Continue?"
 #read a
-
-
 
 for y in 7 8 10 11 ;do
 	for mon in `seq 4 10`; do
@@ -178,6 +174,7 @@ for y in 7 8 10 11 ;do
 					../endpoint update ${ENDPOINT} "${query}"
 					
 					tmr2=$(timer)
+					printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
 					echo;echo;echo;echo "File ${file} inserted Municipalities!"
 					
