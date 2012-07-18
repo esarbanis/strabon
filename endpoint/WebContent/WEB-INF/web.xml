@@ -43,6 +43,17 @@
 		<servlet-name>Update</servlet-name>
 		<url-pattern>/Update</url-pattern>
 	</servlet-mapping>
+
+        <servlet>
+		<display-name>Describe</display-name>
+		<servlet-name>Describe</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.DescribeBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Describe</servlet-name>
+		<url-pattern>/Describe</url-pattern>
+	</servlet-mapping>
 		
 	<servlet>
 		<servlet-name>store.jsp</servlet-name>
