@@ -107,6 +107,11 @@ public class QueryBean extends HttpServlet {
 
 		String query = request.getParameter("SPARQLQuery");
 		String q = (query == null) ? null : URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
+
+		if (query == null) {
+	               query = request.getParameter("query");
+	               q = (query == null) ? null : URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		}
 			
 		hive.setSPARQLQuery(q);
 
