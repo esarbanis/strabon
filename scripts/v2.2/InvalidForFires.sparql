@@ -8,6 +8,8 @@ PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
 
 INSERT {?h noa:isDiscarded "1"^^xsd:int} 
 WHERE {
+SELECT ?h WHERE 
+{
 ?h   noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ;
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
      noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
@@ -17,3 +19,4 @@ WHERE {
 FILTER(strdf:mbbIntersects(?hGeo,?aGeo)).
 } GROUP BY ?h ?hGeo
 HAVING strdf:contains(strdf:union(?aGeo),?hGeo)
+}
