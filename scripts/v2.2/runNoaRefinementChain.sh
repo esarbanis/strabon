@@ -74,11 +74,11 @@ function chooseTomcat()
 	fi
 }
 
-insertMunicipalities=`cat ${LOC}/InsertMunicipalities.sparql` 
-deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
-refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
-refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
-invalidForFires=`cat ${LOC}/InvalidForFires.sparql`
+insertMunicipalities=`cat ${LOC}/insertMunicipalities.sparql` 
+deleteSeaHotspots=`cat ${LOC}/deleteSeaHotspots.sparql` # | sed 's/\"/\\\"/g'`
+refinePartialSeaHotspots=`cat ${LOC}/refinePartialSeaHotspots.sparql` # | sed 's/\"/\\\"/g'`
+refineTimePersistence=`cat ${LOC}/refineTimePersistence.sparql` # | sed 's/\"/\\\"/g'`
+invalidForFires=`cat ${LOC}/landUseInvalidForFires.sparql`
 discover=`cat ${LOC}/discover.sparql`
 #InsertMunicipalities =`cat ${LOC}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
 
@@ -116,7 +116,7 @@ else
 fi
 
 echo "initializing database"
-echo "IM S D R TP" >stderr.txt
+echo "S M D IF R TP" >stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
@@ -166,7 +166,7 @@ for y in 2007 2008 2010 2011 ;do
 		../endpoint update ${ENDPOINT} "${query}"
 		
 		tmr2=$(timer)
-
+printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo;echo;echo;echo "File ${file} inserted Municipalities!"
 		
 		# deleteSeaHotspots
