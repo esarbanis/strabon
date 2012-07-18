@@ -85,7 +85,7 @@ echo "restarting tomcat"
 sudo service ${tomcat} restart
 
 echo "initializing database"
-echo "IM S D R TP" >>stderr.txt
+echo "IM S D R TP" >stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
@@ -98,7 +98,7 @@ echo "IM S D R TP" >>stderr.txt
 
 
 for y in 7 8 10 11 ;do
-for mon in `seq 7 10`; do
+for mon in `seq 4 10`; do
 for d in `seq 1 30`; do
 for h in `seq 0 23 `; do
     for m in `seq 0 15 45`; do
@@ -113,7 +113,7 @@ for h in `seq 0 23 `; do
    		 check=${dataDir}${year}/${name}${year}${month}${day}_${time}$suffix
 		 wget -q --spider $check
    	
-	      if [[ !  $? -ne 0 ]];
+	      if [[   $? -ne 0 ]];
               then echo "FILE" $check "NOT EXISTS" ; continue
 	      fi
 
@@ -224,6 +224,13 @@ done #hours
                 sed "s/SENSOR/MSG2/g" | \
                 sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
                 sed "s/MAX_ACQUISITION_TIME/${max_acquisition_time}/g"`
+                
+                tmr1=$(timer)
+              ../endpoint query ${ENDPOINT} "${query}"
+ tmr2=$(timer)
+printf '%s \n' $((tmr2-tmr1)) >>discover.txt
+            echo;echo;echo;echo "Discovered hotspots done!"
+            
 done #days
 done #months
 done #years

@@ -1,6 +1,3 @@
-#Discover hotspots depending on their acquisition time, processing chain and sensor
-#Return the hotspot's uri, its geometry and the affected municipalities
-#reference dataset: http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline.ntriples
 
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
