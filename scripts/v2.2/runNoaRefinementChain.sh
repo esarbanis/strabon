@@ -27,20 +27,24 @@ logFile="chain.log"
 
 function timer()
 {
-    if [[ $# -eq 0 ]]; then
-        echo $(date '+%s')
-    else
-        local  stime=$1
-        etime=$(date '+%s')
+   if [[ $# -eq 0 ]]; then
+       t=$(date '+%s%N')
+       t=$((t/1000000))
+       echo $t
+   else
+       local  stime=$1
+       etime=$(date '+%s%N')
+       etime=$((etime/1000000))
 
-        if [[ -z "$stime" ]]; then stime=$etime; fi
-
-        dt=$((etime - stime))
-        ds=$((dt % 60))
-        dm=$(((dt / 60) % 60))
-        dh=$((dt / 3600))
-        printf '%d:%02d:%02d' $dh $dm $ds
-    fi
+       if [[ -z "$stime" ]]; then stime=$etime; fi
+       dt=$((etime - stime)) #dt in milliseconds
+       dM=$((dt%1000))
+       Dt=$((dt/1000)) #delta t in seconds
+       ds=$((Dt % 60))
+       dm=$(((Dt / 60) % 60))
+       dh=$((Dt / 3600))
+       printf '%d:%02d:%02d.%03d' $dh $dm $ds $dM
+   fi
 }
 
 function chooseTomcat()
@@ -59,10 +63,12 @@ function chooseTomcat()
 	fi
 }
 
-insertMunicipalities=`cat ${LOC}/InsertMunicipalities.sparql`
+insertMunicipalities=`cat ${LOC}/InsertMunicipalities.sparql` 
 deleteSeaHotspots=`cat ${LOC}/DeleteInSea.sparql` # | sed 's/\"/\\\"/g'`
 refinePartialSeaHotspots=`cat ${LOC}/Refine.sparql` # | sed 's/\"/\\\"/g'`
 refineTimePersistence=`cat ${LOC}/TimePersistence.sparql` # | sed 's/\"/\\\"/g'`
+invalidForFires=`cat ${LOC}/InvalidForFires.sparql`
+discover=`cat ${LOC}/discover.sparql`
 #InsertMunicipalities =`cat ${LOC}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
 
 
@@ -73,16 +79,15 @@ echo "Dropping endpoint database";
 sudo -u postgres dropdb ${DB}
 echo "Creating endpoint database"
 sudo -u postgres createdb ${DB} 
+sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump.tgz|tar xz -O|psql -d ${DB}"
+sudo -u postgres psql ${DB} -c 'VACUUM ANALYZE '
 echo "restarting tomcat"
 sudo service ${tomcat} restart
 
 echo "initializing database"
 echo "IM S D R TP" >>stderr.txt
 
- ../endpoint store ${ENDPOINT} N-Triples -u ${INIT}
 
-
-sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump.tgz|tar xz -O|psql -d ${DB}"
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
@@ -90,17 +95,7 @@ sudo -u postgres sh -c "curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Co
 #echo "Continue?"
 #read a
 
-            # insertMunicipalities
-            echo -n "inserting Municipalities " ;echo; echo; echo;
-           # query=`echo "${insertMunicipalities}" `
-#            ${countTime} ./strabon -db endpoint update "${query}"
 
-tmr1=$(timer)
-  ../endpoint update ${ENDPOINT} "${query}"
-
-tmr2=$(timer)
-
-            echo;echo;echo;echo "File ${file} inserted Municipalities!"
 
 for y in 7 8 10 11 ;do
 for mon in `seq 7 10`; do
@@ -122,6 +117,7 @@ for h in `seq 0 23 `; do
               then echo "FILE" $check "NOT EXISTS" ; continue
 	      fi
 
+
             # store file
             echo -n "storing " $file; echo; echo; 
 	  # echo "Hotspot : " $h:$m >> stderr.txt
@@ -136,6 +132,23 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
             echo;echo;echo;echo "File ${file} stored!" >> ${logFile}
 
+            # insertMunicipalities
+            echo -n "inserting Municipalities " ;echo; echo; echo;
+           # query=`echo "${insertMunicipalities}" `
+#            ${countTime} ./strabon -db endpoint update "${query}"
+
+tmr1=$(timer)
+
+                 query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+                sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+                sed "s/SENSOR/MSG2/g"`
+
+  ../endpoint update ${ENDPOINT} "${query}"
+                
+tmr2=$(timer)
+
+            echo;echo;echo;echo "File ${file} inserted Municipalities!"
+            
             # deleteSeaHotspots
             echo -n "Going to deleteSeaHotspots 20${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
             query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
@@ -152,7 +165,19 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
             echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
 #            echo "Continue?"
 #            read a
-
+            # invalidForFires
+            echo -n "invalidForFires 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+            query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+                sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+                sed "s/SENSOR/MSG2/g" |\
+		sed "s/SAT/METEOSAT9/g"`
+#            ${countTime} ./strabon -db endpoint update "${query}"
+tmr1=$(timer)
+              ../endpoint update ${ENDPOINT} "${query}"
+tmr2=$(timer)
+printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+ echo "File ${file} invalidForFires done!"
+ 
             # refinePartialSeaHotspots
             echo -n "refinePartialSeaHotspots 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
             query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
@@ -179,7 +204,7 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
                 sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
 		sed "s/SAT/METEOSAT9/g"`
 
- sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
+ #sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
 
 tmr1=$(timer)
               ../endpoint update ${ENDPOINT} "${query}"
@@ -188,8 +213,17 @@ printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
             echo;echo;echo;echo "File ${file} timePersistence done!"
 #            echo "Continue?"
 #            read a
-    done
-done
-done
-done
-done
+    done #minutes
+done #hours
+            # discover
+            echo -n "Going to discover 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+            min_acquisition_time=`date --date="20${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%m:00`
+            max_acquisition_time=`date --date="20${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%m:00`
+            query=`echo "${discover}" | \
+                sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+                sed "s/SENSOR/MSG2/g" | \
+                sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
+                sed "s/MAX_ACQUISITION_TIME/${max_acquisition_time}/g"`
+done #days
+done #months
+done #years

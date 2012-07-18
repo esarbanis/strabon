@@ -2,6 +2,8 @@ PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
+
 
 INSERT {
  ?newHotspot rdf:type noa:Hotspot ;
@@ -12,16 +14,18 @@ INSERT {
 		noa:hasConfirmation noa:unknown ;
 	        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
 		noa:isProducedBy noa:noa ;
+		 gag:hasMunicipality ?muni ;
 		noa:isDerivedFromSatellite "SAT"^^xsd:string .
 
 }
 WHERE {
   SELECT (BNODE() AS ?newHotspot)
   (SUM(?hConfidence1)/ACQUISITIONS_IN_HALF_AN_HOUR AS ?hConfidence)
-  ?hGeometry1
+  ?hGeometry1 ?muni
   WHERE {
     ?H1 noa:hasConfidence ?hConfidence1 .
     ?H1 noa:hasGeometry ?hGeometry1 .
+    ?H1 gag:hasMunicipality ?muni .
     ?H1 noa:hasAcquisitionTime ?hAcquisitionTime1 .
     ?H1 noa:isDerivedFromSensor "SENSOR"^^xsd:string .
     ?H1 noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string .
@@ -34,10 +38,10 @@ WHERE {
       ?H2 noa:isDerivedFromSensor "SENSOR"^^xsd:string .
       ?H2 noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string .
       FILTER(("PROCESSING_CHAIN"^^xsd:string = ?hProcessingChain2)||("PROCESSING_CHAIN-TimePersistence"^^xsd:string = ?hProcessingChain2)).
-      FILTER( strdf:equals(?hGeometry1, ?HGEO2) ) .
+      FILTER( strdf:mbbEquals(?hGeometry1, ?HGEO2) ) .
     }
     FILTER( !BOUND(?H2) ) .
   }
-  GROUP BY ?hGeometry1
+  GROUP BY ?hGeometry1 ?muni
   HAVING(SUM(?hConfidence1)>0.0)
 }

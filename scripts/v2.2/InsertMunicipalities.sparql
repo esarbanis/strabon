@@ -11,6 +11,8 @@ SELECT ?h (SAMPLE(?mLabel) AS ?muni)
   WHERE {
 	?h  rdf:type noa:Hotspot ;
 		noa:hasGeometry ?hGeo ;
+		noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+		noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
         noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime.
 	?m	rdf:type gag:Dhmos ;
 		rdfs:label ?mLabel ;
