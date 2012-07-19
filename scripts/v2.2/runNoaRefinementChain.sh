@@ -18,10 +18,9 @@ POSTGISTEMPLATE="postgistemplate"
 #dataDir="http://kk.di.uoa.gr/out_triples/"
 #dataDir="http://godel.di.uoa.gr/allhot/"
 dataDir="http://jose.di.uoa.gr/rdf/hotspots/20"
-name="HMSG2_IR_039_s7_"
-suffix=".hotspots.nt"
 
-HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots"
+#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots"
+HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/msg1"
 
 logFile="chain.log"
 #countWTime="/usr/bin/time -p   %e"
@@ -126,18 +125,20 @@ echo "S M D IF R TP" >stderr.txt
 #echo "Continue?"
 #read a
 
-#for y in 2008; do
-for y in 2007 2008 2010 2011 ;do
+#for y in 2007 2008 2010 2011 ;do
+for y in 2012 ;do
 	# get hotpost URLS
-	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG2.*\.nt' | colrm 1 1); do
+	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
 		file="${HOTSPOTS_URL}/${y}/${hot}"
 
+		time_status=$(echo ${hot} | egrep -o '[[:digit:]]{6}_[[:digit:]]{4}')
+
 		# get time information for acquisition
-		year=${y}
-		month=$(expr substr ${hot} 19 2)
-		day=$(expr substr ${hot} 21 2)
-		time2=$(expr substr ${hot} 24 2)
-		time2="${time2}:$(expr substr ${hot} 26 2)"
+		year="20$(expr substr ${time_status} 1 2)"
+		month=$(expr substr ${time_status} 3 2)
+		day=$(expr substr ${time_status} 5 2)
+		time2=$(expr substr ${time_status} 8 2)
+		time2="${time2}:$(expr substr ${time_status} 10 2)"
 
 		# store file
 		echo -n "storing " $file; echo; echo; 
