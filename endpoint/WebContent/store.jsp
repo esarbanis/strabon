@@ -44,6 +44,7 @@
 	<td width="90" valign="top" bgcolor="#dfe8f0"> 
 		<TABLE border="0" cellspacing="0" cellpadding="0" width="165" id="navigation">
 			<tr><td width="90" class="style4"><a href="Query" class="navText">Query</a></td></tr> 
+                        <tr><td width=\"90\" class=\"style4\"><a href=\"Describe\" class=\"navText\">Describe</a></td></tr>
 			<tr><td width="90" class="style4"><a href="javascript:history.go(0)" class="navText">Clear</a></td></tr> 
 		</TABLE>
 	</td>
