@@ -99,7 +99,7 @@ else
 fi
 
 echo "initializing database"
-echo "Timestamp	Store	Municipalities	DeleteInSea	InvalidForFires	RefineInCoast	TimePersistence" > stderr.txt
+echo "Timestamp	Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence" > stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
