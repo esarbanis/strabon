@@ -3,29 +3,11 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
-#GRIDURL="http://kk.di.uoa.gr/grid_4.nt"
-GRIDURL="http://jose.di.uoa.gr/rdf/coastline/grid_4.nt"
-#INIT="http://jose.di.uoa.gr/rdf/Kallikratis-Coastline.ntriples"
-INIT="../Kalli_coast.sql"
 
-#CHECKDIR="/home/konstantina/allhot/"
-#CHECKDIR="${HOME}/teleios/nkua/Hotspots/"
-
-POSTGISTEMPLATE="postgistemplate"
-#POSTGISTEMPLATE="template_postgis"
-
-#dataDir="http://localhost/noa-teleios/out_triples/"
-#dataDir="http://kk.di.uoa.gr/out_triples/"
-#dataDir="http://godel.di.uoa.gr/allhot/"
-dataDir="http://jose.di.uoa.gr/rdf/hotspots/20"
-name="HMSG2_IR_039_s7_"
-suffix=".hotspots.nt"
-
-HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots"
+#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots"
+HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/msg1"
 
 logFile="chain.log"
-#countWTime="/usr/bin/time -p   %e"
-#echo > ${logFile}
 
 function timer()
 {
@@ -63,9 +45,9 @@ function chooseTomcat()
 	#elif test -s /etc/SuSE-release ; then
 	#elif test -s /etc/gentoo-release ; then
 	elif test -s /etc/lsb-release ; then # Ubuntu
-			tomcat="tomcat7"
+			tomcat=$(ls -1 /etc/init.d/| grep tomcat | head -1)
 	elif test -s /etc/debian_version ; then
-			tomcat="tomcat"
+		tomcat="tomcat"
 	fi
 
 	# check for service availability
@@ -98,50 +80,67 @@ sudo service ${postgres} restart
 POSTGRES_MAIN_VERSION=$(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
 
 echo "Dropping endpoint database";
-dropdb -U postgres ${DB}
+dropdb  ${DB}
 
 echo "Creating endpoint database"
-createdb -U postgres ${DB} 
+createdb  ${DB} 
 
 # load data
-curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -U postgres -d ${DB}
-psql ${DB} -U postgres -c 'VACUUM ANALYZE '
+curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql  -d ${DB}
+psql ${DB}  -c 'VACUUM ANALYZE ' 
 
 echo "starting tomcat"
 if test -z "${tomcat}"; then
 	# work-around for babis (standalone tomcat, with start_tomcat.sh and stop_tomcat.sh scripts)
 	start_tomcat.sh
+	sleep 2
 else
 	sudo service ${tomcat} start
 fi
 
 echo "initializing database"
-echo "S M D IF R TP" >stderr.txt
+echo "Timestamp	Store	Municipalities	DeleteInSea	InvalidForFires	RefineInCoast	TimePersistence" > stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
-#echo "Continue?"
-#read a
-
-#for y in 2008; do
-for y in 2007 2008 2010 2011 ;do
+#for y in 2007 2008 2010 2011 ;do
+for y in 2012; do
 	# get hotpost URLS
-	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG2.*\.nt' | colrm 1 1); do
+	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
 		file="${HOTSPOTS_URL}/${y}/${hot}"
 
-		# get time information for acquisition
-		year=${y}
-		month=$(expr substr ${hot} 19 2)
-		day=$(expr substr ${hot} 21 2)
-		time2=$(expr substr ${hot} 24 2)
-		time2="${time2}:$(expr substr ${hot} 26 2)"
+		time_status=$(echo ${hot} | egrep -o '[[:digit:]]{6}_[[:digit:]]{4}')
+		
+		# get sensor
+		SENSOR=$(echo ${hot} | grep -o 'MSG.')
+
+		# get satellite
+		if test "${SENSOR}" = "MSG2"; then
+			SAT="METEOSAT9"
+		else
+			SAT="METEOSAT8"
+			SENSOR="MSG1_RSS"
+		fi
+
+		# get time information for acquisition and construct timestamp
+		year="20$(expr substr ${time_status} 1 2)"
+		month=$(expr substr ${time_status} 3 2)
+		day=$(expr substr ${time_status} 5 2)
+		time2=$(expr substr ${time_status} 8 2)
+		time2="${time2}:$(expr substr ${time_status} 10 2)"
+
+		# construct timestamp
+		TIMESTAMP="${year}-${month}-${day}T${time2}:00"
 
 		# store file
 		echo -n "storing " $file; echo; echo; 
 		# ${countTime} ./strabon -db endpoint store $file
+
+		# print timestamp
+		echo -n "${TIMESTAMP} " >> stderr.txt
 
 		tmr1=$(timer)
 		../endpoint store ${ENDPOINT} N-Triples -u ${file}
@@ -159,21 +158,21 @@ for y in 2007 2008 2010 2011 ;do
 
 		tmr1=$(timer)
 
-		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/MSG2/g"`
+		sed "s/SENSOR/${SENSOR}/g"`
 
 		../endpoint update ${ENDPOINT} "${query}"
 		
 		tmr2=$(timer)
-printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo;echo;echo;echo "File ${file} inserted Municipalities!"
 		
 		# deleteSeaHotspots
-		echo -n "Going to deleteSeaHotspots 20${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
-		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "Going to deleteSeaHotspots ${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
+		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/MSG2/g"`
+		sed "s/SENSOR/${SENSOR}/g"`
 		# ${countTime} ./strabon -db endpoint update "${query}"
 
 		tmr1=$(timer)
@@ -186,11 +185,11 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		# echo "Continue?"
 		# read a
 			# invalidForFires
-		echo -n "invalidForFires 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "invalidForFires ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/MSG2/g" |\
-		sed "s/SAT/METEOSAT9/g"`
+		sed "s/SENSOR/${SENSOR}/g" |\
+		sed "s/SAT/${SAT}/g"`
 		# ${countTime} ./strabon -db endpoint update "${query}"
 		tmr1=$(timer)
 		../endpoint update ${ENDPOINT} "${query}"
@@ -199,11 +198,11 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo "File ${file} invalidForFires done!"
  
 		# refinePartialSeaHotspots
-		echo -n "refinePartialSeaHotspots 20${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "refinePartialSeaHotspots ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
+		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/MSG2/g" |\
-		sed "s/SAT/METEOSAT9/g"`
+		sed "s/SENSOR/${SENSOR}/g" |\
+		sed "s/SAT/${SAT}/g"`
 		# ${countTime} ./strabon -db endpoint update "${query}"
 		tmr1=$(timer)
 		../endpoint update ${ENDPOINT} "${query}"
@@ -215,14 +214,14 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		# read a
 
 		# refineTimePersistence
-		echo -n "Going to refineTimePersistence 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-		min_acquisition_time=`date --date="20${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
-		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "Going to refineTimePersistence ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%m:00`
+		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/MSG2/g" | \
+		sed "s/SENSOR/${SENSOR}/g" | \
 		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
 		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
-		sed "s/SAT/METEOSAT9/g"`
+		sed "s/SAT/${SAT}/g"`
 
 		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
 
@@ -236,12 +235,12 @@ printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 
 
 		# discover
-		echo -n "Going to discover 20${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
-		min_acquisition_time=`date --date="20${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%m:00`
-		max_acquisition_time=`date --date="20${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%m:00`
+		echo -n "Going to discover ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		min_acquisition_time=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%m:00`
+		max_acquisition_time=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%m:00`
 		query=`echo "${discover}" | \
 			sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-			sed "s/SENSOR/MSG2/g" | \
+			sed "s/SENSOR/${SENSOR}/g" | \
 			sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
 			sed "s/MAX_ACQUISITION_TIME/${max_acquisition_time}/g"`
 			

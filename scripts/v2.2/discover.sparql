@@ -10,10 +10,10 @@ WHERE {
 ?h   noa:hasGeometry ?hGeo ;
      noa:hasAcquisitionTime ?hAcquisitionTime ; 
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
-     noa:isDerivedFromSensor "SENSOR2"^^xsd:string ;
+     noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
      noa:hasConfidence ?conf ;
      gag:hasMunicipality ?muni .
-     FILTER("2007-08-25T15:15:00"^^xsd:dateTime <= ?hAcquisitionTime && ?hAcquisitionTime < "2007-08-25T23:15:00"^^xsd:dateTime ) .
+     FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hAcquisitionTime && ?hAcquisitionTime < "MAX_ACQUISITION_TIME"^^xsd:dateTime ) .
      OPTIONAL {?h noa:isDiscarded ?disc }.
      FILTER (!bound(?disc)) .
 }
