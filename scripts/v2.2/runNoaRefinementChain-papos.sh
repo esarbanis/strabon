@@ -5,12 +5,12 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
 
-HOTSPOTS_URL="http://papos.space.noa.gr/rdf"
-URLDIR=(   "msg1_rss"              "msg2")
-URLPREFIX=("HMSG1_RSS_IR_039_s7_"  "HMSG2_IR_039_s7_")
-SENSOR=(   "MSG1_RSS"              "MSG2")
-SATELITE=( "METEOSAT9"             "METEOSAT9")
-ACQ_HALF_HOUR=( "7.0"              "3.0")
+HOTSPOTS_URL="http://localhost/rdf"
+       URLDIR=( "msg1_rss"              "msg2")
+    URLPREFIX=( "HMSG1_RSS_IR_039_s7_"  "HMSG2_IR_039_s7_")
+       SENSOR=( "MSG1_RSS"              "MSG2")
+     SATELITE=( "METEOSAT8"             "METEOSAT9")
+ACQ_HALF_HOUR=( "7.0"                   "3.0")
 SUFFIX=".hotspots.n3"
 PROCESSING_CHAIN="DynamicThresholds"
 
