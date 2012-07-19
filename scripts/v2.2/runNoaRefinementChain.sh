@@ -62,7 +62,7 @@ function chooseTomcat()
 	#elif test -s /etc/SuSE-release ; then
 	#elif test -s /etc/gentoo-release ; then
 	elif test -s /etc/lsb-release ; then # Ubuntu
-			tomcat="tomcat7"
+			tomcat=$(ls -1 /etc/init.d/| grep tomcat | head -1)
 	elif test -s /etc/debian_version ; then
 			tomcat="tomcat"
 	fi
