@@ -1,5 +1,6 @@
 package eu.earthobservatory.runtime.generaldb;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +40,8 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.ntriples.NTriplesWriter;
+import org.openrdf.rio.n3.N3Writer;
+import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.sail.helpers.SailBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -426,7 +429,7 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Storing was successful.");
 	}
 
-	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException
+	public void describe(String describeString, SailRepositoryConnection con, String format, OutputStream out) throws MalformedQueryException
 	{
 		GraphQuery  graphQuery = null;
 
@@ -439,23 +442,45 @@ public abstract class Strabon {
 
 		logger.info("[Strabon.describe] Executing describe query:" + describeString);
 
-		try {
-			OutputStream out = new FileOutputStream(outFile);
-			RDFHandler rdfHandler = new NTriplesWriter(out);
-			graphQuery.evaluate(rdfHandler);
-			out.close();
+		//try {
+			//OutputStream out = new FileOutputStream(outFile);
+			RDFHandler rdfHandler = null;
+			
+			if(format.equalsIgnoreCase("NTRIPLES")) {
+				rdfHandler = new NTriplesWriter(out);
+				
+			} else if(format.equalsIgnoreCase("RDF/XML")) {
+				rdfHandler = new RDFXMLWriter(out);
+				
+			} else if(format.equalsIgnoreCase("N3")) {
+				rdfHandler = new N3Writer(out);
+				
+			} 
+			logger.info("[Strabon.describe] Output: {}");
+			
+			try {
+				graphQuery.evaluate(rdfHandler);
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RDFHandlerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//out.close();
+			
 
-		} catch (FileNotFoundException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (QueryEvaluationException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (RDFHandlerException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (IOException e) {
-			logger.error("[Strabon.describe]", e);
-		}
+		//} catch (FileNotFoundException e) {
+		//	logger.error("[Strabon.describe]", e);
+		//} catch (QueryEvaluationException e) {
+		//	logger.error("[Strabon.describe]", e);
+		//} catch (RDFHandlerException e) {
+		//	logger.error("[Strabon.describe]", e);
+		//} catch (IOException e) {
+		//	logger.error("[Strabon.describe]", e);
+		//}
 
-		logger.info("[Strabon.describe] Output: {}", outFile);
+		
 	}
 	
 	private static void writeString(OutputStream out, String str) throws IOException {

@@ -222,9 +222,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 
-		String answer = null;
+		ByteArrayOutputStream answer = new ByteArrayOutputStream();
 		
-		strabon.describe(queryString, strabon.getSailRepoConnection(),  answer);
+		strabon.describe(queryString, strabon.getSailRepoConnection(), answerFormatStrabon, answer);
 		
 		return answer.toString();
 	}
