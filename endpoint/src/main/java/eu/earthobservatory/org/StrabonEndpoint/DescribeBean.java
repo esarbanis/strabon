@@ -329,7 +329,7 @@ public class DescribeBean extends HttpServlet{
 		selections.put("NTriples", "NTriples");
 		selections.put("RDF/XML", "RDF/XML");
 		selections.put("CSV", "CSV");
-        selections.put("TSV", "TSV");
+                selections.put("TSV", "TSV");
 		
 		Iterator <String> it = selections.keySet().iterator();
 		
