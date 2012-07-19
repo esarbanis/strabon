@@ -217,14 +217,14 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	
 	public String describe(String queryString, String answerFormatStrabon)
 	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
-		logger.info("[StrabonEndpoint] Received SELECT query.");
+		logger.info("[StrabonEndpoint] Received DESCRIBE query.");
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 
-		ByteArrayOutputStream answer = new ByteArrayOutputStream();
+		String answer = null;
 		
-		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), answer);
+		strabon.describe(queryString, strabon.getSailRepoConnection(),  answer);
 		
 		return answer.toString();
 	}
