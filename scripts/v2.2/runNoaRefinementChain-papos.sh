@@ -10,9 +10,10 @@ URLDIR=(   "msg1_rss"              "msg2")
 URLPREFIX=("HMSG1_RSS_IR_039_s7_"  "HMSG2_IR_039_s7_")
 SENSOR=(   "MSG1_RSS"              "MSG2")
 SATELITE=( "METEOSAT9"             "METEOSAT9")
+ACQ_HALF_HOUR=( "7.0"              "3.0")
 SUFFIX=".hotspots.n3"
 PROCESSING_CHAIN="DynamicThresholds"
-ACQUISITIONS_IN_HALF_AN_HOUR="3.0"
+
 
 # log files
 logFile="chain.log"
@@ -121,7 +122,7 @@ for (( i = 0 ; i < ${#URLDIR[@]} ; i++ )) do
 	prefix=${URLPREFIX[$i]}
 	sensor=${SENSOR[$i]}
 	satelite=${SATELITE[$i]}
-	
+    acquisitions=${ACQ_HALF_HOUR[$i]}
 	# get hotpost URLS
 	for hot in $(curl -s ${HOTSPOTS_URL}/${dir}/ | grep -o ">${prefix}.*\.n3" | colrm 1 1); do
 		echo $hot
@@ -136,6 +137,8 @@ for (( i = 0 ; i < ${#URLDIR[@]} ; i++ )) do
 		t1=$(expr substr ${hot} $(( ${offset} + 7 )) 2)
 		t2=$(expr substr ${hot} $(( ${offset} + 9 )) 2)
 		time2="${t1}:${t2}"
+
+		printf "$hot " >> ${timings}
 
 		# store file
 		echo -n "storing " $file; echo; echo; 
@@ -218,7 +221,7 @@ printf '%s ' $((tmr2-tmr1)) >> ${timings}
 		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/20${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/${PROCESSING_CHAIN}/g" | \
 		sed "s/SENSOR/${sensor}/g" | \
-		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/${ACQUISITIONS_IN_HALF_AN_HOUR}/g" | \
+		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/${acquisitions}/g" | \
 		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
 		sed "s/SAT/${satelite}/g"`
 
