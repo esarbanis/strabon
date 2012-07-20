@@ -14,8 +14,8 @@ public class DescribeOp {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length < 7) {
-			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> <FORMAT>");
+		if (args.length < 6) {
+			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> [<FORMAT>]");
 			System.err.println("       where <HOST>       is the postgis database host to connect to");
 			System.err.println("             <PORT>       is the port to connect to on the database host");		
 			System.err.println("             <DATABASE>   is the spatially enabled postgis database that Strabon will use as a backend, ");
@@ -32,7 +32,10 @@ public class DescribeOp {
 		String user = args[3];
 		String passwd = args[4];		
 		String queryString = args[5];
-		String format = args[6];
+		String format = null;
+		if (args.length == 7) {
+			format = args[6];
+		}
 
 		Strabon strabon = null;
 		try { 
