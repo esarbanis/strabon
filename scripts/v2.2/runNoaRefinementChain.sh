@@ -4,8 +4,8 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
 
-#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots"
-HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/msg1"
+#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG2"
+HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
 
 logFile="chain.log"
 
