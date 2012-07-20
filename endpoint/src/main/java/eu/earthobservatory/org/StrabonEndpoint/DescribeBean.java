@@ -29,10 +29,6 @@ public class DescribeBean extends HttpServlet{
 
     private static final long serialVersionUID = -7541662133934957148L;
 
-	/**
-	* @param args
-	* @throws Exception
-	*/
 	private StrabonBeanWrapper strabonWrapper;
 
     @Override
@@ -51,10 +47,10 @@ public class DescribeBean extends HttpServlet{
 			query = URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");	
 		}
 		
-		String reqFormat = request.getParameter("format");
-		//String reqAccept = request.getHeader("accept");
+		// get the RDF format (checks the "format" and then the "accept" parameters)
+        String reqFormat = getFormat(request);
 		
-		if (reqFormat == null || reqFormat.equals("HTML")) {
+		if (reqFormat == null || reqFormat.equals("HTML")) { // browser view
 			response.setContentType("text/html; charset=UTF-8");
 		    reqFormat = "HTML";
 		    
@@ -131,6 +127,39 @@ public class DescribeBean extends HttpServlet{
 	    }
 	}
 	
+    /**
+     * Determines the RDF format to use. If the client has specified
+     * the "format" parameter, then it is favored over the "accept"
+     * parameter. If "format" is not specified, we determine the RDF 
+     * format according to the "accept" parameter. 
+     * 
+     * @param request
+     * @return
+     */
+    private String getFormat(HttpServletRequest request) {
+        
+        String reqFormat = request.getParameter("format");
+        
+        if (reqFormat == null) {
+                String reqAccept = request.getHeader("accept");
+                
+                if (reqAccept != null) {
+                        // check whether the "accept" parameter contains any 
+                        // of the mime types of any RDF format
+                        for (RDFFormat format : RDFFormat.values()) {
+                                for (String mimeType : format.getMIMETypes()) {
+                                        if (reqAccept.contains(mimeType)) {
+                                                reqFormat = format.getName();
+                                                break;
+                                        }
+                                }
+                        }
+                }
+        }
+                
+                return reqFormat;
+    }
+
     @Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);

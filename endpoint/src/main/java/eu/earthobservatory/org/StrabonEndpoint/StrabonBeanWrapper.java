@@ -240,7 +240,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		strabon.describe(queryString, answerFormatStrabon, strabon.getSailRepoConnection(), out);
 	}
 
-
 	public Object update(String updateString, String answerFormatStrabon) 
 	throws MalformedQueryException, RepositoryException, QueryEvaluationException, 
 	TupleQueryResultHandlerException, IOException, ClassNotFoundException {
