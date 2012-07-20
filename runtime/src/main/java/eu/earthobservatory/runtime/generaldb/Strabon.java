@@ -43,6 +43,8 @@ import org.openrdf.sail.helpers.SailBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.utils.RDFHandlerFactory;
+
 public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
@@ -440,8 +442,7 @@ public abstract class Strabon {
 		logger.info("[Strabon.describe] Executing DESCRIBE query:" + describeString);
 
 		try {
-			RDFHandler rdfHandler = new NTriplesWriter(out);
-			graphQuery.evaluate(rdfHandler);
+			graphQuery.evaluate(RDFHandlerFactory.createRDFHandler(format, out));
 
 		} catch (Exception e) {
 			logger.error("[Strabon.describe]", e);

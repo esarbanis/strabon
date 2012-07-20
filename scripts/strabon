@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Script for running the main classes of Strabon. The main classes of Strabon comprises
-# QueryOp, , UpdateOp, and StoreOp.
+# QueryOp, , UpdateOp, StoreOp, and  DescribeOp.
 #
 # Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
 #
@@ -66,9 +66,9 @@ STRABON_CONF="${HOME}/.strabon"
 function help() {
 	echo "Usage: ${CMD} [OPTIONS] COMMAND ARGS"
 	echo
-	echo "Interface to execute the main classes of Strabon, such as QueryOp, StoreOp, UpdateOp, etc."
+	echo "Interface to execute the main classes of Strabon, such as QueryOp, StoreOp, UpdateOp, DescribeOp, etc."
 	echo
-	echo "	COMMAND	 : one of \`query', \`update', \`store', or \`help'"
+	echo "	COMMAND	 : one of \`query', \`update', \`store', \`describe', or \`help'"
 	echo "	ARGS	 : arguments according to selected command"
 	echo
 	echo "OPTIONS can be any of the following (variable names and values are case sensitive)"
@@ -104,7 +104,7 @@ function help_query() {
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or an alias name such as the following:"
 	echo "				size: returns the number of triples"
 	echo "				hotspots: returns the number of hotspots"
-	echo "  RESULT_FROM	: the format of the result. Possible values are \`???' (default), \`xml'"
+	echo "  RESULT_FORMAT	: the format of the result. Possible values are \`???' (default), \`xml'"
 	echo "			  \`html', \`kml', \`kmz', or \`geojson'"
 }
 
@@ -132,6 +132,16 @@ function help_store() {
 	echo "		    \`ntriples' (default), \`n3', \`rdfxml', or \`turtle'."
 }
 
+function help_describe() {
+	echo "Usage: ${CMD} describe DESCRIBE_QUERY [RESULT_FORMAT]"
+	echo
+	echo "Execute a SPARQL DESCRIBE query on Strabon."
+	echo
+	echo "	DESCRIBE_QUERY	: the SPARQL DESCRIBE query to execute"
+	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`N-Triples', "
+	echo "			  \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+	echo "			  (defaults to N-Triples)"
+}
 
 # read configuration script first
 if test -e "${STRABON_CONF}"; then
@@ -320,6 +330,9 @@ case "${1}" in
 				store)
 					help_store
 					;;
+				describe)
+					help_describe
+					;;
 				*)
 					help
 					;;
@@ -415,6 +428,31 @@ case "${1}" in
 		# do not make an assignment of the files to QUERY
 		# handle the case of storing multiple files afterwards
 		# QUERY="${@}"
+		;;
+	describe)
+		CLASS="DescribeOp"
+		shift
+		if ! test $# -ge 1; then
+			help_describe
+			exit 1
+		fi
+		QUERY="${1}"
+		shift
+
+		# check for format of result
+		if test $# -gt 0; then
+			RESULT_FORMAT="${1}"
+			shift
+			case "${RESULT_FORMAT}" in
+				N-Triples|RDF/XML|N3|TURTLE|TRIG|TRIX|BinaryRDF)
+				;;
+			*)
+				echo "${CMD}: invalid result format \"${RESULT_FORMAT}\""
+				echo "${CMD}: valid formats are \`N-Triples', \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+				exit 2
+				;;
+			esac
+		fi
 		;;
 	"")
 		help
