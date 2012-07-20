@@ -15,14 +15,14 @@ public class DescribeOp {
 	public static void main(String[] args) {
 
 		if (args.length < 7) {
-			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> <OUTPUT>");
+			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> <FORMAT>");
 			System.err.println("       where <HOST>       is the postgis database host to connect to");
 			System.err.println("             <PORT>       is the port to connect to on the database host");		
 			System.err.println("             <DATABASE>   is the spatially enabled postgis database that Strabon will use as a backend, ");
 			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
 			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
 			System.err.println("             <QUERY>      is the stSPARQL query to evaluate.");
-			System.err.println("             <OUTPUT>     is the output file.");
+			System.err.println("             <FORMAT>     is the RDF format of the output.");
 			System.exit(0);
 		}
 
@@ -32,12 +32,12 @@ public class DescribeOp {
 		String user = args[3];
 		String passwd = args[4];		
 		String queryString = args[5];
-		String outFile = args[6];
+		String format = args[6];
 		
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, true);
-			strabon.describe(queryString, strabon.getSailRepoConnection(), outFile);
+			strabon.describe(queryString, format, strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.DescribeOp] Error during execution of DESCRIBE query.", e);

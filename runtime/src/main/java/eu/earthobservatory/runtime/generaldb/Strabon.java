@@ -426,7 +426,7 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Storing was successful.");
 	}
 
-	public void describe(String describeString, SailRepositoryConnection con, String outFile) throws MalformedQueryException
+	public void describe(String describeString, String format, SailRepositoryConnection con, OutputStream out) throws MalformedQueryException
 	{
 		GraphQuery  graphQuery = null;
 
@@ -437,30 +437,16 @@ public abstract class Strabon {
 			logger.error("[Strabon.describe]", e);
 		}
 
-		logger.info("[Strabon.describe] Executing describe query:" + describeString);
+		logger.info("[Strabon.describe] Executing DESCRIBE query:" + describeString);
 
 		try {
-			OutputStream out = new FileOutputStream(outFile);
 			RDFHandler rdfHandler = new NTriplesWriter(out);
 			graphQuery.evaluate(rdfHandler);
-			out.close();
 
-		} catch (FileNotFoundException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (QueryEvaluationException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (RDFHandlerException e) {
-			logger.error("[Strabon.describe]", e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("[Strabon.describe]", e);
 		}
 
-		logger.info("[Strabon.describe] Output: {}", outFile);
-	}
-	
-	private static void writeString(OutputStream out, String str) throws IOException {
-		if (str != null && str.length() > 0) {
-			out.write(str.getBytes(Charset.defaultCharset()));
-		}
+		logger.info("[Strabon.describe] DESCRIBE query executed successfully.");
 	}
 }

@@ -1,23 +1,14 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.SecureRandom;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,26 +17,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
-import eu.earthobservatory.org.StrabonEndpoint.ResponseMessages;
-import eu.earthobservatory.runtime.generaldb.Strabon;
-
 
 public class DescribeBean extends HttpServlet{
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.DescribeBean.class);
 
-        private static final long serialVersionUID = -7541662133934957148L;
+    private static final long serialVersionUID = -7541662133934957148L;
 
 	/**
 	* @param args
