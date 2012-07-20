@@ -86,8 +86,8 @@ echo "Creating endpoint database"
 createdb  ${DB} 
 
 # load data
-curl -s  http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql  -d ${DB}
-psql ${DB}  -c 'VACUUM ANALYZE ' 
+curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
+psql ${DB} -c 'VACUUM ANALYZE' 
 
 echo "starting tomcat"
 if test -z "${tomcat}"; then
@@ -167,6 +167,13 @@ for y in 2012; do
 		tmr2=$(timer)
 		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo;echo;echo;echo "File ${file} inserted Municipalities!"
+
+		# execute an explicit VACUUM ANALYZE when a query takes longer than it should
+		duration=$((tmr2-tmr1))
+		if test ${duration} -ge 30000; then
+			psql ${DB} -c 'VACUUM ANALYZE' 
+			echo "Explicit VACUUM ANALYZE"
+		fi
 		
 		# deleteSeaHotspots
 		echo -n "Going to deleteSeaHotspots ${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
