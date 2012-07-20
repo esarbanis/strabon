@@ -487,5 +487,5 @@ if ${DEBUG}; then
 	echo "${CMD}: printing command for execution"	
 	echo "${STRABON_EXEC}"
 else
-	eval ${STRABON_EXEC}
+	eval "${STRABON_EXEC}"
 fi
