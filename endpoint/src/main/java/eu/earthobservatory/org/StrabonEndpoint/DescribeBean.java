@@ -1,14 +1,15 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -17,16 +18,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.rio.RDFFormat;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
 
 public class DescribeBean extends HttpServlet{
-
-	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.DescribeBean.class);
 
     private static final long serialVersionUID = -7541662133934957148L;
 
@@ -44,123 +43,44 @@ public class DescribeBean extends HttpServlet{
 	}
 
     @Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
-	{
-		final class DataHive{
-			private String format;
-			private String SPARQLQuery;
-			private String errorMessage;
-
-			DataHive(){
-				this.format = null;
-				this.SPARQLQuery = null;
-				this.errorMessage = null;				
-			}
-
-			public String getSPARQLQuery() {
-				return SPARQLQuery;
-			}
-
-			public void setSPARQLQuery(String sPARQLQuery) {
-				SPARQLQuery = sPARQLQuery;
-			}
-
-			public String getFormat() {
-				return format;
-			}
-
-			public void setFormat(String fFormat) {
-				format = fFormat;
-			}
-
-			public String getErrorMessage() {
-				return errorMessage;
-			}
-
-			public void setErrorMessage(String error) {
-				this.errorMessage = error;
-			}
-			
-			public String toString() {
-				return "Format: " + (this.format != null ? this.format : " NULL") + 
-						", SPARQLQuery: " + (this.SPARQLQuery != null ? this.SPARQLQuery : " NULL") + 
-						", errormessage: " + (this.errorMessage != null ? this.errorMessage : " NULL") + ".";
- 			}
-		}
-		
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		DataHive hive = new DataHive(); 
-
 		String query = request.getParameter("SPARQLQuery");
-		String q = (query == null) ? null : URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
-
-		if (query == null) {
-	               query = request.getParameter("describe");
-	               q = (query == null) ? null : URLDecoder.decode(request.getParameter("describe"), "UTF-8");
+		if (query != null) {
+			query = URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");	
 		}
-			
-		hive.setSPARQLQuery(q);
-
-		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
-		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
-		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");
 		
-
-		if ((reqFormat == "") && (reqAccept == "")) {
-			hive.setFormat("HTML");
+		String reqFormat = request.getParameter("format");
+		//String reqAccept = request.getHeader("accept");
+		
+		if (reqFormat == null || reqFormat.equals("HTML")) {
 			response.setContentType("text/html; charset=UTF-8");
-			
-	    } else if (reqAccept.contains("application/vnd.ms-excel")) {
-		    response.setContentType("application/vnd.ms-excel");
-		    hive.setFormat("Spreadsheet");		
-	    } else if (reqAccept.contains("application/sparql-results+xml")) {
-		    response.setContentType("application/sparql-results+xml");
-		    hive.setFormat("XML");		
-	    } else if (reqAccept.contains("application/sparql-results+json")) {
-		    response.setContentType("application/sparql-results+json");
-		    hive.setFormat("JSON");		
-	    } else if (reqAccept.contains("application/javascript")) {
-		    response.setContentType("application/javascript");
-		    hive.setFormat("Javascript");		
-	    } else if (reqAccept.contains("text/plain")) {
-		    response.setContentType("text/plain");
-		    hive.setFormat("NTriples");		
-	    } else if (reqAccept.contains("application/rdf+xml")) {
-		    response.setContentType("application/rdf+xml");
-		    hive.setFormat("RDF/XML");		
-	    } else if (reqAccept.contains("text/csv")) {
-		    response.setContentType("text/csv");
-		    hive.setFormat("CSV");		
-	    } else if (reqAccept.contains("text/tab-separated-values")) {
-		    response.setContentType("text/tab-separated-values");
-		    hive.setFormat("TSV");		
-	    }
-		
-
-		PrintWriter out = response.getWriter();
-                out.flush();
-
+		    reqFormat = "HTML";
+		    
+		    PrintWriter out = response.getWriter();
 
 			appendHTML1a(out, "");
-
 			appendHTMLQ(out, strabonWrapper);
-
 			appendHTML1b(out);
 
-			if (hive.getSPARQLQuery() != null)
-				out.write(hive.getSPARQLQuery());
+			if (query != null) {
+				out.write(query);
+			}
 
-			appendHTML2(out, hive.getFormat());
+			appendHTML2(out, reqFormat);
 
 			String answer = "";
-			if (hive.getSPARQLQuery() != null) {
-				StringBuilder errorMessage = new StringBuilder ();
-				answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-				hive.setErrorMessage(errorMessage.toString());
-				if (hive.getErrorMessage() != null) {
-					appendHTML3(out, hive.getErrorMessage());
+			if (query != null) {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				
+				try {
+					// we use the default N-Triples format in case of HTML output
+					strabonWrapper.describe(query, "N-Triples", bos);
+					answer = bos.toString();
+						
+				} catch (Exception e) {
+						appendHTML3(out, e.getMessage());
 				}
 			}
 
@@ -169,18 +89,48 @@ public class DescribeBean extends HttpServlet{
 				out.println("<style type=\"text/css\">");
 				out.println("table.result    {border:1px solid #777777;}");
 				out.println("table.result tr {border:1px dashed grey;}");
-				out.println("table.result th {background-color:grey;color:black;}");
+				out.println("table.result th {background-color:grey; color:black;}");
 				out.println("</style>");
-				out.println("<table class=\"result\">");
-				out.append(answer);
-				out.append("</table>");
+				out.println("<PRE>");
+				out.append(StringEscapeUtils.escapeHtml(answer));
+				out.println("</PRE>");
 			}
+			
 			appendHTML4(out);
 			appendHTML5(out);
-		}
-	
-
+		    
+			response.setStatus(HttpServletResponse.SC_OK);
+			out.flush();
 			
+	    } else {	    	
+	    	RDFFormat rdfFormat = RDFFormat.valueOf(reqFormat);
+	    	
+	    	// assuming N-Triples
+	    	if (rdfFormat == null) {
+	    		rdfFormat = RDFFormat.valueOf("N-Triples");
+	    	}
+	    	
+	    	response.setContentType(rdfFormat.getDefaultMIMEType());
+		    response.setHeader("Content-Disposition", 
+		    		"attachment; filename=describe." + rdfFormat.getDefaultFileExtension() + "; " + rdfFormat.getCharset());
+		    
+		    if (query != null) {
+				try {
+					strabonWrapper.describe(query, rdfFormat.getName(), response.getOutputStream());
+					response.setStatus(HttpServletResponse.SC_OK);
+					
+				} catch (Exception e) {
+					
+					response.getOutputStream().print(ResponseMessages.getXMLHeader());
+					response.getOutputStream().print(ResponseMessages.getXMLException(e.getMessage()));
+					response.getOutputStream().print(ResponseMessages.getXMLFooter());
+				}
+			}
+		    
+		    response.getOutputStream().flush();
+	    }
+	}
+	
     @Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
@@ -190,23 +140,6 @@ public class DescribeBean extends HttpServlet{
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
 
 		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-	}
-
-	public String evaluateQuery(StrabonBeanWrapper strabonWrapper, String resultFormat, String reqFunctionality, String SPARQLQuery, StringBuilder errorMessage) {		
-		String answer = "";
-
-		try {
-			if (SPARQLQuery == null) {
-				answer = "";
-			} else {
-				answer = (String) strabonWrapper.describe(SPARQLQuery, resultFormat);
-			}
-		} catch (Exception e) {
-			logger.error("[StrabonEndpoint.DescribeBean] Error during describing.", e);
-			errorMessage.append(e.getMessage());
-		}
-
-		return answer;		
 	}
 
 	protected static void appendHTML1a(PrintWriter out, String pathToKML) {
@@ -280,7 +213,7 @@ public class DescribeBean extends HttpServlet{
 		out.println("<td width=\"90\" valign=\"top\" bgcolor=\"#dfe8f0\"> ");
 		out.println("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"165\" id=\"navigation\"> ");
 		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Query\" class=\"navText\">Query</a></td></tr> ");
-                out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Describe\" class=\"navText\">Describe</a></td></tr> ");
+        out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Describe\" class=\"navText\">Describe</a></td></tr> ");
 	}
 
 	protected static void appendHTML1b(PrintWriter out) {	
@@ -303,27 +236,15 @@ public class DescribeBean extends HttpServlet{
 
 		out.println("<td id=\"output\";\"><center>Output Format:<br/><select name=\"format\" title=\"select one of the following output format types\">");
 		
-		Map<String, String> selections = new HashMap<String, String>();
-		selections.put("HTML", "HTML");
-		selections.put("Spreadsheet", "Spreadsheet");
-		selections.put("XML", "XML");
-		selections.put("JSON", "JSON");
-		selections.put("Javascript", "Javascript");
-		selections.put("NTriples", "NTriples");
-		selections.put("RDF/XML", "RDF/XML");
-		selections.put("CSV", "CSV");
-                selections.put("TSV", "TSV");
+		ArrayList<String> formats = new ArrayList<String>(Arrays.asList("HTML", "N-Triples", "RDF/XML", "N3", "TURTLE", "TRIG", "TRIX", "BinaryRDF"));
 		
-		Iterator <String> it = selections.keySet().iterator();
-		
-		while (it.hasNext()) {
-			String key = it.next();
-			String value = selections.get(key);
+		for (String rdfFormat: formats) {
 			out.print("<option ");
-			if (key.equalsIgnoreCase(format))
+			if (rdfFormat.equalsIgnoreCase(format)) {
 				out.print("selected");
+			}
 			
-			out.println(" value=\"" + key + "\">" + value + "</option>");
+			out.println(" value=\"" + rdfFormat + "\">" + rdfFormat + "</option>");
 		}
 		
 		out.println("</select></center></td>");

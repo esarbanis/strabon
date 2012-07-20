@@ -14,7 +14,7 @@ function help() {
 	echo
 	echo "Execute SPARQL and SPARQL Update queries as well as store RDF triples on a Strabon endpoint."
 	echo
-	echo "	COMMAND	 : one of query, queryfile, update, store, or help"
+	echo "	COMMAND	 : one of query, queryfile, update, store, describe, or help"
 	echo "	ENDPOINT : the URL of the Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint)"
 	echo "	ARGS	 : arguments according to selected command"
 	echo 
@@ -60,6 +60,15 @@ function help_store() {
 	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
 }
 
+function help_describe() {
+	echo "Usage: ${CMD} describe ENDPOINT DESCRIBE_QUERY [RESULT_FORMAT]"
+	echo
+	echo "	ENDPOINT	: the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
+	echo "	DESCRIBE_QUERY	: the SPARQL DESCRIBE query to execute"
+	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`N-Triples' (default)"
+	echo "			  \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+}
+
 CURL_OPTS="-w HTTP_CODE='%{http_code}\n' -H \"Content-Type:application/x-www-form-urlencoded\" -H \"Accept:text/xml\""
 
 # if set to 1, then only the command to be executed is printed
@@ -88,6 +97,9 @@ case "${1}" in
 					;;
 				store)
 					help_store
+					;;
+				describe)
+					help_describe
 					;;
 				*)
 					help
@@ -214,6 +226,37 @@ case "${1}" in
 				exit 1
 				;;
 		esac
+		;;
+	describe)
+		shift
+		if ! test $# -ge 2; then
+			help_describe
+			exit 1
+		fi
+		URL="${1}/Describe"
+		QUERY="${2}"
+
+		shift
+		shift
+
+		# set default format
+		FORMAT="N-Triples"
+		if test $# -eq 1; then
+			FORMAT="${1}"
+		fi
+
+		case "${FORMAT}" in
+			N-Triples|RDF/XML|N3|TURTLE|TRIG|TRIX|BinaryRDF)
+				shift
+				;;
+			*)
+				echo "${CMD}: unknown format \"${FORMAT}\"."
+				echo "${CMD}: possible values are \`N-Triples' (default), \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+				exit 2
+				;;
+		esac
+
+		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
 		;;
 	*) 
 		help

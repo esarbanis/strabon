@@ -153,7 +153,7 @@ public class QueryBean extends HttpServlet {
 
 		} else if (reqFormat.equalsIgnoreCase("KML file")) {
 			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-		    response.setHeader("Content-Disposition","attachment;filename=pico.kml");
+		    response.setHeader("Content-Disposition","attachment;filename=doc.kml");
 			hive.setFormat(Strabon.FORMAT_KML);
 			
 		} else if (reqFormat.equalsIgnoreCase("KML")) {
@@ -162,7 +162,7 @@ public class QueryBean extends HttpServlet {
 			
 		} else if (reqFormat.equalsIgnoreCase("KMZ file")) {
 			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
-			response.setHeader("Content-Disposition","attachment;filename=pico.kmz");
+			response.setHeader("Content-Disposition","attachment;filename=doc.kmz");
 			hive.setFormat(Strabon.FORMAT_KMZ);
 			
 		} else if (reqFormat.equalsIgnoreCase("KMZ")) {

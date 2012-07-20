@@ -2,6 +2,7 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -215,18 +216,28 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return answer.toString();
 	}
 	
-	public String describe(String queryString, String answerFormatStrabon)
+	/**
+	 * Wrapper around Strabon.describeOp which takes an OutputStream to use for writing
+	 * the answer to a DESCRIBE query.
+	 * 
+	 * @param queryString
+	 * @param answerFormatStrabon
+	 * @param out
+	 * @throws MalformedQueryException
+	 * @throws RepositoryException
+	 * @throws QueryEvaluationException
+	 * @throws TupleQueryResultHandlerException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void describe(String queryString, String answerFormatStrabon, OutputStream out)
 	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
 		logger.info("[StrabonEndpoint] Received DESCRIBE query.");
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 
-		ByteArrayOutputStream answer = new ByteArrayOutputStream();
-		
-		strabon.describe(queryString, answerFormatStrabon, strabon.getSailRepoConnection(), answer);
-		
-		return answer.toString();
+		strabon.describe(queryString, answerFormatStrabon, strabon.getSailRepoConnection(), out);
 	}
 
 
