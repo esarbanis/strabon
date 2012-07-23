@@ -6,8 +6,14 @@
 # Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
 #
 
+# absolute directory name of this command
+LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # this command
 CMD="$(basename ${0})"
+
+# Filename containing the prefixes to be included in SPARQL queries
+PREFIXES_FILE="${LOC}/prefixes.sparql"
 
 function help() {
 	echo "Usage: ${CMD} [OPTIONS] COMMAND ENDPOINT ARGS"
@@ -20,6 +26,8 @@ function help() {
 	echo 
 	echo "OPTIONS can be any of the following"
 	echo "	-d	 : don't run, just print what shall be executed"
+	echo "	-i	 : include URI prefixes in the SPARQL query. Prefixes are taken from file"
+	echo "		  \`prefixes.sparql'"
 }
 
 function help_query() {
@@ -78,6 +86,11 @@ case "${1}" in
 	-d)
 		shift
 		DEBUG=1
+		;;
+	-i)
+		shift
+		PREFIXES="$(cat ${PREFIXES_FILE})
+"
 		;;
 esac
 
@@ -154,8 +167,7 @@ case "${1}" in
 			exit 1
 		fi
 
-		if [ ! -f ${2} ];
-		then
+		if ! test -f ${2}; then
 			echo "${CMD}: File not found."
 			exit 2
 		fi
@@ -183,7 +195,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
+		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${PREFIXES}${QUERY}' ${URL}"
 		;;
 
 	update)
@@ -202,7 +214,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
+		EXEC="curl ${CURL_OPTS} --data-urlencode SPARQLQuery='${PREFIXES}${QUERY}' ${URL}"
 		;;
 	store)
 		shift
@@ -256,7 +268,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
+		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${PREFIXES}${QUERY}' ${URL}"
 		;;
 	*) 
 		help
