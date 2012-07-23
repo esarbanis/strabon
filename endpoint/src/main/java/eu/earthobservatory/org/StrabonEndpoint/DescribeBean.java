@@ -32,9 +32,7 @@ public class DescribeBean extends HttpServlet{
 	private StrabonBeanWrapper strabonWrapper;
 
     @Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException 
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
@@ -43,8 +41,16 @@ public class DescribeBean extends HttpServlet{
 		request.setCharacterEncoding("UTF-8");
 
 		String query = request.getParameter("SPARQLQuery");
+		
 		if (query != null) {
-			query = URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");	
+			query = URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
+			
+		} else { // check for SPARQL protocol "query" parameter
+			query = request.getParameter("query");
+			
+			if (query != null) {
+				query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			}
 		}
 		
 		// get the RDF format (checks the "format" and then the "accept" parameters)
