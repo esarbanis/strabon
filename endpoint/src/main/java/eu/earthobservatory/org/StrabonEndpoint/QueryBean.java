@@ -539,7 +539,7 @@ public class QueryBean extends HttpServlet {
 		out.println("<td width=\"90\" valign=\"top\" bgcolor=\"#dfe8f0\"> ");
 		out.println("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"165\" id=\"navigation\"> ");
 		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Query\" class=\"navText\">Query</a></td></tr> ");
-                out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Describe\" class=\"navText\">Describe</a></td></tr> ");
+		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Describe?format=HTML\" class=\"navText\">Describe</a></td></tr> ");
 	}
 
 	protected static void appendHTML1b(PrintWriter out) {	
