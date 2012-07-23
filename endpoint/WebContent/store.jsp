@@ -2,53 +2,44 @@
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.StoreBean"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="style.css" type="text/css" /> 
-<title>TELEIOS: Strabon Endpoint</title>
-</head>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		 
+		<script type="text/javascript">
+			function toggleMe(a) {
+				var e = document.getElementById(a);
+				if (!e) {
+					return true;
+				}
+				if (e.style.display == "none") {
+					e.style.display = "block";
+				} else {
+					e.style.display = "none";
+				}
+				return true;
+			}
+		</script>
+		<title>TELEIOS: Strabon Endpoint</title>
+	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
-  <TABLE width="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
-    <TR>
-		
-      <TD height="16" background="images/pixi_white.gif"><img src="images/pixi_white.gif" width="16" height="16"></TD>
-	</TR>
-	<TR>
-      <TD height="1" background="images/top_bg_blue.gif"></TD>
-	</TR>		
-	<TR>
-      <TD height="60" background="images/nav2_bg.gif"> 
-        <table width="100%" border="0">
-         <tr>
-            <td width="1"><img src="images/nav2_bg.gif" width="1" height="60"></td>
-            <td valign="top" width="80px"><img border="0" src="images/teleios_logo.png"/></td>
-            <td valign="top" align="left">
-            <span class="logo">Strabon Endpoint</span><br><span class="style4">based on Strabon</span></td>
-          </tr>
-        </table> </TD>
-	</TR>
-	<TR>
-      <TD height="21" background="images/nav1_bg1.gif">
-      </TD>
-	</TR>
-	<TR>
-      <TD height="2" background="images/top_bg_blue.gif"></TD>
-	</TR>
-</TABLE>
+
+<!-- include TELEIOS header and description -->
+<%@ include file="teleios-header.html"%>
+<!-- include TELEIOS header and description -->
 
 <FORM method="get" action=Store>
 <INPUT type=hidden name="<%=StoreBean.SRC_REQ%>" value="browser"/>
 
 <TABLE border="0" width="100%">
-<tr> 
-	<td width="90" valign="top" bgcolor="#dfe8f0"> 
+<TR> 
+	<TD width="90" valign="top" class="style4"> 
 		<TABLE border="0" cellspacing="0" cellpadding="0" width="165" id="navigation">
-			<tr><td width="90" class="style4"><a href="Query" class="navText">Query</a></td></tr> 
-			<tr><td width="90" class="style4"><a href="Describe?format=HTML" class="navText">Describe</a></td></tr>
-			<tr><td width="90" class="style4"><a href="javascript:history.go(0)" class="navText">Clear</a></td></tr> 
+			<TR><TD width="90" class="style4"><a href="query.jsp" class="navText">Query</A></TD></TR> 
+			<TR><TD width="90" class="style4"><a href="describe.jsp" class="navText">Describe</A></TD></TR>
 		</TABLE>
-	</td>
-	<td width="*" valign="top" >
+	</TD>
+	<td width="*" valign="top" class="style4">
 		<TABLE cellspacing="5">
 <%
 	if (request.getParameter(StoreBean.DATA_ERROR) != null) {

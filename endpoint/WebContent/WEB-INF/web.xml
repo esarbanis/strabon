@@ -54,11 +54,37 @@
 		<servlet-name>Describe</servlet-name>
 		<url-pattern>/Describe</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>query.jsp</servlet-name>
+		<jsp-file>/query.jsp</jsp-file>
+	</servlet>
 		
 	<servlet>
 		<servlet-name>store.jsp</servlet-name>
 		<jsp-file>/store.jsp</jsp-file>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>describe.jsp</servlet-name>
+		<jsp-file>/describe.jsp</jsp-file>
+	</servlet>
+ 
+   	<mime-mapping>
+       	<extension>kml</extension>
+       	<mime-type>application/vnd.google-earth.kml+xml</mime-type>
+   	</mime-mapping>
+   	<mime-mapping>
+       	<extension>kmz</extension>
+       	<mime-type>application/vnd.google-earth.kmz</mime-type>
+   	</mime-mapping>
+	
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>query.jsp</welcome-file>
+	</welcome-file-list>
 	
 <!-- 	<servlet> -->
 <!-- 		<display-name>QueryServlet</display-name> -->
@@ -70,20 +96,4 @@
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->
 <!-- 		<url-pattern>/QueryServlet</url-pattern> -->
 <!-- 	</servlet-mapping> -->
- 
-    	<mime-mapping>
-        	<extension>kml</extension>
-        	<mime-type>application/vnd.google-earth.kml+xml</mime-type>
-    	</mime-mapping>
-    	<mime-mapping>
-        	<extension>kmz</extension>
-        	<mime-type>application/vnd.google-earth.kmz</mime-type>
-    	</mime-mapping>
-	
-	<session-config>
-		<session-timeout>60</session-timeout>
-	</session-config>
-	<welcome-file-list>
-		<welcome-file>Query</welcome-file>
-	</welcome-file-list>
 </web-app>

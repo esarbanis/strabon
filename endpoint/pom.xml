@@ -184,6 +184,9 @@
 							<includes>
 								<include>style.css</include>
 								<include>store.jsp</include>
+								<include>query.jsp</include>
+								<include>describe.jsp</include>
+								<include>teleios-header.html</include>
 							</includes>
 						</resource>
 

@@ -1,0 +1,44 @@
+<TABLE width="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR>
+      <TD height="16" background="images/pixi_white.gif"><img src="images/pixi_white.gif" width="16" height="16"></TD>
+	</TR>
+	<TR>
+      <TD height="1"></TD>
+	</TR>		
+	<TR>
+      <TD height="60" background="images/nav2_bg.gif"> 
+        <table width="100%" border=0>
+         <tr>
+            <td width="1"><img src="images/nav2_bg.gif" width="1" height="60"></td>
+            <td valign="top" width="80px"><img border="0" src="images/teleios_logo.png" /></td>
+            <td valign="top" align="left">
+            <span class="logo">&nbsp;stSPARQL Endpoint</span><br><span class="style4"></span></td>
+          </tr>
+        </table>
+      </TD>
+	</TR>
+	<TR>
+      <TD height="50" id="intro">
+On this page you can execute stSPARQL queries against the Strabon backend. 
+The dataset is based on  the following ontologies: 
+<a href="http://harmonisa.uni-klu.ac.at/content/land-use-land-cover-ontologies">Corine Land Cover</a>, 
+<a>Greek Administrative Geography (Kallikratis)</a>, 
+<a href="http://labs.mondeca.com/dataset/lov/details/vocabulary_lgdo.html">Linked Geodata</a>, and 
+<a href="http://www.geonames.org/search.html?q=ontology&country=">Geonames</a>.
+We also use the <a href="images/graph.png">NOA ontology</a> we developed for the 
+<a href="http://www.space.noa.gr/">NOA</a> use case of the European FP7 project 
+<a href="http://www.earthobservatory.eu/">TELEIOS</a>. 
+<a onclick="return toggleMe('par')">(More)</a> <br>
+
+<p id="par">In this context NOA has been developing a real-time fire hotspot detection service for effectively monitoring 
+a fire-front. The technique is based on the use of acquisitions originating from the SEVIRI (Spinning Enhanced Visible and 
+Infrared Imager) sensor, on top of MSG-1 (Meteosat Second Generation satellite, renamed to Meteosat-8) and MSG-2 (renamed 
+to Meteosat-9) satellite platforms. Since 2007, NOA operates an MSG/SEVIRI acquisition station, and has been systematically
+archiving raw satellite images on a 5 and 15 minutes basis, the respective temporal resolutions of MSG-1 and MSG-2. The 
+acquired data are then annotated using the stRDF model and can be queried using the stSPARQL query language.</p>
+ 
+On the left sidebar, some example stSPARQL queries are provided. The NOA use case is described in more detail in the VLDB
+application paper <a href="">here</a>. 
+      </TD>
+	</TR>
+</TABLE>
