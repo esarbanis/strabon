@@ -36,7 +36,7 @@ WHERE {
       ?H2 noa:hasGeometry ?HGEO2 .
       ?H2 noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime .
       ?H2 noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-      ?H2 noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string .
+      ?H2 noa:producedFromProcessingChain ?hProcessingChain2 .
       FILTER(("PROCESSING_CHAIN"^^xsd:string = ?hProcessingChain2)||("PROCESSING_CHAIN-TimePersistence"^^xsd:string = ?hProcessingChain2)).
       FILTER( strdf:mbbEquals(?hGeometry1, ?HGEO2) ) .
     }
