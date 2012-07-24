@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.StoreBean"/>
+<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.DescribeBean"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -28,7 +31,9 @@
 <%@ include file="teleios-header.html"%>
 <!-- include TELEIOS header and description -->
 
-<form enctype="UTF-8" accept-charset="UTF-8" method="post">
+<FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Describe">
+<input type="hidden" name="<%=DescribeBean.VIEW%>" value="<%=DescribeBean.VIEW_TYPE%>">
+
 <table border="0" width="100%"><tr> 
 <td width="90" valign="top" class="style4"> 
 <table border="0" cellspacing="0" cellpadding="0" width="165" id="navigation"> 
@@ -40,8 +45,7 @@
 <table cellspacing="5">
 <tr>
 <td id="output">stSPARQL Query:</td>
-<td id="output"><textarea name="SPARQLQuery" title="pose your DESCRIBE query here" rows="15" cols="100">
-</textarea></td>
+<td id="output"><textarea name="query" title="pose your DESCRIBE query here" rows="15" cols="100">${query}</textarea></td>
 </tr>
 <tr>
 <td id="output"><center>Output Format:<br/>
@@ -55,7 +59,22 @@
 	<input type="submit" title="execute DESCRIBE query" value="Describe" name="submit" style="width: 400px"/><br/>
 </center><br/></td>
 </tr>
+
+<!-- Error Message -->
+<c:if test="${error != null}">
+<TR>
+		<TD id="output">Result: </TD><TD id="output">${error}</TD>
+</TR>
+</c:if> 
+<!-- Error Message -->
+
 </table></td></tr></table><br/><br/>
+
+<!-- Response -->
+<c:if test="${response != null}">
+<PRE>${response}</PRE>
+</c:if>
+<!-- Response -->
 </form>
 </body>
 </html>

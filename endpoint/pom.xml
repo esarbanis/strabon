@@ -41,6 +41,12 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
 		<!-- GeoTools -->
 		<dependency>
 			<groupId>org.geotools.xsd</groupId>

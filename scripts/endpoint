@@ -257,9 +257,28 @@ case "${1}" in
 			FORMAT="${1}"
 		fi
 
+		MIME_TYPE=
 		case "${FORMAT}" in
-			N-Triples|RDF/XML|N3|TURTLE|TRIG|TRIX|BinaryRDF)
-				shift
+			N-Triples)
+				MIME_TYPE="text/plain"
+				;;
+			RDF/XML)
+				MIME_TYPE="application/rdf+xml"
+				;;
+			N3)
+				MIME_TYPE="text/rdf+n3"
+				;;
+			TURTLE)
+				MIME_TYPE="text/turtle"
+				;;
+			TRIG)
+				MIME_TYPE="application/x-trig"
+				;;
+			TRIX)
+				MIME_TYPE="application/trix"
+				;;
+			BinaryRDF)
+				MIME_TYPE="application/x-binary-rdf"
 				;;
 			*)
 				echo "${CMD}: unknown format \"${FORMAT}\"."
@@ -268,7 +287,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${PREFIXES}${QUERY}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${PREFIXES}${QUERY}' ${URL}"
 		;;
 	*) 
 		help
