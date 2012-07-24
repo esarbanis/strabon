@@ -223,12 +223,15 @@ for y in 2012; do
 		# refineTimePersistence
 		echo -n "Going to refineTimePersistence ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
 		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
+		newHotspotTimestamp=`date --date="${year}-${month}-${day} ${time2}:00" +%y%m%d_%H%M`
+		
 		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/${SENSOR}/g" | \
 		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
 		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
-		sed "s/SAT/${SAT}/g"`
+		sed "s/SAT/${SAT}/g" | \
+		sed "s/NEW_HOTSPOT/${newHotspotTimestamp}/g"`
 
 		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
 
