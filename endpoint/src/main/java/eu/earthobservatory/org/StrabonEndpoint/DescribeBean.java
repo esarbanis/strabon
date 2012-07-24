@@ -18,15 +18,33 @@ import org.openrdf.rio.RDFFormat;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * {@link DescribeBean} implements the 
+ * <A href=http://www.w3.org/TR/rdf-sparql-protocol/>SPARQL Protocol for RDF</A>
+ * for the DESCRIBE query form of SPARQL 1.1. The service can be accessed in two
+ * ways: 
+ * 	1) via the HTML visual interface ({@link describe.jsp}) or 
+ *  2) via an HTTP client (<tt>wget</tt>, <tt>curl</tt>, <tt>telnet</tt>, or any
+ *  other such method).
+ *  
+ * In the second case, a single parameter is required which is the "query"
+ * parameter carrying the SPARQL DESCRIBE query to execute. The client also
+ * has to specify the Accept header. The value can be one of the following mime
+ * types and determines the RDF format of the response: 
+ * "text/plain" (N-Triples), "application/rdf+xml" (RDF/XML), "text/rdf+n3" (N3),
+ * "text/turtle" (Turtle), "application/x-trig" (TRIG), "application/trix" (TRIX),
+ * and "application/x-binary-rdf" (BinaryRDF).
+ *  
+ * In case of an error, an appropriate message is wrapped in an XML document 
+ * (see also {@link ResponseMessages}).
+ * 
+ *  
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * 
+ */
 public class DescribeBean extends HttpServlet{
 
 	private static final long serialVersionUID = -7541662133934957148L;
-
-    /**
-	 * Parameters used in the describe.jsp file
-	 */
-	public static final String VIEW 		= "view";
-	public static final String VIEW_TYPE 	= "HTML";
 	
 	/**
 	 * Attributes carrying values to be rendered by the describe.jsp file 
@@ -61,7 +79,7 @@ public class DescribeBean extends HttpServlet{
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		if (VIEW_TYPE.equals(request.getParameter(VIEW))) {
+		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
 			// HTML visual interface
 			processVIEWRequest(request, response);
 			
@@ -121,7 +139,7 @@ public class DescribeBean extends HttpServlet{
 		ServletOutputStream out = response.getOutputStream();
 		
 		// get the RDF format (we check only the Accept header)
-        RDFFormat format = getFormat(request.getHeader("accept"));
+        RDFFormat format = Common.getRDFFormatFromAcceptHeader(request.getHeader("accept"));
         
         // get the query
 		String query = request.getParameter("query");
@@ -154,32 +172,5 @@ public class DescribeBean extends HttpServlet{
     	}
     	
     	out.flush();
-    }
-	
-    /**
-     * Determines the RDF format to use. We check only for "accept"
-     * parameter (present in the header). 
-     * 
-     * The use of "format" parameter is now deprecated for using the
-     * DescribeBean as a service. It is only used through the HTML
-     * visual interface, provided with Strabon Endpoint.
-     * 
-     * @param request
-     * @return
-     */
-    private RDFFormat getFormat(String reqAccept) {
-        if (reqAccept != null) {
-            // check whether the "accept" parameter contains any 
-            // of the mime types of any RDF format
-            for (RDFFormat format : RDFFormat.values()) {
-                    for (String mimeType : format.getMIMETypes()) {
-                            if (reqAccept.contains(mimeType)) {
-                                    return format;
-                            }
-                    }
-            }
-        }
-                
-        return null;
     }
 }

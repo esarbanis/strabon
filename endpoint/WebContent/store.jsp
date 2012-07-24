@@ -1,5 +1,7 @@
 <jsp:directive.page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
+<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.StoreBean"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -28,8 +30,8 @@
 <%@ include file="teleios-header.html"%>
 <!-- include TELEIOS header and description -->
 
-<FORM method="get" action=Store>
-<INPUT type=hidden name="<%=StoreBean.SRC_REQ%>" value="browser"/>
+<FORM method=POST enctype="UTF-8" accept-charset="UTF-8" action="Store">
+<INPUT type=hidden name="<%=Common.VIEW%>" value="<%=Common.VIEW_TYPE%>"/>
 
 <TABLE border="0" width="100%">
 <TR> 
@@ -41,39 +43,23 @@
 	</TD>
 	<td width="*" valign="top" class="style4">
 		<TABLE cellspacing="5">
-<%
-	if (request.getParameter(StoreBean.DATA_ERROR) != null) {
-  		%>
+
+<!-- Error Message -->
+<c:if test="${error != null}">
+	  		<TR><TD colspan=3>
+	  		<CENTER><P style="color: red;">${error}</P></CENTER>
+	  		</TD></TR>
+</c:if> 
+<!-- Error Message -->
+
+<!-- Info Message -->
+<c:if test="${info != null}">
   		<TR><TD colspan=3>
-  		<CENTER><P style="color: red;">No data provided!</P></CENTER>
+  		<CENTER><P>${info}</P></CENTER>
   		</TD></TR>
-  		<%
-  	}
-  		
-  	if (request.getParameter(StoreBean.FORMAT_ERROR) != null) {
-  		%>
-  		<TR><TD colspan=3>
-  		<CENTER><P style="color: red;">Unknown RDF Format!</P></CENTER>
-  		</TD></TR>
-  		<%
-  	}
-  	
-  	if (request.getParameter(StoreBean.STORE_ERROR) != null) {
-  		%>
-  		<TR><TD colspan=3>
-  		<CENTER><P style="color: red;">An error occurred while storing input data!</P></CENTER>
-  		</TD></TR>
-  		<%
-  	}
-  	
-  	if (request.getParameter(StoreBean.STORE_OK) != null) {
-  		%>
-  		<TR><TD colspan=3>
-  		<CENTER><P>Data stored successfully!</P></CENTER>
-  		</TD></TR>
-  		<%
-  	}
-%>
+</c:if> 
+<!-- Info Message -->
+
 	<tr>
 	<!--  direct input form -->
 		<td id="output">Direct Input:</td>
@@ -81,8 +67,8 @@
 			<textarea name="<%=StoreBean.PARAM_DATA%>" rows="15" cols="100"></textarea></td>
 		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
-				<SELECT name="<%=StoreBean.PARAM_FORMAT%>">
-				<% for (String format : StoreBean.registeredFormats) {%>
+				<SELECT name="format">
+				<% for (String format : Common.registeredFormats) {%>
 					<OPTION value="<%=format%>"><%=format%></OPTION>
 				<%}%>
 				</SELECT>

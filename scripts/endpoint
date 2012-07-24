@@ -224,14 +224,45 @@ case "${1}" in
 		fi
 		URL="${1}/Store"
 		FORMAT="${2}"
+		MIME_TYPE=
+		case "${FORMAT}" in
+			N-Triples)
+				MIME_TYPE="text/plain"
+				;;
+			RDF/XML)
+				MIME_TYPE="application/rdf+xml"
+				;;
+			N3)
+				MIME_TYPE="text/rdf+n3"
+				;;
+			TURTLE)
+				MIME_TYPE="text/turtle"
+				;;
+			TRIG)
+				MIME_TYPE="application/x-trig"
+				;;
+			TRIX)
+				MIME_TYPE="application/trix"
+				;;
+			BinaryRDF)
+				MIME_TYPE="application/x-binary-rdf"
+				;;
+			*)
+				echo "${CMD}: unknown format \"${FORMAT}\"."
+				echo "${CMD}: possible values are \`N-Triples' (default), \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+				exit 2
+				;;
+		esac
+
 		case "${3}" in
 			-t)
 				TRIPLES="${4}"
-				EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode data='${TRIPLES}' ${URL}"
+				EXEC="curl -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode data='${TRIPLES}' ${URL}"
 				;;
 			-u)
+
 				URL_TRIPLES="${4}"
-				EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
+				EXEC="curl -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
 				;;
 			 *)
 				help_store
