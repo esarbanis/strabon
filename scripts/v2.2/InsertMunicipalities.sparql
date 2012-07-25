@@ -13,7 +13,7 @@ SELECT ?h (SAMPLE(?mLabel) AS ?muni)
 		noa:hasGeometry ?hGeo ;
 		noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
 		noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-        noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime.
+        	noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime .
 	?m	rdf:type gag:Dhmos ;
 		rdfs:label ?mLabel ;
 		strdf:hasGeometry ?mGeo .

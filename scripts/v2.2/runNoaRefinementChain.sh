@@ -117,12 +117,16 @@ for y in 2012; do
 		# get sensor
 		SENSOR=$(echo ${hot} | grep -o 'MSG.')
 
-		# get satellite
+		# get satellite and set number of acquisitions per hour
 		if test "${SENSOR}" = "MSG2"; then
 			SAT="METEOSAT9"
+
+			N_ACQUISITIONS=3.0
 		else
 			SAT="METEOSAT8"
 			SENSOR="MSG1_RSS"
+
+			N_ACQUISITIONS=11.0
 		fi
 
 		# get time information for acquisition and construct timestamp
@@ -158,7 +162,7 @@ for y in 2012; do
 
 		tmr1=$(timer)
 
-		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
+		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/${SENSOR}/g"`
 
@@ -176,8 +180,8 @@ for y in 2012; do
 		fi
 		
 		# deleteSeaHotspots
-		echo -n "Going to deleteSeaHotspots ${year}-${month}-${day}T${time2}:00 " ;echo; echo; echo;
-		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "Going to deleteSeaHotspots ${TIMESTAMP} " ;echo; echo; echo;
+		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/${SENSOR}/g"`
 		# ${countTime} ./strabon -db endpoint update "${query}"
@@ -189,14 +193,12 @@ for y in 2012; do
 		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
 		echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
 
-		# echo "Continue?"
-		# read a
-			# invalidForFires
-		echo -n "invalidForFires ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
+		# invalidForFires
+		echo -n "invalidForFires ${TIMESTAMP} "  ; echo; echo ; echo;
+		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g" |\
-		sed "s/SAT/${SAT}/g"`
+		sed "s/SENSOR/${SENSOR}/g"` 
+
 		# ${countTime} ./strabon -db endpoint update "${query}"
 		tmr1=$(timer)
 		../endpoint update ${ENDPOINT} "${query}"
@@ -205,8 +207,8 @@ for y in 2012; do
 		echo "File ${file} invalidForFires done!"
  
 		# refinePartialSeaHotspots
-		echo -n "refinePartialSeaHotspots ${year}-${month}-${day}T${time2}:00 "  ; echo; echo ; echo;
-		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
+		echo -n "refinePartialSeaHotspots ${TIMESTAMP} "  ; echo; echo ; echo;
+		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/${SENSOR}/g" |\
 		sed "s/SAT/${SAT}/g"`
@@ -221,12 +223,12 @@ for y in 2012; do
 		# read a
 
 		# refineTimePersistence
-		echo -n "Going to refineTimePersistence ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		echo -n "Going to refineTimePersistence ${TIMESTAMP} ";echo;echo;echo; 
 		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
-		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${year}-${month}-${day}T${time2}:00/g" | \
+		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
 		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
 		sed "s/SENSOR/${SENSOR}/g" | \
-		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/3.0/g" | \
+		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/${N_ACQUISITIONS}/g" | \
 		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
 		sed "s/SAT/${SAT}/g"`
 
@@ -242,7 +244,7 @@ for y in 2012; do
 
 
 		# discover
-		echo -n "Going to discover ${year}-${month}-${day}T${time2}:00 ";echo;echo;echo; 
+		echo -n "Going to discover ${TIMESTAMP} ";echo;echo;echo; 
 		min_acquisition_time=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
 		max_acquisition_time=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
 		query=`echo "${discover}" | \
@@ -256,7 +258,6 @@ for y in 2012; do
 		tmr2=$(timer)
 		printf '%s \n' $((tmr2-tmr1)) >>discover.txt
 		echo;echo;echo;echo "Discovered hotspots done!"
-
 	done
 done
 

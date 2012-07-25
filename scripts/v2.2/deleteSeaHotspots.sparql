@@ -10,8 +10,8 @@ WHERE {
 ?h   noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ;
      noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
      noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-       OPTIONAL {
-    ?h	gag:hasMunicipality ?muni .
+  OPTIONAL {
+     ?h	gag:hasMunicipality ?muni .
   } 
   FILTER(!bound(?muni)) .
 }
