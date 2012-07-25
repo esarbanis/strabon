@@ -99,14 +99,14 @@ else
 fi
 
 echo "initializing database"
-echo "Timestamp	Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence" > stderr.txt
+echo "Timestamp Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence" > stderr.txt
 
 
 #./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
 #sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
-#for y in 2007 2008 2010 2011 ;do
+#for y in 2007 2008 2010 2011; do
 for y in 2012; do
 	# get hotpost URLS
 	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
