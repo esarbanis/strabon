@@ -33,13 +33,6 @@ public class StoreBean extends HttpServlet {
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StoreBean.class);
 	
 	/**
-	 * Parameters used in the store.jsp file
-	 */
-	public static final String PARAM_DATA 		= "data";
-	public static final String PARAM_FORMAT 	= "format";
-	public static final String PARAM_DATA_URL	= "url";
-	
-	/**
 	 * Error/Info parameters used in the store.jsp file
 	 */
 	public static final String ERROR 			= "error";
@@ -51,12 +44,6 @@ public class StoreBean extends HttpServlet {
 	private static final String STORE_ERROR 	= "An error occurred while storing input data!";
 	private static final String PARAM_ERROR 	= "RDF format or input data are not set or are invalid!";
 	private static final String STORE_OK		= "Data stored successfully!";
-	
-	/**
-	 * Submit buttons
-	 */
-	public static final String SUBMIT_INPUT		= "dsubmit";
-	public static final String SUBMIT_URL		= "fromurl";
 
 	/**
 	 * Strabon wrapper
@@ -80,10 +67,10 @@ public class StoreBean extends HttpServlet {
 	
 	private String getData(HttpServletRequest request) {
 		// check whether we read from INPUT or URL
-		boolean input = (request.getParameter(SUBMIT_URL) != null) ? false:true;
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
 		// return "data" value accordingly
-		return input ? request.getParameter(PARAM_DATA):request.getParameter(PARAM_DATA_URL);
+		return input ? request.getParameter(Common.PARAM_DATA):request.getParameter(Common.PARAM_DATA_URL);
 	}
 	
 	@Override
@@ -108,7 +95,7 @@ public class StoreBean extends HttpServlet {
      */
     private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// check whether we read from INPUT or URL
-		boolean input = (request.getParameter(SUBMIT_URL) != null) ? false:true;
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
     	// get the dispatcher for forwarding the rendering of the response
     	RequestDispatcher dispatcher = request.getRequestDispatcher("store.jsp");
@@ -117,7 +104,7 @@ public class StoreBean extends HttpServlet {
     	String data = getData(request);
     			
     	// the format of the data
-    	RDFFormat format = (request.getParameter(PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(PARAM_FORMAT)):null;
+    	RDFFormat format = (request.getParameter(Common.PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(Common.PARAM_FORMAT)):null;
     	
     	if (data == null || format == null) {
     		request.setAttribute(ERROR, PARAM_ERROR);
@@ -148,7 +135,7 @@ public class StoreBean extends HttpServlet {
      */
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// check whether we read from INPUT or URL
-		boolean input = (request.getParameter(SUBMIT_URL) != null) ? false:true;
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
     	// RDF data to store
     	String data = getData(request);

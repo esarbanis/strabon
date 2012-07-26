@@ -1,6 +1,5 @@
 <jsp:directive.page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.StoreBean"/>
+<jsp:useBean id="commonBean" class="eu.earthobservatory.org.StrabonEndpoint.Common" scope="application"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -27,11 +26,11 @@
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
 <!-- include TELEIOS header and description -->
-<%@ include file="teleios-header.html"%>
+<jsp:include page="teleios-header.html"/>
 <!-- include TELEIOS header and description -->
 
 <FORM method=POST enctype="UTF-8" accept-charset="UTF-8" action="Store">
-<INPUT type=hidden name="<%=Common.VIEW%>" value="<%=Common.VIEW_TYPE%>"/>
+<INPUT type=hidden name="${commonBean.view}" value="${commonBean.viewType}"/>
 
 <TABLE border="0" width="100%">
 <TR> 
@@ -64,13 +63,15 @@
 	<!--  direct input form -->
 		<td id="output">Direct Input:</td>
 		<td id="output">
-			<textarea name="<%=StoreBean.PARAM_DATA%>" rows="15" cols="100"></textarea></td>
+			<textarea name="${commonBean.paramData}" rows="15" cols="100"></textarea></td>
 		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
 				<SELECT name="format">
-				<% for (String format : Common.registeredFormats) {%>
-					<OPTION value="<%=format%>"><%=format%></OPTION>
-				<%}%>
+				
+				<c:forEach var="format" items="${commonBean.registeredFormats}">
+					<OPTION value="${format}">${format}</OPTION>
+				</c:forEach>
+				
 				</SELECT>
 			</CENTER>
 		</td>
@@ -78,7 +79,7 @@
 	<tr>
 		<td colspan=2 id="output"><br/>
 		<CENTER>
-			<input type="submit" value="Store Input" name="<%=StoreBean.SUBMIT_INPUT%>" style="width: 400px"/>
+			<input type="submit" value="Store Input" name="${commonBean.submitInput}" style="width: 400px"/>
 		</CENTER><br/>
 		</td>
 	</tr>
@@ -86,14 +87,14 @@
 	<tr>
 		<td id="output" >URI Input:</td>
 		<td id="output">
-			<textarea name="<%=StoreBean.PARAM_DATA_URL%>" rows="1" cols="100"></textarea>
+			<textarea name="${commonBean.paramDataURL}" rows="1" cols="100"></textarea>
 		</td>
 	</tr>
 	
 	<tr>
 		<td colspan=2 id="output"><br/>
 			<CENTER>
-				<INPUT type="submit" value="Store from URI" name="<%=StoreBean.SUBMIT_URL%>" style="width: 400px"/>
+				<INPUT type="submit" value="Store from URI" name="${commonBean.submitURL}" style="width: 400px"/>
 			</CENTER><br/>
 		</td>
 	</tr>
