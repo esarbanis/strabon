@@ -17,7 +17,7 @@ SELECT ?h (SAMPLE(?mLabel) AS ?muni)
 	?m	rdf:type gag:Dhmos ;
 		rdfs:label ?mLabel ;
 		strdf:hasGeometry ?mGeo .
-	FILTER(strdf:mbbIntersects(?hGeo, ?mGeo)) .
+	FILTER(strdf:intersects(?hGeo, ?mGeo)) .
   }  
   GROUP BY ?h
 }
