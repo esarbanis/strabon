@@ -126,7 +126,7 @@ for y in 2012; do
 			SAT="METEOSAT8"
 			SENSOR="MSG1_RSS"
 
-			N_ACQUISITIONS=11.0
+			N_ACQUISITIONS=7.0
 		fi
 
 		# get time information for acquisition and construct timestamp
