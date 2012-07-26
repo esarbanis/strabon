@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
+<jsp:useBean id="commonBean" class="eu.earthobservatory.org.StrabonEndpoint.Common" scope="application"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -26,11 +26,11 @@
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
 <!-- include TELEIOS header and description -->
-<%@ include file="teleios-header.html"%>
+<jsp:include page="teleios-header.html"/>
 <!-- include TELEIOS header and description -->
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Describe">
-<input type="hidden" name="<%=Common.VIEW%>" value="<%=Common.VIEW_TYPE%>">
+<input type="hidden" name="${commonBean.view}" value="${commonBean.viewType}">
 
 <table border="0" width="100%"><tr> 
 <td width="90" valign="top" class="style4"> 
@@ -48,9 +48,9 @@
 <tr>
 <td id="output"><center>Output Format:<br/>
 <SELECT name="format" title="select one of the following RDF graph format types">
-	<% for (String format : Common.registeredFormats) {%>
-		<OPTION value="<%=format%>"><%=format%></OPTION>
-	<%}%>
+	<c:forEach var="format" items="${commonBean.registeredFormats}">
+		<OPTION value="${format}">${format}</OPTION>
+	</c:forEach>
 </SELECT></center></td>
 <td colspan=2><br/>
 <center>

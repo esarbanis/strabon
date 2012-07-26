@@ -67,11 +67,9 @@
 		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
 				<SELECT name="format">
-				
 				<c:forEach var="format" items="${commonBean.registeredFormats}">
 					<OPTION value="${format}">${format}</OPTION>
 				</c:forEach>
-				
 				</SELECT>
 			</CENTER>
 		</td>
