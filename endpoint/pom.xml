@@ -40,34 +40,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
- 
- 		<!-- JSTL 1.2 API and Glassfish Implementation -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-		  	<artifactId>jstl</artifactId>
-		  	<version>1.2</version>
-		</dependency>
-		<dependency>
-		  	<groupId>org.glassfish.web</groupId>
-		  	<artifactId>jstl-impl</artifactId>
-		  	<version>1.2</version>
-		  	<exclusions>
-		    	<exclusion>
-		      		<artifactId>servlet-api</artifactId>
-		      		<groupId>javax.servlet</groupId>
-		    	</exclusion>
-		    	<exclusion>
-		      		<artifactId>jsp-api</artifactId>
-		      		<groupId>javax.servlet.jsp</groupId>
-		    	</exclusion>
-		    	<exclusion>
-		      		<artifactId>jstl-api</artifactId>
-		      		<groupId>javax.servlet.jsp.jstl</groupId>
-		    	</exclusion>
-		  	</exclusions>
-		</dependency>
-		<!-- JSTL 1.2 API and Glassfish Implementation -->
-		
+ 		
 		<!-- GeoTools -->
 		<dependency>
 			<groupId>org.geotools.xsd</groupId>

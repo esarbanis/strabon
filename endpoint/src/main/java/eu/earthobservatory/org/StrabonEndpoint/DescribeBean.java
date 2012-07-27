@@ -109,7 +109,7 @@ public class DescribeBean extends HttpServlet{
 			
 		} else {
 			// set the query and format to be selected in the rendered page
-			request.setAttribute("query", URLDecoder.decode(query, "UTF-8"));
+			//request.setAttribute("query", URLDecoder.decode(query, "UTF-8"));
 			//request.setAttribute("format", URLDecoder.decode(reqFormat, "UTF-8"));
 		
 			try {

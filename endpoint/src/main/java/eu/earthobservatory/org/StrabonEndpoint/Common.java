@@ -13,16 +13,14 @@ import org.openrdf.rio.RDFFormat;
  *
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
-public class Common implements Serializable {
+public class Common {
 	  
-	private static final long serialVersionUID = 8592857158139659669L;
-
 	/**
 	 * Parameter used in JSP files to denote the usage
 	 * of the HTML interface
 	 */
-	public static final String VIEW 	= "view";
-	public static final String VIEW_TYPE 	= "HTML";
+	public static final String VIEW 			= "view";
+	public static final String VIEW_TYPE 		= "HTML";
 
 	/**
 	 * Parameters used in the store.jsp file
@@ -75,43 +73,4 @@ public class Common implements Serializable {
                 
         return null;
     }
-    
-    /* The following getters exist only because we need access to this class
-     * through JSP pages. To do so, the class need to be a Bean, thus even
-     * though we have static fields, we need to have getters for the respective
-     * static fields that are not static themselves. */
-    
-    public List<String> getRegisteredFormats() {
-    	return Common.registeredFormats;
-    }
-    
-    public String getView() {
-    	return Common.VIEW;
-    }
-    
-    public String getViewType() {
-    	return Common.VIEW_TYPE;
-    }
-    
-    public String getParamData() {
-    	return Common.PARAM_DATA;
-    }
-    
-    public String getSubmitInput() {
-    	return Common.SUBMIT_INPUT;
-    }
-    
-    public String getSubmitURL() {
-    	return Common.SUBMIT_URL;
-    }
-    
-    public String getParamDataURL() {
-    	return Common.PARAM_DATA_URL;
-    }
-    
-    public String toString() {
-    	return "Fucking Common bean and FUCKING JSTL/EL.";
-    }
-
-   public Common() { }
 }
