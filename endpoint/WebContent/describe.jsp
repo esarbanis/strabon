@@ -30,7 +30,7 @@
 <!-- include TELEIOS header and description -->
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Describe">
-<input type="hidden" name="${commonBean.view}" value="${commonBean.viewType}">
+<INPUT type=hidden name="${commonBean.view}" value="${commonBean.viewType}"/>
 
 <table border="0" width="100%"><tr> 
 <td width="90" valign="top" class="style4"> 
@@ -63,7 +63,7 @@
 <TR>
 		<TD id="output">Result: </TD><TD id="output">${error}</TD>
 </TR>
-</c:if> 
+</c:if>
 <!-- Error Message -->
 
 </table></td></tr></table><br/><br/>
