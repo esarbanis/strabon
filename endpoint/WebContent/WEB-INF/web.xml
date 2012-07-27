@@ -89,6 +89,11 @@
 		<welcome-file>query.jsp</welcome-file>
 	</welcome-file-list>
 	
+	<!-- Listener for instantiating the Common bean that is used in .jsp files -->
+	<listener>
+		<listener-class>eu.earthobservatory.org.StrabonEndpoint.ConfigureCommon</listener-class>
+  	</listener>
+  
 <!-- 	<servlet> -->
 <!-- 		<display-name>QueryServlet</display-name> -->
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->

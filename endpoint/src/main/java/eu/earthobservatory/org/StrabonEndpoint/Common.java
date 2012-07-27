@@ -10,16 +10,18 @@ import org.openrdf.rio.RDFFormat;
 
 /**
  * Keeps common variables shared by beans and .jsp pages.
- *  
+ *
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
-public class Common {
+public class Common implements Serializable {
+	  
+	private static final long serialVersionUID = 8592857158139659669L;
 
-    /**
+	/**
 	 * Parameter used in JSP files to denote the usage
 	 * of the HTML interface
 	 */
-	public static final String VIEW 		= "view";
+	public static final String VIEW 	= "view";
 	public static final String VIEW_TYPE 	= "HTML";
 
 	/**
@@ -106,4 +108,10 @@ public class Common {
     public String getParamDataURL() {
     	return Common.PARAM_DATA_URL;
     }
+    
+    public String toString() {
+    	return "Fucking Common bean and FUCKING JSTL/EL.";
+    }
+
+   public Common() { }
 }

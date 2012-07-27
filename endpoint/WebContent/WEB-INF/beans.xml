@@ -362,4 +362,6 @@ WHERE { ?h 	rdf:type noa:Hotspot;
             </list>
          </constructor-arg>
     </bean>
+    
+    <bean id="commonBean" class="eu.earthobservatory.org.StrabonEndpoint.Common" scope="singleton"/>
 </beans>
