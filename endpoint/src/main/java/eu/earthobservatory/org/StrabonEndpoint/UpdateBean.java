@@ -4,7 +4,9 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -46,6 +48,18 @@ public class UpdateBean extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		
+		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+			// HTML visual interface
+			processVIEWRequest(request, response);
+			
+		} else {// invoked as a service
+			processRequest(request, response);
+	    }
+	}
+
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String query = request.getParameter("query");
 		
 		String answer = "";
@@ -56,11 +70,14 @@ public class UpdateBean extends HttpServlet {
 				throw new MalformedQueryException("No SPARQL Update query specified.");
 			}
 			
+			// decode URL
+			query = URLDecoder.decode(query, "UTF-8");
+			
 			strabonWrapper.getStrabon().update(query, strabonWrapper.getStrabon().getSailRepoConnection());
 			response.setStatus(HttpServletResponse.SC_OK);
 			answer = "true";
 			
-		} catch(MalformedQueryException e) {
+		} catch(Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			answer = ResponseMessages.getXMLException(e.getMessage());
 		}
@@ -69,5 +86,28 @@ public class UpdateBean extends HttpServlet {
 		response.getWriter().append(ResponseMessages.getXMLHeader());
 		response.getWriter().append(answer);
 		response.getWriter().append(ResponseMessages.getXMLFooter());
+	}
+
+	private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("query.jsp");
+		
+		String query = request.getParameter("query");
+		
+		if (query == null) {
+			request.setAttribute("error", "SPARQL query is not set.");
+			
+		} else {
+			query = URLDecoder.decode(query, "UTF-8");
+			
+			try {
+				strabonWrapper.getStrabon().update(query, strabonWrapper.getStrabon().getSailRepoConnection());
+				request.setAttribute("info", "Update executed succesfully.");
+				
+			} catch (MalformedQueryException e) {
+				request.setAttribute("error", e.getMessage());
+			}
+		}
+		
+		dispatcher.forward(request, response);
 	}
 }

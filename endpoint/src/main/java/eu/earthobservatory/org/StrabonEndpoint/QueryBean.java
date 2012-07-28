@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
-import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -170,7 +169,7 @@ public class QueryBean extends HttpServlet {
 
 		if (reqFuncionality.equals("Update")) {
 			// get the dispatcher for forwarding the rendering of the response
-			dispatcher = request.getRequestDispatcher("Describe/");
+			dispatcher = request.getRequestDispatcher("/Update");
 			dispatcher.forward(request, response);
 			
 		} else {
