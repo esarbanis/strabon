@@ -142,7 +142,7 @@ public class DescribeBean extends HttpServlet{
         RDFFormat format = Common.getRDFFormatFromAcceptHeader(request.getHeader("accept"));
         
         // get the query
-		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		String query = request.getParameter("query");
     	
     	// check for required parameters
     	if (format == null || query == null) {
