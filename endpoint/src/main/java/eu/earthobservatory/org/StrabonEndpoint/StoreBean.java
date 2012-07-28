@@ -148,7 +148,7 @@ public class StoreBean extends HttpServlet {
 		}
     	
     	// the format of the data
-    	RDFFormat format = Common.getRDFFormatFromAcceptHeader(request.getHeader("accept"));
+    	RDFFormat format = RDFFormat.forMIMEType(request.getHeader("accept"));
     	
 		if (format == null) { // unknown format
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);

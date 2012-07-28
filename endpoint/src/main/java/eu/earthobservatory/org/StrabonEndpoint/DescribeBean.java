@@ -139,7 +139,7 @@ public class DescribeBean extends HttpServlet{
 		ServletOutputStream out = response.getOutputStream();
 		
 		// get the RDF format (we check only the Accept header)
-        RDFFormat format = Common.getRDFFormatFromAcceptHeader(request.getHeader("accept"));
+        RDFFormat format = RDFFormat.forMIMEType(request.getHeader("accept"));
         
         // get the query
 		String query = request.getParameter("query");
