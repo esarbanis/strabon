@@ -46,15 +46,16 @@ public class UpdateBean extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String query = request.getParameter("SPARQLQuery");
+		String query = request.getParameter("query");
 		
 		String answer = "";
 		try {
+			logger.info("[StrabonEndpoint.UpdateBean] Received UPDATE query.");
+			
 			if (query == null) {
 				throw new MalformedQueryException("No SPARQL Update query specified.");
 			}
 			
-			logger.info("[StrabonEndpoint.UpdateBean] Received UPDATE query.");
 			strabonWrapper.getStrabon().update(query, strabonWrapper.getStrabon().getSailRepoConnection());
 			response.setStatus(HttpServletResponse.SC_OK);
 			answer = "true";

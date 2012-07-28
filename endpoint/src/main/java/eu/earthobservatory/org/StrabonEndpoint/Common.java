@@ -6,6 +6,8 @@ package eu.earthobservatory.org.StrabonEndpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.query.resultio.TupleQueryResultFormat;
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -47,6 +49,27 @@ public class Common {
 		}
 	}
 	
+	/**
+	 * Keeps the registered and available stSPARQL Query Results Formats.
+	 */
+	public static final List<stSPARQLQueryResultFormat> registeredQueryResultsFormats = new ArrayList<stSPARQLQueryResultFormat>();
+	
+	/**
+	 * Keeps the name of the registered and available stSPARQL Query Results Formats.
+	 * (to be used in the drop-down menu in query.jsp)
+	 */
+	public static final List<String> registeredQueryResultsFormatNames = new ArrayList<String>();
+	
+	// initialize registered and available stSPARQL query results formats
+	static {
+		for (TupleQueryResultFormat format : stSPARQLQueryResultFormat.values()) {
+			if (format instanceof stSPARQLQueryResultFormat) {
+				registeredQueryResultsFormats.add((stSPARQLQueryResultFormat) format);
+				registeredQueryResultsFormatNames.add(format.getName());
+			}
+		}
+	}
+	
     /**
      * Determines the RDF format to use. We check only for "accept"
      * parameter (present in the header). 
@@ -68,6 +91,33 @@ public class Common {
                             return format;
                     }
                 }
+            }
+        }
+                
+        return null;
+    }
+    
+    /**
+     * Determines the stSPARQL query result format to use. We check only for "accept"
+     * parameter (present in the header). 
+     * 
+     * The use of "format" parameter is now deprecated for using any
+     * Bean as a service. It is only used through the HTML
+     * visual interface, provided with Strabon Endpoint.
+     * 
+     * @param request
+     * @return
+     */
+    public static stSPARQLQueryResultFormat getResultFormatFromAcceptHeader(String acceptHeader) {
+    	if (acceptHeader != null) {
+            // check whether the "accept" parameter contains any 
+            // of the mime types of any stSPARQL query result format
+    		for (stSPARQLQueryResultFormat format : registeredQueryResultsFormats) {
+				for (String mimeType : format.getMIMETypes()) {
+					if (acceptHeader.contains(mimeType)) {
+						return format;
+					}
+				}
             }
         }
                 
