@@ -100,7 +100,7 @@ public class DescribeBean extends HttpServlet{
 		// get the dispatcher for forwarding the rendering of the response
 		RequestDispatcher dispatcher = request.getRequestDispatcher("describe.jsp");
 		
-		String query = request.getParameter("query");
+		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
 		String format = request.getParameter("format");
 		
 		if (format == null || query == null) {
@@ -142,7 +142,7 @@ public class DescribeBean extends HttpServlet{
         RDFFormat format = Common.getRDFFormatFromAcceptHeader(request.getHeader("accept"));
         
         // get the query
-		String query = request.getParameter("query");
+		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
     	
     	// check for required parameters
     	if (format == null || query == null) {

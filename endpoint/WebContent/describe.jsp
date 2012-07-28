@@ -58,7 +58,6 @@
 </center><br/></td>
 </tr>
 
-
 <% if (request.getAttribute("error") != null) {%>
 	<!-- Error Message -->
 	<TR>

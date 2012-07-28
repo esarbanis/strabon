@@ -4,7 +4,9 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -65,12 +67,12 @@ public class StoreBean extends HttpServlet {
 		doPost(request, response);
 	}
 	
-	private String getData(HttpServletRequest request) {
+	private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
 		// check whether we read from INPUT or URL
 		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
 		// return "data" value accordingly
-		return input ? request.getParameter(Common.PARAM_DATA):request.getParameter(Common.PARAM_DATA_URL);
+		return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA), "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
 	}
 	
 	@Override
