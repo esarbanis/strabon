@@ -47,7 +47,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	 * GeoJSON format (see http://www.geojson.org/geojson-spec.html)
 	 */
 	public static final stSPARQLQueryResultFormat GEOJSON = new stSPARQLQueryResultFormat("GeoJSON", 
-			Arrays.asList("application/json", "application/json"), Charset.forName("UTF-8"), Arrays.asList("json"));
+			Arrays.asList("application/json", "application/geojson"), Charset.forName("UTF-8"), Arrays.asList("json"));
 
 	/**
 	 * Tab separated value format (extension of {@link TupleQueryResultFormat#TSV} format to include geometries)
@@ -69,6 +69,30 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 		register(GEOJSON);
 		register(TSV);
 		register(HTML);
+	}
+	
+	/**
+	 * Gets the stSPARQLQueryResultFormat given its name.
+	 * 
+	 * @param formatName
+	 * @return
+	 */
+	public static stSPARQLQueryResultFormat valueOf(String formatName) {
+		for (TupleQueryResultFormat format : values()) {
+			if (format instanceof stSPARQLQueryResultFormat && 
+					format.getName().equalsIgnoreCase(formatName)) {
+				return (stSPARQLQueryResultFormat) format;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns all known/registered tuple query result formats.
+	 */
+	public static Collection<TupleQueryResultFormat> values() {
+		return TupleQueryResultFormat.values();
 	}
 	
 	public stSPARQLQueryResultFormat(String name, String mimeType, String fileExt) {
