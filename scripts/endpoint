@@ -37,8 +37,7 @@ function help_query() {
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or the alias name corresponding to a"
 	echo "			  predefined query such as:"
 	echo "				\`size': SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
-	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`KMLMAP\, \`GEOJSON', "
-	echo "			  \`HTML', \`KMZMAP', \`XML' (default), or \`KML'."
+	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`XML' (default), \`KML', \`KMZ', \`GeoJSON', \`HTML', or \`TSV'"
 }
 
 function help_queryfile() {
@@ -148,17 +147,32 @@ case "${1}" in
 		fi
 
 		case "${FORMAT}" in
-			[Kk][Mm][Ll][Mm][Aa][Pp]|[Gg][Ee][Oo][Jj][Ss][Oo][Nn]|[Hh][Tt][Mm][Ll]|[Kk][mM][Zz][Mm][Aa][Pp]|[Xx][Mm][Ll]|[Kk][Mm][Ll])
-				shift
+			[Xx][Mm][Ll])
+				MIME_TYPE="application/sparql-results+xml"
+				;;
+			[Tt][sS][vV])
+				MIME_TYPE="text/tab-separated-values"
+				;;
+			[Kk][Mm][Ll])
+				MIME_TYPE="application/vnd.google-earth.kml+xml"
+				;;
+			[Kk][mM][Zz])
+				MIME_TYPE="application/vnd.google-earth.kmz"
+				;;
+			[Hh][Tt][Mm][Ll])
+				MIME_TYPE="text/html"
+				;;
+			[Gg][Ee][Oo][Jj][Ss][Oo][Nn])
+				MIME_TYPE="application/json"
 				;;
 			*)
 				echo "${CMD}: unknown format \"${FORMAT}\"."
-				echo "${CMD}: possible values are \`KMLMAP\, \`GEOJSON' \`HTML', \`KMZMAP', \`XML' (default), or \`KML'"
+				echo "${CMD}: possible values are \`KML', \`KMZ', \`GeoJSON', \`XML' (default), \`HTML', or \`TSV'"
 				exit 2
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${QUERY}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' ${URL}"
 		;;
 	queryfile)
 		shift
@@ -185,17 +199,32 @@ case "${1}" in
 		fi
 
 		case "${FORMAT}" in
-			[Kk][Mm][Ll][Mm][Aa][Pp]|[Gg][Ee][Oo][Jj][Ss][Oo][Nn]|[Hh][Tt][Mm][Ll]|[Kk][mM][Zz][Mm][Aa][Pp]|[Xx][Mm][Ll]|[Kk][Mm][Ll])
-				shift
+			[Xx][Mm][Ll])
+				MIME_TYPE="application/sparql-results+xml"
+				;;
+			[Tt][sS][vV])
+				MIME_TYPE="text/tab-separated-values"
+				;;
+			[Kk][Mm][Ll])
+				MIME_TYPE="application/vnd.google-earth.kml+xml"
+				;;
+			[Kk][mM][Zz])
+				MIME_TYPE="application/vnd.google-earth.kmz"
+				;;
+			[Hh][Tt][Mm][Ll])
+				MIME_TYPE="text/html"
+				;;
+			[Gg][Ee][Oo][Jj][Ss][Oo][Nn])
+				MIME_TYPE="application/json"
 				;;
 			*)
 				echo "${CMD}: unknown format \"${FORMAT}\"."
-				echo "${CMD}: possible values are \`KMLMAP\, \`GEOJSON' \`HTML', \`KMZMAP', \`XML' (default), or \`KML'"
+				echo "${CMD}: possible values are \`KML', \`KMZ', \`GeoJSON', \`XML' (default), \`HTML', or \`TSV'"
 				exit 2
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} -d format='${FORMAT}' --data-urlencode SPARQLQuery='${PREFIXES}${QUERY}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${PREFIXES}${QUERY}' ${URL}"
 		;;
 
 	update)
