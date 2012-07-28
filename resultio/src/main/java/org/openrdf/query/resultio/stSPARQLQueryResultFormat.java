@@ -1,8 +1,10 @@
 package org.openrdf.query.resultio;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents the concept of an tuple query result serialization format for
@@ -61,6 +63,11 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	public static final stSPARQLQueryResultFormat HTML = new stSPARQLQueryResultFormat("HTML", 
 			Arrays.asList("text/html"), Charset.forName("UTF-8"), Arrays.asList("html", "htm"));
 	
+	/**
+	 * The available stSPARQLQuery Result Formats
+	 */
+	private static final List<stSPARQLQueryResultFormat> VALUES = new ArrayList<stSPARQLQueryResultFormat>(6);
+	
 	// registers stSPARQL/GeoSPARQL formats
 	static {
 		register(XML);
@@ -69,6 +76,16 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 		register(GEOJSON);
 		register(TSV);
 		register(HTML);
+	}
+	
+	/**
+	 * Register the specified stSPARQLQueryResultFormat.
+	 * 
+	 * @param format
+	 */
+	public static void register(stSPARQLQueryResultFormat format) {
+		TupleQueryResultFormat.register(format);
+		VALUES.add(format);
 	}
 	
 	/**
@@ -93,6 +110,14 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	 */
 	public static Collection<TupleQueryResultFormat> values() {
 		return TupleQueryResultFormat.values();
+	}
+	
+	public static stSPARQLQueryResultFormat forMIMEType(String mimeType) {
+		return forMIMEType(mimeType, null);
+	}
+	
+	public static stSPARQLQueryResultFormat forMIMEType(String mimeType, stSPARQLQueryResultFormat fallback) {
+		return matchMIMEType(mimeType, VALUES, fallback);
 	}
 	
 	public stSPARQLQueryResultFormat(String name, String mimeType, String fileExt) {
