@@ -56,6 +56,9 @@ public class stSPARQLQueryResultWriterFactory {
 			case HTML:
 				writer = html.getWriter(out);
 				break;
+			
+			case TSV:
+				writer = tsv.getWriter(out);
 		}
 		
 		return writer;
