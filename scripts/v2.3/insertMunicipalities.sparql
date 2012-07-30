@@ -2,7 +2,7 @@ PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#>
+PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
 INSERT { ?h gag:hasMunicipality ?muni }
@@ -16,8 +16,8 @@ SELECT ?h (SAMPLE(?mLabel) AS ?muni)
         noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime.
 	?m	rdf:type gag:Dhmos ;
 		rdfs:label ?mLabel ;
-		strdf:hasGeometry ?mGeo .
-	FILTER(strdf:mbbIntersects(?hGeo, ?mGeo)) .
+		gag:hasGeometry ?mGeo .
+	FILTER(strdf:intersects(?hGeo, ?mGeo)) .
   }  
   GROUP BY ?h
 }

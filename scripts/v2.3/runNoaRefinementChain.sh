@@ -4,8 +4,8 @@ LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENDPOINT="http://localhost:8080/endpoint"
 DB="endpoint"
 
-#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG2"
-HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
+HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG2"
+#HOTSPOTS_URL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
 
 logFile="chain.log"
 
@@ -86,7 +86,10 @@ echo "Creating endpoint database"
 createdb  ${DB} 
 
 # load data
-curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
+
+
+curl -s http://dev.strabon.di.uoa.gr/rdf/coastline-kallikrates_30000-excludedAreas-dump.tgz | tar xz -O | psql -d ${DB}
+#curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
 psql ${DB} -c 'VACUUM ANALYZE' 
 
 echo "starting tomcat"
@@ -107,7 +110,7 @@ echo "Timestamp	Store Municipalities DeleteInSea InvalidForFires RefineInCoast T
 #sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
 
 #for y in 2007 2008 2010 2011 ;do
-for y in 2012; do
+for y in 2007; do
 	# get hotpost URLS
 	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
 		file="${HOTSPOTS_URL}/${y}/${hot}"
