@@ -18,17 +18,17 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>teleios-m18</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Username -->
-            <value>postgres</value>
+            <value>endpoint</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>postgres</value>
+	    <value>endpoint</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
