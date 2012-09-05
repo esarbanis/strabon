@@ -60,6 +60,9 @@ DEBUG=false
 # so it must not be overidden
 DEBUG_SAVE=false
 
+# Filename containing the prefixes to be included in SPARQL queries
+PREFIXES_FILE="${LOC}/prefixes.sparql"
+
 # configuration file for the Strabon connection
 STRABON_CONF="${HOME}/.strabon"
 
@@ -75,6 +78,8 @@ function help() {
 	echo "	-d		: don't run, just print what shall be executed"
 	echo "			  Variable for configuration file: \`DEBUG'"
 	echo "			  Values: \`true' or \`false'" 
+	echo "	-i		: include URI prefixes in the SPARQL query. Prefixes are taken from file"
+	echo "			  \`prefixes.sparql'"
 	echo "	-e DATABASE	: the database engine to connect (one of \`postgis' (default) or \`monetdb')"
 	echo "			  Variable for configuration file: \`DATABASE'"
 	echo "			  Values: \`postgis' or \`monetdb'" 
@@ -166,6 +171,11 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			fi
 			DEBUG=true
 			DEBUG_SAVE=true
+			;;
+		-i)
+			shift
+			PREFIXES="$(cat ${PREFIXES_FILE})
+"
 			;;
 		-e)
 			shift
@@ -479,7 +489,7 @@ if test "${CLASS}" = "StoreOp"; then
 "
 	done
 else
-	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${QUERY}\" ${RESULT_FORMAT})"
+	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${PREFIXES}${QUERY}\" ${RESULT_FORMAT})"
 fi
 
 # execute command or debug

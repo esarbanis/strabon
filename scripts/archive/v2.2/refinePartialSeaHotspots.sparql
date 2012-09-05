@@ -4,7 +4,6 @@ PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#>
 
-
 INSERT { ?h noa:isDiscarded "1"^^xsd:int . 
 	 ?valid rdf:type noa:Hotspot ;
 		noa:hasConfidence ?conf ;
@@ -18,7 +17,7 @@ INSERT { ?h noa:isDiscarded "1"^^xsd:int .
 		noa:isDerivedFromSatellite "SAT"^^xsd:string .
 }
 WHERE { 
-  SELECT ?h  (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf ?muni
+  SELECT ?h (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf ?muni
   WHERE { 
 ?h     noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime; 
        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
@@ -28,7 +27,7 @@ WHERE {
        noa:hasConfidence ?conf .
 ?c     rdf:type noa:Coastline ;
        noa:hasGeometry ?cGeo .
-	   FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
+       FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
   }
   GROUP BY ?h ?hGeo ?conf ?muni
   HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))

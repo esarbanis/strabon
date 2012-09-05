@@ -1,44 +1,31 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry;
-import eu.earthobservatory.org.StrabonEndpoint.ResponseMessages;
-import eu.earthobservatory.runtime.generaldb.Strabon;
 
 
 public class QueryBean extends HttpServlet {
@@ -47,595 +34,255 @@ public class QueryBean extends HttpServlet {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.QueryBean.class);
 	
-	private ServletContext context; 
+	/**
+	 * Attributes carrying values to be rendered by the query.jsp file 
+	 */
+	private static final String ERROR		= "error";
+	private static final String RESPONSE	= "response";
+	
+	/**
+	 * Error returned by QueryBean
+	 */
+	private static final String PARAM_ERROR = "stSPARQL Query Results Format or SPARQL query are not set or are invalid.";
+	
+	/**
+	 * The context of the servlet
+	 */
+	private ServletContext context;
+	
+	/**
+	 * Wrapper over Strabon
+	 */
 	private StrabonBeanWrapper strabonWrapper;
+	
+	/**
+	 * The name of the temporary directory to store KML/KMZ files
+	 * for presentation in Google Maps 
+	 */
+	private String tempDirectory;
+	
+	/**
+	 * The absolute path of the temporary directory
+	 */
+	private String basePath;
+	
+	/**
+	 * The name of this web application
+	 */
+	private String appName;
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException 
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
-	}
-
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
-	{
-		final class DataHive{
-			private String format;
-			private String SPARQLQuery;
-			private String errorMessage;
-
-			DataHive(){
-				this.format = null;
-				this.SPARQLQuery = null;
-				this.errorMessage = null;				
-			}
-
-			public String getSPARQLQuery() {
-				return SPARQLQuery;
-			}
-
-			public void setSPARQLQuery(String sPARQLQuery) {
-				SPARQLQuery = sPARQLQuery;
-			}
-
-			public String getFormat() {
-				return format;
-			}
-
-			public void setFormat(String fFormat) {
-				format = fFormat;
-			}
-
-			public String getErrorMessage() {
-				return errorMessage;
-			}
-
-			public void setErrorMessage(String error) {
-				this.errorMessage = error;
-			}
-			
-			public String toString() {
-				return "Format: " + (this.format != null ? this.format : " NULL") + 
-						", SPARQLQuery: " + (this.SPARQLQuery != null ? this.SPARQLQuery : " NULL") + 
-						", errormessage: " + (this.errorMessage != null ? this.errorMessage : " NULL") + ".";
- 			}
-		}
-		
-		request.setCharacterEncoding("UTF-8");
-
-		DataHive hive = new DataHive(); 
-
-		String query = request.getParameter("SPARQLQuery");
-		String q = (query == null) ? null : URLDecoder.decode(request.getParameter("SPARQLQuery"), "UTF-8");
-
-		if (query == null) {
-	               query = request.getParameter("query");
-	               q = (query == null) ? null : URLDecoder.decode(request.getParameter("query"), "UTF-8");
-		}
-			
-		hive.setSPARQLQuery(q);
-
-		String reqFormat = (request.getParameter("format") == null) ? "" : request.getParameter("format");
-		String reqAccept = (request.getHeader("accept") == null) ? "" : request.getHeader("accept");
-		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");
-		
-		// check whether Update submit button was fired
-		if (reqFuncionality.equals("Update")) { // only for executions from web browsers
-			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
-			response.sendRedirect("Update?SPARQLQuery=" + URLEncoder.encode(hive.getSPARQLQuery(), "UTF-8"));
-
-			return;
-		}
-
-		if ((reqFormat == "") && (reqAccept == "")) {
-			hive.setFormat(Strabon.FORMAT_HTML);
-			response.setContentType("text/html; charset=UTF-8");
-			
-		} else if (reqAccept.contains("application/vnd.google-earth.kml+xml")) {
-			response.setContentType("application/vnd.google-earth.kml+xml");
-			hive.setFormat(Strabon.FORMAT_KML);
-			
-		} else if (reqAccept.contains("application/vnd.google-earth.kmz")) {
-			response.setContentType("application/vnd.google-earth.kmz");
-			hive.setFormat(Strabon.FORMAT_KMZ);
-			
-		} else if (reqAccept.contains("application/sparql-results+xml")) {			
-			response.setContentType("application/sparql-results+xml; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_XML);
-			
-		} else if (reqAccept.contains("text/xml")) {
-			response.setContentType("text/xml; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_XML);
-			
-		} else if (reqAccept.contains("application/json"))  {
-			response.setContentType("application/json; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_GEOJSON);
-
-		} else if (reqFormat.equalsIgnoreCase("KML file")) {
-			response.setContentType("application/vnd.google-earth.kml+xml; charset=UTF-8");
-		    response.setHeader("Content-Disposition","attachment;filename=doc.kml");
-			hive.setFormat(Strabon.FORMAT_KML);
-			
-		} else if (reqFormat.equalsIgnoreCase("KML")) {
-			response.setContentType("text/plain; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_KML);
-			
-		} else if (reqFormat.equalsIgnoreCase("KMZ file")) {
-			response.setContentType("application/vnd.google-earth.kmz; charset=UTF-8");
-			response.setHeader("Content-Disposition","attachment;filename=doc.kmz");
-			hive.setFormat(Strabon.FORMAT_KMZ);
-			
-		} else if (reqFormat.equalsIgnoreCase("KMZ")) {
-			response.setContentType("text/plain; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_KMZ);
-			
-		} else if (reqFormat.equalsIgnoreCase("SPARQLRESULTS"))  {
-			response.setContentType("application/sparql-results+xml; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_XML);
-			
-		} else if (reqFormat.equalsIgnoreCase(Strabon.FORMAT_XML))  {
-			response.setContentType("text/xml; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_XML);
-			
-		} else if (reqFormat.equalsIgnoreCase("KMLMAP"))  {
-			response.setContentType("text/html; charset=UTF-8");
-			hive.setFormat("KMLMAP");
-			
-		} else if (reqFormat.equalsIgnoreCase("KMZMAP"))  {
-			response.setContentType("text/html; charset=UTF-8");
-			hive.setFormat("KMZMAP");
-			
-		} else if (reqFormat.equalsIgnoreCase(Strabon.FORMAT_GEOJSON))  {
-			response.setContentType("application/json; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_GEOJSON);
-			
-		} else {
-			response.setContentType("text/html; charset=UTF-8");
-			hive.setFormat(Strabon.FORMAT_HTML);
-		}
-
-		PrintWriter out = response.getWriter();
-        out.flush();
-
-		if ((hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_KML)) || (hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_KMZ))) {
-			int status_code = HttpServletResponse.SC_OK;
-			String answer = "";
-
-			try {
-				// execute query
-				answer = (String) strabonWrapper.query(hive.getSPARQLQuery(), hive.getFormat());
-
-			} catch (MalformedQueryException e) {
-				status_code = HttpServletResponse.SC_BAD_REQUEST;
-				answer = e.getMessage();
-
-			} catch (RepositoryException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (QueryEvaluationException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (TupleQueryResultHandlerException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (ClassNotFoundException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-			}
-
-            response.setStatus(status_code);
-			if (status_code == HttpServletResponse.SC_OK) {
-               out.append(answer.toString());
-               
-			} else {
-				response.getWriter().append(ResponseMessages.getXMLHeader());
-				response.getWriter().append(ResponseMessages.getXMLException(answer));
-				response.getWriter().append(ResponseMessages.getXMLFooter());
-				
-			}
-
-		} else if ((hive.getFormat().equalsIgnoreCase("KMLMAP")) || (hive.getFormat().equalsIgnoreCase("KMZMAP"))) {
-
-			StringBuilder errorMessage = new StringBuilder ();
-			String answer = evaluateQuery(strabonWrapper, Strabon.FORMAT_KML, reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-			hive.setErrorMessage(errorMessage.toString());
-			SecureRandom random = new SecureRandom();
-			String temp = new BigInteger(130, random).toString(32);  			
-			String basePath = context.getRealPath("/") + "/../ROOT/tmp/"; 
-			String extension = (hive.format.equalsIgnoreCase("KMLMAP") ? Strabon.FORMAT_KML.toLowerCase() : Strabon.FORMAT_KMZ.toLowerCase());
-
-			try{
-				Date date = new Date();
-
-				FileUtils.forceMkdir(new File(basePath));
-
-				@SuppressWarnings("unchecked")
-				Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
-				while(it.hasNext()){
-					File tbd = new File((it.next()).getAbsolutePath());
-					if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
-						FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
-					}
-				}
-
-				File file = new File(basePath + temp + "." + extension);
-
-				//if file doesnt exists, then create it
-				if(!file.exists()){
-					file.createNewFile();
-				}
-
-				FileWriter fw = new FileWriter(basePath + temp + "." + extension);
-				BufferedWriter bw = new BufferedWriter(fw);
-				if (hive.getFormat().equalsIgnoreCase("KMLMAP")) {
-				   bw.write(answer);
-				}
-				else {
-				   FileOutputStream fos = new FileOutputStream(file);
-				   ZipOutputStream kmzout = new ZipOutputStream(fos);
-				   ZipEntry entry = new ZipEntry("doc.kml");
-
-				//kmzout.setLevel(6);
-				   kmzout.putNextEntry(entry);
-				   kmzout.write(answer.getBytes());
-			       kmzout.closeEntry();
-				   kmzout.close();
-				}
-				bw.close();
-				//FileUtils.forceDeleteOnExit(new File((String) context.getRealPath("/") + "/../ROOT/tmp/" + temp + ".kml"));
-
-			} catch(IOException e) {
-				logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
-			}
-
-			//response.setDateHeader("Expires", 0);			
-			//response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-
-			String pathToKML = "";
-			//response.setHeader("Location", request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension);
-			
-			if (answer!="")
-				pathToKML = request.getScheme() + "://" +  request.getServerName() +":" + request.getServerPort() +"/tmp/" + temp + "."+extension;
-			
-			appendHTML1a(out,pathToKML);
-
-			appendHTMLQ(out, strabonWrapper);
-
-			appendHTML1b(out);
-
-			if (hive.getSPARQLQuery() != null)
-				out.write(hive.getSPARQLQuery());
-
-			appendHTML2(out, hive.getFormat());
-
-			out.append("</table></td></tr></table>");
-
-			appendHTML4(out);
-			if (answer!="")
-				out.append("<div id=\"map_canvas\"></div>");
-			appendHTML5(out);
-		} else if ((hive.getFormat().equalsIgnoreCase("XML"))||(hive.getFormat().equalsIgnoreCase("GEOJSON"))) {
-			int status_code = HttpServletResponse.SC_OK;
-			String answer = "";
-
-			try {
-				// execute query
-				answer = (String) strabonWrapper.query(hive.getSPARQLQuery(), hive.getFormat());
-
-			} catch (MalformedQueryException e) {
-				status_code = HttpServletResponse.SC_BAD_REQUEST;
-				answer = e.getMessage();
-
-			} catch (RepositoryException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (QueryEvaluationException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (TupleQueryResultHandlerException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-
-			} catch (ClassNotFoundException e) {
-				status_code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-				answer = e.getMessage();
-			}
-
-			// write response to client
-			if(hive.getFormat().equalsIgnoreCase(Strabon.FORMAT_XML))
-			{
-				response.setContentType("text/xml; charset=UTF-8");
-			}
-			else //GeoJSON
-			{
-				response.setContentType("application/json; charset=UTF-8");
-			}
-			response.setStatus(status_code);
-			if (status_code == HttpServletResponse.SC_OK) {
-				response.getWriter().append(answer);
-
-			} else {
-				response.getWriter().append(ResponseMessages.getXMLHeader());
-				response.getWriter().append(ResponseMessages.getXMLException(answer));
-				response.getWriter().append(ResponseMessages.getXMLFooter());
-			}
-
-		} 
-		else { // HTML
-
-			appendHTML1a(out, "");
-
-			appendHTMLQ(out, strabonWrapper);
-
-			appendHTML1b(out);
-
-			if (hive.getSPARQLQuery() != null)
-				out.write(hive.getSPARQLQuery());
-
-			appendHTML2(out, hive.getFormat());
-
-			String answer = "";
-			if (hive.getSPARQLQuery() != null) {
-				StringBuilder errorMessage = new StringBuilder ();
-				answer = evaluateQuery(strabonWrapper, hive.getFormat(), reqFuncionality, hive.getSPARQLQuery(), errorMessage);
-				hive.setErrorMessage(errorMessage.toString());
-				if (hive.getErrorMessage() != null) {
-					appendHTML3(out, hive.getErrorMessage());
-				}
-			}
-
-			out.append("</table></td></tr></table>");
-			if (!answer.equals("")) {
-				out.println("<style type=\"text/css\">");
-				out.println("table.result    {border:1px solid #777777;}");
-				out.println("table.result tr {border:1px dashed grey;}");
-				out.println("table.result th {background-color:grey;color:black;}");
-				out.println("</style>");
-				out.println("<table class=\"result\">");
-				out.append(answer);
-				out.append("</table>");
-			}
-			appendHTML4(out);
-			appendHTML5(out);
-		}
-		out.flush();
 	}
 
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
 
-		// get StrabonWrapper
+		// get the context of the servlet
 		context = getServletContext();
+		
+		// get the context of the application
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
 
+		// the the strabon wrapper
 		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-	}
-
-	public String evaluateQuery(StrabonBeanWrapper strabonWrapper, String resultFormat, String reqFunctionality, String SPARQLQuery, StringBuilder errorMessage) {		
-		String answer = "";
-
-		try {
-			if (SPARQLQuery == null) {
-				answer = "";
-			} else {
-				answer = (String) strabonWrapper.query(SPARQLQuery, resultFormat);
-			}
-		} catch (Exception e) {
-			logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
-			errorMessage.append(e.getMessage());
-		}
-
-		return answer;		
-	}
-
-	protected static void appendHTML1a(PrintWriter out, String pathToKML) {
-		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-		out.println("<html>");
-		out.println("<head>");
-		out.println("<meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\" />");
-		out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");		
-		out.println("<link href=\"http://code.google.com/apis/maps/documentation/javascript/examples/default.css\" rel=\"stylesheet\" type=\"text/css\" />");
-		out.println("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" /> ");
-		out.println("<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?sensor=false\"></script>");
-		out.println("<script type=\"text/javascript\">" +
-				"function toggleMe(a){" +
-				"var e=document.getElementById(a);" +
-				"if(!e)return true;" +
-				"if(e.style.display==\"none\"){" +
-						"e.style.display=\"block\"" +
-						"}else{" +
-						"e.style.display=\"none\"}" +
-						"return true;}" +
-						"</script>");
-		out.println("<script type=\"text/javascript\">");
-		out.println("function initialize() {");
-		out.println("  var brahames = new google.maps.LatLng(37.92253, 23.72275);");
-		out.println("  var myOptions = {");
-		out.println("    zoom: 11,");
-		out.println("    center: brahames,");
-		out.println("   mapTypeId: google.maps.MapTypeId.ROADMAP");
-		out.println("  }");
-		out.println("");
-		out.println("  var map = new google.maps.Map(document.getElementById(\"map_canvas\"), myOptions);");
-		out.println("");
-		out.println("  var ctaLayer = new google.maps.KmlLayer('" + pathToKML + "');");
-		out.println("  ctaLayer.setMap(map);");
-		out.println("}");
-		out.println("</script>");
-		out.println("<style type=\"text/css\"> ");
-		out.println("<!--");
-		out.println(".style3 {font-size: 15px}");
-		out.println(".style4 {font-size: 12px}");
-		out.println(".style5 {font-size: 15px;font-weight: bold;}");
-		out.println(".style6 {color: #FF0000}");
-		out.println(".style7 {font-size: 14px}");
-		out.println(" .hidden { visibility: hidden }");
-		out.println("-->");
-		out.println("</style> ");
-		out.println("<title>TELEIOS: Strabon Endpoint</title>");
-		out.println("</head>");
-		out.println("<body topmargin=\"0\" leftmargin=\"0\" link=\"#FFFFFF\" vlink=\"#FFFFFF\" alink=\"#FFFFFF\" onload=\"initialize()\">");
-		out.println("  <TABLE width=\"100%\" BORDER=0 CELLPADDING=0 CELLSPACING=0>");
-		out.println("    <TR>");
-		out.println("		");
-		out.println("      <TD height=\"16\" background=\"images/pixi_white.gif\"><img src=\"images/pixi_white.gif\" width=\"16\" height=\"16\"></TD>");
-		out.println("	</TR>");
-		out.println("	<TR>");
-		out.println("      <TD height=\"1\"></TD>");
-		out.println("	</TR>		");
-		out.println("	<TR>");
-		out.println("      <TD height=\"60\" background=\"images/nav2_bg.gif\"> ");
-		out.println("        <table width=\"100%\" border=\"0\">");
-		out.println("         <tr>");
-		out.println("            <td width=\"1\"><img src=\"images/nav2_bg.gif\" width=\"1\" height=\"60\"></td>");
-		out.println("            <td valign=\"top\" width=\"80px\"><img border=\"0\" src=\"images/teleios_logo.png\" /></td>");
-		out.println("            <td valign=\"top\" align=\"left\">");
-		out.println("            <span class=\"logo\"> &nbsp stSPARQL Endpoint</span><br><span class=\"style4\"></span></td>");
-		out.println("          </tr>");
-		out.println("        </table> </TD>");
-		out.println("	</TR>");
-		//out.println("	<TR>");
-		//out.println("      </TD>");
-		//out.println("	</TR>");
-		out.println("	<TR>");
-		out.println("      <TD height=\"50\" id=\"intro\">");
-		out.println("On this page you can execute stSPARQL queries against the Strabon backend. " +
-				"The dataset is based on  the following ontologies: " +
-				"<a href=\"http://harmonisa.uni-klu.ac.at/content/land-use-land-cover-ontologies\" > Corine Land Cover </a>, " +
-				"<a > Greek Administrative Geography(Kallikratis), </a>" +
-				"<a href=\"http://labs.mondeca.com/dataset/lov/details/vocabulary_lgdo.html\" > Linked Geodata </a> " +
-				" and <a href=\"http://www.geonames.org/search.html?q=ontology&country=\" >  geonames </a>." +
-				"We also use the <a href=\"images/graph.png\">NOA ontology</a> we developed for the <a href=\"http://www.space.noa.gr/ \">NOA </a> use case of the European FP7 project " +
-				"<a href=\"http://www.earthobservatory.eu/\" >TELEIOS </a>. ") ;
-		out.println("<a onclick=\"return toggleMe('par')\" />(More) </a> <br>");
-		out.println(" <p id=\"par\"> In this context NOA has been developing a real-time fire hotspot detection service for effectively monitoring a " +
-				"fire-front. The technique is based on the use of acquisitions originating from the SEVIRI (Spinning Enhanced Visible and " +
-				"Infrared Imager) sensor, on top of MSG-1 (Meteosat Second Generation satellite, renamed to Meteosat-8) and MSG-2 (renamed to " +
-				"Meteosat-9) satellite platforms. Since 2007, NOA operates an MSG/SEVIRI acquisition station, and has been systematically archiving" +
-				" raw satellite images on a 5 and 15 minutes basis, the respective temporal resolutions of MSG-1 and MSG-2. The acquired data are then annotated " +
-				"using the stRDF model and can be queried using the stSPARQL query language. </p>  ");
-		out.println("On the left sidebar, some example stSPARQL queries are provided. The NOA use case is described in more detail in the VLDB application paper " +
-				"<a href=\"\"> here. </a> ");
-		out.println("      </TD>");
-		out.println("	</TR>");
-		out.println("</TABLE>");
-		out.println("<form " +
-				"enctype=\"UTF-8\" " +
-				"accept-charset=\"UTF-8\" "+
-				//"accept-charset=\"UTF-8\" " +
-				//"enctype=\"application/x-www-form-urlencoded;charset=UTF-8\" " +
-				//"enctype=\"text/plain\" " +
-				
-				//"method=\"get\"" +
-				"method=\"post\"" +
-				">");
-
-		out.println("<table border=\"0\" width=\"100%\"><tr> ");
-		out.println("<td width=\"90\" valign=\"top\" bgcolor=\"#dfe8f0\"> ");
-		out.println("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"165\" id=\"navigation\"> ");
-		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Query\" class=\"navText\">Query</a></td></tr> ");
-                out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"Describe\" class=\"navText\">Describe</a></td></tr> ");
-	}
-
-	protected static void appendHTML1b(PrintWriter out) {	
-		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"store.jsp\" class=\"navText\" title=\"Store triples\">Store</a></td></tr> ");
-		out.println("<tr><td width=\"90\" class=\"style4\"><a href=\"javascript:history.go(0)\" class=\"navText\" title=\"Clear editor\">Clear</a></td></tr> ");
-		out.println("</table>");
-		out.println("</td>");
-		out.println("<td width=\"*\" valign=\"top\" >"); 
-
-		out.println("<table cellspacing=\"5\">");
-		out.println("<tr>");
-		out.println("<td id=\"output\" \">stSPARQL Query:</td>");
-		out.println("<td id=\"output\" \"><textarea name=\"SPARQLQuery\" title=\"pose your query/update here\" rows=\"15\" cols=\"100\">");
-	}
-
-	protected static void appendHTML2(PrintWriter out, String format) {
-		out.println("</textarea></td>");
-		//		out.println("<td style=\"border: 1px dashed #bbbbbb;\"><input type=\"radio\" name=\"format\" value=\"KML\">KML<br/>");
-		//		out.println("<input type=\"radio\" name=\"format\" value=\"HTML\">HTML</td>");
-		out.println("</tr>");
-		out.println("<tr>");
-
-		out.println("<td id=\"output\";\"><center>Output Format:<br/><select name=\"format\" title=\"select one of the following output format types\">");
 		
-		Map<String, String> selections = new HashMap<String, String>();
-		selections.put("KMZMAP", "HTML with google maps (kmz)");
-		selections.put("KMLMAP", "HTML with google maps (kml)");
-		selections.put("HTML", "HTML");
-		//selections.put("KMZ", "KZM file");
-		selections.put("KML file", "KML file");
-		selections.put("KML", "KML plain text");
-		selections.put("XML", "XML");
-		selections.put("GEOJSON", "GeoJSON");
+		// get the name of this web application
+		appName = context.getContextPath().replace("/", "");
 		
-		Iterator <String> it = selections.keySet().iterator();
+		// fix the temporary directory for this web application
+		tempDirectory = appName + "-temp";
 		
-		while (it.hasNext()) {
-			String key = it.next();
-			String value = selections.get(key);
-			out.print("<option ");
-			if (key.equalsIgnoreCase(format))
-				out.print("selected");
+		// get the absolute path of the temporary directory
+		basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+	}
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		
+		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+			// HTML visual interface
+			processVIEWRequest(request, response);
 			
-			out.println(" value=\"" + key + "\">" + value + "</option>");
-		}
+
+		} else {// invoked as a service
+			processRequest(request, response);
+	    }
+	}
+
+	/**
+     * Processes the request made by a client of the endpoint that uses it as a service. 
+     * 
+     * @param request
+     * @param response
+     * @throws IOException 
+     */
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ServletOutputStream out = response.getOutputStream();
 		
-		out.println("</select></center></td>");
-		//out.println("</tr>");
-		//out.println("<tr>");
-		out.println("<td colspan=2 \"><br/><center><input type=\"submit\" title=\"execute query\" value=\"Query\" name=\"submit\" /><br/><input type=\"submit\" title=\"execute update\" value=\"Update\" name=\"submit\" style=\"width: 400px\"/></center><br/></td>");
-		out.println("</tr>");
+		// get the stSPARQL Query Result format (we check only the Accept header)
+        stSPARQLQueryResultFormat format = stSPARQLQueryResultFormat.forMIMEType(request.getHeader("accept"));
+        
+        // get the query
+		String query = request.getParameter("query");
+    	
+    	// check for required parameters
+    	if (format == null || query == null) {
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			out.print(ResponseMessages.getXMLHeader());
+			out.print(ResponseMessages.getXMLException(PARAM_ERROR));
+			out.print(ResponseMessages.getXMLFooter());
+    		
+    	} else {
+    		// decode the query
+    		query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+    		
+	    	response.setContentType(format.getDefaultMIMEType());
+	    	try {
+				strabonWrapper.query(query, format.getName(), out);
+				response.setStatus(HttpServletResponse.SC_OK);
+				
+			} catch (Exception e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				out.print(ResponseMessages.getXMLHeader());
+				out.print(ResponseMessages.getXMLException(e.getMessage()));
+				out.print(ResponseMessages.getXMLFooter());
+			}
+    	}
+    	
+    	out.flush();
 	}
 
-	protected static void appendHTML3(PrintWriter out, String errorMessage) {
-		out.println("<tr>");
-		out.println("<td id=\"output\" \">Result: </td>");
-		out.println("<td id=\"output\" \">");
-		out.println(errorMessage);
-		out.println("</td>");
-		out.println("</tr>");
-	}
+	/**
+     * Processes the request made from the HTML visual interface of Strabon Endpoint.
+     * 
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+	private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher dispatcher;
 
-	protected static void appendHTML4(PrintWriter out) {
-		out.println("<br/><br/>");
-		out.println("</form>");
-	}
+		// check whether Update submit button was fired
+		String reqFuncionality = (request.getParameter("submit") == null) ? "" : request.getParameter("submit");	
 
-	protected static void appendHTML5(PrintWriter out) {
-		out.println("</body>");
-		out.println("</html>");
-	}
+		if (reqFuncionality.equals("Update")) {
+			// get the dispatcher for forwarding the rendering of the response
+			dispatcher = request.getRequestDispatcher("/Update");
+			dispatcher.forward(request, response);
+			
+		} else {
+			String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			String format = request.getParameter("format");
+			String handle = request.getParameter("handle");
+			
+			// get stSPARQLQueryResultFormat from given format name
+			stSPARQLQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
+			
+			if (query == null || format == null || queryResultFormat == null) {
+				dispatcher = request.getRequestDispatcher("query.jsp");
+				request.setAttribute(ERROR, PARAM_ERROR);
+				dispatcher.forward(request, response);
+				
+			} else {
+				if ("download".equals(handle)) { // download as attachment
+					ServletOutputStream out = response.getOutputStream();
+					
+					response.setContentType(queryResultFormat.getDefaultMIMEType());
+				    response.setHeader("Content-Disposition", 
+				    				"attachment; filename=results." + 
+				    				queryResultFormat.getDefaultFileExtension() + "; " + 
+				    				queryResultFormat.getCharset());
+				    
+				    try {
+						strabonWrapper.query(query, format, out);
+						response.setStatus(HttpServletResponse.SC_OK);
+						
+				    } catch (Exception e) {
+				    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						out.print(ResponseMessages.getXMLHeader());
+						out.print(ResponseMessages.getXMLException(e.getMessage()));
+						out.print(ResponseMessages.getXMLFooter());
+				    }
+				    
+				    out.flush();
+				    
+				} else if ("map".equals(handle) && 
+						(queryResultFormat == stSPARQLQueryResultFormat.KML || 
+						 queryResultFormat == stSPARQLQueryResultFormat.KMZ) ) {
+					// show map (only valid for KML/KMZ)
+					
+					// get dispatcher
+					dispatcher = request.getRequestDispatcher("query.jsp");
+					
+					SecureRandom random = new SecureRandom();
+					String temp = new BigInteger(130, random).toString(32);
+					
+					// the temporary KML/KMZ file to create in the server
+					String tempKMLFile = temp + "." + queryResultFormat.getDefaultFileExtension();;
+					
+					try{
+						Date date = new Date();
 
-	protected static void appendHTMLQ(PrintWriter out, StrabonBeanWrapper strabonWrapper) throws UnsupportedEncodingException {
-		out.println("<tr><td id=\"twidth\">");
-		List<Entry> entries = strabonWrapper.getEntries();
-		Iterator<Entry> it = entries.iterator();
-		while (it.hasNext()) {
-			Entry entry = it.next();
-			out.println(createLink(entry));
+						FileUtils.forceMkdir(new File(basePath));
+
+						@SuppressWarnings("unchecked")
+						Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
+						while(it.hasNext()){
+							File tbd = new File((it.next()).getAbsolutePath());
+							if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
+								FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
+							}
+						}
+						
+						// create temporary KML/KMZ file
+						File file = new File(basePath + tempKMLFile);
+
+						// if file does not exist, then create it
+						if(!file.exists()){
+							file.createNewFile();
+						}
+						
+						try {
+							// query and write the result in the temporary KML/KMZ file
+							FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
+							strabonWrapper.query(query, format, fos);
+							fos.close();
+						
+							request.setAttribute("pathToKML", 
+									request.getScheme() + "://" +  
+									request.getServerName() + ":" + request.getServerPort() + 
+									"/" + tempDirectory + "/" + tempKMLFile);
+							
+						} catch (Exception e) {
+							logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
+							request.setAttribute(ERROR, e.getMessage());
+						}
+						
+						dispatcher.forward(request, response);
+
+					} catch(IOException e) {
+						logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
+					}
+
+				} else { // "plain" is assumed as the default
+					dispatcher = request.getRequestDispatcher("query.jsp");
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					
+					try {
+						strabonWrapper.query(query, format, bos);
+						request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
+						
+					} catch (Exception e) {
+						logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
+						request.setAttribute(ERROR, e.getMessage());
+						
+					} finally {
+						dispatcher.forward(request, response);
+					}
+				}
+			}
 		}
-		out.println("</td></tr> ");
-	}
-	
-	private static String createLink(Entry entry) throws UnsupportedEncodingException {
-		StringBuffer buf = new StringBuffer(1024);
-		buf.append("<a href=\"");
-		buf.append(entry.getBean());
-		buf.append("?SPARQLQuery=");
-		buf.append(URLEncoder.encode(entry.getStatement(), "UTF-8"));
-		buf.append("&format=");
-		buf.append(entry.getFormat()+"\"");
-		buf.append("title="+"\""+entry.getTitle());
-		buf.append("\">&nbsp;&middot;&nbsp;");
-		buf.append(entry.getLabel());
-		buf.append("</a><br/>");
-		
-		return buf.toString();
 	}
 }

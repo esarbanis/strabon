@@ -248,7 +248,7 @@ public class TripleTableManager {
 	public synchronized String getTableName(Number pred)
 		throws SQLException
 	{
-		flushManagers(); // charnik's addition
+		//flushManagers(); // charnik's addition
 		if (tables.containsKey(pred))
 			return tables.get(pred).getNameWhenReady();
 		if (tables.containsKey(OTHER_PRED))

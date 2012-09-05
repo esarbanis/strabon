@@ -21,8 +21,8 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Factory class used to create or load the database tables.
  * 
- * @author James Leigh
- * 
+ * @author Initial rdbms version: James Leigh
+ * @author generaldb version: Manos Karpathiotakis
  */
 public class ValueTableFactory {
 
@@ -128,7 +128,6 @@ public class ValueTableFactory {
 		
 		/****************************************************************/
 		//TODO
-		//GeoValueTable myAddition = createGeoValueTable(conn,queue,"manolis_values",VARCHAR,VCL);
 		GeoValueTable myAddition = createGeoValueTable(conn,queue,"geo_values",VARCHAR,VCL);
 		literals.setGeoSpatialTable(myAddition);
 		return literals;

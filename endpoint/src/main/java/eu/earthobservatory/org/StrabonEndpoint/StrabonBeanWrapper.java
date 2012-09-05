@@ -1,6 +1,5 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -202,18 +201,15 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		}
 	}
 
-	public String query(String queryString, String answerFormatStrabon)
+	public void query(String queryString, String answerFormatStrabon, OutputStream out)
 	throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, ClassNotFoundException {
 		logger.info("[StrabonEndpoint] Received SELECT query.");
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 
-		ByteArrayOutputStream answer = new ByteArrayOutputStream();
+		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 		
-		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), answer);
-		
-		return answer.toString();
 	}
 	
 	/**

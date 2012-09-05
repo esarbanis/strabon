@@ -15,6 +15,7 @@ public class WKTHelper {
 	
 	private static String SRID_DELIM 	= ";";
 	private static String CUT_DELIM 	= "/";
+	private static String URI_ENDING	= ">";
 	
 	/**
 	 * Returns the given WKT without the SRID (if any).
@@ -50,7 +51,7 @@ public class WKTHelper {
 		int pos = wkt.indexOf(SRID_DELIM);
 		if (pos != -1) {
 			try {
-				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1));
+				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
 				
 			} catch (NumberFormatException e) {
 				logger.warn("[Strabon.WKTHelper] Was expecting an integer. The URL of the SRID was {}. Continuing with the default SRID, {}", wkt.substring(pos + 1), srid);

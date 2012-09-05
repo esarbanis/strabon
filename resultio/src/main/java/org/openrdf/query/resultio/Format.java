@@ -48,6 +48,11 @@ public enum Format {
 	HTML("HTML"),
 	
 	/**
+	 * TSV (tab-separated values) format
+	 */
+	TSV("TSV"),
+	
+	/**
 	 * Invalid format.
 	 */
 	INVALID("INVALID");

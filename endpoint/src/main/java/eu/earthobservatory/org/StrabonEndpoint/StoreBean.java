@@ -4,9 +4,11 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.net.URLDecoder;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -33,36 +35,18 @@ public class StoreBean extends HttpServlet {
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StoreBean.class);
 	
 	/**
-	 * Parameters used in the store.jsp file
+	 * Error/Info parameters used in the store.jsp file
 	 */
-	public static final String PARAM_DATA 		= "data";
-	public static final String PARAM_FORMAT 	= "format";
-	public static final String PARAM_DATA_URL	= "url";
-	public static final String SRC_REQ			= "source_request";
+	public static final String ERROR 			= "error";
+	public static final String INFO				= "info";
 	
 	/**
-	 * Error parameters used in the store.jsp file
+	 * Error/Info messages
 	 */
-	public static final String DATA_ERROR 		= "edata";
-	public static final String FORMAT_ERROR 	= "eformat";
-	public static final String STORE_ERROR 		= "estore";
-	
-	/**
-	 * Submit buttons
-	 */
-	public static final String SUBMIT_INPUT		= "dsubmit";
-	public static final String SUBMIT_URL		= "fromurl";
-	
-	/**
-	 * Parameter for successful store used in the store.jsp file
-	 */
-	public static final String STORE_OK			= "storeOK";
-	
-	/**
-	 * Keeps the registered and available RDF formats.
-	 */
-	public static ArrayList<String> registeredFormats;
-	
+	private static final String STORE_ERROR 	= "An error occurred while storing input data!";
+	private static final String PARAM_ERROR 	= "RDF format or input data are not set or are invalid!";
+	private static final String STORE_OK		= "Data stored successfully!";
+
 	/**
 	 * Strabon wrapper
 	 */
@@ -76,12 +60,6 @@ public class StoreBean extends HttpServlet {
 		ServletContext context = getServletContext();
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
 		strabon = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-		
-		// initialize registered and available formats
-		registeredFormats = new ArrayList<String>();
-		for (RDFFormat format : RDFFormat.values()) {
-			registeredFormats.add(format.getName());
-		}
 	}
 	
 	@Override
@@ -89,74 +67,110 @@ public class StoreBean extends HttpServlet {
 		doPost(request, response);
 	}
 	
+	private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
+		// check whether we read from INPUT or URL
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
+		
+		// return "data" value accordingly
+		return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA), "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
+	}
+	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// check whether we read from INPUT or URL
-		boolean input = (request.getParameter(SUBMIT_URL) != null) ? false:true;
 		
-		// check if the request was from store.jsp
-		boolean browser = (request.getParameter(SRC_REQ) != null) ? true:false;
-		
-		// RDF data to store
-		String data = null;
-		
-		// the format of the data
-		String format = null;
-		
-		format = request.getParameter(PARAM_FORMAT);
-		data = input ? request.getParameter(PARAM_DATA):request.getParameter(PARAM_DATA_URL); 
-		
-		if (data == null) { 
-			if (browser) {
-				redirect(response, DATA_ERROR);
-				
-			} else {
-				response.sendError(HttpServletResponse.SC_NO_CONTENT);
-			}
-			return ;
-		}
-		
-		// get input format
-		RDFFormat rdfFormat = RDFFormat.valueOf(format); 
-		
-		if (rdfFormat == null) { // unknown format
-			if (browser) {
-				redirect(response, FORMAT_ERROR);
-				
-			} else {
-				response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-			}
+		// check whether the request was from store.jsp
+		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+			processVIEWRequest(request, response);
 			
-			return ;
-		}		
-		
-		// store data
-		try {
-			strabon.store(data, rdfFormat, !input);
-			
-			// store was successful, return the respective message
-			if (browser) {
-				redirect(response, STORE_OK);
-				
-			} else {
-				response.sendError(HttpServletResponse.SC_OK);
-			}
-		} catch (Exception e) {
-			if (browser) {
-				redirect(response, STORE_ERROR);
-			} else {
-				if (e instanceof RDFParseException || e instanceof IllegalArgumentException || e instanceof MalformedURLException) {
-					response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-				} else {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				}
-			}
-			logger.error("[StrabonEndpoint.StoreBean] " + e.getMessage());
+		} else {
+			processRequest(request, response);
 		}
 	}
 	
-	private void redirect(HttpServletResponse response, String error) {
-		response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        response.setHeader("Location", "store.jsp?" + error + "=");
-	}
+	/**
+     * Processes the request made from the HTML visual interface of Strabon Endpoint.
+     * 
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// check whether we read from INPUT or URL
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
+		
+    	// get the dispatcher for forwarding the rendering of the response
+    	RequestDispatcher dispatcher = request.getRequestDispatcher("store.jsp");
+    			
+    	// RDF data to store
+    	String data = getData(request);
+    			
+    	// the format of the data
+    	RDFFormat format = (request.getParameter(Common.PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(Common.PARAM_FORMAT)):null;
+    	
+    	if (data == null || format == null) {
+    		request.setAttribute(ERROR, PARAM_ERROR);
+			
+    	} else {
+    		
+    		// store data
+    		try {
+    			strabon.store(data, format, !input);
+    			
+    			// store was successful, return the respective message
+    			request.setAttribute(INFO, STORE_OK);
+    				
+    		} catch (Exception e) {
+    			request.setAttribute(ERROR, STORE_ERROR + " " + e.getMessage());
+    		}
+    	}
+    	
+		dispatcher.forward(request, response);
+    }
+    
+    /**
+     * Processes the request made by a client of the endpoint that uses it as a service. 
+     * 
+     * @param request
+     * @param response
+     * @throws IOException 
+     */
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// check whether we read from INPUT or URL
+		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
+		
+    	// RDF data to store
+    	String data = getData(request);
+    	
+    	if (data == null) { 
+			response.sendError(HttpServletResponse.SC_NO_CONTENT);
+			return;
+		}
+    	
+    	// the format of the data
+    	RDFFormat format = RDFFormat.forMIMEType(request.getHeader("accept"));
+    	
+		if (format == null) { // unknown format
+			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+			return ;
+		}
+		
+		// store data
+		try {
+			strabon.store(data, format, !input);
+			
+			// store was successful, return the respective message
+			response.sendError(HttpServletResponse.SC_OK);
+		} catch (Exception e) {
+			if (e instanceof RDFParseException || 
+				e instanceof IllegalArgumentException || e instanceof MalformedURLException) {
+				response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+				
+			} else {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
+			
+			logger.error("[StrabonEndpoint.StoreBean] " + e.getMessage());
+		}
+    }
 }

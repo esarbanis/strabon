@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="2.4"
-	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="WebApp_ID" version="2.5"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:base="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
 	<display-name>StrabonEndpoint</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -9,8 +12,8 @@
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-		
+	</listener> 
+
 	<servlet>
 		<display-name>Query</display-name>
 		<servlet-name>Query</servlet-name>
@@ -54,12 +57,39 @@
 		<servlet-name>Describe</servlet-name>
 		<url-pattern>/Describe</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>query.jsp</servlet-name>
+		<jsp-file>/query.jsp</jsp-file>
+	</servlet>
 		
 	<servlet>
 		<servlet-name>store.jsp</servlet-name>
 		<jsp-file>/store.jsp</jsp-file>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>describe.jsp</servlet-name>
+		<jsp-file>/describe.jsp</jsp-file>
+	</servlet>
+ 
+   	<mime-mapping>
+       	<extension>kml</extension>
+       	<mime-type>application/vnd.google-earth.kml+xml</mime-type>
+   	</mime-mapping>
+   	<mime-mapping>
+       	<extension>kmz</extension>
+       	<mime-type>application/vnd.google-earth.kmz</mime-type>
+   	</mime-mapping>
+	
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	
+	<welcome-file-list>
+		<welcome-file>query.jsp</welcome-file>
+	</welcome-file-list>
+
 <!-- 	<servlet> -->
 <!-- 		<display-name>QueryServlet</display-name> -->
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->
@@ -70,20 +100,4 @@
 <!-- 		<servlet-name>QueryServlet</servlet-name> -->
 <!-- 		<url-pattern>/QueryServlet</url-pattern> -->
 <!-- 	</servlet-mapping> -->
- 
-    	<mime-mapping>
-        	<extension>kml</extension>
-        	<mime-type>application/vnd.google-earth.kml+xml</mime-type>
-    	</mime-mapping>
-    	<mime-mapping>
-        	<extension>kmz</extension>
-        	<mime-type>application/vnd.google-earth.kmz</mime-type>
-    	</mime-mapping>
-	
-	<session-config>
-		<session-timeout>60</session-timeout>
-	</session-config>
-	<welcome-file-list>
-		<welcome-file>Query</welcome-file>
-	</welcome-file-list>
 </web-app>

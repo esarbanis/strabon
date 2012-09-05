@@ -6,15 +6,10 @@
 		xmlns:jaxws="http://cxf.apache.org/jaxws"
 		jaxws:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
-<!--
-    <import resource="classpath:META-INF/cxf/cxf.xml" />
-    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
--->
     <bean
         id="strabonBean"
         class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"
-        destroy-method="destroy" >
+        destroy-method="destroy">
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->

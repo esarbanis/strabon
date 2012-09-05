@@ -60,7 +60,7 @@ if [ "${catalina}" != "" -a "${tomcat}" != "" ]; then
 	echo "You cannot specify both catalina and tomcat options at the same time!"
 	exit -1
 elif [ "${catalina}" == "" -a "${tomcat}" == "" ]; then
-	tomcat="/var/lib/tomcat7"
+	tomcat="tomcat7"
 fi
 
 # Build package
