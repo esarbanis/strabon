@@ -69,4 +69,8 @@ public class Common {
 			}
 		}
 	}
+	
+	public static final String getHTMLFormat() {
+		return stSPARQLQueryResultFormat.HTML.getName();
+	}
 }

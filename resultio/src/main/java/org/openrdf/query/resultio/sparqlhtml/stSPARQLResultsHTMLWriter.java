@@ -2,7 +2,6 @@ package org.openrdf.query.resultio.sparqlhtml;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openrdf.model.BNode;
@@ -20,6 +19,7 @@ import org.openrdf.query.resultio.sparqlxml.stSPARQLXMLWriter;
  */
 public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 
+	public static final String TABLE			= "TABLE";
 	public static final String TABLE_ROW_TAG	= "TR";
 	public static final String TABLE_HEADER_TAG = "TH";
 	public static final String TABLE_DATA_TAG	= "TD";
@@ -51,6 +51,9 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			// keep the order of binding names
 			this.bindingNames = bindingNames;
 			
+			// write start of table
+			xmlWriter.startTag(TABLE);
+			
 			// write Table header containing the bindings
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName: bindingNames) {
@@ -67,6 +70,10 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 	@Override
 	public void endQueryResult() throws TupleQueryResultHandlerException {
 		try {
+			
+			// write end of table
+			xmlWriter.endTag(TABLE);
+						
 			// needed to flush data
 			xmlWriter.endDocument();
 			

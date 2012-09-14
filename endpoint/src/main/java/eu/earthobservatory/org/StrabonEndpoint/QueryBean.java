@@ -275,7 +275,11 @@ public class QueryBean extends HttpServlet {
 					
 					try {
 						strabonWrapper.query(query, format, bos);
-						request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
+						if (format.equals(Common.getHTMLFormat())) {
+							request.setAttribute(RESPONSE, bos.toString());
+						} else {
+							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
+						}
 						
 					} catch (Exception e) {
 						logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);

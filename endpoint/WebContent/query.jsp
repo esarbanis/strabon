@@ -133,11 +133,15 @@
 <%}%>
 </table></td></tr></table><br/><br/>
 </form>
-<% if (request.getAttribute("response") != null) {%>
 	<!-- Response -->
+<% if (request.getAttribute("response") != null) {
+	if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
+		<%=request.getAttribute("response")%>
+	<%} else { %>
 	<PRE><%=request.getAttribute("response") %></PRE>
-	<!-- Response -->
+	<%}%>
 <%}%>
+	<!-- Response -->
 <% if (request.getAttribute("pathToKML") != null) { %>
 	<div id="map_canvas"></div>
 <%}%>
