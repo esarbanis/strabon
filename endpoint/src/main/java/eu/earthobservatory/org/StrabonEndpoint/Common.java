@@ -70,6 +70,12 @@ public class Common {
 		}
 	}
 	
+	/**
+	 * Method for getting the name of the HTML stSPARQLQueryResultFormat
+	 * in .jsp pages.
+	 * 
+	 * @return
+	 */
 	public static final String getHTMLFormat() {
 		return stSPARQLQueryResultFormat.HTML.getName();
 	}

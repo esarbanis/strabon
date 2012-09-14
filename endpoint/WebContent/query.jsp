@@ -142,10 +142,10 @@
 <tr>
 	<td id="output"><center>View Result:<br/>
 	<SELECT name="handle" title="select how you would like to view the result">
-		<OPTION value="plain">Plain result</OPTION>
-		<OPTION value="download">Download</OPTION>
-		<OPTION value="map">On a map</OPTION>
-		<OPTION value="map_local">On a map (localhost)</OPTION>
+		<OPTION value="plain"<%= ("plain".equals(request.getAttribute("handle"))) ? "selected":""%>>Plain</OPTION>
+		<OPTION value="download"<%= ("download".equals(request.getAttribute("handle"))) ? "selected":""%>>Download</OPTION>
+		<OPTION value="map"<%= ("map".equals(request.getAttribute("handle"))) ? "selected":""%>>On a map</OPTION>
+		<OPTION value="map_local"<%= ("map_local".equals(request.getAttribute("handle"))) ? "selected":""%>>On a map (localhost)</OPTION>
 	</SELECT></center>
 	</td>
 	<td colspan=2>&nbsp;</td>
