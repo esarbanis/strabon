@@ -87,13 +87,11 @@ WHERE {?file rdf:type noa:ShpFile ;
 	                <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>KMZ</value>
 	                <!-- Label -->
 	                <value>Query 2: Discover Hotspots</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Get all hotspots 
-# - in Pelloponesus 
-# - at 2007-08-24
+	                <value><![CDATA[# Get all hotspots in Pelloponesus at 2007-08-24
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -214,7 +212,7 @@ WHERE {
 	                <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>KMZ</value>
 	                <!-- Label -->
 	                <value>Query 3: Discover coniferous forests</value> 
 	                <!-- Statement -->
@@ -246,7 +244,7 @@ WHERE{ ?a rdf:type clc:Area;
 	                <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>KMZ</value>
 	                <!-- Label -->
 	                <value>Query 4: Discover primary roads</value> 
 	                <!-- Statement -->
@@ -276,7 +274,7 @@ WHERE { ?d rdf:type gag:Dhmos;
 	                <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>KMZ</value>
 	                <!-- Label -->
 	                <value>Query 5: Get all primary roads in Pelloponnese</value> 
 	                <!-- Statement -->
@@ -306,13 +304,11 @@ WHERE { ?r rdf:type ?rType ;
 	                <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>KMZ</value>
 	                <!-- Label -->
 	                <value>Query 6: Discover hotspots</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Get all hotspots 
-# - in Pelloponesus 
-# - at 2007-08-24
+	                <value><![CDATA[# Get all hotspots in Pelloponesus at 2007-08-24
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -348,7 +344,7 @@ WHERE { ?h 	rdf:type noa:Hotspot;
 <!-- 	                Bean -->
 <!-- 	                <value>Query</value>  -->
 <!-- 	                Format -->
-<!-- 	                <value>KMZMAP</value> -->
+<!-- 	                <value>KMZ</value> -->
 <!-- 	                Label -->
 <!-- 	                <value></value>  -->
 <!-- 	                Statement -->
