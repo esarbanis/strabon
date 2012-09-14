@@ -195,6 +195,7 @@
 							<directory>${basedir}/WebContent</directory>
 							<includes>
 								<include>images/**</include>
+								<include>js/**</include>
 							</includes>
 						</resource>
 					</webResources>

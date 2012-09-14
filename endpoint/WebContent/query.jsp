@@ -5,9 +5,7 @@
 <head>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" href="style.css" type="text/css" /> 
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<link rel="stylesheet" href="style.css" type="text/css" />
 	<script type="text/javascript">
 		function toggleMe(a) {
 			var e = document.getElementById(a);
@@ -22,21 +20,41 @@
 			return true;
 		}
 	</script>
+<% if (request.getAttribute("pathToKML") != null) {
+	if ("map_local".equals(request.getAttribute("handle"))) { %>
+	<script type="text/javascript" src="js/geoxml3-kmz.js"></script>
+	<script type="text/javascript" src="js/ProjectedOverlay.js"></script>	
+	<%} %>
+	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
 		function initialize() {
+			// center at Brahames
 			var brahames = new google.maps.LatLng(37.92253, 23.72275);
 			var myOptions = {
 				zoom: 11,
 				center: brahames,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-		
+			
+			// get KML filename
+			var kml = '<%=request.getAttribute("pathToKML")%>';
+			// <%=request.getAttribute("handle")%>
+			// create map
 			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		
-			var ctaLayer = new google.maps.KmlLayer('<%=request.getAttribute("pathToKML") != null ? request.getAttribute("pathToKML"):""%>');
+			// display using geoxml3
+		<%if ("map_local".equals(request.getAttribute("handle"))) { %>
+			var myParser = new geoXML3.parser({map: map});
+			myParser.parse(kml);
+			
+		<%} else {%>
+			var ctaLayer = new google.maps.KmlLayer(kml);
 			ctaLayer.setMap(map);
+		<%}%>
 		}
 	</script> 
+<%}%>
 	<title>TELEIOS: Strabon Endpoint</title>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
@@ -101,6 +119,7 @@
 		<OPTION value="plain">Plain result</OPTION>
 		<OPTION value="download">Download</OPTION>
 		<OPTION value="map">On a map</OPTION>
+		<OPTION value="map_local">On a map (localhost)</OPTION>
 	</SELECT></center>
 	</td>
 	<td colspan=2>&nbsp;</td>

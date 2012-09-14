@@ -208,13 +208,16 @@ public class QueryBean extends HttpServlet {
 				    
 				    out.flush();
 				    
-				} else if ("map".equals(handle) && 
+				} else if (("map".equals(handle) || "map_local".equals(handle)) && 
 						(queryResultFormat == stSPARQLQueryResultFormat.KML || 
 						 queryResultFormat == stSPARQLQueryResultFormat.KMZ) ) {
 					// show map (only valid for KML/KMZ)
 					
 					// get dispatcher
 					dispatcher = request.getRequestDispatcher("query.jsp");
+					
+					// re-assign handle
+					request.setAttribute("handle", handle);
 					
 					SecureRandom random = new SecureRandom();
 					String temp = new BigInteger(130, random).toString(32);
