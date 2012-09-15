@@ -19,10 +19,14 @@ import org.openrdf.query.resultio.sparqlxml.stSPARQLXMLWriter;
  */
 public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 
-	public static final String TABLE			= "TABLE";
-	public static final String TABLE_ROW_TAG	= "TR";
-	public static final String TABLE_HEADER_TAG = "TH";
-	public static final String TABLE_DATA_TAG	= "TD";
+	public static final String TABLE				= "TABLE";
+	public static final String TABLE_ROW_TAG		= "TR";
+	public static final String TABLE_HEADER_TAG 	= "TH";
+	public static final String TABLE_DATA_TAG		= "TD";
+	public static final String STYLE				= "class";
+	public static final String TABLE_HEADER_CLASS	= "query_results_header";
+	public static final String TABLE_DATA_CLASS		= "query_results_data";
+	public static final String TABLE_CLASS			= "query_results_table";
 	
 	/**
 	 * The underlying XML formatter.
@@ -51,12 +55,18 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			// keep the order of binding names
 			this.bindingNames = bindingNames;
 			
+			// set style for table
+			xmlWriter.setAttribute(STYLE, TABLE_CLASS);
+			
 			// write start of table
 			xmlWriter.startTag(TABLE);
 			
 			// write Table header containing the bindings
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName: bindingNames) {
+				// set style for header
+				xmlWriter.setAttribute(STYLE, TABLE_HEADER_CLASS);
+				
 				xmlWriter.textElement(TABLE_HEADER_TAG, bindingName);
 			}
 			
@@ -95,6 +105,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 				if (binding.getValue() instanceof BNode) {
 					value.insert(0, "_:");
 				}
+				xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
 				xmlWriter.textElement(TABLE_DATA_TAG, value.toString());
 				
 				value.setLength(0);
