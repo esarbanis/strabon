@@ -100,14 +100,35 @@ public class QueryBean extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
-			// HTML visual interface
-			processVIEWRequest(request, response);
+		// check connection details
+		if (strabonWrapper.getStrabon() == null) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/connection.jsp");
 			
-
-		} else {// invoked as a service
-			processRequest(request, response);
-	    }
+			// pass the current details of the connection
+			request.setAttribute("username", strabonWrapper.getUsername());
+			request.setAttribute("password", strabonWrapper.getPassword());
+			request.setAttribute("dbname", strabonWrapper.getDatabaseName());
+			request.setAttribute("hostname", strabonWrapper.getHostName());
+			request.setAttribute("port", strabonWrapper.getPort());
+			request.setAttribute("dbengine", strabonWrapper.getDBEngine());
+			
+			// pass the query as well
+			request.setAttribute("query", request.getParameter("query"));
+			
+			// forward the request
+			dispatcher.forward(request, response);
+			
+		} else {
+		
+			if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+				// HTML visual interface
+				processVIEWRequest(request, response);
+				
+	
+			} else {// invoked as a service
+				processRequest(request, response);
+		    }
+		}
 	}
 
 	/**

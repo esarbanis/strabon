@@ -186,6 +186,7 @@
 								<include>store.jsp</include>
 								<include>query.jsp</include>
 								<include>describe.jsp</include>
+								<include>connection.jsp</include>
 								<include>teleios-header.html</include>
 							</includes>
 						</resource>

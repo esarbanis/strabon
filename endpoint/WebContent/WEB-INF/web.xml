@@ -47,7 +47,7 @@
 		<url-pattern>/Update</url-pattern>
 	</servlet-mapping>
 
-        <servlet>
+    <servlet>
 		<display-name>Describe</display-name>
 		<servlet-name>Describe</servlet-name>
 		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.DescribeBean</servlet-class>
@@ -56,6 +56,17 @@
 	<servlet-mapping>
 		<servlet-name>Describe</servlet-name>
 		<url-pattern>/Describe</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>DBConnect</display-name>
+		<servlet-name>DBConnect</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.ConnectionBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DBConnect</servlet-name>
+		<url-pattern>/DBConnect</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -73,6 +84,11 @@
 		<jsp-file>/describe.jsp</jsp-file>
 	</servlet>
  
+ 	<servlet>
+		<servlet-name>connection.jsp</servlet-name>
+		<jsp-file>/connection.jsp</jsp-file>
+	</servlet>
+	
    	<mime-mapping>
        	<extension>kml</extension>
        	<mime-type>application/vnd.google-earth.kml+xml</mime-type>

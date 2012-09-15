@@ -19,74 +19,16 @@ import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration;
 import eu.earthobservatory.runtime.generaldb.Strabon;
+
 
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
 	
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
 	
-	private static final String DBBACKEND_POSTGIS = "postgis";
-	private static final String DBBACKEND_MONETDB = "monetdb";
-	
 	private static final String FILE_PROTOCOL = "file";
 	
-	public class Entry {
-		private String label;
-		private String bean;
-		private String statement;
-		private String format;
-		private String title;
-
-		public Entry(String label, String bean, String statement, String format, String title) {
-			this.label = label;
-			this.bean = bean;
-			this.statement = statement;
-			this.format = format;
-			this.title=title;
-		}
-		
-		public String getLabel() {
-			return label;
-		}
-		
-		public void setLabel(String label) {
-			this.label = label;
-		}
-		
-		public String getBean() {
-			return bean;
-		}
-		
-		public void setBean(String bean) {
-			this.bean = bean;
-		}
-		
-		
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getStatement() {
-			return statement;
-		}
-		
-		public void setStatement(String statement) {
-			this.statement = statement;
-		}
-		
-		public String getFormat() {
-			return format;
-		}
-		
-		public void setFormat(String format) {
-			this.format = format;
-		}
-	}
-
 	private String serverName;
 	private int port;
 	private String databaseName;
@@ -97,7 +39,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private Strabon strabon = null;
 	
 	private boolean checkForLockTable;
-	private List<Entry> entries;
+	private List<StrabonBeanWrapperConfiguration> entries;
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
 			int port, String serverName, boolean checkForLockTable, String dbBackend, List<List<String>> args) {
@@ -108,7 +50,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
-		this.entries = new ArrayList<StrabonBeanWrapper.Entry>(args.size());
+		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
 		Iterator<List<String>> entryit = args.iterator();
 		
@@ -142,7 +84,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					items++;
 				}
 				if (items == 5) {
-					Entry entry = new Entry(label, bean, statement, format, title);
+					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(label, bean, statement, format, title);
 					this.entries.add(entry);
 				}
 			
@@ -153,7 +95,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		init();
 	}
 
-	private boolean init() {
+	public boolean init() {
 		if (this.strabon == null) {
 			try {
 				logger.warn("[StrabonEndpoint] Strabon not initialized yet.");
@@ -161,12 +103,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
 				
 				// initialize Strabon according to user preference
-				if (DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
+				if (Common.DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
 					this.strabon = new eu.earthobservatory.runtime.monetdb.Strabon(databaseName, user, password, port, serverName, checkForLockTable);
 					
 				} else {
 					// check whether the user typed wrong database backend and report
-					if (!DBBACKEND_POSTGIS.equalsIgnoreCase(dbBackend)) {
+					if (!Common.DBBACKEND_POSTGIS.equalsIgnoreCase(dbBackend)) {
 						logger.warn("[StrabonEndpoint] Unknown database backend \""+dbBackend+"\". Assuming PostGIS.");
 					}
 					
@@ -300,6 +242,45 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return true;
 	}
 
+	public void setConnectionDetails(String username, String password, String dbname, String hostname, String port, String dbengine) {
+		this.user = username;
+		this.password = password;
+		this.databaseName = dbname;
+		this.dbBackend = dbengine;
+		this.password = password;
+		try { 
+			this.port = Integer.valueOf(port);
+		} catch (NumberFormatException e) {
+			this.port = 5432;
+		}
+		this.serverName = hostname;
+		this.checkForLockTable = true;		
+	}
+	
+	public String getUsername() {
+		return user;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public String getDatabaseName() {
+		return databaseName;
+	}
+	
+	public String getDBEngine() {
+		return dbBackend;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public String getHostName() {
+		return serverName;
+	}
+	
 	private String getDetails() {
 		String details = "-----------------------------------------\n";
 		details += "host     : " + serverName + "\n";
@@ -312,15 +293,15 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return details;
 	}
 
-	public List<Entry> getEntries() {
+	public List<StrabonBeanWrapperConfiguration> getEntries() {
 		return this.entries;
 	}
 	
-	public void setEntries(List<Entry> entries) {
+	public void setEntries(List<StrabonBeanWrapperConfiguration> entries) {
 		this.entries = entries;
 	}
 	
-	public Entry getEntry(int i) {
+	public StrabonBeanWrapperConfiguration getEntry(int i) {
 		if (i < 0 || i >= this.entries.size())
 			return null;
 		

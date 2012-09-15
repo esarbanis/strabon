@@ -3,7 +3,7 @@
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
-<%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.Entry"%>
+<%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
@@ -27,11 +27,15 @@
 			return true;
 		}
 	</script>
-<% if (request.getAttribute("pathToKML") != null) {
-	if ("map_local".equals(request.getAttribute("handle"))) { %>
+<%
+	if (request.getAttribute("pathToKML") != null) {
+	if ("map_local".equals(request.getAttribute("handle"))) {
+%>
 	<script type="text/javascript" src="js/geoxml3-kmz.js"></script>
 	<script type="text/javascript" src="js/ProjectedOverlay.js"></script>	
-	<%} %>
+	<%
+			}
+		%>
 	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
@@ -51,7 +55,7 @@
 			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		
 			// display using geoxml3
-		<%if ("map_local".equals(request.getAttribute("handle"))) { %>
+		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
 			var myParser = new geoXML3.parser({map: map});
 			myParser.parse(kml);
 			
@@ -61,7 +65,9 @@
 		<%}%>
 		}
 	</script> 
-<%}%>
+<%
+ 	}
+ %>
 	<title>TELEIOS: Strabon Endpoint</title>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
@@ -80,27 +86,27 @@
 		<tr><td id="twidth">
 		
 		<%
-			StrabonBeanWrapper strabonWrapper;
-			ServletContext context;
-			context = getServletContext();
-			WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-			strabonWrapper=(StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-			
-			Iterator <Entry> entryListIterator = strabonWrapper.getEntries().iterator();
-			
-			while(entryListIterator.hasNext())
-			{
-				Entry entry = entryListIterator.next();
-				String handle="";
-				if(entry.getBean().equals("Query"))
-				{
-					handle="&handle=map";
-				}
-				
-				String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML"+handle+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
-				String title="\""+entry.getTitle()+"\"";
-				String label=entry.getLabel();
-		%>
+					StrabonBeanWrapper strabonWrapper;
+							ServletContext context;
+							context = getServletContext();
+							WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+							strabonWrapper=(StrabonBeanWrapper) applicationContext.getBean("strabonBean");
+							
+							Iterator <StrabonBeanWrapperConfiguration> entryListIterator = strabonWrapper.getEntries().iterator();
+							
+							while(entryListIterator.hasNext())
+							{
+								StrabonBeanWrapperConfiguration entry = entryListIterator.next();
+								String handle="";
+								if(entry.getBean().equals("Query"))
+								{
+									handle="&handle=map";
+								}
+								
+								String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML"+handle+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
+								String title="\""+entry.getTitle()+"\"";
+								String label=entry.getLabel();
+				%>
 					<a href=<%=href%> title=<%=title%>><%=label%></a><br/>
 		<%
 			}
@@ -122,8 +128,17 @@
 <%}%>
 <tr>
 <td id="output">stSPARQL Query:</td>
-<td id="output"><textarea name="query" title="pose your query/update here" rows="15" cols="100">
-<%=request.getParameter("query") != null ? request.getParameter("query"):""%></textarea></td>
+<%
+	String query = "";
+	if (request.getParameter("query") != null) {
+		query = request.getParameter("query");
+		
+	} else if (request.getAttribute("query") != null) {
+		query = (String) request.getAttribute("query");
+		
+	}
+%>
+<td id="output"><textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
 </tr>
 <tr>
 	<td id="output"><center>Output Format:<br/>
