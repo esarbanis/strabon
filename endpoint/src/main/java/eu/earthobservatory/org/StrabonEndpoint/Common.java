@@ -37,6 +37,13 @@ public class Common {
 	public static final String SUBMIT_INPUT		= "dsubmit";
 	public static final String SUBMIT_URL		= "fromurl";
 	
+ 	/**
+	 * Parameters used in connection.jsp and in StrabonBeanWrapper.java/beans.xml
+	 */
+	public static final String DBBACKEND_POSTGIS = "postgis";
+	public static final String DBBACKEND_MONETDB = "monetdb";
+
+
 	/**
 	 * Keeps the registered and available RDF formats.
 	 */
