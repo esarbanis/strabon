@@ -167,6 +167,7 @@
 							<directory>${basedir}/WebContent/WEB-INF</directory>
 							<includes>
 								<include>beans.xml</include>
+								<include>connection.properties</include>
 							</includes>
 						</resource>
 

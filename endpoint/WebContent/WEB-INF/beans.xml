@@ -6,6 +6,14 @@
 		xmlns:jaxws="http://cxf.apache.org/jaxws"
 		jaxws:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
+	<bean id="serverProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/connection.properties</value>
+			</list>
+		</property>
+	</bean>
+  
     <bean
         id="strabonBean"
         class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"
@@ -13,27 +21,27 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>${dbname}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Username -->
-            <value>postgres</value>
+            <value>${username}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>postgres</value>
+	    <value>${password}</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
             <!-- Port -->
-            <value>5432</value>
+            <value>${port}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Database server -->
-            <value>localhost</value>
+            <value>${hostname}</value>
         </constructor-arg>
 
         <constructor-arg type="boolean" >
@@ -43,7 +51,7 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database Backend (either "postgis" or "monetdb") -->
-            <value>postgis</value>
+            <value>${dbengine}</value>
         </constructor-arg>
         
          <constructor-arg>
