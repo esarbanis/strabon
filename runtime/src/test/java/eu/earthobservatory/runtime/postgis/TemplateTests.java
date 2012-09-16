@@ -1,8 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.postgis;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,9 +30,8 @@ import eu.earthobservatory.runtime.generaldb.Strabon;
 /**
  * A set of simple tests on SPARQL query functionality 
  * 
- * @author George Garbis
+ * @author George Garbis <ggarbis@di.uoa.gr>
  */
-
 public class TemplateTests {
 	
 	public static java.sql.Connection conn = null;
