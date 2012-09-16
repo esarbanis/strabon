@@ -125,6 +125,11 @@ publications given on this page.
 
 The current versions of stRDF and stSPARQL which are based on OGC standards are
 presented in the following document:
+  * K. Kyzirakos, M. Karpathiotakis, and M. Koubarakis. Strabon: A Semantic 
+    Geospatial DBMS. In Internatioanl Semantic Web Conference (ISWC'12). Boston,
+    USA, November 11-15, 2012.
+    [pdf: http://strabon.di.uoa.gr/files/strabon-iswc.pdf]
+
   * Manolis Koubarakis, Kostis Kyzirakos, Babis Nikolaou, Michael Sioutis, and
     Stavros Vassos. A data model and query language for an extension of RDF with
     time and space. Deliverable D2.1, European ICT project TELEIOS, 2011.
