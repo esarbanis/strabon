@@ -242,11 +242,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return true;
 	}
 
-	public void setConnectionDetails(String username, String password, String dbname, String hostname, String port, String dbengine) {
-		this.user = username;
-		this.password = password;
+	public void setConnectionDetails(String dbname, String username, String password, String port, String hostname, String dbengine) {
 		this.databaseName = dbname;
-		this.dbBackend = dbengine;
+		this.user = username;
 		this.password = password;
 		try { 
 			this.port = Integer.valueOf(port);
@@ -254,6 +252,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			this.port = 5432;
 		}
 		this.serverName = hostname;
+		this.dbBackend = dbengine;
 		this.checkForLockTable = true;		
 	}
 	
