@@ -97,13 +97,8 @@
 							while(entryListIterator.hasNext())
 							{
 								StrabonBeanWrapperConfiguration entry = entryListIterator.next();
-								String handle="";
-								if(entry.getBean().equals("Query"))
-								{
-									handle="&handle=map";
-								}
 								
-								String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML"+handle+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
+								String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
 								String title="\""+entry.getTitle()+"\"";
 								String label=entry.getLabel();
 				%>

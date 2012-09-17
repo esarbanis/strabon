@@ -69,7 +69,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			
 			while (it.hasNext()) {
 				int items = 0;
-				String label = "", bean = "", statement = "", format = "", title=""; 
+				String label = "", bean = "", statement = "", format = "", title="", handle=""; 
 	
 				if (it.hasNext()) {
 					bean = it.next();
@@ -89,11 +89,14 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				}
 				if (it.hasNext()) {
 					title = it.next();
-					System.out.println("TITLE= "+title);
 					items++;
 				}
-				if (items == 5) {
-					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(label, bean, statement, format, title);
+				if (it.hasNext()) {
+					handle = it.next();
+					items++;
+				}
+				if (items == 6) {
+					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(label, bean, statement, format, title, handle);
 					this.entries.add(entry);
 				}
 			

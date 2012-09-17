@@ -20,13 +20,15 @@ public class StrabonBeanWrapperConfiguration {
 	private String statement;
 	private String format;
 	private String title;
+	private String handle;
 
-	public StrabonBeanWrapperConfiguration(String label, String bean, String statement, String format, String title) {
+	public StrabonBeanWrapperConfiguration(String label, String bean, String statement, String format, String title, String handle) {
 		this.label = label;
 		this.bean = bean;
 		this.statement = statement;
 		this.format = format;
-		this.title=title;
+		this.title = title;
+		this.handle = handle;
 	}
 	
 	public String getLabel() {
@@ -68,6 +70,14 @@ public class StrabonBeanWrapperConfiguration {
 	
 	public void setFormat(String format) {
 		this.format = format;
+	}
+	
+	public String getHandle() {
+		return this.handle;
+	}
+	
+	public void setHandle(String handle) {
+		this.handle = handle;
 	}
 }
 
