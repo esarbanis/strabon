@@ -109,11 +109,14 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName : bindingNames) {
 				Binding binding = bindingSet.getBinding(bindingName);
-				value.append(binding.getValue().stringValue());
+				if(binding != null)
+				{	
+					value.append(binding.getValue().stringValue());
 				
-				if (binding.getValue() instanceof BNode) {
-					value.insert(0, "_:");
-				}
+					if (binding.getValue() instanceof BNode) {
+						value.insert(0, "_:");
+					}
+				}	
 				xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
 				xmlWriter.textElement(TABLE_DATA_TAG, value.toString());
 				
