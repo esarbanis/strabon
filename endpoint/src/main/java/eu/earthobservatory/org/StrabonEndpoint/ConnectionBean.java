@@ -86,16 +86,17 @@ public class ConnectionBean extends HttpServlet {
 		RequestDispatcher dispatcher;
 		
 		// set new connection details
-		strabonWrapper.setConnectionDetails(
-				request.getParameter("dbname"), 
-				request.getParameter("username"), 
-				request.getParameter("password"), 
-				request.getParameter("port"),
-				request.getParameter("hostname"), 
-				request.getParameter("dbengine"));
+		strabonWrapper.setConnectionDetails(request.getParameter("dbname"), 
+											request.getParameter("username"), 
+											request.getParameter("password"), 
+											request.getParameter("port"),
+											request.getParameter("hostname"), 
+											request.getParameter("dbengine"));
 		
-		// pass the query that had been issued to the dispatcher
-		request.setAttribute("query", request.getAttribute("query"));
+		// pass the query, format, and the handle that had been issued to the dispatcher
+		request.setAttribute("query",  	request.getAttribute("query"));
+		request.setAttribute("format",  request.getAttribute("format"));
+		request.setAttribute("handle", 	request.getAttribute("handle"));
 
 		if (logger.isInfoEnabled()) {
 			logger.info("[StrabonEndpoint.ConnectionBean] Establishing connection with database using new connection details.");
@@ -109,13 +110,12 @@ public class ConnectionBean extends HttpServlet {
 			}
 			
 			// save the new connection details
-			saveNewConnectionDetails(
-									request.getParameter("dbname"),
-									request.getParameter("username"), 
-									request.getParameter("password"), 
-									request.getParameter("port"), 
-									request.getParameter("hostname"), 
-									request.getParameter("dbengine"));
+			saveNewConnectionDetails(request.getParameter("dbname"),
+									 request.getParameter("username"), 
+									 request.getParameter("password"), 
+									 request.getParameter("port"), 
+									 request.getParameter("hostname"), 
+									 request.getParameter("dbengine"));
 			
 			if (logger.isInfoEnabled()) {
 				logger.info("[StrabonEndpoint.ConnectionBean] New connection details succesfully saved.");
@@ -156,12 +156,12 @@ public class ConnectionBean extends HttpServlet {
 			properties.load(input);
 			
 			// update them
-			properties.setProperty("dbname", dbname);
-			properties.setProperty("username", username);
-			properties.setProperty("password", password);
-			properties.setProperty("port", port);
-			properties.setProperty("hostname", hostname);
-			properties.setProperty("dbengine", dbengine);
+			properties.setProperty("dbname", 	dbname);
+			properties.setProperty("username", 	username);
+			properties.setProperty("password", 	password);
+			properties.setProperty("port", 		port);
+			properties.setProperty("hostname", 	hostname);
+			properties.setProperty("dbengine", 	dbengine);
 			
 			// store them
 			properties.store(new FileOutputStream(context.getRealPath(CONNECTION_PROPERTIES_FILE)), null);
@@ -170,7 +170,4 @@ public class ConnectionBean extends HttpServlet {
 			input.close();
 		}
 	}
-
-	
-
 }

@@ -50,7 +50,6 @@
 			
 			// get KML filename
 			var kml = '<%=request.getAttribute("pathToKML")%>';
-			// <%=request.getAttribute("handle")%>
 			// create map
 			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		
@@ -124,6 +123,7 @@
 <tr>
 <td id="output">stSPARQL Query:</td>
 <%
+	// get query parameter or attribute (the attribute comes from ConnectionBean)
 	String query = "";
 	if (request.getParameter("query") != null) {
 		query = request.getParameter("query");
@@ -132,14 +132,33 @@
 		query = (String) request.getAttribute("query");
 		
 	}
+	
+	// get format parameter or attribute (the attribute comes from ConnectionBean)
+	String selFormat = "";
+	if (request.getParameter("format") != null) {
+		selFormat = request.getParameter("format");
+		
+	} else if (request.getAttribute("format") != null) {
+		selFormat = (String) request.getAttribute("format");
+		
+	}
+		
+	// get handle parameter or attribute (the attribute comes from ConnectionBean)
+	String handle = "";
+	if (request.getParameter("handle") != null) {
+		handle = request.getParameter("handle");
+		
+	} else if (request.getAttribute("handle") != null) {
+		handle = (String) request.getAttribute("handle");
+		
+	}
 %>
 <td id="output"><textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
 </tr>
 <tr>
 	<td id="output"><center>Output Format:<br/>
 		<select name="format" title="select one of the following output format types">
-		<%
-		String selFormat = request.getParameter("format") != null ? request.getParameter("format"):""; 
+		<% 
 		for (String format : Common.registeredQueryResultsFormatNames) {%>
 				<OPTION value="<%=format%>"<%=format.equals(selFormat) ? "selected":""%>><%=format%></OPTION>
 		<%}%>
@@ -152,10 +171,10 @@
 <tr>
 	<td id="output"><center>View Result:<br/>
 	<SELECT name="handle" title="select how you would like to view the result">
-		<OPTION value="plain"<%= ("plain".equals(request.getAttribute("handle"))) ? "selected":""%>>Plain</OPTION>
-		<OPTION value="download"<%= ("download".equals(request.getAttribute("handle"))) ? "selected":""%>>Download</OPTION>
-		<OPTION value="map"<%= ("map".equals(request.getAttribute("handle"))) ? "selected":""%>>On a map</OPTION>
-		<OPTION value="map_local"<%= ("map_local".equals(request.getAttribute("handle"))) ? "selected":""%>>On a map (localhost)</OPTION>
+		<OPTION value="plain"<%= ("plain".equals(handle)) ? "selected":""%>>Plain</OPTION>
+		<OPTION value="download"<%= ("download".equals(handle)) ? "selected":""%>>Download</OPTION>
+		<OPTION value="map"<%= ("map".equals(handle)) ? "selected":""%>>On a map</OPTION>
+		<OPTION value="map_local"<%= ("map_local".equals(handle)) ? "selected":""%>>On a map (localhost)</OPTION>
 	</SELECT></center>
 	</td>
 	<td colspan=2>&nbsp;</td>

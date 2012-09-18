@@ -116,13 +116,15 @@ public class QueryBean extends HttpServlet {
 			// pass the current details of the connection
 			request.setAttribute("username", strabonWrapper.getUsername());
 			request.setAttribute("password", strabonWrapper.getPassword());
-			request.setAttribute("dbname", strabonWrapper.getDatabaseName());
+			request.setAttribute("dbname", 	 strabonWrapper.getDatabaseName());
 			request.setAttribute("hostname", strabonWrapper.getHostName());
-			request.setAttribute("port", strabonWrapper.getPort());
+			request.setAttribute("port", 	 strabonWrapper.getPort());
 			request.setAttribute("dbengine", strabonWrapper.getDBEngine());
 			
-			// pass the query as well
+			// pass the other parameters as well
 			request.setAttribute("query", request.getParameter("query"));
+			request.setAttribute("format", request.getParameter("format"));
+			request.setAttribute("handle", request.getParameter("handle"));
 			
 			// forward the request
 			dispatcher.forward(request, response);

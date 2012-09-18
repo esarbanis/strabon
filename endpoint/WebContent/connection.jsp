@@ -30,6 +30,8 @@
 
 <FORM method=POST enctype="UTF-8" accept-charset="UTF-8" action="DBConnect">
 <input type="hidden" name="query" value="<%=request.getAttribute("query")%>"/>
+<input type="hidden" name="handle" value="<%=request.getAttribute("handle")%>"/>
+<input type="hidden" name="format" value="<%=request.getAttribute("format")%>"/>
 <TABLE class="style4">
 	<TR> 
 		<TD valign="top" class="style4">Database Name:</TD>
