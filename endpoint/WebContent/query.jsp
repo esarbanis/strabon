@@ -63,11 +63,27 @@
 			var ctaLayer = new google.maps.KmlLayer(kml);
 			ctaLayer.setMap(map);
 		<%}%>
+		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
+			location.hash = "#results";
+		<%}%>
+		
 		}
 	</script> 
 <%
  	}
  %>
+ 
+	<%if (	"map".equals(request.getAttribute("handle")) || 
+			"map_local".equals(request.getAttribute("handle"))) {%>
+		<script type="text/javascript">
+			window.onload=toBottom;
+			function toBottom() {
+				alert("Scrolling to bottom 2...");
+				window.scrollTo(0, document.body.scrollHeight);
+			}
+		</script> 
+	<%}%>
+		
 	<title>TELEIOS: Strabon Endpoint</title>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
@@ -170,6 +186,7 @@
 </table></td></tr></table><br/><br/>
 </form>
 	<!-- Response -->
+	<a name="#results">&nbsp;</a>
 <% if (request.getAttribute("response") != null) {
 	if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
 		<%=request.getAttribute("response")%>
