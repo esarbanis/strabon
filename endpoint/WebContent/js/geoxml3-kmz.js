@@ -1183,6 +1183,16 @@ function processStyleUrl(node) {
       visible:       placemark.visibility
     });
     var p = new google.maps.Polygon(polyOptions);
+    
+    
+    google.maps.event.addListener(p,"mouseover",function(){
+    	 this.setOptions({fillColor: "#FFFFFF"});
+    	}); 
+
+    	google.maps.event.addListener(p,"mouseout",function(){
+    	 this.setOptions({fillColor: kmlFillColor.color});
+    	});
+    
     p.bounds = bounds;
 
     createInfoWindow(placemark, doc, p);

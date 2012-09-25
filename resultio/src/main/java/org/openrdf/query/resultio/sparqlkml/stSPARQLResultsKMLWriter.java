@@ -79,8 +79,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 		// (00 to ff).
 		// id, line width, line color, polygon fill, mouse over line width,
 		// mouse over line color mouse over polygon fill
-	{STYLE_ID + "1", "1.5", "7dff0000", "7dff0000", "1.5", "7d0000ff", "7d0000ff"}, {STYLE_ID + "2", "1.5", "7d00ff00", "7d00ff00", "1.5", "7d0000ff", "7d0000ff"}, {STYLE_ID + "3", "1.5", "7d550000", "7d550000", "1.5", "7d0000ff", "7d0000ff"}, {STYLE_ID + "4", "1.5", "7d005500", "7d005500", "1.5", "7d0000ff", "7d0000ff"}, {STYLE_ID + "5", "1.5", "7d000055", "7d000055", "1.5", "7d0000ff", "7d0000ff"},};
-	
+		{STYLE_ID + "1", "1.5", "7dff0000", "adff0000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "2", "1.5", "7d00ff00", "ad00ff00", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "3", "1.5", "7d550000", "ad550000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "5", "1.5", "7d000055", "ad000055", "1.5", "7d0000ff", "ad0000ff"},};
 
 	/**
 	 * The underlying XML formatter.
@@ -268,8 +267,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 			//write each polygon in separate placemarks
 			for(String polygon : polygons)
 			{
-				xmlWriter.startTag(PLACEMARK_TAG);
-				xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME + polygons.indexOf(polygon)%(numOfStyles-2) + "_" + ngeometries);			
+				xmlWriter.startTag(PLACEMARK_TAG);			
 				xmlWriter.textElement("styleUrl", "#" + styles[polygons.indexOf(polygon)%(numOfStyles-2)][0]);
 
 				xmlWriter.startTag(MULTIGEOMETRY);
@@ -283,8 +281,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 			//also write them in the same placemarks
 			
 			xmlWriter.startTag(PLACEMARK_TAG);
-			xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME + ngeometries + "_" + ngeometries);			
-			xmlWriter.textElement("styleUrl", "#" + styles[numOfStyles-1][0]);
+			xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
+			xmlWriter.textElement("styleUrl", "#" + styles[(numOfStyles-1)][0]);
 			
 			xmlWriter.startTag(MULTIGEOMETRY);
 			for(String polygon : polygons)
@@ -406,7 +404,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				polygon=baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
 				
 				/*get the polygon from the kml*/
-				polygon=polygon.substring(polygon.indexOf("<Polygon>"), polygon.indexOf("</MultiGeometry>"));
+				polygon=polygon.substring(polygon.indexOf("<Polygon>"), polygon.indexOf("</Polygon>")+10);
 				baos.reset();
 			}
 		}
