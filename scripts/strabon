@@ -59,6 +59,7 @@ FORMAT="ntriples"
 QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
 QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
 QUERY_HOTSPOT_SIZE="SELECT (COUNT(*) as ?C) WHERE {?h <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Hotspot>}"
+QUERY_EXPORT="CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}"
 
 # debug option for log4j configuration:
 #-Dlog4j.debug
@@ -153,7 +154,8 @@ function help_describe() {
 	echo
 	echo "Execute a SPARQL DESCRIBE query on Strabon."
 	echo
-	echo "	DESCRIBE_QUERY	: the SPARQL DESCRIBE query to execute"
+	echo "	DESCRIBE_QUERY	: the SPARQL DESCRIBE query to execute or an alias name such as the following:"
+	echo "				export: returns all triples stored in the database"
 	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`N-Triples', "
 	echo "			  \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
 	echo "			  (defaults to N-Triples)"
@@ -459,6 +461,13 @@ case "${1}" in
 		fi
 		QUERY="${1}"
 		shift
+
+		# check for predefined queries
+		case "${QUERY}" in
+			export)
+				QUERY="${QUERY_EXPORT}"
+				;;
+		esac
 
 		# check for format of result
 		if test $# -gt 0; then
