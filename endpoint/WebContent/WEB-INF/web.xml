@@ -70,6 +70,17 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<display-name>ChangeConnection</display-name>
+		<servlet-name>ChangeConnection</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.ChangeConnectionBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ChangeConnection</servlet-name>
+		<url-pattern>/ChangeConnection</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>query.jsp</servlet-name>
 		<jsp-file>/query.jsp</jsp-file>
 	</servlet>

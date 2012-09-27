@@ -146,6 +146,13 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.strabon = strabon;
 	}
 
+	public void closeConnection() {
+		if (strabon != null) {
+			strabon.close();
+			strabon = null;
+		}
+	}
+	
 	public void destroy() throws Exception {
 		if (strabon != null) {
 			strabon.close();

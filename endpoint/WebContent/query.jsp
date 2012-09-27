@@ -133,6 +133,10 @@
 		
 	}
 	
+	if ("null".equals(query)) {
+		query = "";
+	}
+	
 	// get format parameter or attribute (the attribute comes from ConnectionBean)
 	String selFormat = "";
 	if (request.getParameter("format") != null) {
