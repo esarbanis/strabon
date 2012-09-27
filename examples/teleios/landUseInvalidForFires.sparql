@@ -4,7 +4,9 @@ PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
 
-INSERT {?h noa:isDiscarded "1"^^xsd:int} 
+INSERT {?h noa:isDiscarded "1"^^xsd:int ;
+           noa:refinedBy noa:clcInconsistency .
+} 
 WHERE {
 	SELECT ?h WHERE 
 	{

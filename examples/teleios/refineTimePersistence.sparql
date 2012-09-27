@@ -4,17 +4,18 @@ PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
 
-INSERT {
-	?newHotspot rdf:type noa:Hotspot ;
-				noa:hasConfidence ?hConfidence ;
-				noa:hasGeometry ?hGeometry1 ;
-				noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
-				noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
-				noa:hasConfirmation noa:unknown ;
-				noa:producedFromProcessingChain "PROCESSING_CHAIN-TimePersistence"^^xsd:string ; 
-				noa:isProducedBy noa:noa ;
-				gag:hasMunicipality ?hMunicipality1 ;
-				noa:isDerivedFromSatellite "SAT"^^xsd:string .
+INSERT {?newHotspot rdf:type noa:Hotspot ;
+		    noa:hasConfidence ?hConfidence ;
+		    noa:hasGeometry ?hGeometry1 ;
+		    noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
+		    noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
+		    noa:hasConfirmation noa:unknown ;
+		    noa:producedFromProcessingChain "PROCESSING_CHAIN-TimePersistence"^^xsd:string ; 
+		    noa:isProducedBy noa:noa ;
+		    gag:hasMunicipality ?hMunicipality1 ;
+		    noa:isDerivedFromSatellite "SAT"^^xsd:string ;
+                    noa:refinedBy noa:temporalPersistence ;
+                    noa:refinedBy ?refined .
 }
 WHERE {
 	SELECT  (URI(CONCAT(STR(MAX(?h1)),"/virtual/NEW_HOTSPOT")) AS ?newHotspot)
@@ -29,6 +30,7 @@ WHERE {
         noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string .
     OPTIONAL { ?h1 noa:isDiscarded ?z } .
     FILTER (!BOUND(?z)) .
+    OPTIONAL { ?h1 noa:refinedBy ?refined } .
     FILTER( "MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hAcquisitionTime1 && ?hAcquisitionTime1 < "TIMESTAMP"^^xsd:dateTime ) .
     OPTIONAL {
       ?h2 noa:hasGeometry ?hGeometry2 ;
