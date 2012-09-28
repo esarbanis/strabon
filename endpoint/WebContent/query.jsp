@@ -62,6 +62,12 @@
 			var ctaLayer = new google.maps.KmlLayer(kml);
 			ctaLayer.setMap(map);
 		<%}%>
+		
+		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle")) || "plain".equals(request.getAttribute("handle"))) {%>		
+			$('html, body').animate({
+				scrollTop: $("#divResultsStart").offset().top
+			}, 1000);
+		<%}%>
 		}
 	</script> 
 <%
@@ -251,6 +257,8 @@
 <%}%>
 </table></td></tr></table><br/><br/>
 </form>
+<a name="#results">&nbsp;</a>
+<div id="divResultsStart"></div>
 	<!-- Response -->
 <% if (request.getAttribute("response") != null) {
 	if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
@@ -263,5 +271,6 @@
 <% if (request.getAttribute("pathToKML") != null) { %>
 	<div id="map_canvas"></div>
 <%}%>
+<div id="divResultsEnd" style="height: 1px; width 1px"></div>
 </body>
 </html>
