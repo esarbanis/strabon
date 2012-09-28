@@ -69,34 +69,46 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			
 			while (it.hasNext()) {
 				int items = 0;
-				String label = "", bean = "", statement = "", format = "", title="", handle=""; 
+				//Header:label        
+				//Bean  :label      bean         
+				//Entry :label      bean         statement    format       title      handle
+				String param1 = "", param2 = "", param3 = "", param4 = "", param5="", param6=""; 
 	
 				if (it.hasNext()) {
-					bean = it.next();
+					param1 = it.next();
 					items++;
 				}
 				if (it.hasNext()) {
-					format = it.next();
+					param2 = it.next();
 					items++;
 				}
 				if (it.hasNext()) {
-					label = it.next();
+					param3 = it.next();
 					items++;
 				}
 				if (it.hasNext()) {
-					statement = it.next();
+					param4 = it.next();
 					items++;
 				}
 				if (it.hasNext()) {
-					title = it.next();
+					param5 = it.next();
 					items++;
 				}
 				if (it.hasNext()) {
-					handle = it.next();
+					param6 = it.next();
 					items++;
 				}
-				if (items == 6) {
-					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(label, bean, statement, format, title, handle);
+				
+				if (items == 1) {
+					//the first element corresponds to the label
+					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(param1);
+					this.entries.add(entry);
+				} else if (items == 2) {
+					//the first element corresponds to the label
+					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(param1, param2);
+					this.entries.add(entry);
+				} else if (items == 6) {
+					StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(param3, param1, param4, param2, param5, param6);
 					this.entries.add(entry);
 				}
 			
