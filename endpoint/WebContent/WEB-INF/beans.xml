@@ -262,7 +262,7 @@ GROUP BY ?g
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Query 6: Select all patches corresponding to all subclasses of water</value> 
+	                <value>Select all patches corresponding to all subclasses of water</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

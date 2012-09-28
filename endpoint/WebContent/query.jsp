@@ -63,6 +63,8 @@
 			ctaLayer.setMap(map);
 		<%}%>
 		
+		
+		
 		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle")) || "plain".equals(request.getAttribute("handle"))) {%>		
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
@@ -70,9 +72,23 @@
 		<%}%>
 		}
 	</script> 
-<%
- 	}
- %>
+	<%	} else { %>
+ 	<script type="text/javascript">
+		function initialize() {
+	<%
+	if ("plain".equals(request.getAttribute("handle")) ||
+			(("".equals(request.getAttribute("handle")) || request.getAttribute("handle") == null) &&
+			 (!"".equals(request.getAttribute("format")) || request.getAttribute("format") != null))
+		) {
+	%>
+	$('html, body').animate({
+		scrollTop: $("#divResultsStart").offset().top
+	}, 1000);
+	<%}%>
+	}
+	</script>
+	<%}%>
+
  	<!-- jQuery start  -->
 	<link type="text/css" href="style-menu.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
