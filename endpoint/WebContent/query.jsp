@@ -27,15 +27,49 @@
 			return true;
 		}
 	</script>
-<%
+	<%
+	// get query parameter or attribute (the attribute comes from ConnectionBean)
+	String query = "";
+	if (request.getParameter("query") != null) {
+		query = request.getParameter("query");
+		
+	} else if (request.getAttribute("query") != null) {
+		query = (String) request.getAttribute("query");
+		
+	}
+	
+	if ("null".equals(query)) {
+		query = "";
+	}
+	
+	// get format parameter or attribute (the attribute comes from ConnectionBean)
+	String selFormat = "";
+	if (request.getParameter("format") != null) {
+		selFormat = request.getParameter("format");
+		
+	} else if (request.getAttribute("format") != null) {
+		selFormat = (String) request.getAttribute("format");
+		
+	}
+		
+	// get handle parameter or attribute (the attribute comes from ConnectionBean)
+	String handle = "";
+	if (request.getParameter("handle") != null) {
+		handle = request.getParameter("handle");
+		
+	} else if (request.getAttribute("handle") != null) {
+		handle = (String) request.getAttribute("handle");
+		
+	}
+
 	if (request.getAttribute("pathToKML") != null) {
 	if ("map_local".equals(request.getAttribute("handle"))) {
 %>
 	<script type="text/javascript" src="js/geoxml3-kmz.js"></script>
 	<script type="text/javascript" src="js/ProjectedOverlay.js"></script>	
-	<%
-			}
-		%>
+<%
+	}
+%>
 	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
@@ -63,29 +97,24 @@
 			ctaLayer.setMap(map);
 		<%}%>
 		
-		
-		
-		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle")) || "plain".equals(request.getAttribute("handle"))) {%>		
+		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle"))) {%>	
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
 			}, 1000);
 		<%}%>
 		}
-	</script> 
+	</script>
 	<%	} else { %>
  	<script type="text/javascript">
 		function initialize() {
-	<%
-	if ("plain".equals(request.getAttribute("handle")) ||
-			(("".equals(request.getAttribute("handle")) || request.getAttribute("handle") == null) &&
-			 (!"".equals(request.getAttribute("format")) || request.getAttribute("format") != null))
-		) {
+	<%	
+	if (query != "" || selFormat != "" || handle != "") {
 	%>
 	$('html, body').animate({
 		scrollTop: $("#divResultsStart").offset().top
 	}, 1000);
 	<%}%>
-	}
+		}
 	</script>
 	<%}%>
 
@@ -98,7 +127,8 @@
 			// Accordion
 			$("#accordion").accordion({ 
 				header: "h3",
-				fillSpace: true
+				fillSpace: true,
+				navigation: true
 			});
 			//hover states on the static widgets
 			$('#dialog_link, ul#icons li').hover(
@@ -147,6 +177,7 @@
 							
 							Iterator <StrabonBeanWrapperConfiguration> entryListIterator = strabonWrapper.getEntries().iterator();
 							boolean first = true;
+							String hash = "";
 							while(entryListIterator.hasNext())
 							{
 								StrabonBeanWrapperConfiguration entry = entryListIterator.next();
@@ -162,17 +193,21 @@
 									
 									String label=entry.getLabel();
 									String bean=entry.getBean();
-									String style = "";
+									String style = "", href = "";
 									if (bean == null) {
-										bean = "#";
+										hash = new Integer(Math.abs(label.hashCode())).toString();
+										href="href=\"#"+hash+"\"";
 									} else {
+										hash = new Integer(Math.abs(label.hashCode()*bean.hashCode())).toString();
+										href = "href=\"" +bean + "#"+ hash+"\"";
 										style = "class=\"navText\"";
 									}
+									
 									%>
-									<div><h3><a <%=style%> href="<%=bean%>"><%=label%></a></h3><div>
+									<div><h3><a <%=style%> <%=href%>><%=label%></a></h3><div>
 									<%
 								} else {
-									String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
+									String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+(hash == "" ? "" : "#" + hash)+"\"";
 									String title="\""+entry.getTitle()+"\"";
 									String label=entry.getLabel();
 				%>
@@ -203,41 +238,6 @@
 <%}%>
 <tr>
 <td id="output">stSPARQL Query:</td>
-<%
-	// get query parameter or attribute (the attribute comes from ConnectionBean)
-	String query = "";
-	if (request.getParameter("query") != null) {
-		query = request.getParameter("query");
-		
-	} else if (request.getAttribute("query") != null) {
-		query = (String) request.getAttribute("query");
-		
-	}
-	
-	if ("null".equals(query)) {
-		query = "";
-	}
-	
-	// get format parameter or attribute (the attribute comes from ConnectionBean)
-	String selFormat = "";
-	if (request.getParameter("format") != null) {
-		selFormat = request.getParameter("format");
-		
-	} else if (request.getAttribute("format") != null) {
-		selFormat = (String) request.getAttribute("format");
-		
-	}
-		
-	// get handle parameter or attribute (the attribute comes from ConnectionBean)
-	String handle = "";
-	if (request.getParameter("handle") != null) {
-		handle = request.getParameter("handle");
-		
-	} else if (request.getAttribute("handle") != null) {
-		handle = (String) request.getAttribute("handle");
-		
-	}
-%>
 <td id="output"><textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
 </tr>
 <tr>
