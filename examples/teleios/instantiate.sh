@@ -35,9 +35,10 @@ function help() {
 	echo "	-c, --chain		: the processing chain to use, e.g., \`DynamicThresholds'"
 	echo "	-t, --timestamp		: the timestamp to use, e.g., \`2010-08-21T19:50:00'"
 	echo "	-m, --min_acq_time	: the minimum acquisition time (used in a persistence query only)"
+	echo "	-M, --max_acq_time	: the maximum acquisition time (used in a discovery query only)"
 	echo
 	echo "Example run:"
-	echo "	instantiate.sh -s MSG1 -t '2010-08-21T19:50:00' -c "DynamicThresholds" -m '2010-08-21T19:50:00' *.rq"
+	echo "	./instantiate.sh -s MSG1 -t '2010-08-21T19:50:00' -c "DynamicThresholds" -m '2010-08-21T19:50:00' -M '2010-08-21T19:50:00' *.rq"
 }
 
 SENSOR=
@@ -45,7 +46,8 @@ CHAIN=
 SAT=
 N_ACQUISITIONS=
 TIMESTAMP=
-MIN_ACQUISITIONS=
+MIN_ACQ_TIME=
+MAX_ACQ_TIME=
 
 if test $# -eq 0; then
 	help
@@ -91,6 +93,11 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			MIN_ACQ_TIME="${1}"
 			shift
 			;;
+		-M|--max_acq_time)
+			shift
+			MAX_ACQ_TIME="${1}"
+			shift
+			;;
 		-*)
 			echo "${CMD}: unknown option \"${1}\""
 			help
@@ -126,6 +133,10 @@ if test ! -z "${MIN_ACQ_TIME}"; then
 	ARGS="${ARGS} -e 's/MIN_ACQUISITION_TIME/${MIN_ACQ_TIME}/g'"
 fi
 
+if test ! -z "${MAX_ACQ_TIME}"; then
+	ARGS="${ARGS} -e 's/MAX_ACQUISITION_TIME/${MAX_ACQ_TIME}/g'"
+fi
+
 if test -z "${ARGS}"; then
 	echo "${CMD}: You would be so kind to provide at least one OPTION."
 	help
@@ -137,7 +148,7 @@ QUERY="`eval sed ${ARGS} ${@}`"
 #echo eval sed ${ARGS} ${@}
 
 # check for unbounded variables
-GREP_RESULT=`echo "${QUERY}" | egrep -o 'PROCESSING_CHAIN|SENSOR|"SAT"|ACQUISITIONS_IN_HALF_AN_HOUR|TIMESTAMP|MIN_ACQUISITION_TIME'`
+GREP_RESULT=`echo "${QUERY}" | egrep -o 'PROCESSING_CHAIN|SENSOR|"SAT"|ACQUISITIONS_IN_HALF_AN_HOUR|TIMESTAMP|MIN_ACQUISITION_TIME|MAX_ACQUISITION_TIME'`
 if ! test $? -eq 0; then
 	echo "${QUERY}"
 
