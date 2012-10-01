@@ -41,6 +41,12 @@ option:hover
 	background:#E6A685;
 }
 
+h1 
+{ 
+	display: inline; 
+	text-align: left; 
+}
+
 /* ID Styles */
 
 #border
@@ -55,13 +61,24 @@ border-bottom:10px solid #D1D1BA;
 	border-radius:5px;
 	padding:5px;
 	font-size:13px;
-
 }
-
 
 #output
 {
 	border: 1px dashed #bbbbbb;
+}
+#response
+{
+	margin-top: 20px;
+	
+}
+
+#response td{
+	width: 33.33%;
+}
+
+#response table{
+	width: 100%;
 }
 
 input[type=submit]
@@ -112,12 +129,28 @@ input[type=submit]
 	border-radius:5px;
 	}
 	
-.logo 	{
-	font:24px Arial, Helvetica, sans-serif;
+#uri a {			
+	text-decoration: none;	
+	}	
+	
+#logo
+{
+	font:20px Arial, Helvetica, sans-serif;
 	color: #333333;
 	letter-spacing:.2em;
 	line-height:30px;
+}
+	
+#logo a	{
+	padding-left: 10px;
+	padding-top: 20px;
+	text-decoration: none;
 	}
+
+#logo a:hover
+{
+	color:  #333333;
+}
 
 #tagline 	{	
 	font:11px Arial, Helvetica, sans-serif;

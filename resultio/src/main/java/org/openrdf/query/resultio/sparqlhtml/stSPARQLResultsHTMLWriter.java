@@ -11,6 +11,7 @@ package org.openrdf.query.resultio.sparqlhtml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.openrdf.model.BNode;
@@ -21,6 +22,8 @@ import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLXMLWriter;
+import org.openrdf.model.Value;
+import org.openrdf.model.URI;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
@@ -32,7 +35,11 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 	public static final String TABLE_ROW_TAG		= "TR";
 	public static final String TABLE_HEADER_TAG 	= "TH";
 	public static final String TABLE_DATA_TAG		= "TD";
+	public static final String LINK				    = "A";
+	public static final String LINK_REF				= "HREF";
 	public static final String STYLE				= "class";
+	public static final String ID					= "id";
+	public static final String LINK_ID				= "uri";
 	public static final String TABLE_HEADER_CLASS	= "query_results_header";
 	public static final String TABLE_DATA_CLASS		= "query_results_data";
 	public static final String TABLE_CLASS			= "query_results_table";
@@ -62,20 +69,16 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 		
 		try {
 			// keep the order of binding names
-			this.bindingNames = bindingNames;
-			
+			this.bindingNames = bindingNames;			
 			// set style for table
-			xmlWriter.setAttribute(STYLE, TABLE_CLASS);
-			
+			xmlWriter.setAttribute(STYLE, TABLE_CLASS);					
 			// write start of table
-			xmlWriter.startTag(TABLE);
-			
+			xmlWriter.startTag(TABLE);			
 			// write Table header containing the bindings
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName: bindingNames) {
 				// set style for header
 				xmlWriter.setAttribute(STYLE, TABLE_HEADER_CLASS);
-				
 				xmlWriter.textElement(TABLE_HEADER_TAG, bindingName);
 			}
 			
@@ -105,20 +108,49 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 	public void handleSolution(BindingSet bindingSet) throws TupleQueryResultHandlerException {
 		try {
 			StringBuilder value = new StringBuilder();
+			Value boundValue = null;
 			
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName : bindingNames) {
 				Binding binding = bindingSet.getBinding(bindingName);
 				if(binding != null)
 				{	
-					value.append(binding.getValue().stringValue());
-				
-					if (binding.getValue() instanceof BNode) {
+					boundValue = binding.getValue();
+					value.append(boundValue.stringValue());
+														
+					if(boundValue instanceof BNode) {
 						value.insert(0, "_:");
 					}
-				}	
-				xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
-				xmlWriter.textElement(TABLE_DATA_TAG, value.toString());
+					
+					xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
+					xmlWriter.setAttribute(ID, LINK_ID);
+					xmlWriter.startTag(TABLE_DATA_TAG);
+					// If the value is a uri, make it link
+					if(boundValue instanceof URI)
+					{
+						// select all the triples that contain the boundValue  
+						String query= "select * " +
+								"where " +
+								"{ " +
+								  "?subject ?predicate ?object . "+
+								  "FILTER((?subject = <"+ boundValue.toString()+ ">) || "+
+								         "(?predicate = <"+ boundValue.toString()+ ">)  || "+
+								         "(?object = <"+ boundValue.toString()+ ">)) " +  
+								"}";
+						
+						String href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+boundValue.toString();						
+						xmlWriter.setAttribute(LINK_REF, href);
+						xmlWriter.startTag(LINK);							
+						xmlWriter.text(boundValue.toString());					
+						xmlWriter.endTag(LINK);		
+					}
+					else
+					{						
+						xmlWriter.text(boundValue.toString());
+					}																					
+					xmlWriter.endTag(TABLE_DATA_TAG);							
+					value.setLength(0);					 
+				}					
 				
 				value.setLength(0);
 			}
