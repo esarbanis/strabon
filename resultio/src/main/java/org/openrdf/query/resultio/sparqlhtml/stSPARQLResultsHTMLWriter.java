@@ -43,6 +43,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 	public static final String TABLE_HEADER_CLASS	= "query_results_header";
 	public static final String TABLE_DATA_CLASS		= "query_results_data";
 	public static final String TABLE_CLASS			= "query_results_table";
+	public static final String MORE_LINK			= "comment more";
 	
 	/**
 	 * The underlying XML formatter.
@@ -121,13 +122,13 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 					if(boundValue instanceof BNode) {
 						value.insert(0, "_:");
 					}
-					
-					xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
-					xmlWriter.setAttribute(ID, LINK_ID);
-					xmlWriter.startTag(TABLE_DATA_TAG);
+										
 					// If the value is a uri, make it link
 					if(boundValue instanceof URI)
-					{
+					{						
+						xmlWriter.setAttribute(ID, LINK_ID);						
+						xmlWriter.startTag(TABLE_DATA_TAG);
+						
 						// select all the triples that contain the boundValue  
 						String query= "select * " +
 								"where " +
@@ -142,20 +143,20 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 						xmlWriter.setAttribute(LINK_REF, href);
 						xmlWriter.startTag(LINK);							
 						xmlWriter.text(boundValue.toString());					
-						xmlWriter.endTag(LINK);		
+						xmlWriter.endTag(LINK);							
 					}
 					else
-					{						
+					{	
+						xmlWriter.setAttribute(STYLE, MORE_LINK);						
+						xmlWriter.startTag(TABLE_DATA_TAG);
 						xmlWriter.text(boundValue.toString());
 					}																					
 					xmlWriter.endTag(TABLE_DATA_TAG);							
-					value.setLength(0);					 
-				}					
-				
+				}									
 				value.setLength(0);
 			}
-			
 			xmlWriter.endTag(TABLE_ROW_TAG);
+			
 		} catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
 		}
