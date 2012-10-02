@@ -138,7 +138,7 @@
 	}
 	
 	// get format parameter or attribute (the attribute comes from ConnectionBean)
-	String selFormat = "";
+	String selFormat = "HTML";
 	if (request.getParameter("format") != null) {
 		selFormat = request.getParameter("format");
 		
