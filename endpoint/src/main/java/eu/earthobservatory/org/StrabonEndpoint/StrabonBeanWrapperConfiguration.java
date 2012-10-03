@@ -21,7 +21,8 @@ public class StrabonBeanWrapperConfiguration {
 	private String format;
 	private String title;
 	private String handle;
-	private boolean header;
+	private boolean isHeader;
+	private boolean isBean;
 
 	public StrabonBeanWrapperConfiguration(String label, String bean, String statement, String format, String title, String handle) {
 		this.label = label;
@@ -30,19 +31,22 @@ public class StrabonBeanWrapperConfiguration {
 		this.format = format;
 		this.title = title;
 		this.handle = handle;
-		this.header = false;
+		this.isHeader = false;
+		this.isBean = false;
 	}
 	
 	public StrabonBeanWrapperConfiguration(String label) {
 		this.label = label;
 		this.bean = null;
-		this.header = true;
+		this.isHeader = true;
+		this.isBean = false;
 	}
 	
 	public StrabonBeanWrapperConfiguration(String label, String bean) {
 		this.label = label;
 		this.bean = bean;
-		this.header = true;
+		this.isHeader = false;
+		this.isBean = true;
 	}
 	
 	public String getLabel() {
@@ -95,11 +99,18 @@ public class StrabonBeanWrapperConfiguration {
 	}
 
 	public boolean isHeader() {
-		return header;
+		return isHeader;
 	}
 
-	public void setHeader(boolean header) {
-		this.header = header;
+	public void setHeader(boolean isHeader) {
+		this.isHeader = isHeader;
 	}
+	public boolean isBean() {
+		return isBean;
+	}
+	public void setBean(boolean isBean) {
+		this.isBean = isBean;
+	}
+	
 }
 

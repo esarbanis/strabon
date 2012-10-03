@@ -100,7 +100,7 @@
 		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle"))) {%>	
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
-			}, 1000);
+			}, 1500);
 		<%}%>
 		}
 	</script>
@@ -128,7 +128,8 @@
 			$("#accordion").accordion({ 
 				header: "h3",
 				fillSpace: true,
-				navigation: true
+				navigation: true,
+				collapsible: true
 			});
 			//hover states on the static widgets
 			$('#dialog_link, ul#icons li').hover(
@@ -140,7 +141,7 @@
 	<style type="text/css">
 		/*demo page css*/
 		body{ font: 90% "Trebuchet MS", sans-serif; margin: 50px;}
-		.container { height:700px; width:165px;}
+		.container { height:410px; width:165px;}
 		.demoHeaders { margin-top: 1em;}
 		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
 		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
@@ -163,7 +164,7 @@
 
 <table border="0" width="100%">
 <tr> 
-	<td width="90" valign="top" bgcolor="#dfe8f0"> 
+	<td width="90" valign="top"> 
 		<table border="0" cellspacing="0" cellpadding="0" width="165">  
 		<tr><td id="twidth">
 		<div class="container">
@@ -192,27 +193,29 @@
 									}
 									
 									String label=entry.getLabel();
-									String bean=entry.getBean();
 									String style = "", href = "";
-									if (bean == null) {
-										hash = new Integer(Math.abs(label.hashCode())).toString();
-										href="href=\"#"+hash+"\"";
-									} else {
-										hash = new Integer(Math.abs(label.hashCode()*bean.hashCode())).toString();
-										href = "href=\"" +bean + "#"+ hash+"\"";
-										style = "class=\"navText\"";
-									}
-									
+									hash = new Integer(Math.abs(label.hashCode())).toString();
+									href="href=\"#"+hash+"\"";									
 									%>
 									<div><h3><a <%=style%> <%=href%>><%=label%></a></h3><div>
+									<%									
+								} else if (entry.isBean()) {
+									String label=entry.getLabel();
+									String bean=entry.getBean();
+									String style = "", href = "";
+									hash = new Integer(Math.abs(label.hashCode()*bean.hashCode())).toString();
+									href = "\"" +bean + "#"+ hash+"\"";
+									style = "class=\"navText\"";
+									%>
+									<b>&middot;</b>&nbsp;<a class="linkText" href=<%=href%>><%=label%></a><br/>
 									<%
 								} else {
 									String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+(hash == "" ? "" : "#" + hash)+"\"";
 									String title="\""+entry.getTitle()+"\"";
 									String label=entry.getLabel();
-				%>
-					<b>&middot;</b>&nbsp;<a class="linkText" href=<%=href%> title=<%=title%>><%=label%></a><br/>
-		<%
+									%>
+									<b>&middot;</b>&nbsp;<a class="linkText" href=<%=href%> title=<%=title%>><%=label%></a><br/>
+									<%
 			
 								}
 							}
