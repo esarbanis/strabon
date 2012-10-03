@@ -81,6 +81,17 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<display-name>Browse</display-name>
+		<servlet-name>Browse</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.BrowseBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Browse</servlet-name>
+		<url-pattern>/Browse</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>query.jsp</servlet-name>
 		<jsp-file>/query.jsp</jsp-file>
 	</servlet>
@@ -98,6 +109,11 @@
  	<servlet>
 		<servlet-name>connection.jsp</servlet-name>
 		<jsp-file>/connection.jsp</jsp-file>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>browse.jsp</servlet-name>
+		<jsp-file>/browse.jsp</jsp-file>
 	</servlet>
 	
    	<mime-mapping>
