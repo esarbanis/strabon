@@ -168,6 +168,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				String mouseOverLineWidth = style[4];
 				String mouseOverLineColor = style[5];
 				String mouseOverPolygonFill = style[6];
+				//append normal style
 				xmlWriter.setAttribute("id", "normal_" + id);
 				xmlWriter.startTag(STYLE_TAG);
 				xmlWriter.startTag(LINESTYLE_TAG);
@@ -178,6 +179,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				xmlWriter.textElement("color", polygonFill);
 				xmlWriter.endTag(POLYSTYLE_TAG);
 				xmlWriter.endTag(STYLE_TAG);
+				//append highlight style
 				xmlWriter.setAttribute("id", "highlight_" + id);
 				xmlWriter.startTag(STYLE_TAG);
 				xmlWriter.startTag(LINESTYLE_TAG);
@@ -188,6 +190,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				xmlWriter.textElement("color", mouseOverPolygonFill);
 				xmlWriter.endTag(POLYSTYLE_TAG);
 				xmlWriter.endTag(STYLE_TAG);
+				//define map style combining the above styles
 				xmlWriter.setAttribute("id", id);
 				xmlWriter.startTag(STYLEMAP_TAG);
 				xmlWriter.startTag("Pair");
