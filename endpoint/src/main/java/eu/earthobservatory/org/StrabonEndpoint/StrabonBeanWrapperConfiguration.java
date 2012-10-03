@@ -21,6 +21,7 @@ public class StrabonBeanWrapperConfiguration {
 	private String format;
 	private String title;
 	private String handle;
+	private boolean header;
 
 	public StrabonBeanWrapperConfiguration(String label, String bean, String statement, String format, String title, String handle) {
 		this.label = label;
@@ -29,6 +30,19 @@ public class StrabonBeanWrapperConfiguration {
 		this.format = format;
 		this.title = title;
 		this.handle = handle;
+		this.header = false;
+	}
+	
+	public StrabonBeanWrapperConfiguration(String label) {
+		this.label = label;
+		this.bean = null;
+		this.header = true;
+	}
+	
+	public StrabonBeanWrapperConfiguration(String label, String bean) {
+		this.label = label;
+		this.bean = bean;
+		this.header = true;
 	}
 	
 	public String getLabel() {
@@ -78,6 +92,14 @@ public class StrabonBeanWrapperConfiguration {
 	
 	public void setHandle(String handle) {
 		this.handle = handle;
+	}
+
+	public boolean isHeader() {
+		return header;
+	}
+
+	public void setHeader(boolean header) {
+		this.header = header;
 	}
 }
 

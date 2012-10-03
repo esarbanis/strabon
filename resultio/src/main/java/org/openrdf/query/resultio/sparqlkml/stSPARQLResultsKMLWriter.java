@@ -46,7 +46,7 @@ import com.vividsolutions.jts.io.ParseException;
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @authro Panayiotis Smeros <psmeros@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *
  */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
@@ -379,7 +379,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				
 			} else if (geom instanceof GeometryCollection) {
 				geometryType = KML.MultiGeometry;
-				
 			}
 			
 			if (geometryType == null) {
@@ -390,7 +389,24 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 				polygon = baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
 				
 				// get the polygon from the kml
-				polygon = polygon.substring(polygon.indexOf("<Polygon>"), polygon.indexOf("</Polygon>")+10);
+				//FIXME: test
+				//polygon = polygon.substring(polygon.indexOf("<Polygon>"), polygon.indexOf("</Polygon>")+10);
+				if (geom instanceof Point) {
+					polygon = polygon.substring(polygon.indexOf("<Point>"), polygon.indexOf("</Point>")+8);
+				} else if (geom instanceof Polygon) {
+					polygon = polygon.substring(polygon.indexOf("<Polygon>"), polygon.indexOf("</Polygon>")+10);
+				} else if (geom instanceof LineString) {
+					polygon = polygon.substring(polygon.indexOf("<LineString>"), polygon.indexOf("</LineString>")+13);
+				} else if (geom instanceof MultiPoint) {
+					polygon = polygon.substring(polygon.indexOf("<MultiPoint>"), polygon.indexOf("</MultiPoint>")+13);
+				} else if (geom instanceof MultiLineString) {
+					polygon = polygon.substring(polygon.indexOf("<MultiLineString>"), polygon.indexOf("</MultiLineString>")+18);
+				} else if (geom instanceof MultiPolygon) {
+					polygon = polygon.substring(polygon.indexOf("<MultiPolygon>"), polygon.indexOf("</MultiPolygon>")+15);
+				} else if (geom instanceof GeometryCollection) {
+					polygon = polygon.substring(polygon.indexOf("<GeometryCollection>"), polygon.indexOf("</GeometryCollection>")+21);
+				}
+				//FIXME: test end 
 				baos.reset();
 			}
 		} catch (ParseException e) {

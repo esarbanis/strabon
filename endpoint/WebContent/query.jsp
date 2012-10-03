@@ -67,6 +67,37 @@
 <%
  	}
  %>
+ 	<!-- jQuery start  -->
+	<link type="text/css" href="style-menu.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+			// Accordion
+			$("#accordion").accordion({ 
+				header: "h3",
+				fillSpace: true
+			});
+			//hover states on the static widgets
+			$('#dialog_link, ul#icons li').hover(
+				function() { $(this).addClass('ui-state-hover'); },
+				function() { $(this).removeClass('ui-state-hover'); }
+			);
+	});
+	</script>
+	<style type="text/css">
+		/*demo page css*/
+		body{ font: 90% "Trebuchet MS", sans-serif; margin: 50px;}
+		.container { height:700px; width:165px;}
+		.demoHeaders { margin-top: 1em;}
+		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+		ul#icons {margin: 0; padding: 0;}
+		ul#icons li {margin: 1px; position: relative; padding: 1px 0; cursor: pointer; float: left;  list-style: none;}
+		ul#icons span.ui-icon {float: left; margin: 0 1px;}
+	</style>
+ 	<!-- jQuery end -->
+ 
 	<title>TELEIOS: Strabon Endpoint</title>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
@@ -81,9 +112,10 @@
 <table border="0" width="100%">
 <tr> 
 	<td width="90" valign="top" bgcolor="#dfe8f0"> 
-		<table border="0" cellspacing="0" cellpadding="0" width="165" id="navigation">  
+		<table border="0" cellspacing="0" cellpadding="0" width="165">  
 		<tr><td id="twidth">
-		
+		<div class="container">
+		<div id="accordion">
 		<%
 					StrabonBeanWrapper strabonWrapper;
 							ServletContext context;
@@ -92,23 +124,50 @@
 							strabonWrapper=(StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 							
 							Iterator <StrabonBeanWrapperConfiguration> entryListIterator = strabonWrapper.getEntries().iterator();
-							
+							boolean first = true;
 							while(entryListIterator.hasNext())
 							{
 								StrabonBeanWrapperConfiguration entry = entryListIterator.next();
 								
-								String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
-								String title="\""+entry.getTitle()+"\"";
-								String label=entry.getLabel();
+								if (entry.isHeader()) {
+									if (!first) {
+										%>
+										</div></div>
+										<%
+									} else {
+										first = false;
+									}
+									
+									String label=entry.getLabel();
+									String bean=entry.getBean();
+									String style = "";
+									if (bean == null) {
+										bean = "#";
+									} else {
+										style = "class=\"navText\"";
+									}
+									%>
+									<div><h3><a <%=style%> href="<%=bean%>"><%=label%></a></h3><div>
+									<%
+								} else {
+									String href="\""+URLEncoder.encode(entry.getBean(),"utf-8")+"?view=HTML&handle="+entry.getHandle()+"&query="+URLEncoder.encode(entry.getStatement(),"utf-8")+"&format="+URLEncoder.encode(entry.getFormat(),"utf-8")+"\"";
+									String title="\""+entry.getTitle()+"\"";
+									String label=entry.getLabel();
 				%>
-					<a href=<%=href%> title=<%=title%>><%=label%></a><br/>
+					<b>&middot;</b>&nbsp;<a class="linkText" href=<%=href%> title=<%=title%>><%=label%></a><br/>
 		<%
-			}
-		%>		
+			
+								}
+							}
+		%>
+		</div>
+		</div>
 	</td>
 </tr>
+<!-- 
 <tr><td width="90" class="style4"><a href="describe.jsp" class="navText">Describe</a></td></tr>
-<tr><td width="90" class="style4"><a href="store.jsp" class="navText" title="Store triples">Store</a></td></tr> 
+<tr><td width="90" class="style4"><a href="store.jsp" class="navText" title="Store triples">Store</a></td></tr>
+ --> 
 </table>
 </td>
 <td width="*" valign="top" >
