@@ -26,12 +26,13 @@ table
 a
 {
 	color:black;
+	text-decoration: none;	
 }
 
 a:hover 
 {
 	color: blue;
-	}
+}
 
 p {
 	text-align: justify
@@ -128,30 +129,7 @@ input[type=submit]
 	border: 1px solid #E6A685;
 	border-radius:5px;
 	}
-	
-#uri a {			
-	text-decoration: none;	
-	}	
-	
-#logo
-{
-	font:20px Arial, Helvetica, sans-serif;
-	color: #333333;
-	letter-spacing:.2em;
-	line-height:30px;
-}
-	
-#logo a	{
-	padding-left: 10px;
-	padding-top: 20px;
-	text-decoration: none;
-	}
-
-#logo a:hover
-{
-	color:  #333333;
-}
-
+		
 #tagline 	{	
 	font:11px Arial, Helvetica, sans-serif;
 	color: #993300;
@@ -167,7 +145,26 @@ input[type=submit]
 	line-height:20px;
 	margin-top:0px;
 	}
+
+.logo
+{
+	font:20px Arial, Helvetica, sans-serif;
+	color: #333333;
+	letter-spacing:.2em;
+	line-height:30px;
+}
 	
+.logo a:link{
+	padding-left: 10px;
+	padding-top: 20px;
+	text-decoration: none;
+	}
+
+.logo a:hover
+{
+	color:  #333333;
+}
+
 .pageName{
 	font: 18px Arial, Helvetica, sans-serif;
 	color: #99CC66;
@@ -202,16 +199,22 @@ input[type=submit]
 	text-decoration: none;
 	}
 	
+.query_results_data{
+	font:13px Arial, Helvetica, sans-serif;	
+}
+
 .comment {
 	width: 400px;
 	background-color: #f0f0f0;
 	margin: 10px;
 }
+
 a.morelink {
 	text-decoration:none;
 	outline: none;
 	color: blue;
 }
+
 .morecontent span {
 	display: none;
 

@@ -121,12 +121,12 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 														
 					if(boundValue instanceof BNode) {
 						value.insert(0, "_:");
-					}
-										
+					}															
+					
 					// If the value is a uri, make it link
 					if(boundValue instanceof URI)
-					{						
-						xmlWriter.setAttribute(ID, LINK_ID);						
+					{
+						xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
 						xmlWriter.startTag(TABLE_DATA_TAG);
 						
 						// select all the triples that contain the boundValue  
@@ -147,7 +147,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 					}
 					else
 					{	
-						xmlWriter.setAttribute(STYLE, MORE_LINK);						
+						xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS+" "+MORE_LINK);												
 						xmlWriter.startTag(TABLE_DATA_TAG);
 						xmlWriter.text(boundValue.toString());
 					}																					

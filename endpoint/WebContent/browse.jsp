@@ -61,9 +61,9 @@
         <table width="100%" border=0>
          <tr>
             <td width="1"><img src="images/nav2_bg.gif" width="1" height="60"></td>
-            <td valign="top" width="50px"><a href="query.jsp"><img border="0" src="images/teleios_	logo.png" /></a></td>
+            <td valign="top" width="50px"><a href="query.jsp"><img border="0" src="images/teleios_logo.png" /></a></td>
             <td valign="top" align="left">
-            <span id="logo"><a href="query.jsp">&nbsp;stSPARQL Endpoint</a></span><br><span class="style4"></span></td>
+            <span class="logo"><a href="query.jsp">&nbsp;stSPARQL Endpoint</a></span><br><span class="style4"></span></td>
           </tr>
         </table>
       </TD>
@@ -72,15 +72,15 @@
 	<h1>About: </h1>
 	<a href=""><%=request.getAttribute("resource")%></a>
 	<div id="response">
-	<!-- Response -->	
-<% if (request.getAttribute("response") != null) {
-	if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
-		<%=request.getAttribute("response")%>
-	<%} else { %>
-	<PRE><%=request.getAttribute("response") %></PRE>
-	<%}%>
-<%}%>
-</div>
+		<!-- Response -->	
+		<% if (request.getAttribute("response") != null) {
+			if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
+				<%=request.getAttribute("response")%>
+			<%} else { %>
+			<PRE><%=request.getAttribute("response") %></PRE>
+			<%}%>
+		<%}%>
+	</div>
 </body>
 
 </html>
