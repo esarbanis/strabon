@@ -117,7 +117,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 */
 	boolean nullLabel = false;
 
-	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, inside, left, right, above, below; }
+	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, left, right, above, below; }
 	public enum SpatialFunctionsPostGIS 
 	{ 	//stSPARQL++
 		//Spatial Relationships
@@ -129,6 +129,22 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Intersects,
 		ST_Equals,
 		ST_Relate, 
+		ST_Within,
+		ST_Contains,
+		
+		
+		//without MBB
+		_ST_Disjoint, 
+		_ST_Touches, 
+		_ST_Covers, 
+		_ST_CoveredBy, 
+		_ST_Overlaps,
+		_ST_Intersects,
+		_ST_Equals,
+		_ST_Relate, 
+		_ST_Within,
+		_ST_Contains,
+		__ST_Covers,
 
 		//Spatial Constructs - Binary
 		ST_Union, 
@@ -137,6 +153,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
+
 
 		//Spatial Constructs - Unary
 		ST_Envelope,
@@ -187,7 +204,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		EH_Covers,
 		EH_CoveredBy,
 		EH_Inside,
-		EH_Contains
+		EH_Contains,
 		; 
 	}
 
@@ -376,7 +393,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
-		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
+		//appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS._ST_Within);
+
 	}
 
 	@Override
@@ -1042,7 +1061,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case anyInteract: filter.intersectsMBB(); break;
 			case equals: filter.equalsMBB(); break;
 			case contains: filter.containsMBB(); break;
-			case inside: filter.insideMBB(); break;
+			//case inside: filter.insideMBB(); break;
 			case left: filter.leftMBB(); break;
 			case right: filter.rightMBB(); break;
 			case above: filter.aboveMBB(); break;
@@ -1322,7 +1341,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
 			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
+			case ST_Within: filter.appendFunction("ST_Within"); break;
+			//and now the alternative funcs of the above without the mbb"
+			case _ST_Touches: filter.appendFunction("_ST_Touches"); break;
+			case _ST_Disjoint: filter.appendFunction("_ST_Disjoint"); break;
+			case _ST_Covers: filter.appendFunction("_ST_Covers"); break;
+			case _ST_CoveredBy: filter.appendFunction("_ST_CoveredBy"); break;
+			case _ST_Overlaps: filter.appendFunction("_ST_Overlaps"); break;
+			case _ST_Intersects: filter.appendFunction("_ST_Intersects"); break;
+			case _ST_Equals: filter.appendFunction("_ST_Equals"); break;
+			case _ST_Within: filter.appendFunction("_ST_Within"); break;
+			
 			}
+			
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
