@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.4-SNAPSHOT</version>
+		<version>3.2.5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>strabon-endpoint</artifactId>
@@ -189,6 +189,8 @@
 								<include>query.jsp</include>
 								<include>describe.jsp</include>
 								<include>connection.jsp</include>
+								<include>connection.jsp</include>
+								<include>browse.jsp</include>
 								<include>teleios-header.html</include>
 							</includes>
 						</resource>
