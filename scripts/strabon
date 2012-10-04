@@ -65,6 +65,18 @@ QUERY_EXPORT="CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}"
 #-Dlog4j.debug
 #-Dlog4j.configuration=\"${RUNTIME}/log4j.properties\"
 
+# further options for java
+JAVA_OPTS=
+
+# more memory
+MORE_MEMORY="-Xms512M -Xmx1024M"
+
+# much more memory
+MMORE_MEMORY="-Xms512M -Xmx1536M"
+
+# flag for not setting the memory limit more than once
+MEMORY_INCREASED=false
+
 # just print what shall be executed
 DEBUG=false
 
@@ -90,6 +102,8 @@ function help() {
 	echo "	-d		: don't run, just print what shall be executed"
 	echo "			  Variable for configuration file: \`DEBUG'"
 	echo "			  Values: \`true' or \`false'" 
+	echo "	-m		: use more memory \`${MORE_MEMORY}' (useful in \"out of memory exceptions\""
+	echo "	-M		: use much more memory \`${MMORE_MEMORY}' (useful in \"out of memory exceptions\""
 	echo "	-i		: include URI prefixes in the SPARQL query. Prefixes are taken from file"
 	echo "			  \`prefixes.sparql'"
 	echo "	-e DATABASE	: the database engine to connect (one of \`postgis' (default) or \`monetdb')"
@@ -184,6 +198,24 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			fi
 			DEBUG=true
 			DEBUG_SAVE=true
+			;;
+		-m)
+			if ! ${MEMORY_INCREASED}; then
+				JAVA_OPTS="${JAVA_OPTS} ${MORE_MEMORY}"
+				MEMORY_INCREASED=true
+			else
+				echo "${CMD}: memory has already been increased; option \`${1}' will be ignored."
+			fi
+			shift
+			;;
+		-M)
+			if ! ${MEMORY_INCREASED}; then
+				JAVA_OPTS="${JAVA_OPTS} ${MMORE_MEMORY}"
+				MEMORY_INCREASED=true
+			else
+				echo "${CMD}: memory has already been increased; option \`${1}' will be ignored."
+			fi
+			shift
 			;;
 		-i)
 			shift
@@ -505,11 +537,11 @@ if test "${CLASS}" = "StoreOp"; then
 			file="$(pwd)/${file}"
 		fi
 
-		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" ${FORMAT});
+		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" ${FORMAT});
 "
 	done
 else
-	STRABON_EXEC="(cd ${RUNTIME} && java -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${PREFIXES}${QUERY}\" ${RESULT_FORMAT})"
+	STRABON_EXEC="(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${PREFIXES}${QUERY}\" ${RESULT_FORMAT})"
 fi
 
 # execute command or debug
