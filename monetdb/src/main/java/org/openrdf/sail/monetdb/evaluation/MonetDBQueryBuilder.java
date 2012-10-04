@@ -20,6 +20,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -48,6 +49,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
@@ -2072,5 +2074,21 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		filter.closeBracket();
 			}
+
+	@Override
+	protected void append(GeneralDBSqlContainsMBB expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlMbbInside expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

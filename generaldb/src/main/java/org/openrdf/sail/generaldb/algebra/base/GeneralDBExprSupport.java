@@ -23,6 +23,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -54,6 +55,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
@@ -293,6 +295,13 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr mbbIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlMbbIntersects(left, right);
 	}
+	public static GeneralDBSqlExpr mbbInside(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbInside(left, right);
+	}
+	public static GeneralDBSqlExpr ContainsMBB(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlContainsMBB(left, right);
+	}
+	
 	
 	public static GeneralDBSqlExpr mbbEqualsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlMbbEquals(left, right);

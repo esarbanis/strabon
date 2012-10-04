@@ -19,6 +19,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -47,6 +48,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
@@ -117,13 +119,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 */
 	boolean nullLabel = false;
 
-	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, left, right, above, below; }
+	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, left, right, above, inside, below; }
 	public enum SpatialFunctionsPostGIS 
 	{ 	//stSPARQL++
 		//Spatial Relationships
 		ST_Disjoint, 
 		ST_Touches, 
-		ST_Covers, 
+		ST_Covers,
 		ST_CoveredBy, 
 		ST_Overlaps,
 		ST_Intersects,
@@ -133,19 +135,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Contains,
 		
 		
-		//without MBB
-		_ST_Disjoint, 
-		_ST_Touches, 
-		_ST_Covers, 
-		_ST_CoveredBy, 
-		_ST_Overlaps,
-		_ST_Intersects,
-		_ST_Equals,
-		_ST_Relate, 
-		_ST_Within,
-		_ST_Contains,
-		__ST_Covers,
-
 		//Spatial Constructs - Binary
 		ST_Union, 
 		ST_Intersection, 
@@ -379,9 +368,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
-		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.contains);
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Contains);
 	}
 
+
+
+	
 	@Override
 	protected void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
@@ -394,7 +386,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException {
 
 		//appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS._ST_Within);
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Within);
 
 	}
 
@@ -474,6 +466,20 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.anyInteract);
 	}
 
+	@Override
+	protected void append(GeneralDBSqlMbbInside expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
+	}
+
+	
+	@Override
+	protected void append(GeneralDBSqlContainsMBB expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.contains);
+	}
+
+	
 	@Override
 	protected void append(GeneralDBSqlMbbEquals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
@@ -1061,7 +1067,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case anyInteract: filter.intersectsMBB(); break;
 			case equals: filter.equalsMBB(); break;
 			case contains: filter.containsMBB(); break;
-			//case inside: filter.insideMBB(); break;
+			case inside: filter.insideMBB(); break;
 			case left: filter.leftMBB(); break;
 			case right: filter.rightMBB(); break;
 			case above: filter.aboveMBB(); break;
@@ -1337,20 +1343,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Touches: filter.appendFunction("ST_Touches"); break;
 			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
 			case ST_Covers: filter.appendFunction("ST_Covers"); break;
+			case ST_Contains: filter.appendFunction("ST_Contains"); break;
 			case ST_CoveredBy: filter.appendFunction("ST_CoveredBy"); break;
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
 			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
 			case ST_Within: filter.appendFunction("ST_Within"); break;
-			//and now the alternative funcs of the above without the mbb"
-			case _ST_Touches: filter.appendFunction("_ST_Touches"); break;
-			case _ST_Disjoint: filter.appendFunction("_ST_Disjoint"); break;
-			case _ST_Covers: filter.appendFunction("_ST_Covers"); break;
-			case _ST_CoveredBy: filter.appendFunction("_ST_CoveredBy"); break;
-			case _ST_Overlaps: filter.appendFunction("_ST_Overlaps"); break;
-			case _ST_Intersects: filter.appendFunction("_ST_Intersects"); break;
-			case _ST_Equals: filter.appendFunction("_ST_Equals"); break;
-			case _ST_Within: filter.appendFunction("_ST_Within"); break;
 			
 			}
 			
