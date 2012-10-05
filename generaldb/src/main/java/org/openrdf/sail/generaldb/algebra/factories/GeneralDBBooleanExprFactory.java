@@ -922,7 +922,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return touch(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.mbbIntersects))
+		else if(function.getURI().equals(GeoConstants.mbbOverlaps))
 		{
 			return mbbIntersects(leftArg,rightArg);
 		}

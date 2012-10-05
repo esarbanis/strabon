@@ -90,7 +90,7 @@ public class GeoConstants {
 	public static final String below			= stRDF + "below";
 	
 	// Spatial Relationships utilizing mbb
-	public static final String mbbIntersects 	= stRDF + "mbbIntersects";
+	public static final String mbbOverlaps 	= stRDF + "mbbOverlaps";
 	public static final String mbbContains 	= stRDF + "mbbContains";
 	public static final String mbbEquals 	= stRDF + "mbbEquals";
 	public static final String mbbInside 	= stRDF + "mbbInside";
