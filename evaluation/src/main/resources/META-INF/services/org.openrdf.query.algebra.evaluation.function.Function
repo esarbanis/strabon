@@ -8,7 +8,6 @@ org.openrdf.query.algebra.evaluation.function.DateTimeCast
 org.openrdf.query.algebra.evaluation.function.link.SimilarTermFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbContainsFunc
-org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbInsideFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc
