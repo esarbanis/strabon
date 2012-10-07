@@ -66,7 +66,7 @@
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all CLC information for Venice</value> 
+	                <value>[CLC] Select all CLC information for Venice</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX strdf:<http://strdf.di.uoa.gr/ontology#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -85,11 +85,11 @@ WHERE {
    ?clc teleios:hasLandUse ?clcLandUse .
    ?clc teleios:hasGeometry ?clcGeo .
    #Venice
-   FILTER (strdf:inside(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 ]]></value>
 	                <!-- Description -->
@@ -103,7 +103,7 @@ WHERE {
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all LGD information for Venice</value> 
+	                <value>[LGD] Select all LGD information for Venice</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX strdf:<http://strdf.di.uoa.gr/ontology#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -123,11 +123,11 @@ WHERE {
    ?lgd rdfs:label ?lgdLabel .
    ?lgd lgdgeo:geometry ?lgdGeo .
    #Venice
-   FILTER (strdf:inside(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 
 }
 GROUP BY ?lgd ?lgdDirectType ?lgdLabel ?lgdGeo
@@ -143,7 +143,7 @@ GROUP BY ?lgd ?lgdDirectType ?lgdLabel ?lgdGeo
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all Geonames information for Venice</value> 
+	                <value>[Geonames] Select all Geonames information for Venice</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX strdf:<http://strdf.di.uoa.gr/ontology#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -168,11 +168,11 @@ OPTIONAL {?geoId geonames:parentADM3 ?parentADM3 . } .
 OPTIONAL {?geoId geonames:nearbyFeatures ?near . } .
 ?geoId teleios:hasGeography ?geoIdGeo .
    #Venice
-   FILTER (strdf:inside(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?geoIdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?geoIdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY  ?geoID ?name ?parentFeature ?parentCountry ?parentADM1 ?parentADM2 ?parentADM3 ?geoIdGeo
 	                ]]></value>
@@ -187,12 +187,12 @@ GROUP BY  ?geoID ?name ?parentFeature ?parentCountry ?parentADM1 ?parentADM2 ?pa
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all patches and their corresponding labels</value> 
+	                <value>[DLR] Select all patches and their corresponding labels</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[#select all patches and their labels (Venice)
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
@@ -206,11 +206,11 @@ WHERE {
    ?l rdf:type dlr:Label .
    ?l dlr:correspondsTo ?annotation .
    #Venice
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?g
 	                ]]></value>
@@ -225,11 +225,11 @@ GROUP BY ?g
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all patches corresponding to water</value> 
+	                <value>[DLR] Select all patches corresponding to water</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
@@ -243,11 +243,11 @@ WHERE {
    ?l rdf:type dlr:Label .
    ?l dlr:correspondsTo dlr:Water .
    #Venice
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?g
 	                ]]></value>
@@ -262,11 +262,11 @@ GROUP BY ?g
 	                <!-- Format -->
 	                <value>KML</value>   
 	                <!-- Label -->
-	                <value>Select all patches corresponding to all subclasses of water</value> 
+	                <value>[DLR] Select all patches corresponding to all subclasses of water</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
@@ -281,11 +281,11 @@ WHERE {
    ?l dlr:correspondsTo ?annotation .
    ?annotation rdfs:subClassOf dlr:Water .
    #Venice
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?g
 	                ]]></value>
@@ -293,100 +293,18 @@ GROUP BY ?g
 					<value></value>
 					<!-- Hander (plain, download, map or map_local)-->
 					<value>map_local</value>
-	            </list>
-	            <list>
-	                 <!-- Bean -->
-	                <value>Query</value> 
-	                <!-- Format -->
-	                <value>HTML</value>   
-	                <!-- Label -->
-	                <value>List all features that are inside an area charatecterized as continuous urban fabric according to CLC</value> 
-	                <!-- Statement -->
-	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX geof:<http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
-
-SELECT DISTINCT ?clcLandUse ?annotation #?g 
-WHERE {
-   ?p rdf:type dlr:Patch .        
-   ?p dlr:hasGeometry ?g .
-   ?p dlr:hasLabel ?l .
-   ?l rdf:type dlr:Label .
-   ?l dlr:correspondsTo ?annotation .
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-
-   ?clc a ?clcType .
-   ?clc teleios:hasCode ?clcCode .
-   ?clc teleios:hasID ?clcID .
-   ?clc teleios:hasLandUse teleios:continuousUrbanFabric .
-   ?clc teleios:hasGeometry ?clcGeo .
-   FILTER (strdf:inside(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-
-   FILTER (geof:sf-contains(?clcGeo, ?g)) . 
-}
-	                ]]></value>
-	                <!-- Description -->
-					<value></value>
-					<!-- Hander (plain, download, map or map_local)-->
-					<value>plain</value>
-	            </list>
-	            <list>
-	                 <!-- Bean -->
-	                <value>Query</value> 
-	                <!-- Format -->
-	                <value>HTML</value>   
-	                <!-- Label -->
-	                <value>List all features that are inside a CLC</value> 
-	                <!-- Statement -->
-	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX geof:<http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
-
-SELECT ?clcLandUse(GROUP_CONCAT(DISTINCT ?annotation; separator=",\n\t\t\t\t\t ") AS ?annotations)  #?g 
-WHERE {
-   ?p rdf:type dlr:Patch .        
-   ?p dlr:hasGeometry ?g .
-   ?p dlr:hasLabel ?l .
-   ?l rdf:type dlr:Label .
-   ?l dlr:correspondsTo ?annotation .
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-
-   ?clc a ?clcType .
-   ?clc teleios:hasCode ?clcCode .
-   ?clc teleios:hasID ?clcID .
-   ?clc teleios:hasLandUse ?clcLandUse .
-   ?clc teleios:hasGeometry ?clcGeo .
-   FILTER (strdf:inside(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-
-   FILTER (geof:sf-contains(?clcGeo, ?g)) . 
-}
-GROUP BY ?clcLandUse
-	                ]]></value>
-	                <!-- Description -->
-					<value></value>
-					<!-- Hander (plain, download, map or map_local)-->
-					<value></value>
-	            </list>
-	            
+	            </list>	            
 	            <list>
              		<!-- Single valued elements correspond to headers -->
-					<value>Discover corellations between two datasets</value>
+					<value>First level statistics</value>
 	            </list>
-	            	            <list>
+				<list>
 	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many labels are identified in a scene?</value> 
+	                <value>[DLR] How many labels are identified in a scene?</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -398,7 +316,7 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
 SELECT ?annotation (COUNT(DISTINCT ?p) AS ?numberOfPatches)
 WHERE {
@@ -408,11 +326,11 @@ WHERE {
    ?l rdf:type dlr:Label .
    ?l dlr:correspondsTo ?annotation .
    #Venice
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?annotation
 ORDER BY DESC(?numberOfPatches)]]></value>
@@ -427,7 +345,7 @@ ORDER BY DESC(?numberOfPatches)]]></value>
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many CLC classes are identified in a scene?</value> 
+	                <value>[CLC] How many instances of a CLC class exist in a scene?</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -439,7 +357,7 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
 
 SELECT ?clcLandUse (COUNT(DISTINCT ?clc) AS ?count)
@@ -450,11 +368,11 @@ WHERE {
    ?clc teleios:hasGeometry ?clcGeo .
 
    #Venice
-   FILTER (strdf:inside(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?clcLandUse
 ORDER BY DESC(?count)]]></value>
@@ -469,7 +387,7 @@ ORDER BY DESC(?count)]]></value>
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many LGD classes are identified in a scene? (coarse-grained)</value> 
+	                <value>[LGD] How many LGD classes are identified in a scene? (coarse-grained)</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -481,7 +399,7 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
 SELECT ?lgdType (COUNT(DISTINCT ?lgd) AS ?count)
 WHERE {
@@ -492,11 +410,11 @@ WHERE {
    }
    ?lgd lgdgeo:geometry ?lgdGeo .
    #Venice
-   FILTER (strdf:inside(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 
 }
 GROUP BY ?lgdType
@@ -512,7 +430,7 @@ ORDER BY DESC(?count)]]></value>
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many LGD classes are identified in a scene? (fine-grained)</value> 
+	                <value>[LGD] How many LGD classes are identified in a scene? (fine-grained)</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -524,7 +442,7 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
 SELECT ?lgdDirectType (COUNT(DISTINCT ?lgd) AS ?count)
 WHERE {
@@ -535,11 +453,11 @@ WHERE {
    }
    ?lgd lgdgeo:geometry ?lgdGeo .
    #Venice
-   FILTER (strdf:inside(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?lgdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 
 }
 GROUP BY ?lgdDirectType
@@ -555,7 +473,7 @@ ORDER BY DESC(?count)]]></value>
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many Geonames classes are identified in a scene?</value> 
+	                <value>[Geonames] How many Geonames classes are identified in a scene?</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -567,7 +485,7 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
 SELECT ?geoFeature ?comment (COUNT(DISTINCT ?geoId) AS ?count)
 WHERE {
@@ -578,11 +496,11 @@ OPTIONAL {?geoId geonames:alternateName ?altName } .
 ?geoId geonames:countryCode ?country .
 ?geoId teleios:hasGeography ?geoIdGeo .
    #Venice
-   FILTER (strdf:inside(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    #Toulouse
-   #FILTER (strdf:inside(?geoIdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
    #Timisoara
-   #FILTER (strdf:inside(?geoIdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   #FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
 }
 GROUP BY ?geoFeature ?comment
 ORDER BY DESC(?count)
@@ -592,17 +510,99 @@ ORDER BY DESC(?count)
 					<!-- Hander (plain, download, map or map_local)-->
 					<value></value>
 	            </list>
+	            
 	            <list>
              		<!-- Single valued elements correspond to headers -->
-					<value>Second level of statistics</value>
+					<value>Discover correlations between datasets</value>
 	            </list>
-	           	             <list>
+				<list>
 	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>How many patches with a specific label are contained by a CLC area?</value> 
+	                <value>[CLC-DLR] List all labels that are inside an area charatecterized as continuous urban fabric by CLC</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX geof:<http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+
+SELECT DISTINCT ?clcLandUse ?annotation #?g 
+WHERE {
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l rdf:type dlr:Label .
+   ?l dlr:correspondsTo ?annotation .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   ?clc a ?clcType .
+   ?clc teleios:hasCode ?clcCode .
+   ?clc teleios:hasID ?clcID .
+   ?clc teleios:hasLandUse teleios:continuousUrbanFabric .
+   ?clc teleios:hasGeometry ?clcGeo .
+   FILTER (strdf:anyInteract(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   FILTER (geof:sf-contains(?clcGeo, ?g)) . 
+}
+	                ]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+	            <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[CLC-DLR] List all CLC classes and the labels that are identified inside their instances.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX geof:<http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+
+SELECT ?clcLandUse(GROUP_CONCAT(DISTINCT ?annotation; separator=",\n\t\t\t\t\t ") AS ?annotations)  #?g 
+WHERE {
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l rdf:type dlr:Label .
+   ?l dlr:correspondsTo ?annotation .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   ?clc a ?clcType .
+   ?clc teleios:hasCode ?clcCode .
+   ?clc teleios:hasID ?clcID .
+   ?clc teleios:hasLandUse ?clcLandUse .
+   ?clc teleios:hasGeometry ?clcGeo .
+   FILTER (strdf:anyInteract(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   FILTER (geof:sf-contains(?clcGeo, ?g)) . 
+}
+GROUP BY ?clcLandUse
+	                ]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value></value>
+	            </list>
+	             <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[DLR-LGD] List all labels and the LGD classes with instances inside patches annotated with each label (coarse-grained).</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -614,40 +614,29 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
-SELECT ?clcLandUse ?annotation (COUNT(?p) AS ?numberOfPatches)
+SELECT ?annotation (GROUP_CONCAT(DISTINCT ?lgdType; separator=",\n\t\t\t\t\t ") AS ?lgdTypes)  #?g 
 WHERE {
-   #select corine areas
-   ?clc a teleios:Area .
-   ?clc teleios:hasCode ?clcCode .
-   ?clc teleios:hasLandUse ?clcLandUse .
-   ?clc teleios:hasGeometry ?clcGeo .
-   #Venice
-   FILTER (strdf:inside(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-   #Toulouse
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
-   #Timisoara
-   #FILTER (strdf:inside(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
-
-   #select patches
    ?p rdf:type dlr:Patch .        
    ?p dlr:hasGeometry ?g .
    ?p dlr:hasLabel ?l .
    ?l rdf:type dlr:Label .
    ?l dlr:correspondsTo ?annotation .
-   #Venice
-   FILTER (strdf:inside(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
-   #Toulouse
-   #FILTER (strdf:inside(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
-   #Timisoara
-   #FILTER (strdf:inside(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   ?lgd lgdont:directType ?lgdDirectType .
+   OPTIONAL {
+      ?lgd a ?lgdType .
+      FILTER ((?lgdType != lgdont:Node) && (?lgdType != ?lgdDirectType)) .
+   }
+   ?lgd lgdgeo:geometry ?lgdGeo .
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
    
-   FILTER (geof:sf-contains(?clcGeo, ?g)) .
-   
+   FILTER (geof:sf-contains(?g, ?lgdGeo)) . 
 }
-GROUP BY ?clcLandUse ?annotation
-	                ]]></value>
+GROUP BY ?annotation
+ORDER BY ?annotation]]></value>
 	                <!-- Description -->
 					<value></value>
 					<!-- Hander (plain, download, map or map_local)-->
@@ -659,7 +648,7 @@ GROUP BY ?clcLandUse ?annotation
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value></value> 
+	                <value>[DLR-LGD] List all labels and the LGD classes with instances inside patches annotated with each label (fine-grained).</value> 
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -671,64 +660,284 @@ PREFIX lgdont: <http://linkedgeodata.org/ontology/>
 PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
-	                ]]></value>
-	                <!-- Description -->
-					<value></value>
-					<!-- Hander (plain, download, map or map_local)-->
-					<value></value>
-	            </list>
-	             <list>
-	                 <!-- Bean -->
-	                <value>Query</value> 
-	                <!-- Format -->
-	                <value>HTML</value>   
-	                <!-- Label -->
-	                <value></value> 
-	                <!-- Statement -->
-	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
-PREFIX lgd: <http://linkedgeodata.org/triplify/>
-PREFIX lgdont: <http://linkedgeodata.org/ontology/>
-PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX geonames: <http://www.geonames.org/ontology#>
-PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
-	                ]]></value>
-	                <!-- Description -->
-					<value></value>
-					<!-- Hander (plain, download, map or map_local)-->
-					<value></value>
-	            </list>
-	             <list>
-	                 <!-- Bean -->
-	                <value>Query</value> 
-	                <!-- Format -->
-	                <value>HTML</value>   
-	                <!-- Label -->
-	                <value></value> 
-	                <!-- Statement -->
-	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
-PREFIX lgd: <http://linkedgeodata.org/triplify/>
-PREFIX lgdont: <http://linkedgeodata.org/ontology/>
-PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX geonames: <http://www.geonames.org/ontology#>
-PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
-	                ]]></value>
-	                <!-- Description -->
-					<value></value>
-					<!-- Hander (plain, download, map or map_local)-->
-					<value></value>
-	            </list>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 
+SELECT ?annotation (GROUP_CONCAT(DISTINCT ?lgdDirectType; separator=",\n\t\t\t\t\t ") AS ?lgdDirectTypes)  #?g 
+WHERE {
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l rdf:type dlr:Label .
+   ?l dlr:correspondsTo ?annotation .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+    ?lgd lgdont:directType ?lgdDirectType .
+   OPTIONAL {
+      ?lgd a ?lgdType .
+      FILTER ((?lgdType != lgdont:Node) && (?lgdType != ?lgdDirectType)) .
+   }
+   ?lgd lgdgeo:geometry ?lgdGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   
+   FILTER (geof:sf-contains(?g, ?lgdGeo)) . 
+}
+GROUP BY ?annotation
+ORDER BY ?annotation]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+	             <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[DLR-Geonames] List all labels and the GeoNames classes with instances inside patches annotated with each label.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+PREFIX lgd: <http://linkedgeodata.org/triplify/>
+PREFIX lgdont: <http://linkedgeodata.org/ontology/>
+PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+
+SELECT ?annotation (GROUP_CONCAT(DISTINCT ?geoFeature; separator=",\n\t\t\t\t\t ") AS ?geoFeatures)  (GROUP_CONCAT(DISTINCT ?comment; separator=",\n\t\t\t\t\t ") AS ?comments)
+WHERE {
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l rdf:type dlr:Label .
+   ?l dlr:correspondsTo ?annotation .
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+
+   ?geoId geonames:name ?name .
+   OPTIONAL {?geoId geonames:alternateName ?altName } .
+   ?geoId geonames:featureClass ?geoFeature .
+   ?geoFeature rdfs:comment ?comment .
+   ?geoId geonames:countryCode ?country .
+   ?geoId teleios:hasGeography ?geoIdGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   
+   FILTER (geof:sf-contains(?g, ?geoIdGeo)) . 
+}
+GROUP BY ?annotation
+ORDER BY ?annotation]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+	            <list>
+             		<!-- Single valued elements correspond to headers -->
+					<value>Second level statistics</value>
+	            </list>
+				<list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[CLC-DLR] How many patches with a specific label are contained by a CLC area?</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+PREFIX lgd: <http://linkedgeodata.org/triplify/>
+PREFIX lgdont: <http://linkedgeodata.org/ontology/>
+PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+
+SELECT ?clcLandUse ?annotation (COUNT(?p) AS ?numberOfPatches)
+WHERE {
+   #select corine areas
+   ?clc a teleios:Area .
+   ?clc teleios:hasLandUse ?clcLandUse .
+   ?clc teleios:hasGeometry ?clcGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?clcGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   #Toulouse
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #Timisoara
+   #FILTER (strdf:anyInteract(?clcGeo, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+
+   #select patches
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l dlr:correspondsTo ?annotation .
+   #Venice
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   #Toulouse
+   #FILTER (strdf:anyInteract(?g, "POLYGON((1.3816636 43.573734,1.4903361 43.588024,1.4783715 43.634777,1.3696271 43.620483,1.3816636 43.573734))"^^strdf:WKT)) .
+   #Timisoara
+   #FILTER (strdf:anyInteract(?g, "POLYGON((21.188068 45.7305,21.286903 45.74229,21.275377 45.79014,21.176264 45.778324,21.188068 45.7305))"^^strdf:WKT)) .
+   
+   #FILTER (geof:sf-contains(?clcGeo, ?g)) .
+   FILTER (strdf:contains(?clcGeo, ?g)) .
+}
+GROUP BY ?clcLandUse ?annotation
+ORDER BY ?clcLandUse DESC(?numberOfPatches)]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+	             <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[DLR-LGD] How many LGD instances are contained by a patch annotated with a specific label? (coarse-grained)</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+PREFIX lgd: <http://linkedgeodata.org/triplify/>
+PREFIX lgdont: <http://linkedgeodata.org/ontology/>
+PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+
+SELECT ?annotation ?lgdType (COUNT(?lgd) AS ?lgdInstances)
+WHERE {
+   #select patches
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l dlr:correspondsTo ?annotation .
+   #Venice
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .   
+   
+   #select LGD instances
+   ?lgd lgdont:directType ?lgdDirectType .
+   ?lgd a ?lgdType .
+   FILTER ((?lgdType != lgdont:Node) && (?lgdType != ?lgdDirectType)) .
+   ?lgd lgdgeo:geometry ?lgdGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   
+   FILTER (geof:sf-contains(?g, ?lgdGeo)) .
+}
+GROUP BY ?annotation ?lgdType
+ORDER BY ?annotation DESC(?lgdInstances)]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+				<list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[DLR-LGD] How many LGD instances are contained by a patch annotated with a specific label? (fine-grained)</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+PREFIX lgd: <http://linkedgeodata.org/triplify/>
+PREFIX lgdont: <http://linkedgeodata.org/ontology/>
+PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+
+SELECT ?annotation ?lgdDirectType (COUNT(?lgd) AS ?lgdInstances)
+WHERE {
+   #select patches
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l dlr:correspondsTo ?annotation .
+   #Venice
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .   
+   
+   #select LGD instances
+   ?lgd lgdont:directType ?lgdDirectType .
+   ?lgd a ?lgdType .
+   FILTER ((?lgdType != lgdont:Node) && (?lgdType != ?lgdDirectType)) .
+   ?lgd lgdgeo:geometry ?lgdGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?lgdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   
+   FILTER (geof:sf-contains(?g, ?lgdGeo)) .
+}
+GROUP BY ?annotation ?lgdDirectType
+ORDER BY ?annotation DESC(?lgdInstances)]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
+				<list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>[DLR-Geonames] How many Geonames instances are contained by a patch annotated with a specific label?</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/>
+PREFIX lgd: <http://linkedgeodata.org/triplify/>
+PREFIX lgdont: <http://linkedgeodata.org/ontology/>
+PREFIX lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
+
+SELECT ?annotation ?geoFeature ?comment (COUNT(?geoId) AS ?geoIdInstances)
+WHERE {
+   #select patches
+   ?p rdf:type dlr:Patch .        
+   ?p dlr:hasGeometry ?g .
+   ?p dlr:hasLabel ?l .
+   ?l dlr:correspondsTo ?annotation .
+   #Venice
+   FILTER (strdf:anyInteract(?g, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .   
+   
+   #select Geonames instances
+   ?geoId geonames:name ?name .
+   OPTIONAL {?geoId geonames:alternateName ?altName } .
+   ?geoId geonames:featureClass ?geoFeature .
+   ?geoFeature rdfs:comment ?comment .
+   ?geoId geonames:countryCode ?country .
+   ?geoId teleios:hasGeography ?geoIdGeo .
+   #Venice
+   FILTER (strdf:anyInteract(?geoIdGeo, "POLYGON ((12.301451 45.40493,12.398127 45.416817,12.386066 45.46502,12.289288 45.45313,12.301451 45.40493))"^^strdf:WKT)) .
+   
+   FILTER (geof:sf-contains(?g, ?geoIdGeo)) .
+}
+GROUP BY ?annotation ?geoFeature ?comment
+ORDER BY ?annotation DESC(?geoIdInstances)]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>plain</value>
+	            </list>
 
 				<list>
              		<!-- Single valued elements correspond to headers -->
@@ -741,12 +950,7 @@ PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
 	            </list>
 	            <list>
              		<!-- Link to bean: two arguemnts -->
-					<value>Update</value>
-					<value>update.jsp</value>
-	            </list>
-	            <list>
-             		<!-- Link to bean: two arguemnts -->
-					<value>Query</value>
+					<value>Query/Update</value>
 					<value>query.jsp</value>
 	            </list>
 	            <list>
@@ -759,6 +963,11 @@ PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology.owl#>
 					<value>Browse</value>
 					<value>browse.jsp</value>
 	            </list>
+				<list>
+					<!-- Link to bean: two arguemnts -->
+					<value>Configuration</value>
+					<value>ChangeConnection</value>
+				</list>
             </list>
          </constructor-arg>
     </bean>
