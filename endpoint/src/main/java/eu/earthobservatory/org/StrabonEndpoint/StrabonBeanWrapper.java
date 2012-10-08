@@ -39,7 +39,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
 	
 	private static final String FILE_PROTOCOL = "file";
-	private static final int MAX_LIMIT = 300;
 	
 	private String serverName;
 	private int port;
@@ -47,6 +46,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String user;
 	private String password;
 	private String dbBackend;
+	private int maxLimit;
 	
 	private Strabon strabon = null;
 	
@@ -54,7 +54,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private List<StrabonBeanWrapperConfiguration> entries;
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
-			int port, String serverName, boolean checkForLockTable, String dbBackend, List<List<String>> args) {
+			int port, String serverName, boolean checkForLockTable, String dbBackend, int maxLimit, List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -62,6 +62,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
+		this.maxLimit = maxLimit;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
 		Iterator<List<String>> entryit = args.iterator();
@@ -343,27 +344,37 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	/*
 	 * Limit the number of solutions returned.
 	 * */
-	public String addLimit(String queryString){
+	public String addLimit(String queryString, String maxLimit){
 		String limitedQuery = queryString;
-		Pattern limitPattern = Pattern.compile("limit \\d.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-		Matcher limitMatcher = limitPattern.matcher(queryString);
+		int max;
 		
-		// check whether the query contains a limit clause
-		if(limitMatcher.find())		
-		{
-			String limitString = limitMatcher.group();
-						
-			Pattern rowsNumberPattern = Pattern.compile("\\d+");
-			Matcher rowsNumberMatcher = rowsNumberPattern.matcher(limitString);
-			rowsNumberMatcher.find();
+		if(maxLimit == null)
+			max = this.maxLimit;
+		else
+			max = Integer.valueOf(maxLimit);
+		
+		if(max > 0)
+		{	
+			Pattern limitPattern = Pattern.compile("limit \\d.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			Matcher limitMatcher = limitPattern.matcher(queryString);
 			
-			// if the initial limit is greater than the maximum, set it to the maximum
-			if(Integer.valueOf(rowsNumberMatcher.group()) > MAX_LIMIT)			
-				limitedQuery = limitMatcher.replaceAll("limit "+MAX_LIMIT);			
-		}	
-		else // add a limit to the query 
-			limitedQuery = queryString+"limit "+MAX_LIMIT;
+			// check whether the query contains a limit clause
+			if(limitMatcher.find())		
+			{
+				String limitString = limitMatcher.group();
+							
+				Pattern rowsNumberPattern = Pattern.compile("\\d+");
+				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(limitString);
+				rowsNumberMatcher.find();
+				
+				// if the initial limit is greater than the maximum, set it to the maximum
+				if(Integer.valueOf(rowsNumberMatcher.group()) > max)			
+					limitedQuery = limitMatcher.replaceAll("limit "+max);			
+			}	
+			else // add a limit to the query 
+				limitedQuery = queryString+"limit "+max;
 		
+		}
 		return limitedQuery;
 	}
 

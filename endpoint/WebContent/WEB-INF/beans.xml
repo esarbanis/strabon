@@ -54,6 +54,11 @@
             <value>${dbengine}</value>
         </constructor-arg>
         
+        <constructor-arg type="int" >
+            <!-- Query limit -->
+            <value>1000</value>
+        </constructor-arg>
+        
         <constructor-arg>
              <list>
              	<list>

@@ -208,19 +208,18 @@ public class QueryBean extends HttpServlet {
 			String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
 			String format = request.getParameter("format");
 			String handle = request.getParameter("handle");
-			String limitQuery = request.getParameter("limitQuery");
+			String maxLimit = request.getParameter("maxLimit");
 			
 			// get stSPARQLQueryResultFormat from given format name
 			stSPARQLQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
 			
-			if (query == null || format == null || queryResultFormat == null || limitQuery == null) {
+			if (query == null || format == null || queryResultFormat == null) {
 				dispatcher = request.getRequestDispatcher("query.jsp");
 				request.setAttribute(ERROR, PARAM_ERROR);
 				dispatcher.forward(request, response);
 				
 			} else {
-				if(limitQuery.equals("true"))
-					query = strabonWrapper.addLimit(query);
+				query = strabonWrapper.addLimit(query, maxLimit);
 				if ("download".equals(handle)) { // download as attachment
 					ServletOutputStream out = response.getOutputStream();
 					

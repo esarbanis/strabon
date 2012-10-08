@@ -197,7 +197,6 @@
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Query">
 <INPUT type=hidden name="view" value="HTML"/>
-<INPUT type=hidden name="limitQuery" value="true"/>
 
 <table border="0" width="100%">
 <tr> 
