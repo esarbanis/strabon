@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
@@ -37,6 +39,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
 	
 	private static final String FILE_PROTOCOL = "file";
+	private static final int MAX_LIMIT = 300;
 	
 	private String serverName;
 	private int port;
@@ -180,7 +183,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-
 		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 		
 	}
@@ -338,5 +340,32 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return this.entries.get(i);
 	}
 	
+	/*
+	 * Limit the number of solutions returned.
+	 * */
+	public String addLimit(String queryString){
+		String limitedQuery = queryString;
+		Pattern limitPattern = Pattern.compile("limit \\d.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+		Matcher limitMatcher = limitPattern.matcher(queryString);
+		
+		// check whether the query contains a limit clause
+		if(limitMatcher.find())		
+		{
+			String limitString = limitMatcher.group();
+						
+			Pattern rowsNumberPattern = Pattern.compile("\\d+");
+			Matcher rowsNumberMatcher = rowsNumberPattern.matcher(limitString);
+			rowsNumberMatcher.find();
+			
+			// if the initial limit is greater than the maximum, set it to the maximum
+			if(Integer.valueOf(rowsNumberMatcher.group()) > MAX_LIMIT)			
+				limitedQuery = limitMatcher.replaceAll("limit "+MAX_LIMIT);			
+		}	
+		else // add a limit to the query 
+			limitedQuery = queryString+"limit "+MAX_LIMIT;
+		
+		return limitedQuery;
+	}
+
 }
 
