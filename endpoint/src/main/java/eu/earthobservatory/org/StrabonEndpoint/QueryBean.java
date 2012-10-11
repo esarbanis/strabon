@@ -157,6 +157,7 @@ public class QueryBean extends HttpServlet {
         
         // get the query
 		String query = request.getParameter("query");
+		String maxLimit = request.getParameter("maxLimit");
     	
     	// check for required parameters
     	if (format == null || query == null) {
@@ -171,6 +172,7 @@ public class QueryBean extends HttpServlet {
     		
 	    	response.setContentType(format.getDefaultMIMEType());
 	    	try {
+				query = strabonWrapper.addLimit(query, maxLimit);
 				strabonWrapper.query(query, format.getName(), out);
 				response.setStatus(HttpServletResponse.SC_OK);
 				

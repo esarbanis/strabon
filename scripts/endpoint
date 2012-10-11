@@ -42,13 +42,14 @@ function help() {
 }
 
 function help_query() {
-	echo "Usage: ${CMD} query ENDPOINT SPARQL_QUERY [RESULT_FORMAT]"
+	echo "Usage: ${CMD} query ENDPOINT SPARQL_QUERY [RESULT_FORMAT] [-l MAXLIMIT]"
 	echo
 	echo "	ENDPOINT	: the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or the alias name corresponding to a"
 	echo "			  predefined query such as:"
 	echo "				\`size': SELECT (count(*) as ?c) WHERE {?s ?p ?o}"
 	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`XML' (default), \`KML', \`KMZ', \`GeoJSON', \`HTML', or \`TSV'"
+	echo "	MAXLIMIT	: the maximum limit for the query results"
 }
 
 function help_queryfile() {
@@ -153,9 +154,43 @@ case "${1}" in
 
 		# set default format
 		FORMAT="XML"
+		# set default limit
+		MAXLIMIT=0
 		if test $# -eq 1; then
 			FORMAT="${1}"
-		fi
+		elif test $# -eq 2; then
+			case "${1}" in
+				-l)
+					MAXLIMIT="${2}"
+					;;				
+				*)
+					help_query
+					exit 1
+					;;
+			esac
+		elif test $# -eq 3; then
+			case "${1}" in
+				-l)
+					MAXLIMIT="${2}"
+					FORMAT="${3}"
+					;;				
+				*)
+					FORMAT="${1}"
+					case "${2}" in
+						-l)
+							MAXLIMIT="${3}"	
+							;;
+						*)
+							help_query
+							exit 1
+							;;	
+					esac	
+					;;
+			esac				
+		elif  test $# -ge 4; then
+			help_query
+			exit 1
+		fi	
 
 		case "${FORMAT}" in
 			[Xx][Mm][Ll])
@@ -182,8 +217,13 @@ case "${1}" in
 				exit 2
 				;;
 		esac
+		
+		if [[ $MAXLIMIT != *[[:digit:]]* ]]; then
+			help_query
+			exit 1
+		fi	
 
-		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' --data maxLimit='${MAXLIMIT}' ${URL}"
 		;;
 	queryfile)
 		shift
