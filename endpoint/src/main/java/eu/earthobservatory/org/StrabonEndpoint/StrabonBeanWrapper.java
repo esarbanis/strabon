@@ -47,6 +47,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String password;
 	private String dbBackend;
 	private int maxLimit;
+	private String prefixes;
 	
 	private Strabon strabon = null;
 	
@@ -54,7 +55,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private List<StrabonBeanWrapperConfiguration> entries;
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
-			int port, String serverName, boolean checkForLockTable, String dbBackend, int maxLimit, List<List<String>> args) {
+			int port, String serverName, boolean checkForLockTable, String dbBackend, 
+			int maxLimit, String prefixes, 	List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -63,6 +65,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
 		this.maxLimit = maxLimit;
+		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
 		Iterator<List<String>> entryit = args.iterator();
@@ -374,6 +377,10 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		
 		}
 		return limitedQuery;
+	}
+	
+	public String getPrefixes() {
+		return prefixes;
 	}
 
 }
