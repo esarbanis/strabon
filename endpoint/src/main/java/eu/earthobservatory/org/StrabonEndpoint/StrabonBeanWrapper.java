@@ -351,28 +351,26 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if(maxLimit == null)
 			max = this.maxLimit;
 		else
-			max = Integer.valueOf(maxLimit);
+			max = Integer.valueOf(maxLimit);		
 		
 		if(max > 0)
 		{	
-			Pattern limitPattern = Pattern.compile("limit \\d.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			Pattern limitPattern = Pattern.compile(".*limit \\d+", Pattern.DOTALL);							
 			Matcher limitMatcher = limitPattern.matcher(queryString);
 			
 			// check whether the query contains a limit clause
-			if(limitMatcher.find())		
-			{
-				String limitString = limitMatcher.group();
-							
-				Pattern rowsNumberPattern = Pattern.compile("\\d+");
-				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(limitString);
-				rowsNumberMatcher.find();
+			if(limitMatcher.matches())		
+			{								
+				Pattern rowsNumberPattern = Pattern.compile("\\d+$");				
+				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(queryString);
+				rowsNumberMatcher.find();				
 				
 				// if the initial limit is greater than the maximum, set it to the maximum
-				if(Integer.valueOf(rowsNumberMatcher.group()) > max)			
-					limitedQuery = limitMatcher.replaceAll("limit "+max);			
+				if(Integer.valueOf(rowsNumberMatcher.group()) > max)
+					limitedQuery = rowsNumberMatcher.replaceAll(String.valueOf(max));			
 			}	
 			else // add a limit to the query 
-				limitedQuery = queryString+"limit "+max;
+				limitedQuery = queryString+" limit "+max;
 		
 		}
 		return limitedQuery;
