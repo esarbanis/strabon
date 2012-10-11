@@ -81,7 +81,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter
 		// (00 to ff).
 		// id, line width, line color, polygon fill, mouse over line width,
 		// mouse over line color mouse over polygon fill
-	{STYLE_ID + "1", "1.5", "7dff0000", "adff0000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "2", "1.5", "7d00ff00", "ad00ff00", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "3", "1.5", "7d550000", "ad550000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "5", "1.5", "7d000055", "ad000055", "1.5", "7d0000ff", "ad0000ff"}};
+	//{STYLE_ID + "1", "1.5", "7d0000ff", "ad0000ff", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "2", "1.5", "7d0000ff", "ad0000ff", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "3", "1.5", "7d550000", "ad550000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "5", "1.5", "7d000055", "ad000055", "1.5", "7d0000ff", "ad0000ff"}};
+		{STYLE_ID + "1", "1.5", "000000ff", "000000ff", "1.5", "000000ff", "000000ff"}, {STYLE_ID + "2", "1.5", "000000ff", "000000ff", "1.5", "000000ff", "000000ff"}, {STYLE_ID + "3", "1.5", "7d550000", "ad550000", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "5", "1.5", "7dff0000", "adff0000", "1.5", "7dff0000", "adff0000"}};
 	/**
 	 * The underlying XML formatter.
 	 */
