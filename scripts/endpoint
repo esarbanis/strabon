@@ -91,7 +91,8 @@ CURL_OPTS="-w HTTP_CODE='%{http_code}\n' -H \"Content-Type:application/x-www-for
 
 # if set to 1, then only the command to be executed is printed
 DEBUG=0
-
+# set default limit
+MAXLIMIT=0
 case "${1}" in
 	-d)
 		shift
@@ -101,6 +102,11 @@ case "${1}" in
 		shift
 		PREFIXES="$(cat ${PREFIXES_FILE})
 "
+		;;
+	-l)
+		MAXLIMIT="${2}"	
+		shift
+		shift
 		;;
 esac
 
@@ -183,7 +189,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' --data maxLimit='${MAXLIMIT}' ${URL}"
 		;;
 	queryfile)
 		shift

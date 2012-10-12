@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
@@ -44,6 +46,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String user;
 	private String password;
 	private String dbBackend;
+	private int maxLimit;
+	private String prefixes;
 	
 	private Strabon strabon = null;
 	
@@ -51,7 +55,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private List<StrabonBeanWrapperConfiguration> entries;
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
-			int port, String serverName, boolean checkForLockTable, String dbBackend, List<List<String>> args) {
+			int port, String serverName, boolean checkForLockTable, String dbBackend, 
+			int maxLimit, String prefixes, 	List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -59,6 +64,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
+		this.maxLimit = maxLimit;
+		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
 		Iterator<List<String>> entryit = args.iterator();
@@ -180,7 +187,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-
 		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 		
 	}
@@ -338,5 +344,44 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return this.entries.get(i);
 	}
 	
+	/*
+	 * Limit the number of solutions returned.
+	 * */
+	public String addLimit(String queryString, String maxLimit){
+		String limitedQuery = queryString;
+		int max;
+		
+		if(maxLimit == null)
+			max = this.maxLimit;
+		else
+			max = Integer.valueOf(maxLimit);		
+		
+		if(max > 0)
+		{	
+			Pattern limitPattern = Pattern.compile(".*limit \\d+", Pattern.DOTALL);							
+			Matcher limitMatcher = limitPattern.matcher(queryString);
+			
+			// check whether the query contains a limit clause
+			if(limitMatcher.matches())		
+			{								
+				Pattern rowsNumberPattern = Pattern.compile("\\d+$");				
+				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(queryString);
+				rowsNumberMatcher.find();				
+				
+				// if the initial limit is greater than the maximum, set it to the maximum
+				if(Integer.valueOf(rowsNumberMatcher.group()) > max)
+					limitedQuery = rowsNumberMatcher.replaceAll(String.valueOf(max));			
+			}	
+			else // add a limit to the query 
+				limitedQuery = queryString+" limit "+max;
+		
+		}
+		return limitedQuery;
+	}
+	
+	public String getPrefixes() {
+		return prefixes;
+	}
+
 }
 

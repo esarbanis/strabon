@@ -36,7 +36,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-
+/**
+ * 
+ * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Stella Giannakopoulou <sgian@di.uoa.gr>
+ */
 public class QueryBean extends HttpServlet {
 
 	private static final long serialVersionUID = -378175118289907707L;
@@ -157,9 +163,11 @@ public class QueryBean extends HttpServlet {
         
         // get the query
 		String query = request.getParameter("query");
+		String maxLimit = request.getParameter("maxLimit");
     	
     	// check for required parameters
     	if (format == null || query == null) {
+    		logger.error("[StrabonEndpoint.QueryBean] {}", PARAM_ERROR);
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			out.print(ResponseMessages.getXMLHeader());
 			out.print(ResponseMessages.getXMLException(PARAM_ERROR));
@@ -171,10 +179,12 @@ public class QueryBean extends HttpServlet {
     		
 	    	response.setContentType(format.getDefaultMIMEType());
 	    	try {
+				query = strabonWrapper.addLimit(query, maxLimit);
 				strabonWrapper.query(query, format.getName(), out);
 				response.setStatus(HttpServletResponse.SC_OK);
 				
 			} catch (Exception e) {
+				logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				out.print(ResponseMessages.getXMLHeader());
 				out.print(ResponseMessages.getXMLException(e.getMessage()));
@@ -208,6 +218,7 @@ public class QueryBean extends HttpServlet {
 			String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
 			String format = request.getParameter("format");
 			String handle = request.getParameter("handle");
+			String maxLimit = request.getParameter("maxLimit");
 			
 			// get stSPARQLQueryResultFormat from given format name
 			stSPARQLQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
@@ -218,6 +229,7 @@ public class QueryBean extends HttpServlet {
 				dispatcher.forward(request, response);
 				
 			} else {
+				query = strabonWrapper.addLimit(query, maxLimit);
 				if ("download".equals(handle)) { // download as attachment
 					ServletOutputStream out = response.getOutputStream();
 					

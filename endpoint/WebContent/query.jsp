@@ -64,8 +64,15 @@
 	});
 </script>
 	<%
+	// get the reference to StrabonBeanWrapper
+	StrabonBeanWrapper strabonWrapper;
+	ServletContext context;
+	context = getServletContext();
+	WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+	strabonWrapper=(StrabonBeanWrapper) applicationContext.getBean("strabonBean");
+	
 	// get query parameter or attribute (the attribute comes from ConnectionBean)
-	String query = "";
+	String query = strabonWrapper.getPrefixes();
 	if (request.getParameter("query") != null) {
 		query = request.getParameter("query");
 		
@@ -206,11 +213,6 @@
 		<div class="container">
 		<div id="accordion">
 		<%
-					StrabonBeanWrapper strabonWrapper;
-							ServletContext context;
-							context = getServletContext();
-							WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-							strabonWrapper=(StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 							
 							Iterator <StrabonBeanWrapperConfiguration> entryListIterator = strabonWrapper.getEntries().iterator();
 							boolean first = true;
