@@ -55,7 +55,7 @@ abstract public class GeneralTests {
 			"rdfs:label ?placename ; "+	
 			"geo:geometry ?placegeo ; "+
 			"a ?type. "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbOverlaps(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query2 = 

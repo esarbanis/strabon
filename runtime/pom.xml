@@ -91,6 +91,7 @@
 		</dependency>
 
 		<!-- rio API -->
+		
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-rdfxml</artifactId>
@@ -305,8 +306,24 @@
 			<groupId>org.opengis</groupId>
 			<artifactId>geoapi-pending</artifactId>
 		</dependency>
-		
+
+
+    <dependency> 
+        <groupId>net.fortytwo.sesametools</groupId> 
+        <artifactId>nquads</artifactId> 
+        <version>1.1</version> 
+    </dependency>
+    		
 	</dependencies>
+	
+	    <repositories> 
+       <repository> 
+            <id>fortytwo</id> 
+            <name>fortytwo.net Maven repository</name> 
+            <url>http://fortytwo.net/maven2</url> 
+        </repository> 
+    </repositories> 
+ 
 
 	<build>
 		<pluginManagement>

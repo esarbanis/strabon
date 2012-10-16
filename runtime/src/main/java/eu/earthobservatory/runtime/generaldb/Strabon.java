@@ -9,6 +9,7 @@
  */
 package eu.earthobservatory.runtime.generaldb;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.BindingSet;
@@ -322,7 +326,10 @@ public abstract class Strabon {
 		} else if(format.equalsIgnoreCase("TURTLE")) {
 			realFormat =  RDFFormat.TURTLE;
 			
-		} else {
+		}else if(format.equalsIgnoreCase("NQUADS")) {
+			realFormat =  RDFFormat.NQUADS;
+		} 
+		else {
 			throw new InvalidDatasetFormatFault();
 		}
 
@@ -354,13 +361,33 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeURL] Storing file.");
 		logger.info("[Strabon.storeURL] URL      : {}", url.toString());
 		if (logger.isDebugEnabled()) {
-			logger.debug("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? "null" : baseURI));
+			logger.debug("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? url.toExternalForm() : baseURI));
 			logger.debug("[Strabon.storeURL] Context  : {}", ((context == null) ? "null" : context));
 			logger.debug("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
 		}
 
 		InputStream in = (InputStream) url.openStream();
 		InputStreamReader reader = new InputStreamReader(in);
+		if(baseURI == null)
+		{
+			baseURI = url.toExternalForm();
+		}
+		
+		if(format.equals(RDFFormat.NQUADS))
+		{
+			NQuadsTranslator translator = new NQuadsTranslator();
+		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
+			Collection<Statement> statements = translator.translate(in, baseURI);
+			Iterator iterator = statements.iterator();
+			for(Statement st: statements)
+			{
+				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
+				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
+				System.out.println("STATEMENT: "+st.toString());
+				System.out.println("CONTEXT: "+st.getObject().toString());
+				return; //there is no point continuing in this method. Or maybe there is for geosparql reasoning
+			}
+		}
 
 		RDFParser parser = Rio.createParser(format);
 
@@ -402,6 +429,8 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
+		
+		
 
 		RDFParser parser = Rio.createParser(format);
 
