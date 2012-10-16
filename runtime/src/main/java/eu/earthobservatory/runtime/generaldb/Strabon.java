@@ -377,6 +377,10 @@ public abstract class Strabon {
 		{
 			NQuadsTranslator translator = new NQuadsTranslator();
 		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
+			 /*final ByteArrayInputStream bais = new ByteArrayInputStream(
+			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> <http://sin.siteserv.org/def/> ."
+			            .getBytes()
+			        );*/
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
@@ -384,7 +388,7 @@ public abstract class Strabon {
 				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
 				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
 				System.out.println("STATEMENT: "+st.toString());
-				System.out.println("CONTEXT: "+st.getObject().toString());
+				System.out.println("CONTEXT: "+st.getContext().toString());
 				return; //there is no point continuing in this method. Or maybe there is for geosparql reasoning
 			}
 		}
