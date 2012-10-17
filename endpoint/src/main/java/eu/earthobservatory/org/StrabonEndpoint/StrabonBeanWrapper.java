@@ -64,7 +64,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
-		this.maxLimit = maxLimit;
+		this.maxLimit = maxLimit;		
 		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
@@ -358,9 +358,10 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		
 		if(max > 0)
 		{	
-			Pattern limitPattern = Pattern.compile(".*limit \\d+", Pattern.DOTALL);							
+			queryString = queryString.trim();		
+			Pattern limitPattern = Pattern.compile(".*limit (\\d+)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 			Matcher limitMatcher = limitPattern.matcher(queryString);
-			
+						
 			// check whether the query contains a limit clause
 			if(limitMatcher.matches())		
 			{								
@@ -371,10 +372,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				// if the initial limit is greater than the maximum, set it to the maximum
 				if(Integer.valueOf(rowsNumberMatcher.group()) > max)
 					limitedQuery = rowsNumberMatcher.replaceAll(String.valueOf(max));			
-			}	
+			}	 
 			else // add a limit to the query 
-				limitedQuery = queryString+" limit "+max;
-		
+				limitedQuery = queryString+" limit "+max;		
 		}
 		return limitedQuery;
 	}
