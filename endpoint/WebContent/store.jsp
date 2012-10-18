@@ -60,7 +60,11 @@
 	<tr>
 	<!--  direct input form -->
 		<td id="output">Direct Input:</td>
-		<td id="output"><textarea name="data" rows="15" cols="100"></textarea></td>
+		<td id="output">
+			<div style="font-size:13px"> 
+				You must be logged in to store.
+			</div>	
+			<textarea name="data" rows="15" cols="100"></textarea></td>
 		<td rowspan=4 id="output">
 			<CENTER>RDF Format:<br/>
 				<SELECT name="format" title="select one of the following RDF graph format types">

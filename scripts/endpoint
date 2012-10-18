@@ -303,12 +303,12 @@ case "${1}" in
 		case "${3}" in
 			-t)
 				TRIPLES="${4}"
-				EXEC="curl -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode data='${TRIPLES}' ${URL}"
+				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode data='${TRIPLES}' ${URL}"
 				;;
 			-u)
 
 				URL_TRIPLES="${4}"
-				EXEC="curl -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
+				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
 				;;
 			 *)
 				help_store
