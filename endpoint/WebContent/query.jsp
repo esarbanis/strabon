@@ -279,7 +279,11 @@
 <%}%>
 <tr>
 <td id="output">stSPARQL Query:</td>
-<td id="output"><textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
+<td id="output">
+	<div style="font-size:13px"> 
+		You must be logged in to perform update queries.
+	</div>
+	<textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
 </tr>
 <tr>
 	<td id="output"><center>Output Format:<br/>

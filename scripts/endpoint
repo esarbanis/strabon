@@ -260,7 +260,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl ${CURL_OPTS} --data-urlencode query='${PREFIXES}${QUERY}' ${URL}"
+		EXEC="curl -u endpoint:3ndpo1nt ${CURL_OPTS} --data-urlencode query='${PREFIXES}${QUERY}' ${URL}"
 		;;
 	store)
 		shift

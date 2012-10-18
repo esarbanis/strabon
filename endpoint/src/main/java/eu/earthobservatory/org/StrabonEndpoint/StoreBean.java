@@ -9,15 +9,10 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -26,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
 
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -59,11 +53,6 @@ public class StoreBean extends HttpServlet {
 	private static final String STORE_ERROR 	= "An error occurred while storing input data!";
 	private static final String PARAM_ERROR 	= "RDF format or input data are not set or are invalid!";
 	private static final String STORE_OK		= "Data stored successfully!";
-
-	/**
-	 * The filename of the credentials.properties file
-	 */
-	private static final String CREDENTIALS_PROPERTIES_FILE = "/WEB-INF/credentials.properties";
 	
 	/**
 	 * Strabon wrapper
@@ -102,15 +91,15 @@ public class StoreBean extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		Authenticate authenticate = new Authenticate();
 		String authorization = request.getHeader("Authorization");
 	   	 
-	   	 if (!authenticateUser(authorization)) {	   		 	
+	   	 if (!authenticate.authenticateUser(authorization, context)) {	   		 	
 	   		 // not allowed, so report he's unauthorized
 	   		 response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
-	   		 response.sendError(response.SC_UNAUTHORIZED);	   		 
+	   		 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
 	   	 }
-	   	 else
-	   	 {	 		
+	   	 else {	 		
 			// check whether the request was from store.jsp
 			if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
 				processVIEWRequest(request, response);				
@@ -207,42 +196,5 @@ public class StoreBean extends HttpServlet {
 			
 			logger.error("[StrabonEndpoint.StoreBean] " + e.getMessage());
 		}
-    }
-    
-    /**
-     * Authenticate user
-     * @throws IOException 
-     * */
-    protected boolean authenticateUser(String authorization) throws IOException {
-    	
-    	Properties properties = new Properties();    	
-    	if (authorization == null) return false;  // no authorization
-
-    	if (!authorization.toUpperCase().startsWith("BASIC "))
-    		return false;  // only BASIC authentication
-
-    	// get encoded user and password, comes after "BASIC "
-    	String userpassEncoded = authorization.substring(6);            
-    	// decode 
-    	String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded));
-
-    	Pattern pattern = Pattern.compile(":");  
-    	String[] credentials = pattern.split(userpassDecoded);    	
-    	
-    	// get connection.properties as input stream
-    	InputStream input = new FileInputStream(context.getRealPath(CREDENTIALS_PROPERTIES_FILE));
-  
-    	// load the properties
-    	properties.load(input);
-    	
-    	// close the stream
-    	input.close();  
-    	
-    	// check if the given credentials are allowed 
-    	if(credentials[0].equals(properties.get("username")) && credentials[1].equals(properties.get("password")))
-    		return true;
-    	else
-    		return false;
-    	    
     }
 }
