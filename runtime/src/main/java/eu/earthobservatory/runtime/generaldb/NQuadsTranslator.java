@@ -17,49 +17,27 @@ import net.fortytwo.sesametools.nquads.NQuadsFormat;
 public class NQuadsTranslator {
 	
     private NQuadsParser parser;
-    private TranslateRDFHandler rdfHandler;
+    private QuadRDFHandler handler;
+    private StringBuffer handledTriples;
     
-    private class TranslateRDFHandler extends StatementCollector {
 
-        
-
-        @Override
-        public void startRDF() throws RDFHandlerException {
-            super.startRDF();
-        }
-
-        @Override
-        public void endRDF() throws RDFHandlerException {
-            super.endRDF();
-        }
-
-        @Override
-        public void handleStatement(Statement statement) {
-            super.handleStatement(statement);
-            //logger.debug(statement.toString());
-        }
-
-		public TranslateRDFHandler() {
-			super();
-		}
-        
-        
-
-    }
     
     public NQuadsTranslator() {
 		super();
 		this.parser = new NQuadsParser();
-		this.rdfHandler = new TranslateRDFHandler();
+		this.handler = new QuadRDFHandler();
+		this.handledTriples = new StringBuffer(1024);
 	}
 
 	public Collection<Statement>  translate(InputStream is,String baseURI)
     {
     	Collection<Statement> statements = null; 
-    	TranslateRDFHandler handler = new TranslateRDFHandler();
+
     	parser.setRDFHandler(handler);
     	try {
 			parser.parse(is, "http://test.base.uri");
+		    handledTriples = handler.getTriples();
+	        System.out.println("HANDLED TRIPLES: "+handledTriples.toString());
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
