@@ -43,6 +43,7 @@ public class GeoConstants {
 	 * in the model stRDF and query language stSPARQL
 	 */
 	public static final String GML						= stRDF + "GML";
+	public static final String validTime                = stRDF + "validTime";
 
 	/**
 	 * 

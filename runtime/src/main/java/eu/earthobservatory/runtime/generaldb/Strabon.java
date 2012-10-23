@@ -377,11 +377,11 @@ public abstract class Strabon {
 		{
 			NQuadsTranslator translator = new NQuadsTranslator();
 		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
-			 /*final ByteArrayInputStream bais = new ByteArrayInputStream(
-			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> <http://sin.siteserv.org/def/> ."
+			 final ByteArrayInputStream bais = new ByteArrayInputStream(
+			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> \"lala\" ."
 			            .getBytes()
-			        );*/
-			Collection<Statement> statements = translator.translate(in, baseURI);
+			        );
+			Collection<Statement> statements = translator.translate(bais, baseURI);
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
@@ -391,6 +391,7 @@ public abstract class Strabon {
 				System.out.println("CONTEXT: "+st.getContext().toString());
 				return; //there is no point continuing in this method. Or maybe there is for geosparql reasoning
 			}
+			return;
 		}
 
 		RDFParser parser = Rio.createParser(format);
