@@ -29,6 +29,10 @@ public class NQuadsTranslator {
 		this.handledTriples = new StringBuffer(1024);
 	}
 
+	public StringBuffer getHandledTriples() {
+		return handledTriples;
+	}
+
 	public Collection<Statement>  translate(InputStream is,String baseURI)
     {
     	Collection<Statement> statements = null; 
