@@ -152,7 +152,6 @@ public class GeoValueTable {
 			sb.append("WHERE NOT EXISTS (SELECT id FROM ").append(table.getName());
 			sb.append(" val WHERE val.id = tmp.id)");
 			INSERT_SELECT = sb.toString();
-
 		}
 		if (!table.isCreated()) {
 			createTable(table);
