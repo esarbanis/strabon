@@ -1,6 +1,14 @@
-<date>   Pyravlos Team
+Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.5 released.
+
+	* Updated KML writer to include the projected variables of an stSPARQL
+	query in "ExtendedData" and "Data" tags. This is the proper way to
+	do it if we need to convert a KML to a ESRI shapefile and also include
+	such information as attributes for a feature. See related pages from
+	KML specification:
+		<https://developers.google.com/kml/documentation/kmlreference#extendeddata>
+		<https://developers.google.com/kml/documentation/extendeddata>
 
 	* Added user authentication for storing RDF data through Strabon
 	Endpoint. The credentials are:
