@@ -51,6 +51,10 @@ public class LiteralTable {
 	private GeoValueTable geoSpatialTable;
 	/***************************/
 
+	/***************************/
+	private PeriodTable temporalTable;
+	/***************************/
+	
 	private int version;
 
 	private IdSequence ids;
@@ -87,14 +91,24 @@ public class LiteralTable {
 	public void setGeoSpatialTable(GeoValueTable geospatial) {
 		this.geoSpatialTable = geospatial;
 	}
+	
 	/****************************************/
-
-	public ValueTable getDatatypeTable() {
-		return datatypes;
+	public void setTemporalTable(PeriodTable temporalTable) {
+		this.temporalTable = temporalTable;
 	}
 
 	public void setDatatypeTable(ValueTable datatypes) {
 		this.datatypes = datatypes;
+	}
+	/****************************************/
+
+	
+	public ValueTable getDatatypeTable() {
+		return datatypes;
+	}
+
+	public PeriodTable getTemporalTable() {
+		return temporalTable;
 	}
 
 	public ValueTable getNumericTable() {
@@ -129,6 +143,7 @@ public class LiteralTable {
 		dateTime.close();
 		/**********/
 		geoSpatialTable.close();
+		temporalTable.close();
 		/**********/
 	}
 
@@ -168,6 +183,17 @@ public class LiteralTable {
 		datatypes.insert(id, datatype);
 	}
 
+	/**
+	 * @throws InterruptedException 
+	 * @throws SQLException 
+	 * @throws NullPointerException ******************************************************************/
+	public void insertTemporall(Integer id, String label) throws NullPointerException, SQLException, InterruptedException
+	{
+
+		//TODO the label should be validated as a period before reaching this point. Not sure yet on which level this should be done
+		temporalTable.insert(id, label);
+	}
+	
 	/********************************************************************/
 	public void insertGeoSpatial(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, InterruptedException
 	{
