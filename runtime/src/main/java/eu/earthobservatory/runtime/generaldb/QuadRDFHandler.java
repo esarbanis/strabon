@@ -36,9 +36,19 @@ public class QuadRDFHandler extends StatementCollector {
 	            //super.handleStatement(st);
 	            if(st.getContext().toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
 	         	{	System.out.println("THIS IS A VALID TIME LITERAL");
-	         		String validTimeLiteral = st.getContext().toString();
-						String triple = st.getContext().toString() + " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ st.getContext().toString()+ " .\n" ;
+	         	    NQuadsParser parser = new NQuadsParser();
+	         		try {
+					 Resource graph = parser.createValidTimeURI(st.getContext().toString());
+					 String triple = graph.toString() + " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ st.getContext().toString()+ " .\n" ;
 					    triples.append(triple);
+					} catch (RDFParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
 	         	}
 	            super.handleStatement(st);
 	        }

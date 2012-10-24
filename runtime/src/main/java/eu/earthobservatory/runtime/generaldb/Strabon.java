@@ -378,7 +378,7 @@ public abstract class Strabon {
 			NQuadsTranslator translator = new NQuadsTranslator();
 		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
 			 final ByteArrayInputStream bais = new ByteArrayInputStream(
-			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> \"lala\" ."
+			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> \"[2005-01-01 00:00:00+01,2006-01-01 00:00:00+01]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ."
 			            .getBytes()
 			        );
 			Collection<Statement> statements = translator.translate(bais, baseURI);
@@ -389,8 +389,9 @@ public abstract class Strabon {
 				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
 				System.out.println("STATEMENT: "+st.toString());
 				System.out.println("CONTEXT: "+st.getContext().toString());
-				return; //there is no point continuing in this method. Or maybe there is for geosparql reasoning
 			}
+			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			return;
 		}
 

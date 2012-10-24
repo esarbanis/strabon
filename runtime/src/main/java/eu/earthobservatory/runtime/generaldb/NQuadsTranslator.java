@@ -11,8 +11,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.helpers.StatementCollector;
 
-import net.fortytwo.sesametools.nquads.NQuadsParser;
-import net.fortytwo.sesametools.nquads.NQuadsFormat;
+//import net.fortytwo.sesametools.nquads.NQuadsParser;
+//import net.fortytwo.sesametools.nquads.NQuadsFormat;
 
 public class NQuadsTranslator {
 	

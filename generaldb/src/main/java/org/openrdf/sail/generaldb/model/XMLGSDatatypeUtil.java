@@ -114,6 +114,21 @@ public class XMLGSDatatypeUtil {
 	}
 	
 	/**
+	 * Checks whether the supplied datatype is actually a GML literal.
+	 * 
+	 * @param datatype
+	 * @return
+	 */
+	public static boolean isPeriodDatatype(URI datatype)
+	{
+		if(datatype == null) {
+			return false;
+		}
+	
+		return GeoConstants.PERIOD.equals(datatype.stringValue());
+	}
+	
+	/**
 	 * Checks whether the supplied datatype is actually a SemiLinearPointSet literal.
 	 * 
 	 * @param datatype
