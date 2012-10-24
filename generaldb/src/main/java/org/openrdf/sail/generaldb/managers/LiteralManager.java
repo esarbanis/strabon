@@ -130,8 +130,11 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					{
 						table.insertGeoSpatial(id, label,dt,null,null);
 					}
+					else if(XMLGSDatatypeUtil.isPeriodDatatype(datatype)) // valid period  case- Constant
+					{ //TODO remember that the period should be validated, haven't decided the level yet though
+						table.insertTemporal(id, label);
+					}
 				}
-				
 			}
 			catch (NumberFormatException e) {
 				table.insertDatatype(id, label, dt);

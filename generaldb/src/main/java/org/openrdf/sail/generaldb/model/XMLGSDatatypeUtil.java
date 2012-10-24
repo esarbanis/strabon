@@ -46,6 +46,9 @@ public class XMLGSDatatypeUtil {
 	 * @param value
 	 * @return
 	 * @author Charalampos Nikolaou <charniK@di.uoa.gr>
+	 * 
+	 * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+	 * added period datatype validator as well for storing valid time period literals
 	 */
 	public static boolean isGeometryValue(Value value) {
 		if (value instanceof Literal) {

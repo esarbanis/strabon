@@ -28,6 +28,9 @@ import com.vividsolutions.jts.io.ParseException;
  * 
  * @author James Leigh
  * 
+ * @author Konstantina Bereta (aka constant) 
+ *  Added table and functions for storing valid time literalsl with period datatype
+ * 
  */
 public class LiteralTable {
 
@@ -187,7 +190,7 @@ public class LiteralTable {
 	 * @throws InterruptedException 
 	 * @throws SQLException 
 	 * @throws NullPointerException ******************************************************************/
-	public void insertTemporall(Integer id, String label) throws NullPointerException, SQLException, InterruptedException
+	public void insertTemporal(Number id, String label) throws NullPointerException, SQLException, InterruptedException
 	{
 
 		//TODO the label should be validated as a period before reaching this point. Not sure yet on which level this should be done
