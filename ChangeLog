@@ -1,0 +1,29 @@
+<date>   Pyravlos Team
+
+	* Version 3.2.5 released.
+
+	* Added user authentication for storing RDF data through Strabon
+	Endpoint. Now, 
+
+	* Strabon Endpoints now limits the number of the results to a maximum
+	one. The maximum number is specified in the beans.xml file. This
+	corresponds to parameter "maxLimit". The endpoint script has also been
+	updated correspondingly; the limit can be given using the option "-l".
+	One can disable limiting of query results, by setting the "maxLimit"
+	parameter to 0. Addresses Bug #6
+	(<http://bug.strabon.di.uoa.gr/ticket/6>).
+
+	* Added "Known Issues" section to README.
+
+	* Added -m (more memory) and -M (much more memory) options in strabon
+	script for out-of-memory exceptions.
+
+	* Fixed Bug #10 (<http://bug.strabon.di.uoa.gr/ticket/10>). Now KMLWriter 
+	handles more geometric types (other than polygons). See changeset 
+	9a3bfee64a39.
+
+	* Menu and navigation in Strabon Endpoint has changed to use jquery.
+	The menu is now populated using the queries placed inside the beans.xml.
+
+	* Added BrowseBean and browse.jsp for browsing the RDF data using the
+	Strabon Endpoint.
