@@ -3,7 +3,10 @@
 	* Version 3.2.5 released.
 
 	* Added user authentication for storing RDF data through Strabon
-	Endpoint. Now, 
+	Endpoint. The credentials are:
+	username: endpoint
+	password: 3ndpo1nt
+	Authentication is being checked using the credentials.properties file.
 
 	* Strabon Endpoints now limits the number of the results to a maximum
 	one. The maximum number is specified in the beans.xml file. This
