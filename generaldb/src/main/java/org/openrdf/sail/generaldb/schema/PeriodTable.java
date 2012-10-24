@@ -172,7 +172,7 @@ public class PeriodTable {
 
 	
 
-	public synchronized void insert(Number id, Integer srid, String period)
+	public synchronized void insert(Number id, String period)
 		throws SQLException, InterruptedException, NullPointerException
 	{
 
@@ -197,8 +197,6 @@ public class PeriodTable {
 			///
 			batch.setObject(2,period);
 		}
-		batch.setObject(3, srid); //adding original srid-constant
-		batch.setObject(4, srid);
 		
 		batch.addBatch();
 		queue(batch);
