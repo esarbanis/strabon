@@ -2,6 +2,11 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.5 released.
 
+	* Added support for requesting the capabilities of Strabon Endpoint
+	(fixes Bug #20 <http://bug.strabon.di.uoa.gr/ticket/20>). See
+	changesets f840796400bf and ?<TBC>? for specific details and how you
+	can determine the capabilities of older endpoints (versions <= 3.2.4).
+
 	* Updated KML writer to include the projected variables of an stSPARQL
 	query in "ExtendedData" and "Data" tags. This is the proper way to
 	do it if we need to convert a KML to a ESRI shapefile and also include
@@ -11,10 +16,8 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 		<https://developers.google.com/kml/documentation/extendeddata>
 
 	* Added user authentication for storing RDF data through Strabon
-	Endpoint. The credentials are:
-	username: endpoint
-	password: 3ndpo1nt
-	Authentication is being checked using the credentials.properties file.
+	Endpoint. The credentials are specified in
+	WEB-INF/credentials.properties file.
 
 	* Strabon Endpoints now limits the number of the results to a maximum
 	one. The maximum number is specified in the beans.xml file. This
