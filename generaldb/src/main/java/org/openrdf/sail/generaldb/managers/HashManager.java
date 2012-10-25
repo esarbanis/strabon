@@ -127,6 +127,7 @@ public class HashManager extends ManagerBase {
 						exc = e;
 						logger.error(e.toString(), e);
 						//konstantina-do sth to propagate the exception!
+						//e.printStackTrace();
 						//throw new RuntimeException(e);
 						
 
