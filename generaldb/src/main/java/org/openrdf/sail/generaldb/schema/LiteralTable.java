@@ -194,6 +194,7 @@ public class LiteralTable {
 	{
 
 		//TODO the label should be validated as a period before reaching this point. Not sure yet on which level this should be done
+		System.out.println("LABEL: "+label);
 		temporalTable.insert(id, label);
 	}
 	
@@ -304,6 +305,8 @@ public class LiteralTable {
 		bool |= numeric.expunge(condition);
 		bool |= dateTime.expunge(condition);
 		bool |= geoSpatialTable.expunge(condition);
+		bool |= temporalTable.expunge(condition);
+		
 		return bool;
 	}
 	

@@ -130,6 +130,11 @@ public class ValueTableFactory {
 		//TODO
 		GeoValueTable myAddition = createGeoValueTable(conn,queue,"geo_values",VARCHAR,VCL);
 		literals.setGeoSpatialTable(myAddition);
+		/****************************************************************/
+		//TODO
+		PeriodTable temporals = createPeriodTable(conn,queue,"period_values",VARCHAR,VCL);
+		literals.setGeoSpatialTable(myAddition);
+		
 		return literals;
 	}
 
@@ -187,8 +192,45 @@ public class ValueTableFactory {
 		return table;
 	}
 	
+	
 	protected GeoValueTable newGeoValueTable() {
 		return new GeoValueTable();
+	}
+	
+	protected PeriodTable createPeriodTable(Connection conn, BlockingQueue<Batch> queue, String name,
+			int sqlType, int length)
+		throws SQLException
+	{
+		//System.out.println("Create GeoValueTable!!");
+		PeriodTable table = newPeriodTable();
+		
+		table.setRdbmsTable(createTable(conn, name));
+	
+		if (!sequenced) {
+			table.setTemporaryTable(factory.createTemporaryTable(conn, "INSERT_" + name));
+		}
+		
+		initPeriodTable(table, queue, sqlType, length, INDEX_VALUES);
+		
+		return table;
+	}
+	
+	
+	private void initPeriodTable(PeriodTable table, BlockingQueue<Batch> queue, int sqlType, int length,
+			boolean indexValues)
+		throws SQLException
+	{
+		table.setQueue(queue);
+		table.setSqlType(sqlType);
+		table.setIdType(ids.getJdbcIdType());
+		table.setLength(length);
+		table.setIndexingValues(indexValues);
+		table.initialize();
+	}
+	/***********************************************************************************************************/
+
+	protected PeriodTable newPeriodTable() {
+		return new PeriodTable();
 	}
 	
 	private void initGeoValueTable(GeoValueTable table, BlockingQueue<Batch> queue, int sqlType, int length,
@@ -203,6 +245,7 @@ public class ValueTableFactory {
 		table.initialize();
 	}
 	/***********************************************************************************************************/
+	
 	protected HashTable newHashtable(ValueTable table) {
 		return new HashTable(table);
 	}

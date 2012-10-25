@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.utils.RDFHandlerFactory;
 
+
 public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);

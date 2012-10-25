@@ -555,7 +555,7 @@ public class HashManager extends ManagerBase {
 		Number id = value.getInternalId();
 		table.insert(id, idseq.hashOf(value));
 		if (value instanceof RdbmsLiteral) {
-			//System.out.println("Ayto stelnw ston LiteralManager, "+value.toString());
+			System.out.println("Ayto stelnw ston LiteralManager, "+value.toString());
 			literals.insert(id, (RdbmsLiteral)value);
 		}
 		else if (value instanceof RdbmsURI) {

@@ -118,6 +118,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					 * Will need some other place to add them if this approach does work
 					 * 
 					 */
+					System.out.println("DATATYPE:"+datatype);
 					if(XMLGSDatatypeUtil.isWKTDatatype(datatype)) //WKT case
 					{
 						table.insertWKT(id, label, dt, null, null);
@@ -132,6 +133,7 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					}
 					else if(XMLGSDatatypeUtil.isPeriodDatatype(datatype)) // valid period  case- Constant
 					{ //TODO remember that the period should be validated, haven't decided the level yet though
+						System.out.println("LABEL TO literalTable:"+label);
 						table.insertTemporal(id, label);
 					}
 				}

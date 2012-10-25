@@ -176,7 +176,7 @@ public class PeriodTable {
 		throws SQLException, InterruptedException, NullPointerException
 	{
 
-	
+		System.out.println("PERIOD:"+period);
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -385,15 +385,15 @@ public class PeriodTable {
 		// timezone representation in GMT and stores them. When retrieved, they are all transformed into the timezone of the running machine
 		StringBuilder sb = new StringBuilder();
 		sb.append("  id ").append(sql(idType, -1)).append(" NOT NULL,");
-		sb.append("  period ").append("PERIOD").append(" NOT NULL,");
+		sb.append("  period ").append("PERIOD").append(" NOT NULL");
 	
 		table.createTable(sb);
 		
-		String extension = ((GeneralDBSqlTable)table).buildGeometryCollumn();
+		/*String extension = ((GeneralDBSqlTable)table).buildGeometryCollumn();
 		table.execute(extension);
 		
 		String index = ((GeneralDBSqlTable)table).buildIndexOnGeometryCollumn();
-		table.execute(index);
+		table.execute(index);*/
 	}
 
 	/**
