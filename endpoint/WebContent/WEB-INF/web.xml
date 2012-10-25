@@ -92,6 +92,17 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<display-name>Capabilities</display-name>
+		<servlet-name>Capabilities</servlet-name>
+		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.capabilities.CapabilitiesBean</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Capabilities</servlet-name>
+		<url-pattern>/Capabilities</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>query.jsp</servlet-name>
 		<jsp-file>/query.jsp</jsp-file>
 	</servlet>

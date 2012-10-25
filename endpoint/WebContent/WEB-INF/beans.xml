@@ -14,6 +14,15 @@
 		</property>
 	</bean>
   
+	<bean id="capsBean" class="eu.earthobservatory.org.StrabonEndpoint.capabilities.CapabilitiesDelegateBean" destroy-method="destroy">
+		<!-- specify which implementation of the Capabilities interface shall be used -->
+		<!-- true : AutoDiscoveryCapabilities -->
+		<!-- false: EndpointCapabilities -->
+		<constructor-arg type="boolean">
+            <value>true</value>
+        </constructor-arg>
+	</bean>
+	
     <bean
         id="strabonBean"
         class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"
