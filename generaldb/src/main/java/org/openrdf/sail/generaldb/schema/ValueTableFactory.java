@@ -133,7 +133,7 @@ public class ValueTableFactory {
 		/****************************************************************/
 		//TODO
 		PeriodTable temporals = createPeriodTable(conn,queue,"period_values",VARCHAR,VCL);
-		literals.setGeoSpatialTable(myAddition);
+		literals.setTemporalTable(temporals);
 		
 		return literals;
 	}

@@ -127,7 +127,7 @@ public class HashManager extends ManagerBase {
 						exc = e;
 						logger.error(e.toString(), e);
 						//konstantina-do sth to propagate the exception!
-						//e.printStackTrace();
+						e.printStackTrace();
 						//throw new RuntimeException(e);
 						
 
@@ -136,8 +136,6 @@ public class HashManager extends ManagerBase {
 			}, "id-lookup");
 			lookupThread.start();
 
-
-	
 		}
 	}
 
@@ -551,7 +549,7 @@ public class HashManager extends ManagerBase {
 		/***********************************************/
 		//FIXME den xerw kata poso boleyei edw i eisagwgi tis diaxeirisis tou neou pinaka
 		//den exei kopei akoma se kommatia
-		//System.out.println("I am in hash manager, "+value.toString());
+		System.out.println("I am in hash manager, "+value.toString());
 		/***********************************************/
 		Number id = value.getInternalId();
 		table.insert(id, idseq.hashOf(value));

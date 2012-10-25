@@ -172,8 +172,8 @@ public class PeriodTable {
 
 	
 
-	public synchronized void insert(Number id, String period)
-		throws SQLException, InterruptedException, NullPointerException
+	public  void insert(Number id, String period)
+		throws SQLException, InterruptedException
 	{
 
 		System.out.println("PERIOD:"+period);

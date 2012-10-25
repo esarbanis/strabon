@@ -382,7 +382,12 @@ public abstract class Strabon {
 			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> \"[2005-01-01 00:00:00+01,2006-01-01 00:00:00+01]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ."
 			            .getBytes()
 			        );
-			Collection<Statement> statements = translator.translate(bais, baseURI);
+			 final ByteArrayInputStream bais2 = new ByteArrayInputStream(
+			            "<http://strdf.di.uoa.gr/ontology#validTime2005-01-01 00:00:00_2005-01-01 00:00:00_Europe/Athens> <http://strdf.di.uoa.gr/ontology#hasValidTime> \"[2005-01-01 00:00:00+01,2006-01-01 00:00:00+01]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ."
+			            .getBytes()
+			        );
+			 
+			Collection<Statement> statements = translator.translate(bais2, baseURI);
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
