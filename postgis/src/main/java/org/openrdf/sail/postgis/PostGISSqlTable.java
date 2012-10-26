@@ -47,7 +47,7 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	
 	@Override
 	public String buildInsertPeriodValue() {
-		return " (id, period) VALUES (?,period_in(?))";
+		return " (id, period) VALUES (?,period_in(textout(?)))";
 	}
 	
 	

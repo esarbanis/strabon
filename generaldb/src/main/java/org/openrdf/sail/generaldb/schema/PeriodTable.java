@@ -130,7 +130,7 @@ public class PeriodTable {
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ").append(getInsertTable().getName());
-//		sb.append(((GeneralDBSqlTable)table).buildInsertGeometryValue());
+		sb.append(((GeneralDBSqlTable)table).buildInsertPeriodValue());
 		INSERT = sb.toString();
 		sb.delete(0, sb.length());
 		sb.append("DELETE FROM ").append(table.getName()).append("\n");
@@ -175,7 +175,6 @@ public class PeriodTable {
 	public  void insert(Number id, String period)
 		throws SQLException, InterruptedException
 	{
-
 		System.out.println("PERIOD:"+period);
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
@@ -196,6 +195,7 @@ public class PeriodTable {
 //			System.err.println(id+", "+hexString);
 			///
 			batch.setObject(2,period);
+			
 		}
 		
 		batch.addBatch();
