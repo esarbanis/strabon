@@ -390,10 +390,10 @@ public class PeriodTable {
 		table.createTable(sb);
 		
 		/*String extension = ((GeneralDBSqlTable)table).buildGeometryCollumn();
-		table.execute(extension);
+		table.execute(extension);*/
 		
-		String index = ((GeneralDBSqlTable)table).buildIndexOnGeometryCollumn();
-		table.execute(index);*/
+		String index = ((GeneralDBSqlTable)table).buildIndexOnPeriodColumn();
+		table.execute(index);
 	}
 
 	/**

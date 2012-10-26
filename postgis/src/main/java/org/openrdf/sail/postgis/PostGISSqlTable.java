@@ -40,7 +40,7 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	}
 	
 	@Override
-	public String buildIndexOnPeriodCollumn() {
+	public String buildIndexOnPeriodColumn() {
 		//return "CREATE INDEX geoindex ON geo_values USING GIST (strdfgeo)";
 		return "CREATE INDEX test_period_idx ON period_values USING GiST (period)";
 	}

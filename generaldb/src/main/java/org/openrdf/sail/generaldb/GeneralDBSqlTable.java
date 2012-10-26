@@ -53,13 +53,7 @@ public abstract class GeneralDBSqlTable extends RdbmsTable {
 	
 	public abstract String buildWhere();
 
-	public String buildIndexOnPeriodCollumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract  String buildIndexOnPeriodColumn();
 
-	public String buildInsertPeriodValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public  abstract String buildInsertPeriodValue(); 
 }
