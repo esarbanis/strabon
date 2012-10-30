@@ -34,6 +34,8 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 
 	@Override
 	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
+		assert(format != null);
+		
 		// create a post method to execute
 		PostMethod method = new PostMethod(getConnectionURL() + "/Query");
 		
