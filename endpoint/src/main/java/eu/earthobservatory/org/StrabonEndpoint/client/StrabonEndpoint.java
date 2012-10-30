@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
@@ -31,7 +30,7 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	}
 
 	@Override
-	public String query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
+	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
 		// create a post method to execute
 		HttpMethod method = new PostMethod(getConnectionURL());
 		
@@ -45,18 +44,15 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 			// execute the method
 			int statusCode = hc.executeMethod(method);
 
-			// check the status code
-			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("Method failed: " + method.getStatusLine());
-			}
-
 			// Read the response body.
 			byte[] responseBody = method.getResponseBody();
 
 			// Deal with the response.
 			// Use caution: ensure correct character encoding and is not binary
 			// data
-			return new String(responseBody);
+			String response = new String(responseBody);
+			
+			return new StrabonEndpointResult(statusCode, method.getStatusText(), response);
 
 		} catch (IOException e) {
 			throw e;
@@ -83,13 +79,13 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	}
 
 	@Override
-	public boolean describe(String sparqlDescribe) {
-		return false;
+	public EndpointResult describe(String sparqlDescribe) {
+		return null;
 	}
 
 	@Override
-	public boolean construct(String sparqlConstruct) {
-		return false;
+	public EndpointResult construct(String sparqlConstruct) {
+		return null;
 	}
 
 }

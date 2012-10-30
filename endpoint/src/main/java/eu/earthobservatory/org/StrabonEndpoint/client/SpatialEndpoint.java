@@ -24,7 +24,7 @@ import org.openrdf.rio.RDFFormat;
  */
 public interface SpatialEndpoint {
 
-	public String query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException;
+	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException;
 	
 	public boolean store(String data, RDFFormat format);
 	
@@ -32,7 +32,7 @@ public interface SpatialEndpoint {
 	
 	public boolean update(String sparqlUpdate);
 	
-	public boolean describe(String sparqlDescribe);
+	public EndpointResult describe(String sparqlDescribe);
 	
-	public boolean construct(String sparqlConstruct);
+	public EndpointResult construct(String sparqlConstruct);
 }
