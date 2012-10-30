@@ -11,6 +11,7 @@ package eu.earthobservatory.org.StrabonEndpoint.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -28,31 +29,34 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	public StrabonEndpoint(String host, int port) {
 		super(host, port);
 	}
+	
+	public StrabonEndpoint(String host, int port, String endpointName) {
+		super(host, port, endpointName);
+	}
 
 	@Override
 	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
 		// create a post method to execute
-		HttpMethod method = new PostMethod(getConnectionURL());
+		HttpMethod method = new PostMethod(getConnectionURL() + "/Query");
 		
 		// set the query parameter
-		method.getParams().setParameter("query", sparqlQuery);
+		method.setQueryString("query="+ URLEncoder.encode(sparqlQuery, "UTF-8"));
+		
+		// set the content type
+		method.setRequestHeader("Content-Type", PostMethod.FORM_URL_ENCODED_CONTENT_TYPE);
+		//System.out.println(method.getRequestHeader("Content-type"));
 		
 		// set the accept format
-		method.setRequestHeader("Accept", format.getDefaultMIMEType());
+		method.addRequestHeader("Accept", format.getDefaultMIMEType());
+		//System.out.println(method.getRequestHeader("Accept"));
 		
+		//System.out.println(method.getURI());
+
 		try {
 			// execute the method
 			int statusCode = hc.executeMethod(method);
-
-			// Read the response body.
-			byte[] responseBody = method.getResponseBody();
-
-			// Deal with the response.
-			// Use caution: ensure correct character encoding and is not binary
-			// data
-			String response = new String(responseBody);
 			
-			return new StrabonEndpointResult(statusCode, method.getStatusText(), response);
+			return new StrabonEndpointResult(statusCode, method.getStatusText(), method.getResponseBodyAsString());
 
 		} catch (IOException e) {
 			throw e;

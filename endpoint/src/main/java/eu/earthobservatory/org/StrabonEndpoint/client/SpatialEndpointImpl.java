@@ -65,8 +65,7 @@ public abstract class SpatialEndpointImpl implements SpatialEndpoint {
 		this.host = host;
 		this.port = port;
 		
-		// make the name of the endpoint end with a slash
-		this.endpointName = (endpointName != null && !endpointName.endsWith("/")) ? endpointName+"/":"";
+		this.endpointName = (endpointName == null ? "":endpointName);
 		
 		// create a connection manager for allowing the users of this class use threads
 		connectionManager = new MultiThreadedHttpConnectionManager();
