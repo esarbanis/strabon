@@ -55,6 +55,7 @@ public class TestStrabonEndpoint {
 						System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
 						
 					}
+					
 					assertTrue(response.getStatusCode() == 200);
 					
 				}

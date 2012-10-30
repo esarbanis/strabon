@@ -11,9 +11,7 @@ package eu.earthobservatory.org.StrabonEndpoint.client;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLEncoder;
 
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
@@ -37,21 +35,15 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	@Override
 	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
 		// create a post method to execute
-		HttpMethod method = new PostMethod(getConnectionURL() + "/Query");
+		PostMethod method = new PostMethod(getConnectionURL() + "/Query");
 		
 		// set the query parameter
-		method.setQueryString("query="+ URLEncoder.encode(sparqlQuery, "UTF-8"));
-		
-		// set the content type
-		method.setRequestHeader("Content-Type", PostMethod.FORM_URL_ENCODED_CONTENT_TYPE);
-		//System.out.println(method.getRequestHeader("Content-type"));
+		method.setParameter("query", sparqlQuery);
 		
 		// set the accept format
 		method.addRequestHeader("Accept", format.getDefaultMIMEType());
 		//System.out.println(method.getRequestHeader("Accept"));
 		
-		//System.out.println(method.getURI());
-
 		try {
 			// execute the method
 			int statusCode = hc.executeMethod(method);
