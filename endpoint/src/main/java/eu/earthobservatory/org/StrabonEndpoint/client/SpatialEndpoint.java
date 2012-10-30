@@ -9,8 +9,10 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import java.io.IOException;
 import java.net.URL;
 
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -22,7 +24,7 @@ import org.openrdf.rio.RDFFormat;
  */
 public interface SpatialEndpoint {
 
-	public String query(String sparqlQuery, String format);
+	public String query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException;
 	
 	public boolean store(String data, RDFFormat format);
 	

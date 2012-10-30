@@ -9,10 +9,13 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -28,17 +31,40 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	}
 
 	@Override
-	public String query(String sparqlQuery, String format) {
+	public String query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
 		// create a post method to execute
-		HttpMethod post = new PostMethod(getConnectionURL());
+		HttpMethod method = new PostMethod(getConnectionURL());
 		
 		// set the query parameter
-		post.getParams().setParameter("query", sparqlQuery);
+		method.getParams().setParameter("query", sparqlQuery);
 		
 		// set the accept format
-		post.setRequestHeader("Accept", "???");
+		method.setRequestHeader("Accept", format.getDefaultMIMEType());
 		
-		return null;
+		try {
+			// execute the method
+			int statusCode = hc.executeMethod(method);
+
+			// check the status code
+			if (statusCode != HttpStatus.SC_OK) {
+				System.err.println("Method failed: " + method.getStatusLine());
+			}
+
+			// Read the response body.
+			byte[] responseBody = method.getResponseBody();
+
+			// Deal with the response.
+			// Use caution: ensure correct character encoding and is not binary
+			// data
+			return new String(responseBody);
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
 	}
 
 	@Override
