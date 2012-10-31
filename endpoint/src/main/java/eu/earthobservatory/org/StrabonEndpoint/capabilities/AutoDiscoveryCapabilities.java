@@ -9,6 +9,10 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import java.io.IOException;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,21 @@ import org.slf4j.LoggerFactory;
 public class AutoDiscoveryCapabilities implements Capabilities {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.AutoDiscoveryCapabilities.class);
+	
+	/**
+	 * The host of the endpoint to discovery its capabilities
+	 */
+	private String host;
+	
+	/**
+	 * The port to use
+	 */
+	private int port;
+	
+	/**
+	 * The name of the web application
+	 */
+	private String appName;
 	
 	@Override
 	public boolean supportsLimit() {
@@ -76,7 +95,66 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 
 	@Override
 	public RequestCapabilities getQueryCapabilities() {
-		// TODO Auto-generated method stub
+		String query = "SELECT * WHERE {?s ?p ?o. FILTER(regex(str(?p), \"geometry\"))} LIMIT 1";
+		String[] queryParams = {"sparqlQuery", "query"};
+		String[] formatParams = {"format", null};
+		String[] formatValues = {"XML", "KML", "KMZ", "GeoJSON", "HTML", "TSV"};
+		String[] acceptValues = {null, "application/sparql-results+xml", "text/tab-separated-values", 
+				"application/vnd.google-earth.kml+xml", "application/vnd.google-earth.kmz", "text/html", 
+				"application/json"};
+		
+		for (int q = 0; q < queryParams.length; q++) {
+			for (int f = 0; f < formatParams.length; f++) {
+				for (int v = 0; v < formatValues.length; v++) {
+					for (int a = 0; a < acceptValues.length; a++) {
+						HttpClient hc = new HttpClient();
+						
+						// create a post method to execute
+						PostMethod method = new PostMethod(getConnectionURL() + "/Query");
+						
+						// set the query parameter
+						method.setParameter(queryParams[q], query);
+						if (formatParams[f] != null) {
+							method.setParameter(formatParams[f], formatValues[v]);
+							
+						} else { // check for accept value as well, but only when
+								 // we are not using the format parameter 
+						
+							// set the accept format
+							if (acceptValues[a] != null) {
+								method.addRequestHeader("Accept", acceptValues[a]);
+							}
+						}
+						
+						try {
+							// execute the method
+							int statusCode = hc.executeMethod(method);
+							
+							//System.out.println(method.getResponseBodyAsString());
+							System.out.println(statusCode);
+							
+							if (statusCode == 200) {
+								if (formatParams[f] != null) {
+									System.err.println(queryParams[q] + ", " + formatParams[f] + ", " + formatValues[v]);
+									
+								} else {
+									System.err.println(queryParams[q] + ", " + acceptValues[a]);	
+								}
+								
+							}
+	
+						} catch (IOException e) {
+							e.printStackTrace();
+							
+						} finally {
+							// release the connection.
+							method.releaseConnection();
+						}
+					}
+				}
+			}
+		}
+		
 		return null;
 	}
 
@@ -137,5 +215,15 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 		} catch (ClassNotFoundException e1) {
 			return false;
 		}
+	}
+
+	public void setEndpointDetails(String host, int port, String appName) {
+		this.host = host;
+		this.port = port;
+		this.appName = appName;
+	}
+	
+	private String getConnectionURL() {
+		return "http://" + host + ":" + port + "/" + appName;
 	}
 }
