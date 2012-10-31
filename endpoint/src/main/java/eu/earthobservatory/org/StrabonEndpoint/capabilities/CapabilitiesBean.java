@@ -114,13 +114,26 @@ public class CapabilitiesBean extends HttpServlet {
 		out.println("Supports DESCRIBE				: " + getYesNo(caps.supportsDescribing()));
 		out.println("Supports CONSTRUCT				: " + getYesNo(caps.supportsDescribing()));
 		out.println("Supports browsing				: "	+ getYesNo(caps.supportsBrowsing()));
+		out.println();
 		
 		if (caps instanceof AutoDiscoveryCapabilities) {
 			AutoDiscoveryCapabilities autocaps = (AutoDiscoveryCapabilities) caps;
 			autocaps.setEndpointDetails(request.getServerName(), request.getServerPort(), appName);
+			//autocaps.setEndpointDetails("localhost", 8080, "NOA");
 		}
 		
-		caps.getQueryCapabilities();
+		RequestCapabilities reCap = caps.getQueryCapabilities();
+		
+		for (Parameter param : reCap.getParametersObject().getParameters()) {
+			out.println("Supports parameter  : " + param.getName());
+			
+			if (param.getAcceptedValues().size() > 0) {
+				out.println("    Accepted values : ");
+				for (String acceptedValue : param.getAcceptedValues()) {
+					out.println("\t\t      " + acceptedValue);
+				}
+			}
+		}
 	}
 	
 	private String getYesNo(boolean val) {

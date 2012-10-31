@@ -9,8 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
@@ -21,13 +21,13 @@ public class Parameter {
 	private String name;
 	private String value;
 	
-	private List<String> acceptedValues;
+	private Set<String> acceptedValues;
 	
 	public Parameter(String name, String value) {
 		this.name = name;
 		this.value = value;
 		
-		this.acceptedValues = new Vector<String>();
+		this.acceptedValues = new HashSet<String>();
 	}
 	
 	public String getName() {
@@ -42,7 +42,7 @@ public class Parameter {
 		acceptedValues.add(value);
 	}
 	
-	public List<String> getAcceptedValues() {
+	public Set<String> getAcceptedValues() {
 		return acceptedValues;
 	}
 }

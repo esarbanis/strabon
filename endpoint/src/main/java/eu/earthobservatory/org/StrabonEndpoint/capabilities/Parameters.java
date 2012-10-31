@@ -24,8 +24,16 @@ public class Parameters {
 		params = new Hashtable<String, Parameter>();
 	}
 	
+	/**
+	 * Adds a new parameter. If the parameter already exists,
+	 * the operation does nothing.
+	 * 
+	 * @param param
+	 */
 	public void addParameter(Parameter param) {
-		params.put(param.getName(), param);
+		if (params.get(param.getName()) == null) {
+			params.put(param.getName(), param);
+		}
 	}
 	
 	public Parameter getParameter(String name) {

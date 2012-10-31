@@ -9,7 +9,6 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
-import java.util.Collection;
 import java.util.List;
 
 
@@ -34,20 +33,17 @@ public class BrowseBeanCapabilities implements RequestCapabilities {
 	}
 	
 	@Override
-	public Collection<Parameter> getParameters() {
-		// TODO Auto-generated method stub
+	public Parameters getParametersObject() {
 		return null;
 	}
 
 	@Override
 	public List<String> getAcceptedValues(String param) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isOptional(String param) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -11,30 +11,20 @@ package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
 import java.util.List;
 
-
 /**
- * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
-public class ConnectionBeanCapabilities implements RequestCapabilities {
+public class RequestCapabilitiesImpl implements RequestCapabilities {
 
-	private static ConnectionBeanCapabilities caps;
+	private Parameters params;
 	
-	protected ConnectionBeanCapabilities() {
-		
-	}
-	
-	public static synchronized ConnectionBeanCapabilities getInstance() {
-		if (caps == null) {
-			caps = new ConnectionBeanCapabilities();
-		}
-		
-		return caps;
+	public RequestCapabilitiesImpl() {
+		params = new Parameters();
 	}
 	
 	@Override
 	public Parameters getParametersObject() {
-		return null;
+		return params;
 	}
 
 	@Override
