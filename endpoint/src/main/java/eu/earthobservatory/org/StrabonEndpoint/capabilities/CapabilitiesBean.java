@@ -36,6 +36,11 @@ public class CapabilitiesBean extends HttpServlet {
 	 * The context of the servlet
 	 */
 	private ServletContext context;
+
+	/**
+	 * The name of this web application
+	 */
+	private String appName;
 	
 	/**
 	 * The capabilities of the endpoint
@@ -53,7 +58,10 @@ public class CapabilitiesBean extends HttpServlet {
 
 		// the the strabon wrapper
 		CapabilitiesDelegateBean capsBean = (CapabilitiesDelegateBean) applicationContext.getBean("capsBean");
-		
+
+		// get the name of this web application
+		appName = context.getContextPath().replace("/", "");
+				
 		// get capabilities
 		caps = capsBean.getEndpointCapabilities();
 	}
@@ -106,6 +114,13 @@ public class CapabilitiesBean extends HttpServlet {
 		out.println("Supports DESCRIBE				: " + getYesNo(caps.supportsDescribing()));
 		out.println("Supports CONSTRUCT				: " + getYesNo(caps.supportsDescribing()));
 		out.println("Supports browsing				: "	+ getYesNo(caps.supportsBrowsing()));
+		
+		if (caps instanceof AutoDiscoveryCapabilities) {
+			AutoDiscoveryCapabilities autocaps = (AutoDiscoveryCapabilities) caps;
+			autocaps.setEndpointDetails(request.getServerName(), request.getServerPort(), appName);
+		}
+		
+		caps.getQueryCapabilities();
 	}
 	
 	private String getYesNo(boolean val) {

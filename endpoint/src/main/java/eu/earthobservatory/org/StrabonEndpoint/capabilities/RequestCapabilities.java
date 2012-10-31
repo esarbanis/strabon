@@ -9,6 +9,7 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public interface RequestCapabilities {
 	 * 
 	 * @return
 	 */
-	public List<String> getParameters();
+	public Collection<Parameter> getParameters();
 	
 	/**
 	 * Get the accepted values of a service parameter.
