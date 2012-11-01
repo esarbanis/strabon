@@ -33,20 +33,17 @@ public class StoreBeanCapabilities implements RequestCapabilities {
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		// TODO Auto-generated method stub
+	public Parameters getParametersObject() {
 		return null;
 	}
 
 	@Override
 	public List<String> getAcceptedValues(String param) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isOptional(String param) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

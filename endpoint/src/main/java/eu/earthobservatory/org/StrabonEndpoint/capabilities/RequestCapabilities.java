@@ -26,7 +26,7 @@ public interface RequestCapabilities {
 	 * 
 	 * @return
 	 */
-	public List<String> getParameters();
+	public Parameters getParametersObject();
 	
 	/**
 	 * Get the accepted values of a service parameter.

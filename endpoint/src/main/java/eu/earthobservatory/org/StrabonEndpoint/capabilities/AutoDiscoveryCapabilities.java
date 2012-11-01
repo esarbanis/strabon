@@ -9,6 +9,10 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import java.io.IOException;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,21 @@ import org.slf4j.LoggerFactory;
 public class AutoDiscoveryCapabilities implements Capabilities {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.AutoDiscoveryCapabilities.class);
+	
+	/**
+	 * The host of the endpoint to discovery its capabilities
+	 */
+	private String host;
+	
+	/**
+	 * The port to use
+	 */
+	private int port;
+	
+	/**
+	 * The name of the web application
+	 */
+	private String appName;
 	
 	@Override
 	public boolean supportsLimit() {
@@ -76,31 +95,109 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 
 	@Override
 	public RequestCapabilities getQueryCapabilities() {
-		// TODO Auto-generated method stub
-		return null;
+		RequestCapabilities request = new RequestCapabilitiesImpl();
+		
+		String query = "SELECT * WHERE {?s ?p ?o. FILTER(regex(str(?p), \"geometry\"))} LIMIT 1";
+		
+		String[] queryParams = {"SPARQLQuery", "query"};
+		
+		String[] formatValues = {"XML", "KML", "KMZ", "GeoJSON", "HTML", "TSV"};
+		
+		String[] acceptValues = {"application/sparql-results+xml", "text/tab-separated-values", 
+				"application/vnd.google-earth.kml+xml", "application/vnd.google-earth.kmz", "text/html", 
+				"application/json"};
+		
+		// check query parameter and format parameter
+		for (int q = 0; q < queryParams.length; q++) {
+			for (int v = 0; v < formatValues.length; v++) {
+				HttpClient hc = new HttpClient();
+				
+				// create a post method to execute
+				PostMethod method = new PostMethod(getConnectionURL() + "/Query");
+				
+				// set the query parameter
+				method.setParameter(queryParams[q], query);
+				
+				// set the format parameter
+				method.setParameter("format", formatValues[v]);
+					
+				try {
+					// execute the method
+					int statusCode = hc.executeMethod(method);
+					
+					if (statusCode == 301 || statusCode == 200) {
+						//System.out.println(queryParams[q] + ", " + formatValues[v]);
+						request.getParametersObject().addParameter(new Parameter(queryParams[q], null));
+						request.getParametersObject().addParameter(new Parameter("format", null));
+						request.getParametersObject().getParameter("format").addAcceptedValue(formatValues[v]);
+					}
+	
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+				} finally {
+					// release the connection.
+					method.releaseConnection();
+				}
+			}
+		}
+		
+		// check query parameter and accept header
+		for (int q = 0; q < queryParams.length; q++) {
+			for (int a = 0; a < acceptValues.length; a++) {
+				HttpClient hc = new HttpClient();
+				
+				// create a post method to execute
+				PostMethod method = new PostMethod(getConnectionURL() + "/Query");
+				
+				// set the query parameter
+				method.setParameter(queryParams[q], query);
+				
+				// check for accept value as well 
+				// set the accept format
+				method.addRequestHeader("Accept", acceptValues[a]);
+				
+				try {
+					// execute the method
+					int statusCode = hc.executeMethod(method);
+					
+					if (statusCode == 301 || statusCode == 200) {
+						//System.out.println(queryParams[q] + ", " + acceptValues[a]);
+						request.getParametersObject().addParameter(new Parameter(queryParams[q], null));
+						request.getParametersObject().addParameter(new Parameter("Accept", null));
+						request.getParametersObject().getParameter("Accept").addAcceptedValue(acceptValues[a]);
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+				} finally {
+					// release the connection.
+					method.releaseConnection();
+				}
+			}
+		}
+		
+		return request;
 	}
 
 	@Override
 	public RequestCapabilities getUpdateCapabilities() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public RequestCapabilities getStoreCapabilities() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public RequestCapabilities getBrowseCapabilities() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public RequestCapabilities getConnectionCapabilities() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -137,5 +234,15 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 		} catch (ClassNotFoundException e1) {
 			return false;
 		}
+	}
+
+	public void setEndpointDetails(String host, int port, String appName) {
+		this.host = host;
+		this.port = port;
+		this.appName = appName;
+	}
+	
+	private String getConnectionURL() {
+		return "http://" + host + ":" + port + "/" + appName;
 	}
 }
