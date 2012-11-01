@@ -45,6 +45,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.SridFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsSimpleFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc
+org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.DateTimeDiff
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc
