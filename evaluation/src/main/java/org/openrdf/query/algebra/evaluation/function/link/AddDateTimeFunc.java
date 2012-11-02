@@ -54,7 +54,6 @@ public class AddDateTimeFunc implements Function {
     	try {
     		// get minutes, remove possible appearance of integer datatype, and strip double quotes
     		String minutes = args[1].toString().replace("^^<http://www.w3.org/2001/XMLSchema#integer>", "").replace("\"", "");
-    		System.out.println("TO PARSE:"+ minutes);
     		int minutesToAdd = Integer.parseInt(minutes);
     		
     	    String date = args[0].toString();
@@ -64,20 +63,9 @@ public class AddDateTimeFunc implements Function {
     	    
     	    // set the time (according to 1st argument)
     		cal.setTime(sdf.parse(date));
-    		System.out.println("OLD TIME:"+cal.getTime());
-    		
     		// add the minutes (according to 2nd argument)
     		cal.add(Calendar.MINUTE, minutesToAdd);
-
-    		System.out.println("NEW TIME:"+cal.getTime());
-    	   
-    		System.out.println(cal.get(Calendar.YEAR));
-    		System.out.println(cal.get(Calendar.MONTH));
-    		System.out.println(cal.get(Calendar.DAY_OF_MONTH));
-    		System.out.println(cal.get(Calendar.HOUR));
-    		System.out.println(cal.get(Calendar.MINUTE));
-    		System.out.println(cal.get(Calendar.MILLISECOND));
-    		
+		
     	} catch (java.text.ParseException e) {
     		logger.error("[Strabon.AddDateTimeFunc] Error parsing the arguments of \"addDateTime\" extension function.", e);
 		}
@@ -91,7 +79,7 @@ public class AddDateTimeFunc implements Function {
 		}
 		
 		Value value =  valueFactory.createLiteral(gxml);
-		System.out.println("value="+value.toString());
+//		System.out.println("value="+value.toString());
 		return value;
     }
 }
