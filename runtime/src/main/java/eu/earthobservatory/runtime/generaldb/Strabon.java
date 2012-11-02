@@ -6,6 +6,8 @@
  * Copyright (C) 2010, 2011, 2012, Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
+ * 
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 package eu.earthobservatory.runtime.generaldb;
 
@@ -22,6 +24,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -215,7 +219,7 @@ public abstract class Strabon {
 	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		boolean status = true;
 		
-		logger.info("[Strabon.query] Executing query: {}", queryString);
+		logger.info("[Strabon.query] Executing query: \n{}", queryString);
 		
 		// check for null stream
 		if (out == null) {
@@ -226,6 +230,7 @@ public abstract class Strabon {
 		
 		TupleQuery tupleQuery = null;
 		try {
+			queryString = convertQueryToSparql(queryString);
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 			
 		} catch (RepositoryException e) {
@@ -270,6 +275,29 @@ public abstract class Strabon {
 
 		return status;
 	}
+
+	private String convertQueryToSparql(String queryString) {
+		
+		//TODO
+		String newQueryString="";
+		
+		// check whether the query contains quadtruples
+		String REGEX = ".*\\{.*([[a-z][A-Z][?/<>^#]]+(\\s)+){3}(\\s)*[.}(.})]?.*\\}.*";
+		Pattern limitPattern = Pattern.compile(REGEX, Pattern.DOTALL);							
+		Matcher limitMatcher = limitPattern.matcher(queryString);
+		
+		if(limitMatcher.matches())		
+		{
+			logger.info("\n\nQUADRUPLE SPOTTED\n\n");
+		}
+		else
+		{
+			logger.info("\n\nQUADRUPLE NOT SPOTTED\n\n");
+			newQueryString=queryString;
+		}
+		return newQueryString;
+	}
+
 
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 	{
