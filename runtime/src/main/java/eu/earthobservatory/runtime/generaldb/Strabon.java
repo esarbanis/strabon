@@ -230,7 +230,7 @@ public abstract class Strabon {
 		
 		TupleQuery tupleQuery = null;
 		try {
-			queryString = convertQueryToSparql(queryString);
+			queryString = queryRewriting(queryString);
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 			
 		} catch (RepositoryException e) {
@@ -276,26 +276,45 @@ public abstract class Strabon {
 		return status;
 	}
 
-	private String convertQueryToSparql(String queryString) {
-		
+	private String queryRewriting(String oldQueryString) 
+	{	
 		//TODO
 		String newQueryString="";
+		int numOfQuadruples=0;
+		int startIndex=0;
 		
-		// check whether the query contains quadtruples
-		String REGEX = ".*\\{.*([[a-z][A-Z][?/<>^#]]+(\\s)+){3}(\\s)*[.}(.})]?.*\\}.*";
-		Pattern limitPattern = Pattern.compile(REGEX, Pattern.DOTALL);							
-		Matcher limitMatcher = limitPattern.matcher(queryString);
+		// check whether the query contains quadruples
+		String URI = "[\\w?/<>^#]+";
+		String REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
+		Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
+		Matcher matcher = pattern.matcher(oldQueryString);
 		
-		if(limitMatcher.matches())		
+		while(matcher.find())		
 		{
-			logger.info("\n\nQUADRUPLE SPOTTED\n\n");
+			numOfQuadruples++;
+			newQueryString+=oldQueryString.substring(startIndex, matcher.start());
+			startIndex=matcher.end();
+			
+			String quadruple=oldQueryString.substring(matcher.start(), matcher.end());
+
+
+			String[] token = quadruple.split("(\\s)+");
+			
+			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" {" +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime "+ token[3];
+		}
+		
+		if(numOfQuadruples==0)
+		{
+			logger.info("\n\nQuadruple not found\n\n");
+			return oldQueryString;
 		}
 		else
 		{
-			logger.info("\n\nQUADRUPLE NOT SPOTTED\n\n");
-			newQueryString=queryString;
+			newQueryString+=oldQueryString.substring(startIndex);
+			logger.info("\n\nNew QueryString:\n {}\n\n", newQueryString);		
+			return newQueryString;
 		}
-		return newQueryString;
 	}
 
 
