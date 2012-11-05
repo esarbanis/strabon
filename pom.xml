@@ -26,6 +26,7 @@
 		<module>generaldb</module>
 		<module>resultio</module>
 		<module>endpoint</module>
+		<module>endpoint-client</module>
 	</modules>
 
 	<properties>

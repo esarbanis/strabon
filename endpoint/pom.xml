@@ -10,7 +10,7 @@
 	<artifactId>strabon-endpoint</artifactId>
 	<packaging>war</packaging>
 
-	<name>StrabonEndpoint</name>
+	<name>Strabon: Endpoint</name>
 	<description>An endpoint for Strabon</description>
 
 	<properties>
