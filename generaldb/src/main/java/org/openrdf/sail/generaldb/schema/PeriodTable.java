@@ -1,3 +1,18 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2012, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ * 
+ *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ *
+ * PeriodTable extends the underlying rdbms schema of Strabon with one more table for storing period values.
+ * These values are of Postgres Temporal PERIOD datatype. An Gist index is also used. 
+ */
+
 package org.openrdf.sail.generaldb.schema;
 
 import java.sql.PreparedStatement;
@@ -11,16 +26,7 @@ import java.util.concurrent.BlockingQueue;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
-/**
- * Modified to be used with a valid time-enabled table
- *
- * Manages the rows in a value table. These tables have two columns: an internal
- * id column and a value (PERIOD) column
- * 
- * @author James Leigh
- * @author Konstantina Bereta
- * 
- */
+
 
 public class PeriodTable {
 	public static int BATCH_SIZE = 8 * 1024;

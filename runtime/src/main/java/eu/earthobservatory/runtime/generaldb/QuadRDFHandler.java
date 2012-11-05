@@ -1,3 +1,18 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2012, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ * 
+ *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ *  
+ *  This class handles every quadruple statement by using the fourth element as a named graph and
+ *  creates another triple to annotate the former statement with valid time in the default graph
+ *
+ */
 package eu.earthobservatory.runtime.generaldb;
 
 import java.text.ParseException;

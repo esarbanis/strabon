@@ -2,11 +2,19 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
- * 
+ *
+ * Copyright (C) 2012, Pyravlos Team
+ *
  * http://www.strabon.di.uoa.gr/
+ * 
+ *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ *
+ *This class implements a basic RDFS inference mechanism on the Geosparql ontology. A RDFHandler is
+ *used to handle each Geosparql  by applying the RDFS  inferencing rules and producing inferences.
+ *This was a solution for supporting one of the basic components of Geosparql as Strabon currently lacks in 
+ *general RDFS inference mechanisms.
  */
+
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.StringReader;

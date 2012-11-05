@@ -18,6 +18,20 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.naming.StringRefAddr;
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2012, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ * 
+ *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ *  
+ *  based on code provided by ua Shinavier (http://fortytwo.net).  Builds on code by Aduna.
+ *
+ */
 
 /**
  * RDFParser implementation for the N-Quads RDF format.
@@ -27,7 +41,6 @@ import javax.naming.StringRefAddr;
  * 2) private member variables made public: reader, lineno, subject, predcate, object
  * 3) private methods: skipWhitespace, skipLine, parseSubject, parsePredicate, parseObject, throwEOFException
  *
- * @author Joshua Shinavier (http://fortytwo.net).  Builds on code by Aduna.
  */
 public class NQuadsParser extends ModifiedNTriplesParser {
     protected Resource context;

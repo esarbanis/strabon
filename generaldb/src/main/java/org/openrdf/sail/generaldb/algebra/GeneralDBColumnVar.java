@@ -35,7 +35,7 @@ public class GeneralDBColumnVar implements Cloneable {
 
 	private String alias;
 
-	
+	private boolean temporal = false;
 
 	private String column;
 
@@ -160,8 +160,24 @@ public class GeneralDBColumnVar implements Cloneable {
 		}
 		return var;
 	}
-
+//checks whether the sql variable is a temporal variable
 	
+	public static GeneralDBColumnVar createTemporalColumn(String alias, Var v, Value value) {
+		GeneralDBColumnVar var = new GeneralDBColumnVar();
+		var.alias = alias;
+		var.column = "id";
+		var.name = v.getName();
+		var.anonymous = v.isAnonymous();
+		var.value = value;
+		var.types = ValueTypes.UNKNOWN;
+		if (value instanceof RdbmsResource) {
+			var.types = ValueTypes.RESOURCE;
+		}
+		
+		var.setTemporal(true);
+		
+		return var;
+	}
 	
 	public boolean isSpatial() {
 		return spatial;
@@ -301,5 +317,14 @@ public class GeneralDBColumnVar implements Cloneable {
 
 		return sb.toString();
 	}
+
+	public boolean isTemporal() {
+		return temporal;
+	}
+
+	public void setTemporal(boolean temporal) {
+		this.temporal = temporal;
+	}
+	
 
 }
