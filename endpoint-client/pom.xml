@@ -8,7 +8,7 @@
 		<version>3.2.5-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>endpoint-client</artifactId>
+	<artifactId>strabon-endpoint-client</artifactId>
 
 	<name>Strabon: Endpoint client</name>
 	<description>A java client for Strabon endpoint</description>
@@ -17,53 +17,18 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryresultio-spatial</artifactId>
-		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
+			<artifactId>sesame-rio-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryalgebra-evaluation</artifactId>
+			<artifactId>sesame-queryresultio-spatial-api</artifactId>
 		</dependency>
+		<!--	
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-rdfxml</artifactId>
+			<artifactId>sesame-queryresultio-spatial-api</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-ntriples</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-turtle</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-trig</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-trix</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-n3</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-binary</artifactId>
-		</dependency>
--->
-
+		-->
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>

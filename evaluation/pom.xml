@@ -10,7 +10,7 @@
 
 	<groupId>org.openrdf.sesame</groupId>
 	<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-	<name>OpenRDF Sesame: Query algebra - evaluation -spatial</name>
+	<name>OpenRDF Sesame: Query algebra - evaluation - spatial</name>
 	<description>Spatial Extension Functions - stSPARQL </description>
 	<packaging>jar</packaging>
 

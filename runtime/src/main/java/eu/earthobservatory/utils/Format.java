@@ -7,7 +7,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package org.openrdf.query.resultio;
+package eu.earthobservatory.utils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,6 +2,11 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.5 released.
 
+	* Implemented a Java client for Strabon Endpoint. The client should be
+	used only with endpoint versions >=3.2.5. The implementation may be
+	found int the `endpoint-client' submodule of maven. Currently, only
+	querying of Strabon Endpoints is supported.
+
 	* Added support for requesting the capabilities of Strabon Endpoint
 	(fixes Bug #20 <http://bug.strabon.di.uoa.gr/ticket/20>). See
 	changesets f840796400bf and ?<TBC>? for specific details and how you

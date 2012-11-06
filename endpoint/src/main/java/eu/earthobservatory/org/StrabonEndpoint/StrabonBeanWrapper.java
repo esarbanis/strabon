@@ -9,6 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
+import eu.earthobservatory.utils.Format;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -23,7 +25,6 @@ import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.resultio.Format;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;

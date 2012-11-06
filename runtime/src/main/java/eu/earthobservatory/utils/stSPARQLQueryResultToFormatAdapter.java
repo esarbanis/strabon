@@ -7,14 +7,16 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package org.openrdf.query.resultio;
+package eu.earthobservatory.utils;
 
 import java.io.OutputStream;
 
+import org.openrdf.query.resultio.TupleQueryResultWriter;
+import org.openrdf.query.resultio.TupleQueryResultWriterFactory;
 import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
 import org.openrdf.query.resultio.sparqlhtml.stSPARQLResultsHTMLWriterFactory;
-import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMZWriterFactory;
 import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriterFactory;
+import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMZWriterFactory;
 import org.openrdf.query.resultio.sparqlxml.stSPARQLResultsXMLWriterFactory;
 import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
 
@@ -25,7 +27,7 @@ import org.openrdf.query.resultio.text.stSPARQLResultsTSVWriterFactory;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
-public class stSPARQLQueryResultWriterFactory {
+public class stSPARQLQueryResultToFormatAdapter {
 
 	private static TupleQueryResultWriterFactory html = new stSPARQLResultsHTMLWriterFactory();
 	private static TupleQueryResultWriterFactory xml = new stSPARQLResultsXMLWriterFactory();

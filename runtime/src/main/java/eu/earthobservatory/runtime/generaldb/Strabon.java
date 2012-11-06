@@ -32,9 +32,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
-import org.openrdf.query.resultio.Format;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
-import org.openrdf.query.resultio.stSPARQLQueryResultWriterFactory;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
@@ -47,7 +45,9 @@ import org.openrdf.sail.helpers.SailBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.utils.Format;
 import eu.earthobservatory.utils.RDFHandlerFactory;
+import eu.earthobservatory.utils.stSPARQLQueryResultToFormatAdapter;
 
 public abstract class Strabon {
 
@@ -252,7 +252,7 @@ public abstract class Strabon {
 				
 		default:
 			// get the writer for the specified format
-			TupleQueryResultWriter resultWriter = stSPARQLQueryResultWriterFactory.createstSPARQLQueryResultWriter(resultsFormat, out);
+			TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
 			
 			// check for null format
 			if (resultWriter == null) {

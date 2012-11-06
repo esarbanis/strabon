@@ -10,17 +10,21 @@
 
 	<groupId>org.openrdf.sesame</groupId>
 	<artifactId>sesame-queryresultio-spatial</artifactId>
-	<name>OpenRDF Sesame: Query result IO - Spatial</name>
+	<name>OpenRDF Sesame: Spatial Query result IO</name>
 	<description>Minimal spatial extensions of Query result parser and writer implementation for the SPARQL Query Results Format.</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>api</module>
+		<module>sparqlgeojson</module>
+		<module>sparqlhtml</module>
+		<module>sparqlkml</module>
+		<module>sparqlxml</module>
+		<module>text</module>
+	</modules>
 	
+	<!--
 	<dependencies>
-	
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-generaldb</artifactId>
@@ -74,7 +78,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
-		<!-- GeoTools -->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-geojson</artifactId>
@@ -111,5 +114,6 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+	-->
 </project>
 
