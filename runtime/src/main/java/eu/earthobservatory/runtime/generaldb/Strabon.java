@@ -276,18 +276,25 @@ public abstract class Strabon {
 		return status;
 	}
 
-	private String queryRewriting(String oldQueryString) 
+	private String queryRewriting(String queryString) 
 	{	
 		//TODO
 		String newQueryString="";
 		int numOfQuadruples=0;
 		int startIndex=0;
 		
+		//remove comments from query
+		String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
+		Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+		Matcher matcher = pattern.matcher(queryString);
+		String oldQueryString=matcher.replaceAll("");
+
+		
 		// check whether the query contains quadruples
 		String URI = "[\\w?/<>^#]+";
-		String REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
-		Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
-		Matcher matcher = pattern.matcher(oldQueryString);
+		REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
+		pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+		matcher = pattern.matcher(oldQueryString);
 		
 		while(matcher.find())		
 		{
@@ -312,7 +319,7 @@ public abstract class Strabon {
 		if(numOfQuadruples==0)
 		{
 			logger.info("\n\nQuadruple not found\n\n");
-			return oldQueryString;
+			return queryString;
 		}
 		else
 		{
