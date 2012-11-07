@@ -22,4 +22,22 @@ public class GeneralDBSqlPeriodOverlaps  extends GeneralDBSqlTemporal{
 		super(left, right);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal#getOperator()
+	 */
+	@Override
+	public String getOperator() {
+
+		return "&&";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal#getPostgresFunction()
+	 */
+	@Override
+	public String getPostgresFunction() {
+
+		return "overlaps";
+	}
+
 }

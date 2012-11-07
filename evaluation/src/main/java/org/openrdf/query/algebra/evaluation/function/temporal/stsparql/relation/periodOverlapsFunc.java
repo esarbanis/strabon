@@ -22,17 +22,4 @@ public class periodOverlapsFunc extends TemporalRelationFunc {
 	}
 
 	
-	@Override
-	public String getOperator() {
-		return "&&";
-	}
-
-
-	@Override
-	public String getPostgresFunction() {
-		
-		return "overlaps";
-	}
-
-
 }

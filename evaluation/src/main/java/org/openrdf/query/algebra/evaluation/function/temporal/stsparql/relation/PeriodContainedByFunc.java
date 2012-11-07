@@ -23,20 +23,4 @@ public class PeriodContainedByFunc extends TemporalRelationFunc {
 	}
 
 
-	@Override
-	public String getOperator() {
-		return "@";
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc#getPostgresFunction()
-	 */
-	@Override
-	public String getPostgresFunction() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }

@@ -24,17 +24,4 @@ public class PeriodContainsFunc extends TemporalRelationFunc {
 	}
 
 	
-	@Override
-	public String getOperator() {
-		return "~";
-	}
-
-
-	@Override
-	public String getPostgresFunction() {
-
-		return "contains";
-	}
-
-
 }

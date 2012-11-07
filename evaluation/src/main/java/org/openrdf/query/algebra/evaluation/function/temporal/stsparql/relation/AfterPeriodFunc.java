@@ -23,18 +23,4 @@ public class AfterPeriodFunc extends TemporalRelationFunc {
 	}
 
 	
-	@Override
-	public String getOperator() {
-		return ">>";
-	}
-
-
-
-	@Override
-	public String getPostgresFunction() {
-		
-		return "after";
-	}
-
-
 }

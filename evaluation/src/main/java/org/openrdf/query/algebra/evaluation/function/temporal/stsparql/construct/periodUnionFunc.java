@@ -24,15 +24,6 @@ public class periodUnionFunc extends TemporalConstructFunc {
 		return TemporalConstants.periodUnion;
 	}
 
-	@Override
-	public String getOperator() {
-		return "+";
-	}
 
-	
-	@Override
-	public String getPostgresFunction() {
-		return "period_union";
-	}
 
 }

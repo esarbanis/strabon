@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlPeriodIntersection extends GeneralDBSqlSpatialConstructBinary{
+public class GeneralDBSqlPeriodIntersection extends GneralDBSqlTemporalConstructBinary{
 
 	public GeneralDBSqlPeriodIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
@@ -28,6 +28,24 @@ public class GeneralDBSqlPeriodIntersection extends GeneralDBSqlSpatialConstruct
 		throws X
 	{
 		visitor.meet(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary#getOperator()
+	 */
+	@Override
+	public String getOperator() {
+
+		return "period_intersect";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary#getPostgresFunction()
+	 */
+	@Override
+	public String getPostgresFunction() {
+
+		return null;
 	}
 
 }

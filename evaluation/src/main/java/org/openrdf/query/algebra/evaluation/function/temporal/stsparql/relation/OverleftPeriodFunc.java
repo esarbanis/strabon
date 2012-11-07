@@ -22,19 +22,6 @@ public class OverleftPeriodFunc extends TemporalRelationFunc {
 		return TemporalConstants.overleftPeriod;
 	}
 
-	
-	@Override
-	public String getOperator() {
-		return "&<";
-	}
-
-
-	
-	@Override
-	public String getPostgresFunction() {
-
-		return "overleft";
-	}
 
 
 }

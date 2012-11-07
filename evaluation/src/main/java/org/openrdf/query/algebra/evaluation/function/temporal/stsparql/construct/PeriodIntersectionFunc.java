@@ -25,16 +25,5 @@ public class PeriodIntersectionFunc  extends TemporalConstructFunc {
 		return TemporalConstants.periodIntersection;
 	}
 
-	//there is no operator assigned to this function
-	@Override
-	public String getOperator() {
-		return null;
-	}
-
 	
-	@Override
-	public String getPostgresFunction() {
-		return "period_intersect";
-	}
-
 }

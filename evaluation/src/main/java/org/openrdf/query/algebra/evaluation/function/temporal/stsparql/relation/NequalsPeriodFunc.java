@@ -21,18 +21,4 @@ public class NequalsPeriodFunc extends  TemporalRelationFunc {
 		return TemporalConstants.nequalsPeriod;
 	}
 
-	
-	@Override
-	public String getOperator() {
-		return "!=";
-	}
-
-
-	
-	@Override
-	public String getPostgresFunction() {
-		
-		return "nequals";
-	}
-
 }

@@ -22,16 +22,5 @@ public class AdjacentPeriodFunc extends TemporalRelationFunc {
 		return TemporalConstants.adjacentPeriod;
 	}
 
-	//there is no operator assigned to this function
-	@Override
-	public String getOperator() {
-		return null;
-	}
-
-	
-	@Override
-	public String getPostgresFunction() {
-		return "adjacent";
-	}
 
 }

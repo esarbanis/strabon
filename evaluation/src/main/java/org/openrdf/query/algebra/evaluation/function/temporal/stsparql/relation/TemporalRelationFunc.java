@@ -31,13 +31,5 @@ public abstract class TemporalRelationFunc implements Function {
 		
 	public abstract  String getURI();
 	
-	/*In Postgres Temporal it seems that an operator is assigned to every PERIOD function 
-	 * I store this information in the declaration of each function so that i can use it in the mapping
-	 * of stSPARQL queries to spatiotemporally extended SQL queries
-	 * */
-	public abstract  String getOperator();
-	//This method returns the respective function of the Postgres Temporal extension
-	public abstract  String getPostgresFunction();
-
 }
 

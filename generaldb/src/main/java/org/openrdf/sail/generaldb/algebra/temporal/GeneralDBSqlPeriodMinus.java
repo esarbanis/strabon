@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlPeriodMinus extends GeneralDBSqlSpatialConstructBinary{
+public class GeneralDBSqlPeriodMinus extends GneralDBSqlTemporalConstructBinary{
 
 	public GeneralDBSqlPeriodMinus(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
@@ -28,6 +28,24 @@ public class GeneralDBSqlPeriodMinus extends GeneralDBSqlSpatialConstructBinary{
 		throws X
 	{
 		visitor.meet(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary#getOperator()
+	 */
+	@Override
+	public String getOperator() {
+
+		return "+";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary#getPostgresFunction()
+	 */
+	@Override
+	public String getPostgresFunction() {
+
+		return "minus";
 	}
 
 }

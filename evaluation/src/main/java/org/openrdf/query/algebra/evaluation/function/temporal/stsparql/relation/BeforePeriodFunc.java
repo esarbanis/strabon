@@ -22,18 +22,5 @@ public class BeforePeriodFunc  extends TemporalRelationFunc {
 		return TemporalConstants.beforePeriod;
 	}
 
-	
-	@Override
-	public String getOperator() {
-		return "<<";
-	}
-
-
-	
-	@Override
-	public String getPostgresFunction() {
-		return "before";
-	}
-
 
 }

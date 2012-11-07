@@ -23,18 +23,5 @@ public class OverrightPeriodFunc extends TemporalRelationFunc {
 	}
 
 	
-	@Override
-	public String getOperator() {
-		return "&>";
-	}
-
-
-	
-	@Override
-	public String getPostgresFunction() {
-
-		return "overright";
-	}
-
 
 }

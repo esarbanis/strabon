@@ -17,8 +17,16 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlTemporal extends BinaryGeneralDBOperator
+public abstract class GeneralDBSqlTemporal extends BinaryGeneralDBOperator
 {
+
+	/*In Postgres Temporal it seems that an operator is assigned to every PERIOD function 
+	 * I store this information in the declaration of each function so that i can use it in the mapping
+	 * of stSPARQL queries to spatiotemporally extended SQL queries
+	 * */
+	public abstract  String getOperator();
+	//This method returns the respective function of the Postgres Temporal extension
+	public abstract  String getPostgresFunction();
 
 	public GeneralDBSqlTemporal(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
@@ -30,6 +38,7 @@ public class GeneralDBSqlTemporal extends BinaryGeneralDBOperator
 	{
 		visitor.meet(this);
 	}
+	
 
 }
 

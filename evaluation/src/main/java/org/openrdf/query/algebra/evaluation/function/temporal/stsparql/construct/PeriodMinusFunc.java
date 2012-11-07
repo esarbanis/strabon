@@ -24,16 +24,6 @@ public class PeriodMinusFunc extends TemporalConstructFunc {
 		return TemporalConstants.minusPeriod;
 	}
 
-	//there is no operator assigned to this function
-	@Override
-	public String getOperator() {
-		return "-";
-	}
 
-
-	@Override
-	public String getPostgresFunction() {
-		return "minus";
-	}
 
 }
