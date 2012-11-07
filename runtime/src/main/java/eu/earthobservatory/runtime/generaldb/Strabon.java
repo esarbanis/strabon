@@ -276,38 +276,51 @@ public abstract class Strabon {
 		return status;
 	}
 
-	private String queryRewriting(String oldQueryString) 
+	private String queryRewriting(String queryString) 
 	{	
 		//TODO
 		String newQueryString="";
 		int numOfQuadruples=0;
 		int startIndex=0;
 		
+		//remove comments from query
+		String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
+		Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+		Matcher matcher = pattern.matcher(queryString);
+		String oldQueryString=matcher.replaceAll("");
+
+		
 		// check whether the query contains quadruples
 		String URI = "[\\w?/<>^#]+";
-		String REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
-		Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
-		Matcher matcher = pattern.matcher(oldQueryString);
+		REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
+		pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+		matcher = pattern.matcher(oldQueryString);
 		
 		while(matcher.find())		
 		{
+			String quadruple=oldQueryString.substring(matcher.start(), matcher.end());
 			numOfQuadruples++;
+			
 			newQueryString+=oldQueryString.substring(startIndex, matcher.start());
 			startIndex=matcher.end();
-			
-			String quadruple=oldQueryString.substring(matcher.start(), matcher.end());
 
-
+			//tokenize quadruples and convert them to triples:
+			//s p o c  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
+			//                      ?g(numOfQuadruples) strdf:hasValidTime c
 			String[] token = quadruple.split("(\\s)+");
-			
-			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" {" +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
 			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime "+ token[3];
+			
+
+			//case that the '.' or '}' has a '//s' character before.
+			if(token.length==5)
+				newQueryString+=token[4];
 		}
 		
 		if(numOfQuadruples==0)
 		{
 			logger.info("\n\nQuadruple not found\n\n");
-			return oldQueryString;
+			return queryString;
 		}
 		else
 		{
