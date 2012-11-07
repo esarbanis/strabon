@@ -302,6 +302,11 @@ public abstract class Strabon {
 			
 			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" {" +token[0]+" "+token[1]+" "+token[2]+" .}\n";
 			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime "+ token[3];
+			
+
+			//case that the '.' or '}' has a '//s' character before.
+			if(token.length==5)
+				newQueryString+=token[4];
 		}
 		
 		if(numOfQuadruples==0)
