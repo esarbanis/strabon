@@ -53,12 +53,13 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTemporal;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
+import org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary;
 
 /**
  * Base class for RDBMS visitor classes. This class is extended with additional
@@ -366,6 +367,13 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetBinarySqlOperator(node);
 	 }
+	 
+		/**
+		 * @param gneralDBSqlTemporalConstructBinary
+		 */
+		public void meet(GneralDBSqlTemporalConstructBinary node) {
+			 	meet(node);	
+		}
 
 	 //Used for ST_Relate
 	 public void meet(TripleGeneralDBOperator node) throws X 
@@ -378,6 +386,8 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetNode(node);
 	 }
+
+
 
 	 //	public void meet(GeneralDBSqlAnyInteract node) throws X
 	 //	{

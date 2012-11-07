@@ -13,7 +13,7 @@ org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.Period
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc.java
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc.java
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc.java
-org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.relation/AfterPeriodFunc.java
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AfterPeriodFunc.java
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.BeforePeriodFunc.java
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.EqualsPeriodFunc.java
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.NequalsPeriodFunc.java
