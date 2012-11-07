@@ -53,6 +53,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTemporal;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
@@ -357,6 +358,11 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 }
 
 	 public void meet(GeneralDBSqlGeoSpatial node) throws X 
+	 {
+		 meetBinarySqlOperator(node);
+	 }
+	 
+	 public void meet(GeneralDBSqlTemporal node) throws X 
 	 {
 		 meetBinarySqlOperator(node);
 	 }
