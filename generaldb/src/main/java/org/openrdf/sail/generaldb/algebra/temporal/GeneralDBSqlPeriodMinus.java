@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlPeriodMinus extends GneralDBSqlTemporalConstructBinary{
+public class GeneralDBSqlPeriodMinus extends GeneralDBSqlTemporalConstructBinary{
 
 	public GeneralDBSqlPeriodMinus(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);

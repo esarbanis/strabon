@@ -113,6 +113,13 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
@@ -1227,5 +1234,48 @@ public abstract class GeneralDBQueryBuilder {
 
 	protected abstract void appendRelate(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, char[] intersectionPattern)
 			throws UnsupportedRdbmsOperatorException;
+/**
+ * Postgres Temporal Functions 
+ */
+
+	protected void append(GeneralDBSqlPeriodContainedBy expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+				
+	}
+
+protected void append(GeneralDBSqlPeriodContains expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
+}
+
+protected void append(GeneralDBSqlPeriodIntersection expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
+}
+
+protected void append(GeneralDBSqlPeriodMinus expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
+}
+
+protected void append(GeneralDBSqlPeriodOverlaps expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
+}
+
+protected void append(GeneralDBSqlPeriodUnion expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
+}
+
+protected void append(GeneralDBSqlTemporal expr, GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+}
 
 }

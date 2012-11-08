@@ -93,6 +93,7 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.*;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilder;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlBracketBuilder;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder;
@@ -766,6 +767,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
 			}
+	
+	
 
 	//	@Override
 	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
@@ -934,6 +937,62 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		return raw;
 	}
+	
+	/*Temporal Functions
+	 * 
+	 * */
+	
+	@Override
+	protected void append(GeneralDBSqlPeriodContainedBy expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+			}
+	
+	@Override
+	protected void append(GeneralDBSqlPeriodContains expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+			}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodOverlaps expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+			}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodIntersection expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+			}
+	
+	@Override
+	protected void append(GeneralDBSqlPeriodMinus expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+			}
+	
+	@Override
+	protected void append(GeneralDBSqlPeriodUnion expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+			}
+
+
+
+
+
+
+
+
+
+	
 
 	//Used in all the generaldb boolean spatial functions of the form ?GEO1 ~ ?GEO2 
 	//	protected void appendStSPARQLSpatialOperand(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialOperandsPostGIS operand) throws UnsupportedRdbmsOperatorException
@@ -1255,6 +1314,140 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	//EXCEPT ST_Transform!!!
+	protected void appendGeneralDBTemporalFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, String func)
+			throws UnsupportedRdbmsOperatorException
+			{
+		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
+		boolean sridNeeded = true;
+		//XXX Incorporating SRID
+		String sridExpr = null;
+
+		filter.openBracket();
+
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+		}
+		else
+		{
+
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
+
+				}
+				if(sridNeeded)
+				{
+					filter.appendFunction(ST_TRANSFORM);
+					filter.openBracket();
+				}
+			}
+			/////
+
+
+			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
+					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&>")|| func.equals("&>")|| func.equals("&&"))
+			{
+				filter.appendFunction(func);
+				
+			}
+			
+			
+			filter.openBracket();
+			if (expr.getLeftArg() instanceof GeneralDBSqlTemporalConstructBinary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+		//TODO:Think about adding more temporal function types (e.g., metrics, unary operators)
+			
+			/*else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+			}*/
+			filter.appendComma();
+
+			
+			filter.openBracket();
+			if (expr.getRightArg() instanceof GeneralDBSqlTemporalConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+		
+
+			filter.closeBracket();
+			//SRID Support
+			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+				filter.append(sridExpr);
+				filter.closeBracket();
+			}
+			///
+		}
+		filter.closeBracket();
+		//Used to explicitly include SRID
+		if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
+		}
+
+			}
+	
 	protected void appendGeneralDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
 			throws UnsupportedRdbmsOperatorException
 			{

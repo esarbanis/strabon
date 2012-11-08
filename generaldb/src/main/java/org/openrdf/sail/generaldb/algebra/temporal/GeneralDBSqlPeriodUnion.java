@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlPeriodUnion extends GneralDBSqlTemporalConstructBinary{
+public class GeneralDBSqlPeriodUnion extends GeneralDBSqlTemporalConstructBinary{
 
 	public GeneralDBSqlPeriodUnion(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);

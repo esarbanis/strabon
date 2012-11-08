@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlPeriodIntersection extends GneralDBSqlTemporalConstructBinary{
+public class GeneralDBSqlPeriodIntersection extends GeneralDBSqlTemporalConstructBinary{
 
 	public GeneralDBSqlPeriodIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);

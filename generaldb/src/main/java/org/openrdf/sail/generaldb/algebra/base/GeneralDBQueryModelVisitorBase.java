@@ -59,7 +59,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
-import org.openrdf.sail.generaldb.algebra.temporal.GneralDBSqlTemporalConstructBinary;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructBinary;
 
 /**
  * Base class for RDBMS visitor classes. This class is extended with additional
@@ -371,7 +371,7 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 		/**
 		 * @param gneralDBSqlTemporalConstructBinary
 		 */
-		public void meet(GneralDBSqlTemporalConstructBinary node) {
+		public void meet(GeneralDBSqlTemporalConstructBinary node) {
 			 	meet(node);	
 		}
 

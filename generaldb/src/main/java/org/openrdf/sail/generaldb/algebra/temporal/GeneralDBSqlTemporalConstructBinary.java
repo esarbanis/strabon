@@ -17,7 +17,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public abstract class GneralDBSqlTemporalConstructBinary extends BinaryGeneralDBOperator {
+public abstract class GeneralDBSqlTemporalConstructBinary extends BinaryGeneralDBOperator {
 		
 	/*In Postgres Temporal it seems that an operator is assigned to every PERIOD function 
 	 * I store this information in the declaration of each function so that i can use it in the mapping
@@ -27,7 +27,7 @@ public abstract class GneralDBSqlTemporalConstructBinary extends BinaryGeneralDB
 	//This method returns the respective function of the Postgres Temporal extension
 	public abstract  String getPostgresFunction();
 
-	public GneralDBSqlTemporalConstructBinary(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public GeneralDBSqlTemporalConstructBinary(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 			super(left, right);
 		}
 
