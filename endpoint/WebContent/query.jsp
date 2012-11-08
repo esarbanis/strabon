@@ -117,21 +117,23 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
 		function initialize() {
-			// center at Brahames
-			var brahames = new google.maps.LatLng(37.92253, 23.72275);
 			var myOptions = {
 				zoom: 11,
-				center: brahames,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 			
 			// get KML filename
 			var kml = '<%=request.getAttribute("pathToKML")%>';
+			
 			// create map
 			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-		
-			// display using geoxml3
+			<% if (request.getAttribute("pathToKML") == null) {%>
+				// center at Brahames
+				map.setCenter(new google.maps.LatLng(37.92253, 23.72275));
+			<%}%>
+			
 		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
+			// display using geoxml3
 			var myParser = new geoXML3.parser({map: map});
 			myParser.parse(kml);
 			
