@@ -283,60 +283,67 @@ public abstract class Strabon {
 		int numOfQuadruples=0;
 		int startIndex=0;
 		
-		//remove comments from query
-		String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
-		Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
-		Matcher matcher = pattern.matcher(queryString);
-		String oldQueryString=matcher.replaceAll("");
-		
-		//escape prefixes
-		startIndex=oldQueryString.indexOf('{');
-		newQueryString+=oldQueryString.substring(0, startIndex);
-		oldQueryString=oldQueryString.substring(startIndex);
-		startIndex=0;
+		try
+		{
+			//remove comments from query
+			String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
+			Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+			Matcher matcher = pattern.matcher(queryString);
+			String oldQueryString=matcher.replaceAll("");
+			
+			//escape prefixes
+			startIndex=oldQueryString.indexOf('{');
+			newQueryString+=oldQueryString.substring(0, startIndex);
+			oldQueryString=oldQueryString.substring(startIndex);
+			startIndex=0;
+					
+			//check whether the query contains quadruples
+			String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]]([\\S])*)";
+			String C = "((\"\\[.*\\]\"\\^\\^strdf:validTime)|"+SPO+")";
+			REGEX = "("+SPO+"(\\s)+){3}"+C+"(\\s)*[\\}\\.]";
+	
+			pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
+			matcher = pattern.matcher(oldQueryString);
+			
+			while(matcher.find())		
+			{
+				String quadruple=oldQueryString.substring(matcher.start(), matcher.end()).trim();
+				numOfQuadruples++;
 				
-		//check whether the query contains quadruples
-		String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]]([\\S])*)";
-		String C = "((\"\\[.*\\]\"\\^\\^strdf:validTime)|"+SPO+")";
-		REGEX = "("+SPO+"(\\s)+){3}"+C+"(\\s)*[\\}\\.]";
-
-		pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
-		matcher = pattern.matcher(oldQueryString);
-		
-		while(matcher.find())		
-		{
-			String quadruple=oldQueryString.substring(matcher.start(), matcher.end()).trim();
-			numOfQuadruples++;
+				newQueryString+=oldQueryString.substring(startIndex, matcher.start());
+				startIndex=matcher.end();
+	
+				//tokenize quadruples and convert them to triples:
+				//s p o c  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
+				//                      ?g(numOfQuadruples) strdf:hasValidTime c
+				String[] token = quadruple.split("(\\s)+");
+				newQueryString+="\n GRAPH ?g"+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+				newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime";
+				
+	
+				//add the rest tokens
+				for( int i=3; i<token.length; i++)
+					newQueryString+=" "+token[i];
+			}
 			
-			newQueryString+=oldQueryString.substring(startIndex, matcher.start());
-			startIndex=matcher.end();
-
-			//tokenize quadruples and convert them to triples:
-			//s p o c  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
-			//                      ?g(numOfQuadruples) strdf:hasValidTime c
-			String[] token = quadruple.split("(\\s)+");
-			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime";
-			
-
-			//add the rest tokens
-			for( int i=3; i<token.length; i++)
-				newQueryString+=" "+token[i];
+			if(numOfQuadruples==0)
+			{
+				newQueryString=queryString;
+				logger.info("\n\nQuadruple not found\n\n");
+			}
+			else
+			{
+				newQueryString+=oldQueryString.substring(startIndex);
+				logger.info("\n\nNew QueryString:\n {}\n\n", newQueryString);
+			}
 		}
-		
-		if(numOfQuadruples==0)
+		catch(Exception e)
 		{
-			logger.info("\n\nQuadruple not found\n\n");
-			return queryString;
+			logger.error("[Strabon.queryRewriting]", e);
 		}
-		else
-		{
-			newQueryString+=oldQueryString.substring(startIndex);
-			logger.info("\n\nNew QueryString:\n {}\n\n", newQueryString);		
-			return newQueryString;
-		}
-		
 
+		return newQueryString;
+		
 		//backup
 		//REGEX = ".*(PREFIX)|(SELECT).*";
 		//pattern = Pattern.compile(REGEX, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);							
