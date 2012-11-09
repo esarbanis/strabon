@@ -91,14 +91,14 @@ sudo service ${postgres} restart
 POSTGRES_MAIN_VERSION=$(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
 
 #echo "Dropping endpoint database";
-#dropdb -U postgres ${DB}
+dropdb -U postgres ${DB}
 
 #echo "Creating endpoint database"
-#createdb -U postgres ${DB} 
+createdb -U postgres ${DB} 
 
 # load data
 #curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
-#psql -U postgres -d ${DB} -f /tmp/Kallikratis-Coastline-ExcludeArea-dump.sql
+psql -U postgres -d ${DB} -f /tmp/Kallikratis-Coastline-ExcludeArea-dump.sql
 #psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
 
 echo "starting tomcat"
