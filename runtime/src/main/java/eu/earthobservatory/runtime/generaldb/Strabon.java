@@ -288,17 +288,24 @@ public abstract class Strabon {
 		Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
 		Matcher matcher = pattern.matcher(queryString);
 		String oldQueryString=matcher.replaceAll("");
-
 		
-		// check whether the query contains quadruples
-		String URI = "[\\w?/<>^#]+";
-		REGEX = "("+URI+"(\\s)+){3}"+URI+"(\\s)*[.}]{1}";
-		pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
+		//escape prefixes
+		startIndex=oldQueryString.indexOf('{');
+		newQueryString+=oldQueryString.substring(0, startIndex);
+		oldQueryString=oldQueryString.substring(startIndex);
+		startIndex=0;
+				
+		//check whether the query contains quadruples
+		String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]]([\\S])*)";
+		String C = "((\"\\[.*\\]\"\\^\\^strdf:validTime)|"+SPO+")";
+		REGEX = "("+SPO+"(\\s)+){3}"+C+"(\\s)*[\\}\\.]";
+
+		pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
 		matcher = pattern.matcher(oldQueryString);
 		
 		while(matcher.find())		
 		{
-			String quadruple=oldQueryString.substring(matcher.start(), matcher.end());
+			String quadruple=oldQueryString.substring(matcher.start(), matcher.end()).trim();
 			numOfQuadruples++;
 			
 			newQueryString+=oldQueryString.substring(startIndex, matcher.start());
@@ -309,12 +316,12 @@ public abstract class Strabon {
 			//                      ?g(numOfQuadruples) strdf:hasValidTime c
 			String[] token = quadruple.split("(\\s)+");
 			newQueryString+="\n GRAPH ?g"+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime "+ token[3];
+			newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime";
 			
 
-			//case that the '.' or '}' has a '//s' character before.
-			if(token.length==5)
-				newQueryString+=token[4];
+			//add the rest tokens
+			for( int i=3; i<token.length; i++)
+				newQueryString+=" "+token[i];
 		}
 		
 		if(numOfQuadruples==0)
@@ -328,6 +335,20 @@ public abstract class Strabon {
 			logger.info("\n\nNew QueryString:\n {}\n\n", newQueryString);		
 			return newQueryString;
 		}
+		
+
+		//backup
+		//REGEX = ".*(PREFIX)|(SELECT).*";
+		//pattern = Pattern.compile(REGEX, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);							
+		//matcher1 = pattern.matcher(quadruple);
+		
+		//if(matcher1.find())
+		//	continue;
+		
+		//String URI = "[[a-z][A-Z][?:<\\p{InGreek}]][[a-z][A-Z][0-9][\\p{InGreek}@#$%^<>/:;\"\'.]]*";
+		//String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]][\\S]*)&&(^(.PREFIX.))";
+		//String URI = "[\\S&&[^([\\w[\\?]])]]+";
+		
 	}
 
 
