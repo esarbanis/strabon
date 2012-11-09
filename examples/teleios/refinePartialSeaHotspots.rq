@@ -30,7 +30,7 @@ WHERE {
        		noa:hasConfidence ?conf .
 	 ?c     rdf:type gag:GeometryPart ;
        		gag:hasGeometry ?cGeo .
-       	FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
+       	FILTER(strdf:mbbOverlaps(?hGeo, ?cGeo)) . 
 	OPTIONAL { ?h noa:refinedBy ?refined } .
   }
   GROUP BY ?h ?hGeo ?conf ?muni

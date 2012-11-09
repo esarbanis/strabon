@@ -12,10 +12,10 @@
 
 LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ENDPOINT="http://localhost:8080/NOA"
+ENDPOINT="http://teleios4.di.uoa.gr:8080/NOA"
 DB="NOA2012"
 
-HOTSPOTS_URL="http://localhost/MSG1"
+HOTSPOTS_URL="http://challenge.strabon.di.uoa.gr/MSG1"
 ENDPOINT_SCRIPT=../../scripts/endpoint
 
 logFile="chain.log"
@@ -90,16 +90,16 @@ sudo service ${postgres} restart
 # get the main version of postgres
 POSTGRES_MAIN_VERSION=$(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
 
-echo "Dropping endpoint database";
-dropdb -U postgres ${DB}
+#echo "Dropping endpoint database";
+#dropdb -U postgres ${DB}
 
-echo "Creating endpoint database"
-createdb -U postgres ${DB} 
+#echo "Creating endpoint database"
+#createdb -U postgres ${DB} 
 
 # load data
 #curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
-psql -U postgres -d ${DB} -f /opt/data/Additional-GIS-Data/Kallikratis-Coastline-ExcludeArea-dump.sql
-psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
+#psql -U postgres -d ${DB} -f /tmp/Kallikratis-Coastline-ExcludeArea-dump.sql
+#psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
 
 echo "starting tomcat"
 if test -z "${tomcat}"; then
