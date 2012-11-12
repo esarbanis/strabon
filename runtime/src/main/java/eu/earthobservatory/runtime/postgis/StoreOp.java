@@ -48,7 +48,7 @@ public class StoreOp {
 
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 			strabon.storeInRepo(src, format);
 			
 		} catch (Exception e) {

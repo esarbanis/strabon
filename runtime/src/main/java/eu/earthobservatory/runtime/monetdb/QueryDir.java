@@ -58,7 +58,7 @@ public class QueryDir {
 
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 
 			File dir = new File(path);
 			FilenameFilter filter = new FilenameFilter() {
