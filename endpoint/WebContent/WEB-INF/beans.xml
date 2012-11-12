@@ -55,7 +55,7 @@
 
         <constructor-arg type="boolean" >
             <!-- Check for locks and remove them (in case of a crash) -->
-            <value>true</value>
+            <value>false</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
