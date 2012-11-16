@@ -74,6 +74,8 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.iterator.SPARQLMinusIteration;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBBNodeColumn;
@@ -150,9 +152,13 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	//Counter used to enumerate expressions in having
 	private int havingID = 1;
 	/**
+	 * addition by constant
+	 */
+	private List<String> temporalVars = new ArrayList<String>(15);
+	/**
 	 * 
 	 */
-
+	
 	private static final String ALIAS = "t";
 
 	private GeneralDBSqlExprFactory sql;
@@ -394,15 +400,21 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		GeneralDBColumnVar s = createSubj(alias, subjVar, (Resource)subjValue);
 		GeneralDBColumnVar p = createPred(alias, predVar, (URI)predValue, !present);
 		/**
-		 * XXX enabled spatial objects
+		 * XXX enabled spatial or temporal objects
 		 */
-		boolean spatialObj = false;
+		//boolean spatialObj = false;
 
+
+		GeneralDBColumnVar o = createObj(alias, objVar, objValue);
 		if(geoNames.contains(objVar.getName()))
 		{
-			spatialObj = true;
+			o.setSpatial(true);
 		}
-		GeneralDBColumnVar o = createObj(alias, objVar, objValue, spatialObj);
+		else if(temporalVars.contains(objVar.getName()))
+		{
+			o.setTemporal(true);
+		
+		}
 
 		GeneralDBColumnVar c = createCtx(alias, ctxVar, (Resource)ctxValue);
 
@@ -966,6 +978,34 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			//				
 			//			}
 		}
+		else if(function instanceof TemporalConstructFunc || function instanceof TemporalRelationFunc)
+		{
+
+			List<ValueExpr> allArgs = node.getArgs();
+
+			for(ValueExpr arg : allArgs)
+			{	
+			
+				if(arg instanceof Var)
+				{
+						//The variable's name is not in the list yet
+						if(!temporalVars.contains(((Var) arg).getName()))
+						{
+							temporalVars.add(((Var) arg).getName());
+
+						}
+						/**
+						 * XXX FOLLOWED THE SAME TRICK BY MANOLEE
+						 */
+
+						String originalName = ((Var)arg).getName();
+						((Var)arg).setName(originalName+"?temporal");
+					}
+				}
+			}
+
+		
+		
 
 			}
 
