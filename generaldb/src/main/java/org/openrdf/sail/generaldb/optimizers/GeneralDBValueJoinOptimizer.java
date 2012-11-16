@@ -180,7 +180,7 @@ QueryOptimizer
 			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
 		//XXX If spatial, I don't want this action to take place
-		if(!var.isSpatial())
+		if(!var.isSpatial() && !var.isSpatial())
 		{
 			String alias = "d" + getDBName(var);
 			String tableName = literals.getDatatypeTable().getName();
