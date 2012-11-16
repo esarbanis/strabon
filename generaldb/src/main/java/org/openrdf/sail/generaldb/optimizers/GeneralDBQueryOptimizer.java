@@ -107,7 +107,7 @@ public class GeneralDBQueryOptimizer {
 		new SameTermFilterOptimizer().optimize(expr, dataset, bindings);
 
 		//XXX
-		new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
+		//new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
 	}
 
 	protected void rdbmsOptimizations(TupleExpr expr, Dataset dataset, BindingSet bindings) {
