@@ -9,7 +9,7 @@
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-package eu.earthobservatory.runtime.temporals;
+package eu.earthobservatory.runtime.postgis.temporals;
 
 
 
