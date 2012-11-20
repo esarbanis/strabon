@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -285,6 +286,14 @@ public abstract class Strabon {
 		
 		try
 		{
+
+			String graphVariable="?g"+(int)(Math.random()*10000);
+			while (queryString.contains(graphVariable))
+			{
+				graphVariable+="1";
+			}
+			graphVariable+="_";
+			
 			//remove comments from query
 			String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
 			Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
@@ -317,8 +326,8 @@ public abstract class Strabon {
 				//s p o c  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
 				//                      ?g(numOfQuadruples) strdf:hasValidTime c
 				String[] token = quadruple.split("(\\s)+");
-				newQueryString+="\n GRAPH ?g"+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-				newQueryString+="?g"+numOfQuadruples+" strdf:hasValidTime";
+				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+				newQueryString+=graphVariable+numOfQuadruples+" strdf:hasValidTime";
 				
 	
 				//add the rest tokens
