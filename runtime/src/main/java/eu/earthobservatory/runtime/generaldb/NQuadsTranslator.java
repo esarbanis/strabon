@@ -56,7 +56,7 @@ public class NQuadsTranslator {
     	try {
 			parser.parse(is, "http://test.base.uri");
 		    handledTriples = handler.getTriples();
-	        System.out.println("HANDLED TRIPLES: "+handledTriples.toString());
+	       // System.out.println("HANDLED TRIPLES: "+handledTriples.toString());
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

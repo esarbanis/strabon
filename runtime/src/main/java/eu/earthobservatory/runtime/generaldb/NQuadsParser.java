@@ -201,38 +201,24 @@ public class NQuadsParser extends ModifiedNTriplesParser {
 
     public Resource createValidTimeURI(String sb) throws ParseException, RDFParseException
     {
-    	String strdf = "<http://strdf.di.uoa.gr/ontology#validTime";
+    	String strdf = "http://strdf.di.uoa.gr/ontology#validTime";
     	validTimeLiteral=sb;
-    	System.out.println("LITERAL RETURNED:"+ sb);
-     	//if(Pattern.matches("[*,*]\"^^<http://strdf.di.uoa.gr/ontology#validTime>", sb.toString()))
-    	// if( Pattern.matches("*va*", sb.toString()))
     	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
-     	{	System.out.println("THIS IS A VALID TIME LITERAL");
+     	{	
      	String[] splits = sb.toString().split(",");
-     	System.out.println("split1= "+splits[0].toString());
-     	System.out.println("split2= "+splits[1].toString());
-//     	/String[] splash1 = splits[0].split("[");
      	int i = splits[0].indexOf('[');
      	String element1 = splits[0].substring(++i);
      	String[] splash2 = splits[1].split("]");
-     	System.out.println("element1 ="+ element1);
-     	System.out.println("splash2 ="+ splash2[0]);
-     	//context= createURI(sb.toString());
         DateFormat dateformat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
                 DateFormat.SHORT);
      	int syn = element1.indexOf('+');
      	String startDate = element1.substring(0,syn);
     	syn = element1.indexOf('+');
      	String endDate = element1.substring(0,syn);
-     	//String endDate[] = splash2[0].split("+");
-    	System.out.println("Starting date: "+ startDate);
-     	System.out.println("Ending date: "+ endDate);
      	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
      	Date start = format.parse(startDate);
      	Date end = format.parse(endDate);
-      	System.out.println("Starting date: "+ start.toString());
-     	System.out.println("Ending date: "+ end.toString());
-        String uri = strdf+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID()+ ">"; 
+        String uri = strdf+"/"+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID(); 
         Resource cont = createURI(uri);
         return cont;
     }
@@ -256,43 +242,9 @@ public class NQuadsParser extends ModifiedNTriplesParser {
         	System.out.println("PARSENODE");
             context = createBNode(sb.toString());
         }else if(c == '"'){
-        	System.out.println("GOING TO PARSE THE LITERAL");
         	c = parseLiteral(c, sb);
         	validTimeLiteral=sb.toString();
         	context = createURI(sb.toString());
-        	//context= createValidTimeURI(sb.toString());
-        	/*System.out.println("LITERAL RETURNED:"+ sb);
-         	//if(Pattern.matches("[*,*]\"^^<http://strdf.di.uoa.gr/ontology#validTime>", sb.toString()))
-        	// if( Pattern.matches("*va*", sb.toString()))
-        	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
-         	{	System.out.println("THIS IS A VALID TIME LITERAL");
-         	String[] splits = sb.toString().split(",");
-         	System.out.println("split1= "+splits[0].toString());
-         	System.out.println("split2= "+splits[1].toString());
-//         	/String[] splash1 = splits[0].split("[");
-         	int i = splits[0].indexOf('[');
-         	String element1 = splits[0].substring(++i);
-         	String[] splash2 = splits[1].split("]");
-         	System.out.println("element1 ="+ element1);
-         	System.out.println("splash2 ="+ splash2[0]);
-         	//context= createURI(sb.toString());
-            DateFormat dateformat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-                    DateFormat.SHORT);
-         	int syn = element1.indexOf('+');
-         	String startDate = element1.substring(0,syn);
-        	syn = element1.indexOf('+');
-         	String endDate = element1.substring(0,syn);
-         	//String endDate[] = splash2[0].split("+");
-        	System.out.println("Starting date: "+ startDate);
-         	System.out.println("Ending date: "+ endDate);
-         	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-         	Date start = format.parse(startDate);
-         	Date end = format.parse(endDate);
-          	System.out.println("Starting date: "+ start.toString());
-         	System.out.println("Ending date: "+ end.toString());
-            String uri = strdf+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID()+ ">"; 
-            context = createURI(uri);
-         	}*/
         	
         }else if (c == -1) {
             throwEOFException();

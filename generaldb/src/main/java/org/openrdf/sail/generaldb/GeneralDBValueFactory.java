@@ -234,7 +234,6 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
         if (value instanceof StrabonPolyhedron)
             return asRdbmsLiteral((StrabonPolyhedron)value);
         /****************************************/
-        System.out.println("OUTE LITERAL OUTE GEOMETRIA!!! :"+value.toString());
 		return asRdbmsResource((Resource)value);
 	}
 
@@ -328,7 +327,6 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 			if (r == null)
 				return ValueTable.NIL_ID;
 			RdbmsValue value = asRdbmsValue(r);
-			System.out.println("PIRA TO VALUE: "+value.toString());
 			if (value instanceof RdbmsURI)
 				return uris.getInternalId((RdbmsURI)value);
 			if (value instanceof RdbmsBNode)

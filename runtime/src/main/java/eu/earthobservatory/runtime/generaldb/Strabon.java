@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -474,24 +476,19 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			NQuadsTranslator translator = new NQuadsTranslator();
-		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
-			 final ByteArrayInputStream bais = new ByteArrayInputStream(
-			            "<http://www.v/dat/4b> <http://www.w3.org/20/ica#dtend> <http://sin/value/2> \"[2005-01-01 00:00:00+01,2006-01-01 00:00:00+01]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ."
-			            .getBytes()
-			        );
-			 final ByteArrayInputStream bais2 = new ByteArrayInputStream(
-			            "<http://strdf.di.uoa.gr/ontology#validTime2005-01-01 00:00:00_2005-01-01 00:00:00_Europe/Athens> <http://strdf.di.uoa.gr/ontology#hasValidTime> \"[2005-01-01 00:00:00+01,2006-01-01 00:00:00+01]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ."
-			            .getBytes()
-			        );
-			 
-			Collection<Statement> statements = translator.translate(bais2, baseURI);
+			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
 				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
-				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
-				System.out.println("STATEMENT: "+st.toString());
-				System.out.println("CONTEXT: "+st.getContext().toString());
+				try {
+					int length= st.getContext().toString().length();
+					Resource newContext = new NQuadsParser().createValidTimeURI(st.getContext().toString());
+							con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
 			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
@@ -538,9 +535,26 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
+		if(format.equals(RDFFormat.NQUADS))
+		{
+			ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
+			NQuadsTranslator translator = new NQuadsTranslator();
+		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
+						 
+			Collection<Statement> statements = translator.translate(in, baseURI);
+			Iterator iterator = statements.iterator();
+			for(Statement st: statements)
+			{
+				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
+				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
+				System.out.println("STATEMENT: "+st.toString());
+				System.out.println("CONTEXT: "+st.getContext().toString());
+			}
+			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
+			return;
+		}
 		
-		
-
 		RDFParser parser = Rio.createParser(format);
 
 		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
