@@ -327,7 +327,7 @@ public abstract class Strabon {
 				//                      ?g(numOfQuadruples) strdf:hasValidTime c
 				String[] token = quadruple.split("(\\s)+");
 				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-				newQueryString+=graphVariable+numOfQuadruples+" strdf:hasValidTime";
+				newQueryString+=graphVariable+numOfQuadruples+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
 				
 	
 				//add the rest tokens
