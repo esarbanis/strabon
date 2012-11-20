@@ -482,7 +482,6 @@ public abstract class Strabon {
 			{
 				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
 				try {
-					int length= st.getContext().toString().length();
 					Resource newContext = new NQuadsParser().createValidTimeURI(st.getContext().toString());
 							con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
 				} catch (ParseException e) {
@@ -539,16 +538,19 @@ public abstract class Strabon {
 		{
 			ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
 			NQuadsTranslator translator = new NQuadsTranslator();
-		//	 final ByteArrayInputStream bais = new ByteArrayInputStream(i);
 						 
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
-				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
-				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
-				System.out.println("STATEMENT: "+st.toString());
-				System.out.println("CONTEXT: "+st.getContext().toString());
+				try {
+					Resource newContext = new NQuadsParser().createValidTimeURI(st.getContext().toString());
+					con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
+				} catch (ParseException e) {
+					logger.error(this.getClass().toString()+": error when constructing the new context");
+					e.printStackTrace();
+				}
+	
 			}
 			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
 			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
