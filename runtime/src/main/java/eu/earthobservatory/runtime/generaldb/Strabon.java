@@ -319,6 +319,13 @@ public abstract class Strabon {
 			while(matcher.find())		
 			{
 				String quadruple=oldQueryString.substring(matcher.start(), matcher.end()).trim();
+				
+				REGEX = ".*[.[\\s+]](FILTER).*";
+				pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);							
+				Matcher matcher1 = pattern.matcher(quadruple);
+				if(matcher1.find())
+					continue;
+
 				numOfQuadruples++;
 				
 				newQueryString+=oldQueryString.substring(startIndex, matcher.start());
