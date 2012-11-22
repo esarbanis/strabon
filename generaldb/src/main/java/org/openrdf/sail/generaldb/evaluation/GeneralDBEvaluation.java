@@ -142,7 +142,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	private HashMap<String, Integer> metricIndexesAndNames = new HashMap<String, Integer>();
 	//	private HashMap<String, Integer> intPropertiesIndexesAndNames = new HashMap<String, Integer>();
 	//	private HashMap<String, Integer> boolPropertiesIndexesAndNames = new HashMap<String, Integer>();
-	//	private HashMap<String, Integer> stringPropertiesIndexesAndNames = new HashMap<String, Integer>();
 
 	protected HashMap<Integer,String> temporalVars = new HashMap<Integer,String>();
 

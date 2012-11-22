@@ -106,6 +106,7 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  * 
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
@@ -114,6 +115,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	public static final String SRID_FIELD = "srid";
 	public static final String ST_TRANSFORM = "ST_Transform";
 	public static final String ST_ASBINARY = "ST_AsBinary";
+	
+	public static final String PERIOD_COLUMN = "period"; //this is the name of the period column in period_values table
+	public static final String PERIOD_TO_CSTRING="period_out"; //postgres temporal functions for converting period to cstring
+	public static final String CSTRING_TO_TEXT="textin"; //postres function for converting cstring to text
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -243,6 +248,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			nullLabel = true;
 		}
 		else {
+			String alias = getLabelAlias(var.getRdbmsVar());
+
 			if(var.isSpatial())
 			{
 				filter.appendFunction(ST_ASBINARY);
@@ -251,7 +258,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				filter.appendFunction(ST_TRANSFORM);
 				filter.openBracket();
 				//
-				String alias = getLabelAlias(var.getRdbmsVar());
 
 				filter.column(alias, STRDFGEO_FIELD);
 				//XXX SRID
@@ -265,10 +271,20 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				filter.appendComma();
 				filter.column(alias, SRID_FIELD);
 			}
-			else
+			else if(var.isTemporal())
 			{
+				//textin(period_out(period))
+				filter.appendFunction(CSTRING_TO_TEXT);
+				filter.openBracket();
+				filter.appendFunction(PERIOD_TO_CSTRING);
+				filter.openBracket();
+				filter.column(alias,PERIOD_COLUMN);
+				filter.closeBracket();
+				filter.closeBracket();
+			}
+			else{
 				//XXX original/default case
-				String alias = getLabelAlias(var.getRdbmsVar());
+				System.out.println("DEFAUUUUULT!: a value column will be printed");
 				filter.column(alias, "value");
 			}
 		}
