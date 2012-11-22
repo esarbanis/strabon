@@ -41,8 +41,11 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 
 	protected IdSequence ids;
 
-	//XXX addition
+	//XXX addition- manolee
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer, String>();
+	
+	//XXX addition - constant
+	protected HashMap<Integer,String> temporalVars = new HashMap<Integer, String>();
 
 	//protected HashMap<String, Integer> sp_ConstructIndexesAndNames = new HashMap<String, Integer>();
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> sp_ConstructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -76,9 +79,15 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	public HashMap<Integer,String> getGeoNames() {
 		return geoNames;
 	}
+	public HashMap<Integer,String> getTemporalVars() {
+		return temporalVars;
+	}
 
 	public void setGeoNames(HashMap<Integer,String> geoNames) {
 		this.geoNames = geoNames;
+	}
+	public void setTemporalVars(HashMap<Integer,String> temporalVars) {
+		this.temporalVars = temporalVars;
 	}
 
 	public void setBindings(BindingSet bindings) {
