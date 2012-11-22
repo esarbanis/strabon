@@ -211,13 +211,12 @@ public class NQuadsParser extends ModifiedNTriplesParser {
      	String element1 = splits[0].substring(++i1);
      	String element2 = splits[1].substring(0,i2);
      	//System.out.println("element2"+element2);
-     	String[] splash2 = splits[1].split("]");
         DateFormat dateformat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
                 DateFormat.SHORT);
      	int syn = element1.indexOf('+');
      	//System.out.println("element1 = "+element1);
      	String startDate = element1.substring(0,syn);
-    	syn = element1.indexOf('+');
+    	syn = element2.indexOf('+');
      	String endDate = element2.substring(0,syn);
      	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
      	Date start = format.parse(startDate);
