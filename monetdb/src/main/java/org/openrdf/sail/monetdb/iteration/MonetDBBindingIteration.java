@@ -66,4 +66,11 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 		int srid = rs.getInt(index + 2);
 		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
 	}
+
+	@Override
+	protected RdbmsValue createTemporalValue(ResultSet rs, int index)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -138,14 +138,19 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			if (var != null && !result.hasBinding(name)) {
 				Value value = var.getValue();
 				if (value == null) {
-					if(!var.isSpatial())
+					
+					if(var.isSpatial())
+					{
+						value = createGeoValue(rs, var.getIndex() + 1);
+					}
+					else if(var.isTemporal())
+					{
+						value = createTemporalValue(rs,var.getIndex()+1);
+					}
+					else
 					{
 						//default action
 						value = createValue(rs, var.getIndex() + 1);
-					}
-					else//geoVar encountered
-					{
-						value = createGeoValue(rs, var.getIndex() + 1);
 					}
 				}
 				if (value != null) {
@@ -221,6 +226,8 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
 
+	protected abstract RdbmsValue createTemporalValue(ResultSet rs, int index)
+	throws SQLException;
 
 
 	protected abstract RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)

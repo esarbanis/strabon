@@ -969,16 +969,24 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlPeriodContains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
 			}
 
 	@Override
 	protected void append(GeneralDBSqlPeriodOverlaps expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
 			}
 
+	@Override
+	protected void append(GeneralDBSqlAfterPeriod expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+			}
+
+	
 	@Override
 	protected void append(GeneralDBSqlPeriodIntersection expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException

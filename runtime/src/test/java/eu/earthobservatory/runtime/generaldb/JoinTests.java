@@ -51,7 +51,7 @@ public class JoinTests {
 		"?sensorsDeployment <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> ?sensorPlatform . "+
 		"?sensorPlatform <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?spaceRegion . "+
 		"?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo) && strdf:anyInteract(?sensorsGeo,?placeGeo)) . "+ 
+		"FILTER(strdf:contains(?sensorsGeo,?areaGeo) && strdf:anyInteract(?sensorsGeo,?placeGeo)) . "+ 
 		"}";
 
 	String query5b = 

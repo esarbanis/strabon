@@ -53,6 +53,18 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 
 		return createResource(rs, index);
 	}
+	
+	
+	//constant- do the same for the temporal case
+	@Override
+	protected RdbmsValue createTemporalValue(ResultSet rs, int index)
+	throws SQLException
+	{
+//TODO implement method 
+		System.out.println("CREATE TEMPORAL VALUE!");
+
+		return null;
+	}
 
 
 	@Override

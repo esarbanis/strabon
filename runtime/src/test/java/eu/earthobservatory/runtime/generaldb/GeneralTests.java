@@ -23,7 +23,7 @@ abstract public class GeneralTests {
 	protected static String jdbcDriver= "org.postgresql.Driver";  
 	protected static String serverName = "localhost";
 	protected static String username = "postgres";
-	protected static String password = "postgres";
+	protected static String password = "p1r3as";
 	protected static Integer port = 5432;
 	protected static java.sql.Connection conn = null;
 	protected static String databaseName = null; 

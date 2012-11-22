@@ -113,6 +113,7 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
@@ -1276,6 +1277,12 @@ protected void append(GeneralDBSqlPeriodUnion expr,
 
 protected void append(GeneralDBSqlTemporal expr, GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException {
+}
+
+protected void append(GeneralDBSqlAfterPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException {
+	
 }
 
 }

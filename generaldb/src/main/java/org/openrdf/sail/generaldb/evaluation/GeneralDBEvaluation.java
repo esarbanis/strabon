@@ -126,7 +126,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer,String>();
 	
-
 	protected List<GeneralDBSqlExpr> thematicExpressions = new ArrayList<GeneralDBSqlExpr>(5);
 	
 	/**
@@ -722,7 +721,7 @@ System.out.println("Function RI= "+fc.getURI());
 							//I am carrying SRID too! Therefore, shifting index one more position
 							index++;
 						}
-						else if(var.isTemporal()) //i metavliti mpore na einai eite spatial eite temporal
+						if(var.isTemporal()) 
 						{
 							this.temporalVars.put(var.getIndex()+1,var.getName());
 							//no SRID here, a single shift is needed
