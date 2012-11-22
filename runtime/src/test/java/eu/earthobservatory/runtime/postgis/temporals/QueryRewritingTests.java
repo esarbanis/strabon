@@ -11,12 +11,8 @@ package eu.earthobservatory.runtime.postgis.temporals;
 
 
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,11 +29,11 @@ import eu.earthobservatory.runtime.postgis.temporals.TemplateTests;
 
 
 /**
- * A set of simple tests on temporal selection functionality 
+ * A set of simple tests on query rewriting functionality 
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-public class TemporalSelectionTests {
+public class QueryRewritingTests {
 
 	protected static Strabon strabon;
 	
@@ -65,34 +61,39 @@ public class TemporalSelectionTests {
 	
 	
 	@Test
-	public void testSPOTQuery() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
+	public void testQueryRewriting1() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
 	{
 	
 		String query = 
 			prefixes+
-			"SELECT * "+ 
+			"SELECT ?geo1 "+ 
 			"WHERE { "+
-				"?s ?p ?o ?t. "+
-			"}";
+				"?x strdf:hasGeometry ?geo1 . "+
+				"?y strdf:hasGeometry ?geo2 . "+
+				"FILTER(strdf:intersects(?geo1, ?geo2))."+
+				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		assertEquals(8, bindings.size());
+		System.out.println(strabon.queryRewriting(query));
 	}
-
+	
 
 	@Test
-	public void testSPOQuery() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
+	public void testQueryRewriting2() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
 	{
 	
 		String query = 
 			prefixes+
-			"SELECT * "+ 
-			"WHERE { "+
-				"?s ?p ?o. "+
-			"}";
+			"select ?geo ?s1 ?s2 " +
+			"where {" +
+			"?s1  ?p1 ?o1 ?t1 ." +
+			" ?s2  ?p2 ?o2 ?t2 ." +
+			"?x strdf:hasGeometry ?geo1 ." +
+			"?y strdf:hasGeometry ?geo2." +
+			"FILTER(strdf:intersects(?geo1,?geo2))." +
+			"   FILTER(strdf:afterPeriod(?t1,?t2))}";	
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		System.out.println(bindings);
-		assertEquals(9, bindings.size());
+		System.out.println(strabon.queryRewriting(query));
 	}
+
+
 }

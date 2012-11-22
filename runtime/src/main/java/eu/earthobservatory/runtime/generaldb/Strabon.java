@@ -279,9 +279,8 @@ public abstract class Strabon {
 		return status;
 	}
 
-	private String queryRewriting(String queryString) 
-	{	
-		//TODO
+	public String queryRewriting(String queryString) 
+	{
 		String newQueryString="";
 		int numOfQuadruples=0;
 		int startIndex=0;
