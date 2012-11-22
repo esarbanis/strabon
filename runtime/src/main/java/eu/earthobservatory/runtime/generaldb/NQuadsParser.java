@@ -206,18 +206,24 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
      	{	
      	String[] splits = sb.toString().split(",");
-     	int i = splits[0].indexOf('[');
-     	String element1 = splits[0].substring(++i);
+     	int i1 = splits[0].indexOf('[');
+     	int i2 = splits[1].indexOf(']');
+     	String element1 = splits[0].substring(++i1);
+     	String element2 = splits[1].substring(0,i2);
+     	//System.out.println("element2"+element2);
      	String[] splash2 = splits[1].split("]");
         DateFormat dateformat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
                 DateFormat.SHORT);
      	int syn = element1.indexOf('+');
+     	//System.out.println("element1 = "+element1);
      	String startDate = element1.substring(0,syn);
     	syn = element1.indexOf('+');
-     	String endDate = element1.substring(0,syn);
+     	String endDate = element2.substring(0,syn);
      	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
      	Date start = format.parse(startDate);
+     	//System.out.println("start date:"+startDate.toString());
      	Date end = format.parse(endDate);
+     	//System.out.println("End date:"+ endDate.toString());
         String uri = strdf+"/"+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID(); 
         Resource cont = createURI(uri);
         return cont;
