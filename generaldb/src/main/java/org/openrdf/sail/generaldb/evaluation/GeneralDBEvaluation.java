@@ -125,6 +125,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	protected IdSequence ids;
 
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer,String>();
+	
 
 	protected List<GeneralDBSqlExpr> thematicExpressions = new ArrayList<GeneralDBSqlExpr>(5);
 	
@@ -134,6 +135,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 */ 
 	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, NULL};
 
+	
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
 	//private HashMap<String, Integer> constructIndexesAndNames = new HashMap<String, Integer>();
@@ -142,6 +144,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	private HashMap<String, Integer> boolPropertiesIndexesAndNames = new HashMap<String, Integer>();
 	//	private HashMap<String, Integer> stringPropertiesIndexesAndNames = new HashMap<String, Integer>();
 
+	protected HashMap<Integer,String> temporalVars = new HashMap<Integer,String>();
+
+	
 	public GeneralDBEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
 			IdSequence ids)
 	{
@@ -716,6 +721,12 @@ System.out.println("Function RI= "+fc.getURI());
 						{
 							this.geoNames.put(var.getIndex()+2,var.getName());
 							//I am carrying SRID too! Therefore, shifting index one more position
+							index++;
+						}
+						else if(var.isTemporal()) //i metavliti mpore na einai eite spatial eite temporal
+						{
+							this.temporalVars.put(var.getIndex()+1,var.getName());
+							//no SRID here, a single shift is needed
 							index++;
 						}
 						query.select(proj.getId());

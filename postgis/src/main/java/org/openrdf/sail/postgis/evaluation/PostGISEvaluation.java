@@ -73,7 +73,7 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 				//XXX addition
 				result.setGeoNames(this.geoNames);
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
-				
+				//XXX addition- constant
 				if (logger.isDebugEnabled()) {
 					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
 				}
