@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
  * Adds LEFT JOINs to the query for value tables.
  * 
  * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Konstantina Bereta   <Konstantina.Bereta@di.uoa.gr>
  * 
  */
 public class GeneralDBValueJoinOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> implements

@@ -114,6 +114,8 @@ import org.openrdf.sail.generaldb.schema.IdSequence;
  * Rewrites the core algebra model with a relation optimised model, using SQL.
  * 
  * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Konstantina Bereta   <Konstantina.Bereta@di.uoa.gr>
  * 
  */
 public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> 
