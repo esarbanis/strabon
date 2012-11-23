@@ -46,6 +46,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBFalseValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBRefIdColumn;
@@ -937,6 +938,23 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.mbbEquals))
 		{
 			return mbbEqualsGeo(leftArg,rightArg);
+		}
+		//stSPARQL temporal functions
+		else if(function.getURI().equals(TemporalConstants.afterPeriod))
+		{
+			return afterPeriod(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.beforePeriod))
+		{
+			return beforePeriod(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.periodContains))
+		{
+			return periodContains(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.periodOverlaps))
+		{
+			return periodOverlaps(leftArg,rightArg);
 		}
 		//XXX GeoSPARQL
 		//Simple Features

@@ -985,7 +985,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
 			}
-
+	
+	@Override
+	protected void append(GeneralDBSqlBeforePeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+		
+	}
 	
 	@Override
 	protected void append(GeneralDBSqlPeriodIntersection expr, GeneralDBSqlExprBuilder filter)
@@ -2522,5 +2529,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		filter.closeBracket();
 			}
+
+	
 
 }

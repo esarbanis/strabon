@@ -95,6 +95,14 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlBeforePeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilder;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlBracketBuilder;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder;
@@ -2085,6 +2093,70 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlMbbInside expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodContainedBy expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodContains expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodIntersection expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodMinus expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodOverlaps expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodUnion expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlAfterPeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlBeforePeriod expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub

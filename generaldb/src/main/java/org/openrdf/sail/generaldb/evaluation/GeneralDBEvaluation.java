@@ -857,7 +857,7 @@ System.out.println("Function RI= "+fc.getURI());
 			//			GeneralDBColumnVar var = ((GeneralDBLongLabelColumn) expr).getRdbmsVar();
 			//			for(GeneralDBColumnVar reference: allKnown)
 			//			{
-			//				if(var.getName().equals(reference.getName()))
+			//				if(var.getName()-.equals(reference.getName()))
 			//				{
 			//					var = reference;
 			//				}

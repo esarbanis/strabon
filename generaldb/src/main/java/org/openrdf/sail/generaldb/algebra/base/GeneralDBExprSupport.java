@@ -90,6 +90,11 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlBeforePeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 /**
  * Support method to create SQL expressions.
@@ -350,7 +355,23 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr below(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlBelow(left, right);
 	}
-
+	
+	//stSparql Temporal Relation Functions
+	public static GeneralDBSqlExpr afterPeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlAfterPeriod(left, right);
+	}
+	public static GeneralDBSqlExpr beforePeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlBeforePeriod(left, right);
+	}
+	public static GeneralDBSqlExpr periodContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodContains(left, right);
+	}
+	public static GeneralDBSqlExpr periodContainedBy(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodContainedBy(left, right);
+	}
+	public static GeneralDBSqlExpr periodOverlaps(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodOverlaps(left, right);
+	}
 	//XXX Spatial Construct Functions
 	public static GeneralDBSqlExpr geoUnion(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
