@@ -261,9 +261,13 @@ QueryOptimizer
 			throws RuntimeException
 			{
 		GeneralDBColumnVar var = node.getRdbmsVar();
-		String alias = "g" + getDBName(var);
-		String tableName = literals.getLanguageTable().getName();
-		join(var, alias, tableName);
+		if(!var.isTemporal())
+		{
+			String alias = "g" + getDBName(var);
+			String tableName = literals.getLanguageTable().getName();
+			join(var, alias, tableName);
+		
+		}
 			}
 
 	@Override
