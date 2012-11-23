@@ -287,7 +287,6 @@ public abstract class Strabon {
 		
 		try
 		{
-
 			String graphVariable="?g"+(int)(Math.random()*10000);
 			while (queryString.contains(graphVariable))
 			{
@@ -300,44 +299,35 @@ public abstract class Strabon {
 			Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
 			Matcher matcher = pattern.matcher(queryString);
 			String oldQueryString=matcher.replaceAll("");
-			
-			//escape prefixes
-			startIndex=oldQueryString.indexOf('{');
-			newQueryString+=oldQueryString.substring(0, startIndex);
-			oldQueryString=oldQueryString.substring(startIndex);
-			startIndex=0;
 					
-			//check whether the query contains quadruples
-			String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]]([\\S])*)";
-			String C = "((\"\\[.*\\]\"\\^\\^strdf:validTime)|"+SPO+")";
-			REGEX = "("+SPO+"(\\s)+){3}"+C+"(\\s)*[\\}\\.]";
-	
+			//check whether the query contains quadruples	
+			String Word="((\\w)|(\\p{InGreek}))+";
+			String URI="(<([\\S])*>)|("+Word+":"+Word+")";
+			String Literal="\".*\"(\\^\\^"+URI+")?";
+			String Variable="\\?"+Word;
+			
+			String SPOT="(("+URI+")|("+Literal+")|("+Variable+"))";
+			REGEX="("+SPOT+"(\\s)+){3}"+SPOT+"(\\s)*[\\}\\.]";
+			
+
 			pattern = Pattern.compile(REGEX, Pattern.DOTALL);							
 			matcher = pattern.matcher(oldQueryString);
 			
 			while(matcher.find())		
 			{
 				String quadruple=oldQueryString.substring(matcher.start(), matcher.end()).trim();
-				
-				REGEX = ".*[.[\\s+]](FILTER).*";
-				pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);							
-				Matcher matcher1 = pattern.matcher(quadruple);
-				if(matcher1.find())
-					continue;
-
 				numOfQuadruples++;
 				
 				newQueryString+=oldQueryString.substring(startIndex, matcher.start());
 				startIndex=matcher.end();
 	
 				//tokenize quadruples and convert them to triples:
-				//s p o c  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
-				//                      ?g(numOfQuadruples) strdf:hasValidTime c
+				//s p o t  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
+				//                      ?g(numOfQuadruples) strdf:hasValidTime t
 				String[] token = quadruple.split("(\\s)+");
 				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
 				newQueryString+=graphVariable+numOfQuadruples+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
 				
-	
 				//add the rest tokens
 				for( int i=3; i<token.length; i++)
 					newQueryString+=" "+token[i];
@@ -362,12 +352,23 @@ public abstract class Strabon {
 		return newQueryString;
 		
 		//backup
-		//REGEX = ".*(PREFIX)|(SELECT).*";
-		//pattern = Pattern.compile(REGEX, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);							
-		//matcher1 = pattern.matcher(quadruple);
 		
+		//escape prefixes
+		//startIndex=oldQueryString.indexOf('{');
+		//newQueryString+=oldQueryString.substring(0, startIndex);
+		//oldQueryString=oldQueryString.substring(startIndex);
+		//startIndex=0;
+		
+		//REGEX = ".*[.[\\s+]](FILTER).*";
+		//pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);							
+		//Matcher matcher1 = pattern.matcher(quadruple);
 		//if(matcher1.find())
 		//	continue;
+				
+		//String SPO = "([[a-z][A-Z][?:<]]([\\S])*)";
+		//String C = "((\"\\[.*\\]\"\\^\\^strdf:validTime)|\\?([\\S])*)";
+		//REGEX = "("+SPO+"(\\s)+){3}"+C+"(\\s)*[\\}\\.]{1}";
+
 		
 		//String URI = "[[a-z][A-Z][?:<\\p{InGreek}]][[a-z][A-Z][0-9][\\p{InGreek}@#$%^<>/:;\"\'.]]*";
 		//String SPO = "([[a-z][A-Z][?:<\\p{InGreek}]][\\S]*)&&(^(.PREFIX.))";

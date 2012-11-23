@@ -11,6 +11,8 @@ package eu.earthobservatory.runtime.postgis.temporals;
 
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import org.junit.AfterClass;
@@ -73,7 +75,8 @@ public class QueryRewritingTests {
 				"FILTER(strdf:intersects(?geo1, ?geo2))."+
 				"}";
 		
-		System.out.println(strabon.queryRewriting(query));
+		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		assertEquals(1, querySplit.length);
 	}
 	
 
@@ -92,8 +95,27 @@ public class QueryRewritingTests {
 			"FILTER(strdf:intersects(?geo1,?geo2))." +
 			"   FILTER(strdf:afterPeriod(?t1,?t2))}";	
 		
-		System.out.println(strabon.queryRewriting(query));
+		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		assertEquals(3, querySplit.length);
 	}
 
 
+	@Test
+	public void testQueryRewriting3() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
+	{
+	
+		String query = 
+			prefixes+
+			"select ?s1 " +
+			"where { " +
+			"?s1 ?p1 ?o1 ?t1 ." +
+			"?s2 ?p2 ?o2 ?t2 ." +
+			"?x1 <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry>    ?geo1. " +
+			"?x2 <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry>    ?geo2. " +
+			"FILTER(strdf:disjoint(?geo1,?geo2))" +
+			"FILTER(strdf:afterPeriod(?t1, ?t2)).";
+		
+		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		assertEquals(3, querySplit.length);
+	}
 }

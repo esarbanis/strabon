@@ -92,7 +92,6 @@ public class TemporalSelectionTests {
 			"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		System.out.println(bindings);
 		assertEquals(9, bindings.size());
 	}
 }
