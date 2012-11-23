@@ -92,6 +92,5 @@ org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.Overlef
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverrightPeriodFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc
-org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.periodOverlapsFunc
