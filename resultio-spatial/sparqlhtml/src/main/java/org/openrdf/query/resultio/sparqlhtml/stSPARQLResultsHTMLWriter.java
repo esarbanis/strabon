@@ -152,7 +152,13 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 						xmlWriter.text(boundValue.toString());
 					}																					
 					xmlWriter.endTag(TABLE_DATA_TAG);							
-				}									
+				}
+				else
+				{
+					xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
+					xmlWriter.startTag(TABLE_DATA_TAG);
+					xmlWriter.endTag(TABLE_DATA_TAG);						
+				}	
 				value.setLength(0);
 			}
 			xmlWriter.endTag(TABLE_ROW_TAG);
