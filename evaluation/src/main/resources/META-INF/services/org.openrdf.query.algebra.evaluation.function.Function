@@ -78,8 +78,6 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeature
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeaturesOverlapsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeaturesWithinFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeatureTouchesFunc
-org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc
-org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodIntersectionFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc
@@ -92,5 +90,4 @@ org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.Overlef
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverrightPeriodFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc
-org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.periodOverlapsFunc

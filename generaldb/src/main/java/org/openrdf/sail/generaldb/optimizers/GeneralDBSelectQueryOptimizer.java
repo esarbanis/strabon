@@ -157,6 +157,10 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	 * addition by constant
 	 */
 	private List<String> temporalVars = new ArrayList<String>(15);
+	private GeneralDBColumnVar previousTemporalArg = null;
+	private GeneralDBColumnVar previousTemporalAlias;
+
+
 	/**
 	 * 
 	 */
@@ -456,6 +460,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					//Re-initializing it so that no unwanted joins are created by accident!! my addition
 					previousSpatialArg = null;
 				}
+				else if(var.getColumn().equals("obj")&&previousTemporalArg!=null) //do the same for the temporal case
+				{
+					from.addFilter(new GeneralDBSqlEq(new GeneralDBIdColumn(var), new GeneralDBIdColumn(previousTemporalArg)));
+					previousTemporalArg = null;
+				}
 			}
 
 
@@ -470,6 +479,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					proj.setStringValue(new GeneralDBLabelColumn(var));
 					//13/09/2011 my addition in order to create a spatial join in the meet(Filter) call that will follow
 					previousAlias = var;
+				}
+				else if(temporalVars.contains(var.getName()))
+				{
+					proj.setStringValue(new GeneralDBLabelColumn(var));
+					previousTemporalAlias = var;
 				}
 				else
 				{
