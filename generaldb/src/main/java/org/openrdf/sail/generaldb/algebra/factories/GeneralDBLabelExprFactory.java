@@ -103,6 +103,10 @@ public class GeneralDBLabelExprFactory extends QueryModelVisitorBase<Unsupported
 				//XXX spatial var!
 				result = new GeneralDBLabelColumn(var);
 			}
+			else if(var.getName().endsWith("?temporal"))
+			{
+				result = new GeneralDBLabelColumn(var);
+			}
 			else
 			{
 				//DEFAULT BEHAVIOR!

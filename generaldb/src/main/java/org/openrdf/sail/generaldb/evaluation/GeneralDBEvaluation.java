@@ -203,7 +203,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			var.setName(var.getName().replace("?spatial",""));
 		}
-
+		else if(var.getName().endsWith("?temporal"))
+		{
+			var.setName(var.getName().replace("?temporal",""));
+		}
 		if(var.getName().endsWith("?forGroupBy"))
 		{
 			var.setName(var.getName().replace("?forGroupBy",""));

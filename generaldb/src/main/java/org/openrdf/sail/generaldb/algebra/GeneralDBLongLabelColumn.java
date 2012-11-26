@@ -31,6 +31,14 @@ private boolean spatial = false;
 			var.setName(originalName);
 			super.setVarName(originalName);
 		}
+		else if(var.getName().endsWith("?temporal"))
+		{
+			setSpatial(true);
+			int whereToCut = var.getName().lastIndexOf("?");
+			String originalName = var.getName().substring(0, whereToCut);
+			var.setName(originalName);
+			super.setVarName(originalName);
+		}
 	}
 
 	public GeneralDBLongLabelColumn(GeneralDBColumnVar var) {
