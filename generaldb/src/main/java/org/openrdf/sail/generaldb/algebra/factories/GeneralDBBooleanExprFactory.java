@@ -31,6 +31,7 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.link.AddDateTimeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
@@ -142,13 +143,22 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 		if(right instanceof FunctionCall)
 		{
+			System.out.println("FUNCTION:"+right.toString());
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall)right).getURI());
 			if(function instanceof SpatialMetricFunc)
 			{
 				rightSql = spatialMetricFunction((FunctionCall) right, function);
 			}
+			else if(((FunctionCall) right).getURI().toString().equalsIgnoreCase("http://example.org/custom-function/addDatetime"))
+			{
+				System.out.println("ADD DATE TIME FUNC!");
+				FunctionRegistry fr =  FunctionRegistry.getInstance();
+				Function f = fr.get("http://example.org/custom-function/addDatetime");
+				if (f == null){System.out.println("COULD NOT GET DA FUNCTION!");}
+			}
 			else //spatial property
 			{
+				System.out.println("SPATIAL PROPERTY!!!");
 				rightSql = spatialPropertyFunction((FunctionCall) right, function);
 			}
 			rightIsSpatial = true;
@@ -886,7 +896,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return equalsGeo(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.inside))
+		else if(function.getURI().equals(GeoConstants.within))
 		{
 			return inside(leftArg,rightArg);
 		}
