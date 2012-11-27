@@ -1183,6 +1183,23 @@ public abstract class GeneralDBQueryBuilder {
 
 		}
 	}
+	
+	protected void appendPeriod(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter)
+	{
+		//I seriously doubt it will ever visit this case
+
+		if (var.getRdbmsVar().isResource()) {
+			filter.appendNull();
+
+		}
+		else {
+			String alias = getLabelAlias(var.getRdbmsVar());
+
+			filter.column(alias, "period");
+
+		}
+	}
+
 
 	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter);
 

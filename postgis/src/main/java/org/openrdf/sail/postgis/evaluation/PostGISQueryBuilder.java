@@ -1353,7 +1353,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		//XXX Incorporating SRID
 		String sridExpr = null;
 
-		filter.openBracket();
+		//filter.openBracket();
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -1371,7 +1371,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 
 			GeneralDBSqlExpr tmp = expr;
-			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			if(tmp instanceof GeneralDBSqlTemporalConstructBinary && tmp.getParentNode() == null)
 			{
 				while(true)
 				{
@@ -1420,12 +1420,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			/////
 
 
-			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
-					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&>")|| func.equals("&>")|| func.equals("&&"))
-			{
-				filter.appendFunction(func);
-				
-			}
+		
 			
 			
 			filter.openBracket();
@@ -1433,6 +1428,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else
+			{			
+				appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+
+			}
+			
+			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
+					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&>")|| func.equals("&>")|| func.equals("&&"))
+			{
+				filter.appendFunction(func);
+				
+			}
+			
 		//TODO:Think about adding more temporal function types (e.g., metrics, unary operators)
 			
 			/*else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
@@ -1448,17 +1456,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}*/
-			filter.appendComma();
+			//filter.appendComma();
 
 			
-			filter.openBracket();
+//			//filter.openBracket();
 			if (expr.getRightArg() instanceof GeneralDBSqlTemporalConstructBinary)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
 			}
+			else
+			{
+				appendPeriod((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
 		
 
-			filter.closeBracket();
+//			//filter.closeBracket();
 			//SRID Support
 			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
 			{

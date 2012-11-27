@@ -377,6 +377,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		if(expr instanceof BinaryGeneralDBOperator)
 		{
+			System.out.println("expr instanceof BinaryGeneralDBOperator");
 			dispatchBinarySqlOperator((BinaryGeneralDBOperator) expr, (MonetDBSqlExprBuilder)query.select);
 		}
 		else if(expr instanceof UnaryGeneralDBOperator)
