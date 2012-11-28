@@ -118,4 +118,20 @@ public class QueryRewritingTests {
 		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
 		assertEquals(3, querySplit.length);
 	}
+	
+	@Test
+	public void testQueryRewriting4() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
+	{
+	
+		String query = 
+			prefixes+
+			"select distinct ?s1 ?s2" +
+			"where {" +
+			"?s1 ?p1 ?ro1 ?o1 ." +
+			"#?s2 ?p2 ?ro2 ?o2 ." +
+			"FILTER(strdf:PeriodOverlaps(?o1, \"[2012-11-19 12:41:00+02, 2012-11-19 13:41:00.000001+02]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ))";
+		
+		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");
+		assertEquals(2, querySplit.length);
+	}
 }

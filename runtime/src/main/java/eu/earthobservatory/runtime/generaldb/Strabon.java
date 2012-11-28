@@ -295,7 +295,7 @@ public abstract class Strabon {
 			graphVariable+="_";
 			
 			//remove comments from query
-			String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
+			String REGEX = "((^(\\s)*#)|((\\s)*#)).*$";
 			Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
 			Matcher matcher = pattern.matcher(queryString);
 			String oldQueryString=matcher.replaceAll("");
