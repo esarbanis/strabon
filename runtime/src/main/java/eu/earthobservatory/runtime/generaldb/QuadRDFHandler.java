@@ -53,8 +53,18 @@ public class QuadRDFHandler extends StatementCollector {
 	         	{	
 	         	    NQuadsParser parser = new NQuadsParser();
 	         		try {
-					 Resource graph = parser.createValidTimeURI(st.getContext().toString());
-					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ st.getContext().toString()+ " .\n" ;
+	         			String context = st.getContext().toString();
+						 String validPeriod= context;
+						 if(!context.contains(","))
+						 {
+							 int i = context.indexOf('[')+1;
+							 int j = context.indexOf(']');
+							 validPeriod = context.replace("]",","+context.substring(i, j)+"]");
+							 
+						 }
+					 Resource graph = parser.createValidTimeURI(validPeriod);
+					 
+					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
 					    triples.append(triple);
 					} catch (RDFParseException e) {
 						// TODO Auto-generated catch block

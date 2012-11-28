@@ -490,7 +490,16 @@ public abstract class Strabon {
 			{
 				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
 				try {
-					Resource newContext = new NQuadsParser().createValidTimeURI(st.getContext().toString());
+					String cont = st.getContext().toString();
+					 String validPeriod= cont;
+					 if(!cont.contains(","))
+					 {
+						 int i = cont.indexOf('[')+1;
+						 int j = cont.indexOf(']');
+						 validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
+						 
+					 }
+					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
 							con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
