@@ -958,6 +958,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 * 
 	 * */
 	
+	protected String appendPeriodConstant(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
+	{
+		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
+		String period = arg.getValue();
+		
+		//FIXME period constant should be validated before appended
+		
+		filter.append("period_in(textout('"+period+"'))");
+		return period;
+	}
+	
 	@Override
 	protected void append(GeneralDBSqlPeriodContainedBy expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -1428,6 +1439,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBStringValue)
+			{
+				appendPeriodConstant(expr.getLeftArg(), filter);
+			}
 			else
 			{			
 				appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
@@ -1437,8 +1452,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
 					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&>")|| func.equals("&>")|| func.equals("&&"))
 			{
+				filter.append(" ");
 				filter.appendFunction(func);
-				
+				filter.append(" ");
 			}
 			
 		//TODO:Think about adding more temporal function types (e.g., metrics, unary operators)
@@ -1463,6 +1479,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			if (expr.getRightArg() instanceof GeneralDBSqlTemporalConstructBinary)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendPeriodConstant(expr.getRightArg(), filter);
 			}
 			else
 			{
