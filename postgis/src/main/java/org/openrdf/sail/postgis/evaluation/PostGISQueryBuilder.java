@@ -6,8 +6,13 @@
 package org.openrdf.sail.postgis.evaluation;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.openrdf.query.algebra.evaluation.function.datetime.Timezone;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
@@ -964,8 +969,25 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		String period = arg.getValue();
 		
 		//FIXME period constant should be validated before appended
-		
-		filter.append("period_in(textout('"+period+"'))");
+		if(period.equalsIgnoreCase("now"))
+		{
+			filter.append("period(now())");
+		}
+		else if(period.equalsIgnoreCase("uc"))
+		{
+			   TimeZone UTC = TimeZone.getTimeZone("UTC");
+			    final Calendar c = new GregorianCalendar(UTC);
+			    c.set(1, 0, 1, 0, 0, 0);
+			    c.set(Calendar.MILLISECOND, 0);
+			    Date begin = c.getTime();
+			    c.setTime(new Date(Long.MAX_VALUE));
+			    Date end = c.getTime();
+			filter.append("period_in(textout("+ end +"))");
+		}
+		else
+		{
+			filter.append("period_in(textout('"+period+"'))");
+		}
 		return period;
 	}
 	

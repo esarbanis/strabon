@@ -205,6 +205,7 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     	validTimeLiteral=sb;
     	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
      	{	
+    	
      	String[] splits = sb.toString().split(",");
      	int i1 = splits[0].indexOf('[');
      	int i2 = splits[1].indexOf(']');
