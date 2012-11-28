@@ -986,7 +986,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
-			filter.append("period_in(textout('"+period+"'))");
+			if(period.contains(",")) //valid time is a period
+			{
+				filter.append("period_in(textout('"+period+"'))");		
+			}
+			else // valid time is an instant
+			{
+
+				String instant =period.substring(period.indexOf('[')+1, period.indexOf(']'));
+				filter.append("period(to_timestamp('"+instant+ "','YYYY-MM-DD HH:MI:SS.MS'))");
+			}
+		
 		}
 		return period;
 	}
