@@ -295,11 +295,12 @@ public abstract class Strabon {
 			graphVariable+="_";
 			
 			//remove comments from query
-			String REGEX = "((^(\\s)*#)|((\\s)*#)).*$";
+			queryString=queryString.replaceAll("\\.#", ".\n#");
+		    String REGEX = "((^(\\s)*#)|((\\s)+#)).*$";
 			Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);							
 			Matcher matcher = pattern.matcher(queryString);
 			String oldQueryString=matcher.replaceAll("");
-					
+			
 			//check whether the query contains quadruples	
 			String Word="((\\w)|(\\p{InGreek}))+";
 			String URI="(<([\\S])*>)|("+Word+":"+Word+")";

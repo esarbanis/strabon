@@ -125,11 +125,30 @@ public class QueryRewritingTests {
 	
 		String query = 
 			prefixes+
-			"select distinct ?s1 ?s2" +
+			"select distinct ?s1 ?s2 " +
 			"where {" +
 			"?s1 ?p1 ?ro1 ?o1 ." +
-			"#?s2 ?p2 ?ro2 ?o2 ." +
-			"FILTER(strdf:PeriodOverlaps(?o1, \"[2012-11-19 12:41:00+02, 2012-11-19 13:41:00.000001+02]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ))";
+			"#?s2 ?p2 ?ro2 ?o2 . \n" +
+			"FILTER(strdf:PeriodOverlaps(?o1, \"[2012-11-19 12:41:00+02, 2012-11-19 13:41:00.000001+02]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ))" +
+			"}";
+		
+		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");
+		assertEquals(2, querySplit.length);
+	}
+	
+	
+	@Test
+	public void testQueryRewriting5() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException, QueryEvaluationException
+	{
+	
+		String query = 
+			prefixes+
+			"select distinct ?s1 ?s2 " +
+			"where {" +
+			"?s1 ?p1 ?ro1 ?o1 . " +
+			"FILTER(strdf:PeriodOverlaps(?o1, \"[2012-11-19 12:41:00+02, 2012-11-19 13:41:00.000001+02]\"^^<http://strdf.di.uoa.gr/ontology#validTime>)) " +
+			"#FILTER(strdf:PeriodOverlaps(?o1, \"Now\"^^<http://strdf.di.uoa.gr/ontology#validTime> )) \n " +
+			"}";
 		
 		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");
 		assertEquals(2, querySplit.length);
