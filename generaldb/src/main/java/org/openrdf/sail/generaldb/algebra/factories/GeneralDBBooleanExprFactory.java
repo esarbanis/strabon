@@ -48,6 +48,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.Are
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AfterPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.BeforePeriodFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.EqualsPeriodFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.NequalsPeriodFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverleftPeriodFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverrightPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
@@ -942,6 +946,22 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function instanceof BeforePeriodFunc)
 		{
 			return beforePeriod(leftArg, rightArg);
+		}
+		else if(function instanceof OverleftPeriodFunc)
+		{
+			return overleftPeriod(leftArg, rightArg);
+		}
+		else if(function instanceof OverrightPeriodFunc)
+		{
+			return overrightPeriod(leftArg, rightArg);
+		}
+		else if(function instanceof EqualsPeriodFunc)
+		{
+			return equalsPeriod(leftArg, rightArg);
+		}
+		else if(function instanceof NequalsPeriodFunc)
+		{
+			return nequalsPeriod(leftArg, rightArg);
 		}
 		else if(function instanceof PeriodContainsFunc)
 		{

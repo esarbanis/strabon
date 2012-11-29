@@ -115,6 +115,10 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlBeforePeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlEqualsPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlNequalsPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
@@ -602,6 +606,18 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if(expr instanceof GeneralDBSqlBeforePeriod){
 			append((GeneralDBSqlBeforePeriod)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlOverleftPeriod){
+			append((GeneralDBSqlOverleftPeriod)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlOverrightPeriod){
+			append((GeneralDBSqlOverrightPeriod)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlEqualsPeriod){
+			append((GeneralDBSqlEqualsPeriod)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlNequalsPeriod){
+			append((GeneralDBSqlNequalsPeriod)expr, filter);
 		}
 		else if(expr instanceof GeneralDBSqlPeriodContainedBy){
 			append((GeneralDBSqlPeriodContainedBy)expr, filter);
@@ -1304,6 +1320,21 @@ protected abstract void append(GeneralDBSqlAfterPeriod expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
 
+protected abstract void append(GeneralDBSqlOverleftPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlOverrightPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlEqualsPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlNequalsPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
 protected abstract void append(GeneralDBSqlBeforePeriod expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;

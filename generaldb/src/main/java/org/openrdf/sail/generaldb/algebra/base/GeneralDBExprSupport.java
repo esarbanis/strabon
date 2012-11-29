@@ -92,6 +92,10 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlBeforePeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlEqualsPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlNequalsPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
@@ -100,6 +104,8 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  * Support method to create SQL expressions.
  * 
  * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  * 
  */
 public class GeneralDBExprSupport {
@@ -362,6 +368,18 @@ public class GeneralDBExprSupport {
 	}
 	public static GeneralDBSqlExpr beforePeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlBeforePeriod(left, right);
+	}
+	public static GeneralDBSqlExpr overleftPeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlOverleftPeriod(left, right);
+	}
+	public static GeneralDBSqlExpr overrightPeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlOverrightPeriod(left, right);
+	}
+	public static GeneralDBSqlExpr equalsPeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlEqualsPeriod(left, right);
+	}
+	public static GeneralDBSqlExpr nequalsPeriod(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlNequalsPeriod(left, right);
 	}
 	public static GeneralDBSqlExpr periodContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlPeriodContains(left, right);

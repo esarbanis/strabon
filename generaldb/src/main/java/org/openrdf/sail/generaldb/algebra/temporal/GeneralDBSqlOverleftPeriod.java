@@ -27,7 +27,7 @@ public class GeneralDBSqlOverleftPeriod extends GeneralDBSqlTemporal{
 	@Override
 	public String getOperator() {
 		
-		return "&&";
+		return "&<";
 	}
 
 	/* (non-Javadoc)

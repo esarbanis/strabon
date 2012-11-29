@@ -5,6 +5,8 @@
  */
 package org.openrdf.sail.postgis.evaluation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -977,12 +979,20 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			   TimeZone UTC = TimeZone.getTimeZone("UTC");
 			    final Calendar c = new GregorianCalendar(UTC);
+			    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			   
 			    c.set(1, 0, 1, 0, 0, 0);
 			    c.set(Calendar.MILLISECOND, 0);
 			    Date begin = c.getTime();
 			    c.setTime(new Date(Long.MAX_VALUE));
 			    Date end = c.getTime();
-			filter.append("period_in(textout("+ end +"))");
+			    try {
+					format.parse(end.toString());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			filter.append("period("+ end +")");
 		}
 		else
 		{
@@ -1031,6 +1041,34 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	
 	@Override
 	protected void append(GeneralDBSqlBeforePeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+		
+	}
+	@Override
+	protected void append(GeneralDBSqlOverrightPeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+		
+	}
+	@Override
+	protected void append(GeneralDBSqlOverleftPeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+		
+	}
+	@Override
+	protected void append(GeneralDBSqlEqualsPeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
+		
+	}
+	@Override
+	protected void append(GeneralDBSqlNequalsPeriod expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getOperator());
@@ -1482,7 +1520,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
-					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&>")|| func.equals("&>")|| func.equals("&&"))
+					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&<")|| func.equals("&>")|| func.equals("&&"))
 			{
 				filter.append(" ");
 				filter.appendFunction(func);
