@@ -2,6 +2,12 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.5 released.
 
+	* Added support for querying temporal information.
+
+	* Changed behaviour of Strabon and Strabon Endpoint for connecting to
+	a spatially-enabled database. Only one instance of Strabon is allowed
+	at a time.
+
 	* Implemented a Java client for Strabon Endpoint. The client should be
 	used only with endpoint versions >=3.2.5. The implementation may be
 	found int the `endpoint-client' submodule of maven. Currently, only
