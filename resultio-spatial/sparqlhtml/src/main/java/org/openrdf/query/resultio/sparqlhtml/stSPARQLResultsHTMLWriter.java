@@ -139,7 +139,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 								         "(?object = <"+ boundValue.toString()+ ">)) " +  
 								"}";
 						
-						String href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+boundValue.toString();						
+						String href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");						
 						xmlWriter.setAttribute(LINK_REF, href);
 						xmlWriter.startTag(LINK);							
 						xmlWriter.text(boundValue.toString());					
@@ -152,7 +152,13 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 						xmlWriter.text(boundValue.toString());
 					}																					
 					xmlWriter.endTag(TABLE_DATA_TAG);							
-				}									
+				}
+				else
+				{
+					xmlWriter.setAttribute(STYLE, TABLE_DATA_CLASS);
+					xmlWriter.startTag(TABLE_DATA_TAG);
+					xmlWriter.endTag(TABLE_DATA_TAG);						
+				}	
 				value.setLength(0);
 			}
 			xmlWriter.endTag(TABLE_ROW_TAG);
