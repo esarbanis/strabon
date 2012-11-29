@@ -34,7 +34,7 @@ import eu.earthobservatory.runtime.generaldb.Strabon;
 public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 
 	@BeforeClass
-	public static Strabon beforeClass(String inputfile) throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static Strabon beforeClass(String inputfile) throws Exception
 	{
 		// Read properties
 		Properties properties = new Properties();

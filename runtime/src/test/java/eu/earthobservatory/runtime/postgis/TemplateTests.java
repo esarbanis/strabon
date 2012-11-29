@@ -44,8 +44,7 @@ public class TemplateTests {
 	public static Integer port = null;
 	
 	@BeforeClass
-	public static Strabon beforeClass(String inputFile)
-		throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static Strabon beforeClass(String inputFile) throws Exception
 	{
 		// Read properties
 		Properties properties = new Properties();

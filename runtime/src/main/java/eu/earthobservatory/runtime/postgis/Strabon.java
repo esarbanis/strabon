@@ -11,21 +11,27 @@ package eu.earthobservatory.runtime.postgis;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.openrdf.sail.postgis.PostGISSqlStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ */
 public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.postgis.Strabon.class);
 	
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) 
-	throws SQLException, ClassNotFoundException {
+	throws Exception {
 		super(databaseName, user, password, port, serverName, checkForLockTable);
 	}
-
 
 	protected void initiate(String databaseName, String user, String password, int port, String serverName) {
 		db_store = new PostGISSqlStore();
@@ -75,5 +81,42 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 	    } catch (SQLException e) {
 	        logger.warn("[Strabon.deregisterDriver] Could not deregister JDBC driver: {}", e.getMessage());
 	    }
+	}
+
+	@Override
+	protected boolean isLocked() throws SQLException, ClassNotFoundException{
+		Connection conn = null;
+		Statement st = null;
+		String url = "";
+		
+		try {
+			logger.info("[Strabon] Checking for locks...");
+			Class.forName("org.postgresql.Driver");
+			url = "jdbc:postgresql://" + serverName + ":" + port + "/" + databaseName + "?user=" + user + "&password=" + password;
+			
+			conn = DriverManager.getConnection(url);
+			st = conn.createStatement();
+			ResultSet rs = st.executeQuery("SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename='locked';");
+
+			return rs.next() ? true:false;
+			
+		} catch (SQLException e) {
+			logger.error("[Strabon.isLocked] SQL Exception occured. Connection URL is <{}>: {}", url, e.getMessage());
+			throw e;
+			
+		} catch (ClassNotFoundException e) {
+			logger.error("[Strabon.isLocked] Could not load postgres jdbc driver: {}", e.getMessage());
+			throw e;
+			
+		} finally {
+			// close statement and connection
+			if (st != null) {
+				st.close();
+			}
+			
+			if (conn != null) {
+				conn.close();
+			}
+		}
 	}
 }
