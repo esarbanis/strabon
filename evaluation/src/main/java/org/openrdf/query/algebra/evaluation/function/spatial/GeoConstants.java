@@ -172,5 +172,13 @@ public class GeoConstants {
 	public static final String rccNonTangentialProperPart 		 = geof + "rcc8-ntpp";
 	public static final String rccNonTangentialProperPartInverse = geof + "rcc8-ntppi";
 	public static final String geoSparqlRelate 					 = geof + "relate";
-	
+
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public static final String diffDateTime = "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";
+	/** End of addition **/
 }

@@ -12,6 +12,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBo
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.extDiffDateTime;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
@@ -458,6 +459,24 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	{
+		if(function.getURI().equals(GeoConstants.diffDateTime))
+		{
+			return extDiffDateTime(leftArg, rightArg);
+		}
+
+		//Should never reach this place
+		return null;
+	}
+	/***/
+	
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
