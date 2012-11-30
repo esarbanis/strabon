@@ -58,11 +58,10 @@ public class Authenticate {
     	// close the stream
     	input.close();  
     	
-    	// check if the given credentials are allowed 
-    	if(credentials[0].equals(properties.get("username")) && credentials[1].equals(properties.get("password")))
-    		return true;
-    	else
-    		return false;
-    	    
+    	// check if the given credentials are allowed    	
+		if(!userpassDecoded.equals(":") && credentials[0].equals(properties.get("username")) && credentials[1].equals(properties.get("password")))
+			return true;
+		else
+			return false;
     }
 }

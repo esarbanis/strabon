@@ -90,11 +90,19 @@ public class StoreBean extends HttpServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+						 
+		boolean authorized;
 		
-		Authenticate authenticate = new Authenticate();
-		String authorization = request.getHeader("Authorization");
-	   	 
-	   	 if (!authenticate.authenticateUser(authorization, context)) {	   		 	
+		if(!request.getLocalAddr().equals("127.0.0.1")) {
+			Authenticate authenticate = new Authenticate();
+			String authorization = request.getHeader("Authorization");
+	   		
+			authorized = authenticate.authenticateUser(authorization, context);
+		}
+		else
+			authorized = true;
+				
+	   	 if (!authorized) {	   		 
 	   		 // not allowed, so report he's unauthorized
 	   		 response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
 	   		 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
@@ -106,7 +114,7 @@ public class StoreBean extends HttpServlet {
 			} else {
 				processRequest(request, response);
 			}
-	   	 }
+	   	 }							
 	}
 	
 	/**
