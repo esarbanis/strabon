@@ -48,7 +48,7 @@ public class DescribeOp {
 
 		Strabon strabon = null;
 		try { 
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 			strabon.describe(queryString, format, strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {

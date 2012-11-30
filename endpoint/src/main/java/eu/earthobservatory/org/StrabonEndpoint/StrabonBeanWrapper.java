@@ -132,7 +132,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			try {
 				logger.warn("[StrabonEndpoint] Strabon not initialized yet.");
 				logger.warn("[StrabonEndpoint] Initializing Strabon.");
-				logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
+				//logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
 				
 				// initialize Strabon according to user preference
 				if (Common.DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
@@ -150,7 +150,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				
 				
 			} catch (Exception e) {
-				logger.error("[StrabonEndpoint] Exception occured while creating Strabon.\n" + this.getDetails(), e);
+				logger.error("[StrabonEndpoint] Exception occured while creating Strabon. {}\n{}", e.getMessage(), this.getDetails());
 				return false;
 			}
 		}

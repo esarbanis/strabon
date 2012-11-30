@@ -55,7 +55,7 @@
 
         <constructor-arg type="boolean" >
             <!-- Check for locks and remove them (in case of a crash) -->
-            <value>true</value>
+            <value>false</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
@@ -70,12 +70,13 @@
         
         <constructor-arg type="java.lang.String" >
             <!-- Default prefixes -->
+            <!-- PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#> -->
             <value><![CDATA[PREFIX lgd:<http://linkedgeodata.org/triplify/>
 PREFIX lgdgeo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX lgdont:<http://linkedgeodata.org/ontology/>
 PREFIX geonames:<http://www.geonames.org/ontology#>
 PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
-PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>

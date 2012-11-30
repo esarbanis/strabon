@@ -76,15 +76,19 @@ public abstract class Strabon {
 	private SailRepository repo1;
 	private SailRepositoryConnection con1 = null;
 
-	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws SQLException, ClassNotFoundException {
+	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws Exception {
 		this.databaseName = databaseName;
 		this.user = user;
 		this.password = password;
 		this.port = port;
 		this.serverName = serverName;
 		
-		if (checkForLockTable == true) {
+		if (checkForLockTable == true) { // force check of locked table and delete if exists
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
+			
+		} else if (isLocked()) { // check for lock and exit if exists
+			throw new Exception("Cannot connect to database. Database is already locked by another process.");
+			
 		}
 
 		initiate(databaseName, user, password, port, serverName);
@@ -143,6 +147,12 @@ public abstract class Strabon {
 		}
 	}
 
+	/**
+	 * Check whether the database is locked by another instance of Strabon or Endpoint.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean isLocked() throws SQLException, ClassNotFoundException;
 
 	protected abstract void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName)
 			throws SQLException, ClassNotFoundException;
@@ -166,8 +176,17 @@ public abstract class Strabon {
 			con1.close();
 			repo1.shutDown();
 			
+			// delete the lock as well
+			checkAndDeleteLock(databaseName, user, password, port, serverName);
+			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
+			
+		} catch (SQLException e) {
+			logger.error("[Strabon.close] Error in deleting lock", e);
+			
+		} catch (ClassNotFoundException e) {
+			logger.error("[Strabon.close] Error in deleting lock", e);
 		}
 
 		logger.info("[Strabon.close] Connection closed.");

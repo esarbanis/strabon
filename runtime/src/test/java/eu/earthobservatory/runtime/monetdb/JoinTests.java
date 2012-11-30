@@ -9,16 +9,10 @@
  */
 package eu.earthobservatory.runtime.monetdb;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 
 /**
  * 
@@ -28,7 +22,7 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 public class JoinTests extends eu.earthobservatory.runtime.generaldb.JoinTests {
 
 	@BeforeClass
-	public static void beforeClass() throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void beforeClass() throws Exception
 	{
 		strabon = TemplateTests.beforeClass("/join-tests-srid.nt");
 	}
