@@ -487,6 +487,8 @@ public abstract class Strabon {
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			System.out.println("Translated NQUADS to NTRIPLES!");
 			Iterator iterator = statements.iterator();
+			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			for(Statement st: statements)
 			{
 				//edw prepei na mpei sunartisi pou na metasximatizei to context an einai temporal
@@ -507,8 +509,7 @@ public abstract class Strabon {
 					e.printStackTrace();
 				}
 			}
-			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
-			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
+			
 			return;
 		}
 
