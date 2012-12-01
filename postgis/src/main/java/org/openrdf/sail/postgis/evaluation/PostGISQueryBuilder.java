@@ -1499,10 +1499,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				}
 			}
 			/////
-
-
-		
-			
 			
 			filter.openBracket();
 			if (expr.getLeftArg() instanceof GeneralDBSqlTemporalConstructBinary)

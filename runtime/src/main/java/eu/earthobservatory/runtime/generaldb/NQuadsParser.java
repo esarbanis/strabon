@@ -203,22 +203,57 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     {
     	String strdf = "http://strdf.di.uoa.gr/ontology#validTime";
     	validTimeLiteral=sb;
+    	int i2=0; 
+    	
     	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
      	{	
     	
      	String[] splits = sb.toString().split(",");
      	int i1 = splits[0].indexOf('[');
-     	int i2 = splits[1].indexOf(']');
+     	if (splits[1].contains("]"))
+     		 i2 = splits[1].indexOf(']');
+     	else if (splits[1].contains(")"))
+     	{
+     		i2 = splits[1].indexOf(')');
+     	}
      	String element1 = splits[0].substring(++i1);
      	String element2 = splits[1].substring(0,i2);
      	//System.out.println("element2"+element2);
         DateFormat dateformat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
                 DateFormat.SHORT);
-     	int syn = element1.indexOf('+');
+        String startDate=null; 
+        String endDate=null;
+        
+        int syn=0;
+        
+        if (element1.contains("+"))
+        {
+        	syn = element1.indexOf('+');
+         	if (syn<0)
+         		syn = element1.indexOf('+');
+        
+         	startDate = element2.substring(0,syn);
+        }
+        else
+        {
+        	startDate = element1;
+        }
      	//System.out.println("element1 = "+element1);
-     	String startDate = element1.substring(0,syn);
-    	syn = element2.indexOf('+');
-     	String endDate = element2.substring(0,syn);
+     	
+     	
+     	if (element2.contains("+"))
+        {
+        	syn = element2.indexOf('+');
+         	if (syn<0)
+         		syn = element2.indexOf('+');
+         	endDate = element2.substring(0,syn);
+         	
+        }
+     	else
+     	{
+     		endDate = element2;
+     	}
+     	
      	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
      	Date start = format.parse(startDate);
      	//System.out.println("start date:"+startDate.toString());

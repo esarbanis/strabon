@@ -464,7 +464,7 @@ case "${1}" in
 			else
 				FORMAT="${1}"
 				case "${FORMAT}" in
-					ntriples|n3|rdfxml|turtle)
+					ntriples|n3|rdfxml|turtle|nquads)
 						shift
 						;;
 					*)

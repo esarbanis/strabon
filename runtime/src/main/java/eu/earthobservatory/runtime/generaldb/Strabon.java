@@ -485,6 +485,7 @@ public abstract class Strabon {
 		{
 			NQuadsTranslator translator = new NQuadsTranslator();
 			Collection<Statement> statements = translator.translate(in, baseURI);
+			System.out.println("Translated NQUADS to NTRIPLES!");
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{

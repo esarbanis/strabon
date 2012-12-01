@@ -27,7 +27,7 @@ import org.openrdf.rio.helpers.StatementCollector;
 
 public class QuadRDFHandler extends StatementCollector {
 	        
-	        private StringBuffer triples = new StringBuffer(1024);
+	        private StringBuffer triples = new StringBuffer(4096);
 
 	   
 	        @Override
@@ -65,7 +65,14 @@ public class QuadRDFHandler extends StatementCollector {
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
 					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
-					    triples.append(triple);
+					 if (!triples.toString().contains(triple))
+					 {
+						 triples.append(triple);
+						 System.out.println("TRIPLE:"+triple);
+
+					 }
+					
+						 
 					} catch (RDFParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
