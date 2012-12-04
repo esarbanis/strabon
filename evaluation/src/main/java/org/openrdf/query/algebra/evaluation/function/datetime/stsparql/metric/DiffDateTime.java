@@ -13,8 +13,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 
 /**
- * @author Garmpis Georgios <ggarbis@di.uoa.gr>
- *
+ * Addition for datetime metric functions
+ * 
+ * @author George Garbis <ggarbis@di.uoa.gr>
+ * 
  */
 public class DiffDateTime extends DateTimeMetricFunc {
 

@@ -34,6 +34,7 @@ import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
@@ -189,7 +190,15 @@ public class stSPARQLConstantOptimizer implements QueryOptimizer {
 			if(!(function instanceof SpatialConstructFunc) && 
 					!(function instanceof SpatialMetricFunc) &&
 					!(function instanceof SpatialPropertyFunc) &&
-					!(function instanceof SpatialRelationshipFunc) )
+					!(function instanceof SpatialRelationshipFunc) 
+					/**
+					 * Addition for datetime metric functions
+					 * 
+					 * @author George Garbis <ggarbis@di.uoa.gr>
+					 * 
+					 */
+					&& !(function instanceof DateTimeMetricFunc)
+				)
 			{
 				super.meet(functionCall);
 

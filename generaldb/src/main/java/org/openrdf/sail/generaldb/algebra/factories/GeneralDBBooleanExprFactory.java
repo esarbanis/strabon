@@ -32,6 +32,7 @@ import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.link.AddDateTimeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
@@ -121,15 +122,26 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		if(left instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall)left).getURI());
+			leftIsSpatial = true;
 			if(function instanceof SpatialMetricFunc)
 			{
 				leftSql = spatialMetricFunction((FunctionCall) left, function);
 			}
+			/**
+			 * Addition for datetime metric functions
+			 * 
+			 * @author George Garbis <ggarbis@di.uoa.gr>
+			 * 
+			 */
+			else if (function instanceof DateTimeMetricFunc){
+				leftSql = dateTimeMetricFunction((FunctionCall)left, function);
+				leftIsSpatial = false;
+			}
+			/***/
 			else //spatial property
 			{
 				leftSql = spatialPropertyFunction((FunctionCall) left, function);
 			}
-			leftIsSpatial = true;
 		}
 		else if(left instanceof MathExpr)
 		{
@@ -687,6 +699,24 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 			}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
+	{
+		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
+		if(function instanceof DateTimeMetricFunc) //1 argument
+		{
+			return dateTimeMetricFunction(functionCall,function);	
+		}
+		return null;
+	}
+
+	/***/
+	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
@@ -808,6 +838,45 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
+	{
+		GeneralDBSqlExpr leftArg = null;
+		GeneralDBSqlExpr rightArg = null;
+
+		ValueExpr left = functionCall.getArgs().get(0);
+		ValueExpr right = functionCall.getArgs().get(1);
+
+		if(left instanceof FunctionCall)
+		{
+			leftArg = dateTimeFunction((FunctionCall) left);
+		}
+		else
+		{
+			leftArg = label(left);
+		}
+
+		if(right instanceof FunctionCall)
+		{
+			rightArg = spatialFunction((FunctionCall) right);
+			rightArg = dateTimeFunction((FunctionCall) right);
+		}
+		else
+		{
+			rightArg = label(right);
+		}
+		
+		return dateTimeMetricPicker(function, leftArg, rightArg);
+
+	}
+
+	/***/
+	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
