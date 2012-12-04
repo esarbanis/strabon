@@ -331,7 +331,7 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetUnarySqlOperator(node);
 	 }
-
+	 
 	 public void meet(GeneralDBSqlSpatialMetricBinary node) throws X 
 	 {
 		 meetBinarySqlOperator(node);

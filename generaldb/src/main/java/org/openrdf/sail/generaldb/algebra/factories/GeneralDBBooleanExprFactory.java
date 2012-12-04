@@ -1130,6 +1130,25 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	
+	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	{
+		if(function.getURI().equals(GeoConstants.diffDateTime))
+		{
+			return diffDateTime(leftArg, rightArg);
+		}
+
+		//Should never reach this place
+		return null;
+	}
+	
+	/***/
+	
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{

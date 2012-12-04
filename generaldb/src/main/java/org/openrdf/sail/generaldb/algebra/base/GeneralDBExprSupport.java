@@ -26,6 +26,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
@@ -407,6 +408,19 @@ public class GeneralDBExprSupport {
 
 		return new GeneralDBSqlExtDiffDateTime(left, right);
 	}
+	/***/
+	
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+
+	public static GeneralDBSqlExpr diffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+
+		return new GeneralDBSqlDiffDateTime(left, right);
+	}
+	
 	/***/
 	
 	//XXX Spatial Metric Functions

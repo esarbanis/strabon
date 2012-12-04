@@ -42,6 +42,7 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
@@ -250,7 +251,27 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			return spatialPropertyPicker(function, leftArg);
 		}
 	}
+	
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
 
+	public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
+	{
+		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
+		if(function instanceof DateTimeMetricFunc)
+		{
+			return dateTimeMetricFunction(functionCall,function);	
+		}
+		
+		return null;
+	}
+
+	
+	/***/
+	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
@@ -330,6 +351,31 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	
+	GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
+	{
+		GeneralDBSqlExpr leftArg = null;
+		GeneralDBSqlExpr rightArg = null;
+
+		ValueExpr left = functionCall.getArgs().get(0);
+		ValueExpr right = functionCall.getArgs().get(1);
+
+		// TODO ti bazw edw??
+		leftArg = null;
+
+		rightArg = null;
+		return dateTimeMetricPicker(function, leftArg, rightArg);
+
+	}
+		
+	/***/
+	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
