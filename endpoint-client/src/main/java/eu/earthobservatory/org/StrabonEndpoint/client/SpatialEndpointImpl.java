@@ -9,8 +9,10 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
@@ -50,7 +52,7 @@ public abstract class SpatialEndpointImpl implements SpatialEndpoint {
 	 * The connection manager that manages sharing of connections to endpoints
 	 * among several threads.
 	 */
-	private MultiThreadedHttpConnectionManager connectionManager;
+	private ClientConnectionManager connectionManager;
 	
 	/**
 	 * The HttpClient to be used for connecting to an endpoint.
@@ -68,10 +70,10 @@ public abstract class SpatialEndpointImpl implements SpatialEndpoint {
 		this.endpointName = (endpointName == null ? "":endpointName);
 		
 		// create a connection manager for allowing the users of this class use threads
-		connectionManager = new MultiThreadedHttpConnectionManager();
+		connectionManager = new PoolingClientConnectionManager();
 		
 		// create an HttpClient instance that establishes connections based on the connection manager
-		hc = new HttpClient(connectionManager);
+		hc = new DefaultHttpClient(connectionManager);
 	}
 		
 	public String getHost() {
