@@ -15,7 +15,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * 
  */
 
-public class GeneralDBSqlDiffDateTime extends GeneralDBSqlDateTimeMetricBinary{
+public class GeneralDBSqlDiffDateTime extends GeneralDBSqlDateTimeMetricBinary {
 	
 	public GeneralDBSqlDiffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);

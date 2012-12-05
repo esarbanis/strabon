@@ -23,6 +23,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
@@ -194,6 +195,15 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		; 
 	}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public enum DateTimeFunctionMonetDB { Difference; }
+	/***/
+
+	
 	public MonetDBQueryBuilder() {
 		super();
 	}
@@ -757,6 +767,19 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_SymDifference);
 			}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	@Override
+	protected void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException
+	{
+		appendGeneralDBDateTimeFunctionBinary(expr, filter, DateTimeFunctionMonetDB.Difference);
+	}
+	/***/
+	
 	@Override
 	//Spatial Metric Functions
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
@@ -1100,6 +1123,147 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 			}
+
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	protected void appendGeneralDBDateTimeFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, DateTimeFunctionMonetDB func)
+			throws UnsupportedRdbmsOperatorException
+	{
+		filter.openBracket();
+
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+		}
+		else
+		{
+
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+						}
+						break;
+					}
+				}
+			}
+
+			filter.openBracket();
+
+			if(expr.getLeftArg() instanceof GeneralDBStringValue)
+			{
+				GeneralDBStringValue arg = (GeneralDBStringValue) expr.getLeftArg();
+				String raw = arg.getValue();
+				filter.append(" "+raw+" ");
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getLeftArg()), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getLeftArg()), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBURIColumn) //case met in transform!
+			{
+				filter.keepSRID_part1();
+				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
+				filter.keepSRID_part2();
+				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
+				filter.keepSRID_part3();
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getLeftArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getLeftArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getLeftArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else
+			{
+				// Den prepei na ftasei edw
+			}
+						
+			switch(func)
+			{
+				case Difference: filter.append(" - "); break;			
+			}
+			
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				GeneralDBStringValue arg = (GeneralDBStringValue) expr.getRightArg();
+				String raw = arg.getValue();
+				filter.append(" "+raw+" ");
+			}
+			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+			{
+				filter.keepSRID_part1();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part2();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part3();
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else
+			{
+				// Den prepei na ftasei edw
+			}
+
+
+			filter.closeBracket();
+		}
+		filter.closeBracket();
+	}
+	
+	/***/
 
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 

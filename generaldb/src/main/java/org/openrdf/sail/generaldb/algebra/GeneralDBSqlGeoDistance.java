@@ -9,7 +9,7 @@ package org.openrdf.sail.generaldb.algebra;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlGeoDistance extends GeneralDBSqlSpatialMetricBinary{
+public class GeneralDBSqlGeoDistance extends GeneralDBSqlSpatialMetricBinary {
 
 	public GeneralDBSqlGeoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);

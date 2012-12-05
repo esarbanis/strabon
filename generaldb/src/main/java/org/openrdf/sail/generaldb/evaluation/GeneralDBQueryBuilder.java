@@ -39,6 +39,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
@@ -687,7 +688,9 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoDistance) {
 			append((GeneralDBSqlGeoDistance)expr, filter);
 		}
-
+		else if (expr instanceof GeneralDBSqlDiffDateTime) {
+			append((GeneralDBSqlDiffDateTime)expr, filter);
+		}
 		/**
 		 * end of my addition
 		 */
@@ -1106,6 +1109,15 @@ public abstract class GeneralDBQueryBuilder {
 	protected abstract void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	protected abstract void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	/***/
+	
 	//Spatial Metric Functions
 	protected abstract void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
@@ -1215,6 +1227,18 @@ public abstract class GeneralDBQueryBuilder {
 
 			}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	protected void appendCastToEpoch(GeneralDBSqlExprBuilder filter)
+	{
+//		filter.epochCastBefore();
+//		filter.epochCastAfter();
+	}	
+	/***/
+	
 	protected void appendCastToDouble(GeneralDBSqlExprBuilder filter)
 	{
 		filter.doubleCast();

@@ -22,6 +22,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
@@ -731,6 +732,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_SymDifference);
 			}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	@Override
+	protected void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException
+	{
+		appendGeneralDBDateTimeFunctionBinary(expr, filter, DateTimeFunctionPostGIS.Difference);
+	}
+	/***/
+	
 	//Spatial Metric Functions
 	@Override
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
@@ -1264,7 +1278,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
 	 */
-	
 	protected void appendGeneralDBDateTimeFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, DateTimeFunctionPostGIS func)
 			throws UnsupportedRdbmsOperatorException
 	{
@@ -1347,8 +1360,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			//case met in buffer when in select -> buffer(?spatial,?thematic)
 			else if(expr.getLeftArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getLeftArg()).isSpatial())
 			{
+				filter.append(" extract(epoch from ");
 				append(((GeneralDBLabelColumn)expr.getLeftArg()),filter);
-				appendCastToDouble(filter);
+				filter.append("::timestamp) ");
 			}
 			else
 			{
@@ -1385,8 +1399,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			//case met in buffer when in select -> buffer(?spatial,?thematic)
 			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 			{
+				filter.append(" extract(epoch from ");
 				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-				appendCastToDouble(filter);
+				filter.append("::timestamp) ");
+				
 			}
 			else
 			{
@@ -1397,8 +1413,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.closeBracket();
 		}
 		filter.closeBracket();
-	}
-	
+	}	
 	/***/
 
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
