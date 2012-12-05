@@ -879,6 +879,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			throws RuntimeException
 			{
 		super.meet(node);
+		// Edw ftanei to Filter GeneralDBSqlDiffDateTime!
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 

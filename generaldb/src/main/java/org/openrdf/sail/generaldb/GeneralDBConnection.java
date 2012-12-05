@@ -211,6 +211,7 @@ public class GeneralDBConnection extends SailConnectionBase {
 			EvaluationStrategy strategy;
 			strategy = factory.createRdbmsEvaluation(dataset);
 			tupleExpr = optimizer.optimize(expr, dataset, bindings, strategy);
+			// Mexri edw to GeneralDBSqlDiffDateTime ftanei kanonika
 			return strategy.evaluate(tupleExpr, EmptyBindingSet.getInstance());
 		}
 		catch (QueryEvaluationException e) {
