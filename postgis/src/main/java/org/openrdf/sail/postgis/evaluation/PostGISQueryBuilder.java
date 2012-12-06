@@ -1359,7 +1359,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			//case met in buffer when in select -> buffer(?spatial,?thematic)
 			else if(expr.getLeftArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getLeftArg()).isSpatial())
-			{
+			{	// TODO auto den einai swsto giati mporei na mhn ginei apply 
+				// mono se dateTime values
 				filter.append(" extract(epoch from ");
 				append(((GeneralDBLabelColumn)expr.getLeftArg()),filter);
 				filter.append("::timestamp) ");
@@ -1398,7 +1399,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			//case met in buffer when in select -> buffer(?spatial,?thematic)
 			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
-			{
+			{	// TODO auto den einai swsto giati mporei na mhn ginei apply 
+				// mono se dateTime values
 				filter.append(" extract(epoch from ");
 				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
 				filter.append("::timestamp) ");
