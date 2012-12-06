@@ -497,9 +497,10 @@ public abstract class Strabon {
 					 String validPeriod= cont;
 					 if(!cont.contains(","))
 					 {
-						 int i = cont.indexOf('[')+1;
-						 int j = cont.indexOf(']');
-						 validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
+						 int i = cont.indexOf('"')+1;
+						 int j = cont.lastIndexOf('"');
+						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
+						 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
 						 
 					 }
 					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
