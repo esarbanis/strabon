@@ -562,8 +562,19 @@ public abstract class Strabon {
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
+				String cont = st.getContext().toString();
+				 String validPeriod= cont;
+				 if(!cont.contains(","))
+				 {
+					 int i = cont.indexOf('"')+1;
+					 int j = cont.lastIndexOf('"');
+					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
+					 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
+					 
+				 }
+				 
 				try {
-					Resource newContext = new NQuadsParser().createValidTimeURI(st.getContext().toString());
+					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
 					con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
 				} catch (ParseException e) {
 					logger.error(this.getClass().toString()+": error when constructing the new context");
