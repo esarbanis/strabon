@@ -1,0 +1,7 @@
+#!/bin/bash
+export DBTYPE=strabon #monet, postgres, rdf3x, strabon, naive
+export HOST='localhost'
+export PORT='5432'
+export USERNAME='strabon'
+export PASSWORD='strabon'
+export LOG_PATH="/home/strabon/experiments/logs-$DBTYPE"

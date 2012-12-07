@@ -225,7 +225,7 @@ public abstract class Strabon {
 		logger.info("[Strabon.query] Executing query: \n{}", queryString);
 		
 		// check for null stream
-		if (out == null) {
+		if ((out == null) && (resultsFormat != org.openrdf.query.resultio.Format.EXP)) {
 			logger.error("[Strabon.query] Cannot write to null stream.");
 			
 			return false;
@@ -255,13 +255,14 @@ public abstract class Strabon {
 				long t2 = System.nanoTime();
 				
 				while (result.hasNext()) {
+					String r = result.toString();
 					results++;
 				}
 				
 				long t3 = System.nanoTime();
 	
-				//return new long[]{t2-t1, t3-t2, t3-t1, results};
-				break;
+				return new long[]{t2-t1, t3-t2, t3-t1, results};
+				//break;
 				
 		default:
 			// get the writer for the specified format

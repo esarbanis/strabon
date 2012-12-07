@@ -1,0 +1,20 @@
+#!/bin/bash
+INITPATH="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $INITPATH/setenv
+
+#DBNAME=$1
+
+cd $LOG_PATH;
+dirs=`ls -1d $DBNAME* | sort | tail -n 1`;
+maxdir=${dirs/$DBNAME-/''};
+maxdir=`echo $maxdir | sed 's/^0//'`;
+dir=`printf "%02d" $((++maxdir))`;
+
+if [ -z $dir ] ; then dir="01"; fi
+
+mkdir $DBNAME-$dir;
+
+cd $STRABONEXP_PATH;
+CPATH=$(JARS=(*.jar); IFS=:; echo "${JARS[*]}")
+java -Xmx10G -cp $CPATH eu.earthobservatory.utils.ExperimentsReal  $HOST $PORT $DBNAME $USERNAME $PASSWORD $LOG_PATH/$DBNAME-$dir 1> $LOG_PATH/$DBNAME-$dir/$DBNAME.out 2>$LOG_PATH/$DBNAME-$dir/$DBNAME.err
+cd $INITPATH;
