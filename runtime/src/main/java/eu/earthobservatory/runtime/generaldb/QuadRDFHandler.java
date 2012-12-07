@@ -57,10 +57,11 @@ public class QuadRDFHandler extends StatementCollector {
 						 String validPeriod= context;
 						 if(!context.contains(","))
 						 {
-							 int i = context.indexOf('[')+1;
-							 int j = context.indexOf(']');
-							 validPeriod = context.replace("]",","+context.substring(i, j)+"]");
-							 
+							 int i = context.indexOf('"')+1;
+							 int j = context.lastIndexOf('"');
+							 validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
+
+							// validPeriod = context.replace("]",","+context.substring(i, j)+"]");
 						 }
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
