@@ -16,28 +16,28 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-noa:h111	noa:hasAcquisitionTime "2012-08-24T12:00:00"^^xsd:datetime ;
+noa:h111	noa:hasAcquisitionTime "2012-08-24T12:00:00"^^xsd:dateTime ;
 			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
 
 
-noa:h112	noa:hasAcquisitionTime "2012-08-24T12:05:00"^^xsd:datetime ;
+noa:h112	noa:hasAcquisitionTime "2012-08-24T12:05:00"^^xsd:dateTime ;
         	noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
 
-noa:h121		noa:hasAcquisitionTime "2012-08-24T12:15:00"^^xsd:datetime ;
+noa:h121		noa:hasAcquisitionTime "2012-08-24T12:15:00"^^xsd:dateTime ;
 			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
 
-noa:h211	noa:hasAcquisitionTime "2012-08-24T12:30:00"^^xsd:datetime ;
+noa:h211	noa:hasAcquisitionTime "2012-08-24T12:30:00"^^xsd:dateTime ;
 			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
 
-noa:h221	noa:hasAcquisitionTime "2012-08-24T12:40:00"^^xsd:datetime ;
+noa:h221	noa:hasAcquisitionTime "2012-08-24T12:40:00"^^xsd:dateTime ;
 			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
