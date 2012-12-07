@@ -255,7 +255,7 @@ public abstract class Strabon {
 				long t2 = System.nanoTime();
 				
 				while (result.hasNext()) {
-					String r = result.toString();
+					String r = result.next().toString();
 					results++;
 				}
 				

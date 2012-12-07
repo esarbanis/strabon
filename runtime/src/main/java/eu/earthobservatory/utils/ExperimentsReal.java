@@ -83,8 +83,7 @@ public class ExperimentsReal {
 					strabon = null;
 					
 					URL script = Main.class.getResource("/pg_restart_clear_caches.sh");
-					String restart_script = script.toString().substring(5);
-					
+					String restart_script = script.toString().substring(5);					
 					Process p = Runtime.getRuntime().exec(restart_script);
 					p.waitFor();
 					System.gc();
