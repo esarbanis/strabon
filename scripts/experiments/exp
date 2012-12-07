@@ -2,8 +2,6 @@
 INITPATH="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $INITPATH/setenv
 
-#DBNAME=$1
-
 cd $LOG_PATH;
 dirs=`ls -1d $DBNAME* | sort | tail -n 1`;
 maxdir=${dirs/$DBNAME-/''};
@@ -13,6 +11,8 @@ dir=`printf "%02d" $((++maxdir))`;
 if [ -z $dir ] ; then dir="01"; fi
 
 mkdir $DBNAME-$dir;
+
+STRABONEXP_PATH="$INITPATH/../../runtime/target/"
 
 cd $STRABONEXP_PATH;
 CPATH=$(JARS=(*.jar); IFS=:; echo "${JARS[*]}")

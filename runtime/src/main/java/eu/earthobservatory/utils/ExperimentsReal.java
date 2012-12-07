@@ -24,7 +24,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 
 
-import eu.earthobservatory.runtime.monetdb.Strabon;
+import eu.earthobservatory.runtime.postgis.Strabon;
 
 public class ExperimentsReal {
 	

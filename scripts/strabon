@@ -72,7 +72,7 @@ JAVA_OPTS=
 MORE_MEMORY="-Xms512M -Xmx1024M"
 
 # much more memory
-MMORE_MEMORY="-Xms512M -Xmx1536M"
+MMORE_MEMORY="-Xms8192M -Xmx16384M"
 
 # flag for not setting the memory limit more than once
 MEMORY_INCREASED=false
