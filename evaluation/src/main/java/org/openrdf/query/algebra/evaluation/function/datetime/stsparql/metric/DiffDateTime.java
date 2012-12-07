@@ -22,11 +22,14 @@ import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 /**
  * Addition for datetime metric functions
  * 
+ * 
  * @author George Garbis <ggarbis@di.uoa.gr>
  * 
  */
 public class DiffDateTime extends DateTimeMetricFunc {
 
+	// This functions returns the difference in msecs of two xsd:dateTimes
+	
 	@Override
 	public String getURI() {
 		return GeoConstants.diffDateTime;

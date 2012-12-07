@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
+import org.openrdf.sail.generaldb.algebra.GeneralDBDateTimeColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBLabelColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
@@ -244,6 +245,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 			}
 
+	@Override
+	protected void append(GeneralDBDateTimeColumn var, GeneralDBSqlExprBuilder filter) {
+		String alias = getDateTimeAlias(var.getRdbmsVar());
+		filter.column(alias, "value");
+	}
+	
 	@Override
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
 		if (var.getRdbmsVar().isResource()) {
@@ -1341,29 +1348,25 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				String raw = arg.getValue();
 				filter.append(" "+raw+" ");
 			}
-			else if(expr.getLeftArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+//			else if(expr.getLeftArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+//			{
+//				append(((GeneralDBDoubleValue)expr.getLeftArg()), filter);
+//			}
+//			else if(expr.getLeftArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+//			{
+//				append(((GeneralDBNumericColumn)expr.getLeftArg()), filter);
+//			}
+//			else if(expr.getLeftArg() instanceof GeneralDBURIColumn) //case met in transform!
+//			{
+//				filter.keepSRID_part1();
+//				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
+//				filter.keepSRID_part2();
+//				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
+//				filter.keepSRID_part3();
+//			}
+			else if(expr.getLeftArg() instanceof GeneralDBDateTimeColumn)
 			{
-				append(((GeneralDBDoubleValue)expr.getLeftArg()), filter);
-			}
-			else if(expr.getLeftArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-			{
-				append(((GeneralDBNumericColumn)expr.getLeftArg()), filter);
-			}
-			else if(expr.getLeftArg() instanceof GeneralDBURIColumn) //case met in transform!
-			{
-				filter.keepSRID_part1();
-				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
-				filter.keepSRID_part2();
-				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
-				filter.keepSRID_part3();
-			}
-			//case met in buffer when in select -> buffer(?spatial,?thematic)
-			else if(expr.getLeftArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getLeftArg()).isSpatial())
-			{	// TODO auto den einai swsto giati mporei na mhn ginei apply 
-				// mono se dateTime values
-				filter.append(" extract(epoch from ");
-				append(((GeneralDBLabelColumn)expr.getLeftArg()),filter);
-				filter.append("::timestamp) ");
+				append(((GeneralDBDateTimeColumn)expr.getLeftArg()),filter);
 			}
 			else
 			{
@@ -1381,30 +1384,25 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				String raw = arg.getValue();
 				filter.append(" "+raw+" ");
 			}
-			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+//			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+//			{
+//				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+//			}
+//			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+//			{
+//				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+//			}
+//			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+//			{
+//				filter.keepSRID_part1();
+//				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+//				filter.keepSRID_part2();
+//				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+//				filter.keepSRID_part3();
+//			}
+			else if(expr.getRightArg() instanceof GeneralDBDateTimeColumn)
 			{
-				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
-			}
-			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-			{
-				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-			}
-			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
-			{
-				filter.keepSRID_part1();
-				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-				filter.keepSRID_part2();
-				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-				filter.keepSRID_part3();
-			}
-			//case met in buffer when in select -> buffer(?spatial,?thematic)
-			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
-			{	// TODO auto den einai swsto giati mporei na mhn ginei apply 
-				// mono se dateTime values
-				filter.append(" extract(epoch from ");
-				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-				filter.append("::timestamp) ");
-				
+				append(((GeneralDBDateTimeColumn)expr.getRightArg()),filter);	
 			}
 			else
 			{

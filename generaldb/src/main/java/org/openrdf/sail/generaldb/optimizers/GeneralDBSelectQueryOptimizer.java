@@ -799,7 +799,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							//					}
 							//					else //DEFAULT CASE
 							//					{
-							query.addFilter(sql.createBooleanExpr(expr));
+ 							query.addFilter(sql.createBooleanExpr(expr));
 							//					}
 
 						}

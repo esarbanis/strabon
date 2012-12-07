@@ -283,7 +283,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 					rightSql = numeric(right);
 				}
 
-				if(!leftIsSpatial && !leftIsSpatial)
+				if(!leftIsSpatial && !leftIsDateTime)
 				{
 					leftSql = numeric(right);
 				}
@@ -867,7 +867,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		else
 		{
-			leftArg = label(left);
+			leftArg = time(left);
 		}
 
 		if(right instanceof FunctionCall)
@@ -877,7 +877,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		else
 		{
-			rightArg = label(right);
+			rightArg = time(right);
 		}
 		
 		return dateTimeMetricPicker(function, leftArg, rightArg);
