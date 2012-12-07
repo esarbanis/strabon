@@ -74,20 +74,35 @@ public class ExperimentsReal {
 				long warmtime = 0;
 				long results = 0;
 
+                                String script = Main.class.getResource("/pg_restart_clear_caches.sh").toString();
+                                System.out.println("main: " + script);
+                                int start = script.indexOf("/");
+                                int end = script.lastIndexOf("/");
+                                script = script.substring(start, end);
+                                System.out.println("main: " + script);
+                                end = script.lastIndexOf("/");
+                                script = script.substring(0, end);
+                                System.out.println("main: " + script);
+                                String script_file = script + File.separator + "classes"  + File.separator + "pg_restart_clear_caches.sh"; 
+                                System.out.println("script_file: " + script_file);
+
+
 				// cold runs
 				long[][] coldruns = new long[repetitions][4];
 				for (int i = 0; i < repetitions; i++) {
+					System.out.println("Starting Strabon...");
 					strabon = new Strabon(db, user, passwd, port, host, true);
+                                        System.out.println("Strabon started. Sending query...");
 					coldruns[i] = (long[])run("cold", queryString, i);
+                                        System.out.println("Evaluated query. Closing Strabon...");
 					strabon.close();
-					strabon = null;
-					
-					URL script = Main.class.getResource("/pg_restart_clear_caches.sh");
-					String restart_script = script.toString().substring(5);					
-					Process p = Runtime.getRuntime().exec(restart_script);
+                                        System.out.println("Strabon closed. Restarting postgres...");
+					Process p = Runtime.getRuntime().exec(script_file);
 					p.waitFor();
+                                        System.out.println("Postgres restarted. Cleaning...");
 					System.gc();
 					Thread.sleep(5000);
+                                        System.out.println("Clean complete. Iteration complete.");
 				}
 
 				//Strabon strabon = new Strabon(db, user, passwd, port, host, true, cachepath);
@@ -104,7 +119,6 @@ public class ExperimentsReal {
 				}
 
 				strabon.close();
-				strabon = null;
 
 				// sort results
 				SortedSet<Long> coldtimes = new TreeSet<Long>();
