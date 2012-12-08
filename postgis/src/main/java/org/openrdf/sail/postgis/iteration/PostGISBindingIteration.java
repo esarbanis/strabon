@@ -61,7 +61,7 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 	throws SQLException
 	{
 //TODO implement method 
-		System.out.println("CREATE TEMPORAL VALUE!");
+//		System.out.println("CREATE TEMPORAL VALUE!");
 
 		return null;
 	}

@@ -549,12 +549,12 @@ public class HashManager extends ManagerBase {
 		/***********************************************/
 		//FIXME den xerw kata poso boleyei edw i eisagwgi tis diaxeirisis tou neou pinaka
 		//den exei kopei akoma se kommatia
-		System.out.println("I am in hash manager, "+value.toString());
+//		System.out.println("I am in hash manager, "+value.toString());
 		/***********************************************/
 		Number id = value.getInternalId();
 		table.insert(id, idseq.hashOf(value));
 		if (value instanceof RdbmsLiteral) {
-			System.out.println("Ayto stelnw ston LiteralManager, "+value.toString());
+//			System.out.println("Ayto stelnw ston LiteralManager, "+value.toString());
 			literals.insert(id, (RdbmsLiteral)value);
 		}
 		else if (value instanceof RdbmsURI) {

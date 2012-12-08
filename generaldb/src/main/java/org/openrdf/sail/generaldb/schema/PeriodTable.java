@@ -181,7 +181,7 @@ public class PeriodTable {
 	public  void insert(Number id, String period)
 		throws SQLException, InterruptedException
 	{
-		System.out.println("PERIOD:"+period);
+//		System.out.println("PERIOD:"+period);
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();

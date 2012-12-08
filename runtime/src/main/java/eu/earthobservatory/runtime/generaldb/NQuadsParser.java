@@ -274,13 +274,13 @@ public class NQuadsParser extends ModifiedNTriplesParser {
         // subject is either an uriref (<foo://bar>) or a nodeID (_:node1)
         if (c == '<') {
             // subject is an uriref
-        	System.out.println("PARSEURI");
+        	//System.out.println("PARSEURI");
             c = parseUriRef(c, sb);
             context = createURI(sb.toString());
         } else if (c == '_') {
             // subject is a bNode
             c = parseNodeID(c, sb);
-        	System.out.println("PARSENODE");
+        	//System.out.println("PARSENODE");
             context = createBNode(sb.toString());
         }else if(c == '"'){
         	c = parseLiteral(c, sb);

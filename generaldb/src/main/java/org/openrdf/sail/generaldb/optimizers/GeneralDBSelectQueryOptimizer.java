@@ -1019,7 +1019,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					}
 				}
 			}
-			System.out.println("NOT SPATIAL NOR TEMPORAL FUNCTION- SIMPLE VALUE");
+//			System.out.println("NOT SPATIAL NOR TEMPORAL FUNCTION- SIMPLE VALUE");
 		
 		
 

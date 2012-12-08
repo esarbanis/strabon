@@ -291,7 +291,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			else{
 				//XXX original/default case
-				System.out.println("DEFAUUUUULT!: a value column will be printed");
+				//System.out.println("DEFAUUUUULT!: a value column will be printed");
 				filter.column(alias, "value");
 			}
 		}
@@ -2524,7 +2524,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException
 			{
 		filter.openBracket();
-		System.out.println(expr.getLeftArg().getClass().getCanonicalName());
+		//System.out.println(expr.getLeftArg().getClass().getCanonicalName());
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		if(check1)
 		{

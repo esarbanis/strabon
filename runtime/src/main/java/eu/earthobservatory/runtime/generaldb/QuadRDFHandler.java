@@ -69,7 +69,7 @@ public class QuadRDFHandler extends StatementCollector {
 					 if (!triples.toString().contains(triple))
 					 {
 						 triples.append(triple);
-						 System.out.println("TRIPLE:"+triple);
+//						 System.out.println("TRIPLE:"+triple);
 
 					 }
 					
