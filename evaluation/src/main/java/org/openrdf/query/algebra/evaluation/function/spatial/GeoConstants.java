@@ -75,7 +75,7 @@ public class GeoConstants {
 	public static final String anyInteract 		= stRDF + "anyInteract";
 	public static final String intersects 		= stRDF + "intersects";
 	public static final String contains 		= stRDF + "contains";
-	public static final String within 		= stRDF + "within";
+	public static final String within 			= stRDF + "within";
 	public static final String coveredBy 		= stRDF + "coveredBy";
 	public static final String covers 			= stRDF + "covers";
 	public static final String disjoint 		= stRDF + "disjoint";

@@ -187,7 +187,7 @@ public class SpatialTests {
 		}
 
 	@Test
-	public void testStrdfInside() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testStrdfWithin() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		String query = 
 			prefixes+
@@ -198,7 +198,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:inside(?g1, ?g2 )) . \n"+
+			" FILTER( strdf:within(?g1, ?g2)) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
