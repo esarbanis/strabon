@@ -872,46 +872,44 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return anyInteract(leftArg,rightArg);
 		}
-		if(function.getURI().equals(GeoConstants.intersects))
+		
+		if(function.getURI().equals(GeoConstants.equals))
 		{
-			return intersects(leftArg,rightArg);
-		}
-		else if(function.getURI().equals(GeoConstants.contains))
-		{
-			return contains(leftArg,rightArg);
-		}
-		else if(function.getURI().equals(GeoConstants.coveredBy))
-		{
-			return coveredBy(leftArg,rightArg);
-		}
-		else if(function.getURI().equals(GeoConstants.covers))
-		{
-			return covers(leftArg,rightArg);
+			return equalsGeo(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.disjoint))
 		{
 			return disjoint(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.equals))
+		else if(function.getURI().equals(GeoConstants.intersects))
 		{
-			return equalsGeo(leftArg,rightArg);
+			return intersects(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(GeoConstants.touches))
+		{
+			return touches(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(GeoConstants.crosses))
+		{
+			return crosses(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.within))
 		{
-			return inside(leftArg,rightArg);
+			return within(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.overlap))
+		else if(function.getURI().equals(GeoConstants.contains))
 		{
-			return overlap(leftArg,rightArg);
-		}
-		else if(function.getURI().equals(GeoConstants.touch))
+			return contains(leftArg,rightArg);
+		}		
+		else if(function.getURI().equals(GeoConstants.overlaps))
 		{
-			return touch(leftArg,rightArg);
-		}
+			return overlaps(leftArg,rightArg);
+		}		
 		else if(function.getURI().equals(GeoConstants.relate))
 		{
 			return relate(leftArg,rightArg,thirdArg);
 		}
+		// directional
 		else if(function.getURI().equals(GeoConstants.left))
 		{
 			return left(leftArg,rightArg);
@@ -928,17 +926,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return below(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.touch))
-		{
-			return touch(leftArg,rightArg);
-		}
+		// mbb
 		else if(function.getURI().equals(GeoConstants.mbbOverlaps))
 		{
 			return mbbIntersects(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.mbbInside))
+		else if(function.getURI().equals(GeoConstants.mbbWithin))
 		{
-			return mbbInside(leftArg,rightArg);
+			return mbbWithin(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.mbbContains))
 		{

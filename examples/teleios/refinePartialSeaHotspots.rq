@@ -34,5 +34,5 @@ WHERE {
 	OPTIONAL { ?h noa:refinedBy ?refined } .
   }
   GROUP BY ?h ?hGeo ?conf ?muni
-  HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))
+  HAVING strdf:overlaps(?hGeo, strdf:union(?cGeo))
 }

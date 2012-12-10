@@ -24,8 +24,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
@@ -47,7 +46,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
@@ -55,16 +53,17 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.egenhofer.GeneralDBSqlEgenhofer_Contains;
 import org.openrdf.sail.generaldb.algebra.egenhofer.GeneralDBSqlEgenhofer_CoveredBy;
@@ -279,61 +278,61 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr anyInteract(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlAnyInteract(left, right);
 	}
-
+	
+	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlEqualsSpatial(left, right);
+	}
+	
 	public static GeneralDBSqlExpr disjoint(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlDisjoint(left, right);
-	}
-
-	public static GeneralDBSqlExpr touch(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlTouch(left, right);
 	}
 	
 	public static GeneralDBSqlExpr intersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlIntersects(left, right);
 	}
 	
-	public static GeneralDBSqlExpr mbbIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlMbbIntersects(left, right);
-	}
-	public static GeneralDBSqlExpr mbbInside(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlMbbInside(left, right);
-	}
-	public static GeneralDBSqlExpr ContainsMBB(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlContainsMBB(left, right);
+	public static GeneralDBSqlExpr touches(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlTouches(left, right);
 	}
 	
+	public static GeneralDBSqlExpr crosses(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlCrosses(left, right);
+	}
 	
-	public static GeneralDBSqlExpr mbbEqualsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlMbbEquals(left, right);
+	public static GeneralDBSqlExpr within(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlWithin(left, right);
 	}
-
-	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlEqualsSpatial(left, right);
-	}
-
+	
 	public static GeneralDBSqlExpr contains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlContains(left, right);
 	}
-
-	public static GeneralDBSqlExpr covers(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlCovers(left, right);
-	}
-
-	public static GeneralDBSqlExpr inside(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlInside(left, right);
-	}
-
-	public static GeneralDBSqlExpr coveredBy(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlCoveredBy(left, right);
-	}
-
-	public static GeneralDBSqlExpr overlap(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlOverlap(left, right);
+	
+	public static GeneralDBSqlExpr overlaps(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlOverlaps(left, right);
 	}
 
 	public static GeneralDBSqlExpr relate(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) {
 		return new GeneralDBSqlRelate(left, right,third);
 	}
+	
+	// mbb functions
+	
+	public static GeneralDBSqlExpr mbbIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbIntersects(left, right);
+	}
+	public static GeneralDBSqlExpr mbbWithin(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbWithin(left, right);
+	}
+		
+	public static GeneralDBSqlExpr mbbEqualsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbEquals(left, right);
+	}
+
+	public static GeneralDBSqlExpr ContainsMBB(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlContainsMBB(left, right);
+	}
+	
+	// directional
 	
 	public static GeneralDBSqlExpr left(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlLeft(left, right);

@@ -16,10 +16,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationship
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-public class OverlapFunc extends SpatialRelationshipFunc {
+public class WithinFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.overlap;
+		return GeoConstants.within;
 	}
 }

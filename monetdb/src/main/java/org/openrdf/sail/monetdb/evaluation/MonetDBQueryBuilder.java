@@ -21,8 +21,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
@@ -43,18 +42,17 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
@@ -62,7 +60,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
@@ -123,8 +122,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	{ 	//Spatial Relationships
 		ST_Disjoint, 
 		ST_Touches,
-		ST_Covers,
-		ST_CoveredBy,
+		ST_Crosses,
+		ST_Within,
 		ST_Overlaps,
 		ST_Relate,
 
@@ -414,36 +413,28 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	@Override
-	protected void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
+	protected void append(GeneralDBSqlWithin expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.inside);
-		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.inside);
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Within);
 	}
 
 	@Override
-	protected void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
+	protected void append(GeneralDBSqlCrosses expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
-		appendgeoSPARQLSpatialRelation(expr, filter, SpatialFunctionsMonetDB.ST_Covers);
+		appendgeoSPARQLSpatialRelation(expr, filter, SpatialFunctionsMonetDB.ST_Crosses);
 	}
 
 	@Override
-	protected void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendgeoSPARQLSpatialRelation(expr, filter, SpatialFunctionsMonetDB.ST_CoveredBy);
-	}
-
-	@Override
-	protected void append(GeneralDBSqlTouch expr, GeneralDBSqlExprBuilder filter)
+	protected void append(GeneralDBSqlTouches expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Touches);
 	}
 
 	@Override
-	protected void append(GeneralDBSqlOverlap expr, GeneralDBSqlExprBuilder filter)
+	protected void append(GeneralDBSqlOverlaps expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
 		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Overlaps);
@@ -1184,9 +1175,9 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Distance: filter.appendFunction("Distance"); break;
 			case ST_Touches: filter.appendFunction("Touches"); break;
 			case ST_Disjoint: filter.appendFunction("Disjoint"); break;
-			case ST_Covers: filter.appendFunction(""); break; // FIXME (with relate ?)
-			case ST_CoveredBy: filter.appendFunction(""); break; // FIXME (with relate ?)
+			case ST_Crosses: filter.appendFunction("Crosses"); break;
 			case ST_Overlaps: filter.appendFunction("Overlaps"); break;
+			case ST_Within: filter.appendFunction("Within"); break;
 			case anyInteract: filter.appendFunction("NOT Disjoint"); break;
 			case equals: filter.appendFunction("Equals"); break;
 			case contains: filter.appendFunction("Contains"); break;
@@ -1687,89 +1678,37 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			char[][] intersectionPattern = null;
 			switch(func)
 			{
-			case ST_Covers: 
-				intersectionPattern = new char[4][9];
+			case ST_Crosses: 
+				intersectionPattern = new char[3][9];
 				intersectionPattern[0][0] = 'T';
 				intersectionPattern[0][1] = '*';
-				intersectionPattern[0][2] = '*';
+				intersectionPattern[0][2] = 'T';
 				intersectionPattern[0][3] = '*';
 				intersectionPattern[0][4] = '*';
 				intersectionPattern[0][5] = '*';
-				intersectionPattern[0][6] = 'F';
-				intersectionPattern[0][7] = 'F';
-				intersectionPattern[0][8] = '*';
-				//
-				intersectionPattern[1][0] = '*';
-				intersectionPattern[1][1] = 'T';
-				intersectionPattern[1][2] = '*';
-				intersectionPattern[1][3] = '*';
-				intersectionPattern[1][4] = '*';
-				intersectionPattern[1][5] = '*';
-				intersectionPattern[1][6] = 'F';
-				intersectionPattern[1][7] = 'F';
-				intersectionPattern[1][8] = '*';
-				//
-				intersectionPattern[2][0] = '*';
-				intersectionPattern[2][1] = '*';
-				intersectionPattern[2][2] = '*';
-				intersectionPattern[2][3] = 'T';
-				intersectionPattern[2][4] = '*';
-				intersectionPattern[2][5] = '*';
-				intersectionPattern[2][6] = 'F';
-				intersectionPattern[2][7] = 'F';
-				intersectionPattern[2][8] = '*';
-				//
-				intersectionPattern[3][0] = '*';
-				intersectionPattern[3][1] = '*';
-				intersectionPattern[3][2] = '*';
-				intersectionPattern[3][3] = '*';
-				intersectionPattern[3][4] = 'T';
-				intersectionPattern[3][5] = '*';
-				intersectionPattern[3][6] = 'F';
-				intersectionPattern[3][7] = 'F';
-				intersectionPattern[3][8] = '*';
-				break;
-			case ST_CoveredBy: 
-				intersectionPattern = new char[4][9];
-				intersectionPattern[0][0] = 'T';
-				intersectionPattern[0][1] = '*';
-				intersectionPattern[0][2] = 'F';
-				intersectionPattern[0][3] = '*';
-				intersectionPattern[0][4] = '*';
-				intersectionPattern[0][5] = 'F';
 				intersectionPattern[0][6] = '*';
 				intersectionPattern[0][7] = '*';
 				intersectionPattern[0][8] = '*';
 				//
-				intersectionPattern[1][0] = '*';
-				intersectionPattern[1][1] = 'T';
-				intersectionPattern[1][2] = 'F';
+				intersectionPattern[1][0] = 'T';
+				intersectionPattern[1][1] = '*';
+				intersectionPattern[1][2] = '*';
 				intersectionPattern[1][3] = '*';
 				intersectionPattern[1][4] = '*';
-				intersectionPattern[1][5] = 'F';
-				intersectionPattern[1][6] = '*';
+				intersectionPattern[1][5] = '*';
+				intersectionPattern[1][6] = 'T';
 				intersectionPattern[1][7] = '*';
 				intersectionPattern[1][8] = '*';
 				//
-				intersectionPattern[2][0] = '*';
+				intersectionPattern[2][0] = '0';
 				intersectionPattern[2][1] = '*';
-				intersectionPattern[2][2] = 'F';
-				intersectionPattern[2][3] = 'T';
+				intersectionPattern[2][2] = '*';
+				intersectionPattern[2][3] = '*';
 				intersectionPattern[2][4] = '*';
-				intersectionPattern[2][5] = 'F';
+				intersectionPattern[2][5] = '*';
 				intersectionPattern[2][6] = '*';
 				intersectionPattern[2][7] = '*';
 				intersectionPattern[2][8] = '*';
-				//
-				intersectionPattern[3][0] = '*';
-				intersectionPattern[3][1] = '*';
-				intersectionPattern[3][2] = 'F';
-				intersectionPattern[3][3] = '*';
-				intersectionPattern[3][4] = 'T';
-				intersectionPattern[3][5] = 'F';
-				intersectionPattern[3][6] = '*';
-				intersectionPattern[3][7] = '*';
-				intersectionPattern[3][8] = '*';
 				break;
 			case SF_Contains:  
 				intersectionPattern = new char[1][9];
@@ -2084,7 +2023,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	@Override
-	protected void append(GeneralDBSqlMbbInside expr,
+	protected void append(GeneralDBSqlMbbWithin expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub

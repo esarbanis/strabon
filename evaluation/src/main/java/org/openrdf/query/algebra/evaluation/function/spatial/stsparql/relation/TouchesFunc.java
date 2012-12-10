@@ -16,10 +16,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationship
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-public class CoveredByFunc extends SpatialRelationshipFunc {
+public class TouchesFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.coveredBy;
+		return GeoConstants.touches;
 	}
 }

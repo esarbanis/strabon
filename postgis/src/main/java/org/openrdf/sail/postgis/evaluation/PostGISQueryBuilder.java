@@ -20,8 +20,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
@@ -42,17 +41,16 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbInside;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
@@ -60,7 +58,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
@@ -119,21 +118,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 */
 	boolean nullLabel = false;
 
-	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, left, right, above, inside, below; }
+	public enum SpatialOperandsPostGIS { anyInteract, equals, contains, inside, left, right, above, below; }
 	public enum SpatialFunctionsPostGIS 
 	{ 	//stSPARQL++
 		//Spatial Relationships
-		ST_Disjoint, 
-		ST_Touches, 
-		ST_Covers,
-		ST_CoveredBy, 
-		ST_Overlaps,
-		ST_Intersects,
 		ST_Equals,
-		ST_Relate, 
+		ST_Disjoint,
+		ST_Intersects,
+		ST_Touches, 
+		ST_Crosses,
 		ST_Within,
 		ST_Contains,
-		
+		ST_Overlaps,
+		ST_Relate,
+		//ST_Covers,
+		//ST_CoveredBy,
 		
 		//Spatial Constructs - Binary
 		ST_Union, 
@@ -352,27 +351,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	//Spatial Relationship Functions
 	@Override
 	protected void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersects);
-			}
-
-
-	@Override
-	protected void append(GeneralDBSqlIntersects expr, 	GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
+		//dummy
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersects);
 	}
-
-	@Override
-	protected void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Contains);
-	}
-
-
-
 	
 	@Override
 	protected void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
@@ -380,58 +362,81 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Equals);
 	}
-
-	@Override
-	protected void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		//appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Within);
-
-	}
-
-	@Override
-	protected void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Covers);
-	}
-
-	@Override
-	protected void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_CoveredBy);
-	}
-
-	@Override
-	protected void append(GeneralDBSqlTouch expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Touches);
-	}
-
-	@Override
-	protected void append(GeneralDBSqlOverlap expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Overlaps);
-	}
-
+	
 	@Override
 	protected void append(GeneralDBSqlDisjoint expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Disjoint);
 	}
+	
+	@Override
+	protected void append(GeneralDBSqlIntersects expr, 	GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersects);
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlTouches expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
 
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Touches);
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlCrosses expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Crosses);
+	}	
+	
+	@Override
+	protected void append(GeneralDBSqlWithin expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Within);
+
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Contains);
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlOverlaps expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Overlaps);
+	}
+	
 	@Override
 	protected void append(GeneralDBSqlRelate expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+			throws UnsupportedRdbmsOperatorException {
 		appendGeneralDBSpatialFunctionTriple(expr, filter, SpatialFunctionsPostGIS.ST_Relate);
-			}
+	}
 
+//	@Override
+//	protected void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
+//			throws UnsupportedRdbmsOperatorException {
+//
+//		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Covers);
+//	}
+//
+//	@Override
+//	protected void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
+//			throws UnsupportedRdbmsOperatorException {
+//
+//		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_CoveredBy);
+//	}
+
+	
+
+	
+
+	
 	@Override	
 	protected void append(GeneralDBSqlLeft expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -467,7 +472,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	@Override
-	protected void append(GeneralDBSqlMbbInside expr, GeneralDBSqlExprBuilder filter)
+	protected void append(GeneralDBSqlMbbWithin expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.inside);
 	}
@@ -1340,15 +1345,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_SymDifference: filter.appendFunction("ST_SymDifference"); break;
 			case ST_Buffer: filter.appendFunction("ST_Buffer"); break;
 			case ST_Distance: filter.appendFunction("ST_Distance"); break;
-			case ST_Touches: filter.appendFunction("ST_Touches"); break;
-			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
-			case ST_Covers: filter.appendFunction("ST_Covers"); break;
-			case ST_Contains: filter.appendFunction("ST_Contains"); break;
-			case ST_CoveredBy: filter.appendFunction("ST_CoveredBy"); break;
-			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
-			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
+			
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
+			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
+			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
+			case ST_Touches: filter.appendFunction("ST_Touches"); break;
+			case ST_Crosses: filter.appendFunction("ST_Crosses"); break;
 			case ST_Within: filter.appendFunction("ST_Within"); break;
+			case ST_Contains: filter.appendFunction("ST_Contains"); break;
+			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
 			
 			}
 			
@@ -1863,30 +1868,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			char[][] intersectionPattern = null;
 			switch(func)
 			{
-			case ST_Covers: 
-				intersectionPattern = new char[1][9];
-				intersectionPattern[0][0] = 'T';
-				intersectionPattern[0][1] = '*';
-				intersectionPattern[0][2] = 'T';
-				intersectionPattern[0][3] = 'F';
-				intersectionPattern[0][4] = 'T';
-				intersectionPattern[0][5] = '*';
-				intersectionPattern[0][6] = 'F';
-				intersectionPattern[0][7] = 'F';
-				intersectionPattern[0][8] = '*';
-				break;
-			case ST_CoveredBy: 
-				intersectionPattern = new char[1][9];
-				intersectionPattern[0][0] = 'T';
-				intersectionPattern[0][1] = 'F';
-				intersectionPattern[0][2] = 'F';
-				intersectionPattern[0][3] = '*';
-				intersectionPattern[0][4] = 'T';
-				intersectionPattern[0][5] = 'F';
-				intersectionPattern[0][6] = 'T';
-				intersectionPattern[0][7] = '*';
-				intersectionPattern[0][8] = '*';
-				break;
 			case SF_Contains:  
 				intersectionPattern = new char[1][9];
 				intersectionPattern[0][0] = 'T';
@@ -1899,8 +1880,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				intersectionPattern[0][7] = 'F';
 				intersectionPattern[0][8] = '*';
 				break;
-			case SF_Crosses:  
-				intersectionPattern = new char[1][9];
+			case SF_Crosses:
+				// FIXME BUG
+				// TODO a crosses b, they have some but not all interior points in common 
+				// (and the dimension of the intersection is less than that of at least one 
+				// of them). Mask selection rules are checked only when dim(a)≠dim(b), 
+				// except by point/point inputs, otherwise is false.
+				// (II=0) for points,   (II ∧ IE) when dim(a)<dim(b),   (II ∧ EI) when dim(a)>dim(b)
+				intersectionPattern = new char[3][9];
 				intersectionPattern[0][0] = 'T';
 				intersectionPattern[0][1] = '*';
 				intersectionPattern[0][2] = 'T';
@@ -1910,6 +1897,26 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				intersectionPattern[0][6] = '*';
 				intersectionPattern[0][7] = '*';
 				intersectionPattern[0][8] = '*';
+				//
+				intersectionPattern[1][0] = 'T';
+				intersectionPattern[1][1] = '*';
+				intersectionPattern[1][2] = '*';
+				intersectionPattern[1][3] = '*';
+				intersectionPattern[1][4] = '*';
+				intersectionPattern[1][5] = '*';
+				intersectionPattern[1][6] = 'T';
+				intersectionPattern[1][7] = '*';
+				intersectionPattern[1][8] = '*';
+				//
+				intersectionPattern[2][0] = '0';
+				intersectionPattern[2][1] = '*';
+				intersectionPattern[2][2] = '*';
+				intersectionPattern[2][3] = '*';
+				intersectionPattern[2][4] = '*';
+				intersectionPattern[2][5] = '*';
+				intersectionPattern[2][6] = '*';
+				intersectionPattern[2][7] = '*';
+				intersectionPattern[2][8] = '*';
 				break;
 			case SF_Disjoint:
 			case EH_Disjoint:
@@ -1940,7 +1947,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				break;
 			case SF_Overlaps:
 			case EH_Overlap:
-				intersectionPattern = new char[1][9];
+				// FIXME BUG
+				// TODO a overlaps b, they have some but not all points in common, 
+				// they have the same dimension, and the intersection of the 
+				// interiors of the two geometries has the same dimension as the 
+				// geometries themselves. Mask selection rules are checked 
+				// only when dim(a)=dim(b), otherwise is false:
+				// (II ∧ IE ∧ EI) for points or surfaces,   (II=1 ∧ IE ∧ EI) for lines
+				intersectionPattern = new char[2][9];
 				intersectionPattern[0][0] = 'T';
 				intersectionPattern[0][1] = '*';
 				intersectionPattern[0][2] = 'T';
@@ -1950,6 +1964,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				intersectionPattern[0][6] = 'T';
 				intersectionPattern[0][7] = '*';
 				intersectionPattern[0][8] = '*';
+				intersectionPattern[1][0] = '1';
+				intersectionPattern[1][1] = '*';
+				intersectionPattern[1][2] = 'T';
+				intersectionPattern[1][3] = '*';
+				intersectionPattern[1][4] = '*';
+				intersectionPattern[1][5] = '*';
+				intersectionPattern[1][6] = 'T';
+				intersectionPattern[1][7] = '*';
+				intersectionPattern[1][8] = '*';
 				break;
 			case SF_Within: 
 				intersectionPattern = new char[1][9];

@@ -25,26 +25,11 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 
 public class SpatialTests {
 	public static Strabon strabon;
-	
-	protected static String jdbcDriver= "org.postgresql.Driver";  
-	protected static String serverName = "localhost";
-	protected static String username = "postgres";
-	protected static String password = "postgres";
-	protected static Integer port = 5432;
-	protected static java.sql.Connection conn = null;
-	protected static String databaseName = null; 
 
 	public String 	STRDF_NS = "http://strdf.di.uoa.gr/ontology#",
 					EX_NS = "http://example.org/",
 					NOA_NS = "http://teleios.di.uoa.gr/ontologies/noaOntology.owl#",
 					GEOF_NS ="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
-	
-//	@BeforeClass
-//	public static void initialize() throws SQLException, ClassNotFoundException
-//	{
-//		strabon = new Strabon("spatial-tests","postgres","postgres", 5432, "localhost", true);
-//	}
-
 
 	protected String prefixes = 
 		"PREFIX rdf: <"+RDF.NAMESPACE+"> \n" +
@@ -57,7 +42,46 @@ public class SpatialTests {
 	// -- Spatial Relationships -- //
 	
 	@Test
-	public void testStrdfAnyInteract() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testStrdfEquals() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		String query = 
+			prefixes+
+			"SELECT DISTINCT ?s1 ?s2 \n"+
+			"WHERE { \n" +
+			" ?s1 ex:geometry ?g1 . \n"+
+			" ?s2 ex:geometry ?g2 . \n" +
+			" FILTER( str(?s1) < str(?s2) ) . \n"+
+			" FILTER( strdf:equals(?g1, ?g2 )) . \n"+
+			"}";
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(1, bindings.size());
+		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
+	}
+	
+	@Test
+	public void testStrdfDisjoint() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		String query = 
+			prefixes+
+			"SELECT DISTINCT ?s1 ?s2 \n"+
+			"WHERE { \n" +
+			" ?s1 ex:geometry ?g1 . \n"+
+			" ?s2 ex:geometry ?g2 . \n" +
+			" FILTER( str(?s1) < str(?s2) ) . \n"+
+			" FILTER( strdf:disjoint(?g1, ?g2 )) . \n"+
+			"}";
+
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(60, bindings.size());
+		// too many results
+		//assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
+	}
+
+	@Test
+	public void testStrdfIntesects() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		String query = 
 			prefixes+
@@ -68,17 +92,82 @@ public class SpatialTests {
 			" FILTER( str(?id1) < str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:anyInteract(?g1, ?g2 ) ) . \n"+
+			" FILTER( strdf:intersects(?g1, ?g2 )) . \n"+
 			"}";
 		
-		@SuppressWarnings("unchecked")	
+		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-
-		assertEquals(4, bindings.size());
+		assertEquals(5, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+	}
+	
+	@Test
+	public void testStrdfTouches() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		String query = 
+			prefixes+
+			"SELECT DISTINCT ?id1 ?id2 \n"+
+			"WHERE { \n" +
+			" ?s1 ex:id ?id1 . \n"+
+			" ?s2 ex:id ?id2 . \n"+
+			" FILTER( str(?id1) < str(?id2) ) . \n"+
+			" ?s2 ex:geometry ?g2 . \n" +
+			" ?s1 ex:geometry ?g1 . \n"+
+			" FILTER( strdf:touches(?g1, ?g2 )) . \n"+
+			"}";
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(1, bindings.size());
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+	}	
+	
+	@Test
+	public void testStrdfCrosses() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		String query = 
+			prefixes+
+			"SELECT DISTINCT ?id1 ?id2 \n"+
+			"WHERE { \n" +
+			" ?s1 ex:id ?id1 . \n"+
+			" ?s2 ex:id ?id2 . \n"+
+			" FILTER( str(?id1) != str(?id2) ) . \n"+
+			" ?s2 ex:geometry ?g2 . \n" +
+			" ?s1 ex:geometry ?g1 . \n"+
+			" FILTER( strdf:crosses(?g1, ?g2 )) . \n"+
+			"}";
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(2, bindings.size());
+		assertTrue(-1<bindings.indexOf("[id2=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+	}
+	
+	@Test
+	public void testStrdfWithin() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	{
+		String query = 
+			prefixes+
+			"SELECT DISTINCT ?id1 ?id2 \n"+
+			"WHERE { \n" +
+			" ?s1 ex:id ?id1 . \n"+
+			" ?s2 ex:id ?id2 . \n"+
+			" FILTER( str(?id1) != str(?id2) ) . \n"+
+			" ?s2 ex:geometry ?g2 . \n" +
+			" ?s1 ex:geometry ?g1 . \n"+
+			" FILTER( strdf:within(?g1, ?g2)) . \n"+
+			"}";
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		assertEquals(2, bindings.size());
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
 	
 	@Test
@@ -104,7 +193,7 @@ public class SpatialTests {
 	}
 	
 	@Test
-	public void testStrdfCovers() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testStrdfOverlaps() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		String query = 
 			prefixes+
@@ -115,112 +204,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:covers(?g1, ?g2 )) . \n"+
-			"}";
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(2, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
-	
-	@Test
-	public void testStrdfCoveredBy() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		String query = 
-			prefixes+
-			"SELECT DISTINCT ?id1 ?id2 \n"+
-			"WHERE { \n" +
-			" ?s1 ex:id ?id1 . \n"+
-			" ?s2 ex:id ?id2 . \n"+
-			" FILTER( str(?id1) != str(?id2) ) . \n"+
-			" ?s2 ex:geometry ?g2 . \n" +
-			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:coveredBy(?g1, ?g2 )) . \n"+
-			"}";
-
-		@SuppressWarnings("unchecked")
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(2, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
-
-	@Test
-	public void testStrdfDisjoint() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		String query = 
-			prefixes+
-			"SELECT DISTINCT ?s1 ?s2 \n"+
-			"WHERE { \n" +
-			" ?s1 ex:geometry ?g1 . \n"+
-			" ?s2 ex:geometry ?g2 . \n" +
-			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( strdf:disjoint(?g1, ?g2 )) . \n"+
-			"}";
-
-		@SuppressWarnings("unchecked")
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(40, bindings.size());
-		// too many results
-		//assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
-	}
-
-	@Test
-	public void testStrdfEquals() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		String query = 
-			prefixes+
-			"SELECT DISTINCT ?s1 ?s2 \n"+
-			"WHERE { \n" +
-			" ?s1 ex:geometry ?g1 . \n"+
-			" ?s2 ex:geometry ?g2 . \n" +
-			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( strdf:equals(?g1, ?g2 )) . \n"+
-			"}";
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(1, bindings.size());
-		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
-		}
-
-	@Test
-	public void testStrdfWithin() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		String query = 
-			prefixes+
-			"SELECT DISTINCT ?id1 ?id2 \n"+
-			"WHERE { \n" +
-			" ?s1 ex:id ?id1 . \n"+
-			" ?s2 ex:id ?id2 . \n"+
-			" FILTER( str(?id1) != str(?id2) ) . \n"+
-			" ?s2 ex:geometry ?g2 . \n" +
-			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:within(?g1, ?g2)) . \n"+
-			"}";
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(2, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-	}
-
-	@Test
-	public void testStrdfOverlap() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
-	{
-		String query = 
-			prefixes+
-			"SELECT DISTINCT ?id1 ?id2 \n"+
-			"WHERE { \n" +
-			" ?s1 ex:id ?id1 . \n"+
-			" ?s2 ex:id ?id2 . \n"+
-			" FILTER( str(?id1) != str(?id2) ) . \n"+
-			" ?s2 ex:geometry ?g2 . \n" +
-			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:overlap(?g1, ?g2 )) . \n"+
+			" FILTER( strdf:overlaps(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -229,9 +213,9 @@ public class SpatialTests {
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
-
+	
 	@Test
-	public void testStrdfTouch() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testStrdfAnyInteract() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		String query = 
 			prefixes+
@@ -242,15 +226,64 @@ public class SpatialTests {
 			" FILTER( str(?id1) < str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-touches(?g1, ?g2 )) . \n"+
+			" FILTER( strdf:anyInteract(?g1, ?g2 ) ) . \n"+
 			"}";
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")	
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(1, bindings.size());
+
+		assertEquals(5, bindings.size());
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
 	
+//	@Test
+//	public void testStrdfCovers() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+//	{
+//		String query = 
+//			prefixes+
+//			"SELECT DISTINCT ?id1 ?id2 \n"+
+//			"WHERE { \n" +
+//			" ?s1 ex:id ?id1 . \n"+
+//			" ?s2 ex:id ?id2 . \n"+
+//			" FILTER( str(?id1) != str(?id2) ) . \n"+
+//			" ?s2 ex:geometry ?g2 . \n" +
+//			" ?s1 ex:geometry ?g1 . \n"+
+//			" FILTER( strdf:covers(?g1, ?g2 )) . \n"+
+//			"}";
+//		
+//		@SuppressWarnings("unchecked")
+//		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+//		assertEquals(2, bindings.size());
+//		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+//		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+//	}
+//	
+//	@Test
+//	public void testStrdfCoveredBy() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+//	{
+//		String query = 
+//			prefixes+
+//			"SELECT DISTINCT ?id1 ?id2 \n"+
+//			"WHERE { \n" +
+//			" ?s1 ex:id ?id1 . \n"+
+//			" ?s2 ex:id ?id2 . \n"+
+//			" FILTER( str(?id1) != str(?id2) ) . \n"+
+//			" ?s2 ex:geometry ?g2 . \n" +
+//			" ?s1 ex:geometry ?g1 . \n"+
+//			" FILTER( strdf:coveredBy(?g1, ?g2 )) . \n"+
+//			"}";
+//
+//		@SuppressWarnings("unchecked")
+//		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+//		assertEquals(2, bindings.size());
+//		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+//		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+//	}
+
 	@Test
 	public void testStrdfRelate() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
@@ -771,7 +804,7 @@ public class SpatialTests {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(40, bindings.size());
+		assertEquals(60, bindings.size());
 		// too many results :)
 //		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
 	}
@@ -793,11 +826,12 @@ public class SpatialTests {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(4, bindings.size());
+		assertEquals(5, bindings.size());
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"G\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
 	
 	@Test
@@ -838,11 +872,9 @@ public class SpatialTests {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(4, bindings.size());
-		assertTrue(-1<bindings.indexOf("[id2=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"B\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"E\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
-		assertTrue(-1<bindings.indexOf("[id2=\"F\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"Z\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertEquals(2, bindings.size());		
+		assertTrue(-1<bindings.indexOf("[id2=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
+		assertTrue(-1<bindings.indexOf("[id2=\"L2\"^^<http://www.w3.org/2001/XMLSchema#string>;id1=\"L1\"^^<http://www.w3.org/2001/XMLSchema#string>]"));
 	}
 	
 	@Test
@@ -947,7 +979,7 @@ public class SpatialTests {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(40, bindings.size());
+		assertEquals(60, bindings.size());
 		// too many results :)
 //		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
 	}
@@ -1097,7 +1129,7 @@ public class SpatialTests {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		assertEquals(40, bindings.size());
+		assertEquals(60, bindings.size());
 		// too many results :)
 //		assertTrue(-1<bindings.indexOf("[s2=http://example.org/pol11;s1=http://example.org/pol1]"));
 	}

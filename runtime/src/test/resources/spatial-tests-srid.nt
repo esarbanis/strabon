@@ -8,6 +8,8 @@
 <http://example.org/pol7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
 <http://example.org/pol8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
 <http://example.org/pol9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Polygon>.
+<http://example.org/line20> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/LineString>.
+<http://example.org/line21> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/LineString>.
 <http://example.org/pol1> <http://example.org/id> "A"^^<http://www.w3.org/2001/XMLSchema#string>.
 <http://example.org/pol11> <http://example.org/id> "A"^^<http://www.w3.org/2001/XMLSchema#string>.
 <http://example.org/pol2> <http://example.org/id> "B"^^<http://www.w3.org/2001/XMLSchema#string>.
@@ -18,6 +20,8 @@
 <http://example.org/pol7> <http://example.org/id> "G"^^<http://www.w3.org/2001/XMLSchema#string>.
 <http://example.org/pol8> <http://example.org/id> "H"^^<http://www.w3.org/2001/XMLSchema#string>.
 <http://example.org/pol9> <http://example.org/id> "Z"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/line20> <http://example.org/id> "L1"^^<http://www.w3.org/2001/XMLSchema#string>.
+<http://example.org/line21> <http://example.org/id> "L2"^^<http://www.w3.org/2001/XMLSchema#string>.
 <http://example.org/pol1> <http://example.org/geometry>  "POLYGON((1 6, 2 6, 2 7, 1 7, 1 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
 <http://example.org/pol11> <http://example.org/geometry> "POLYGON((1 6, 2 6, 2 7, 1 7, 1 6))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
 <http://example.org/pol2> <http://example.org/geometry>  "POLYGON((4 2, 5 2, 5 4, 4 4, 4 2))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
@@ -28,3 +32,5 @@
 <http://example.org/pol7> <http://example.org/geometry>  "POLYGON((4 8, 5 8, 5 9, 4 9, 4 8))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
 <http://example.org/pol8> <http://example.org/geometry>  "POLYGON((8 9, 9 9, 9 10, 8 10, 8 9))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
 <http://example.org/pol9> <http://example.org/geometry>  "POLYGON((3 3, 10 3, 10 8, 3 8, 3 3))"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/line20> <http://example.org/geometry> "LINESTRING(11 3, 12 4)"^^<http://strdf.di.uoa.gr/ontology#WKT>.
+<http://example.org/line21> <http://example.org/geometry> "LINESTRING(11 4, 12 3)"^^<http://strdf.di.uoa.gr/ontology#WKT>.

@@ -46,19 +46,18 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.A
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CoveredByFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CoversFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CrossesFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.DisjointFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.EqualsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.InsideFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.WithinFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.LeftFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchesFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbInsideFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
@@ -385,19 +384,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.contains(rightConverted);
 				}
-				else if(function instanceof CoveredByFunc)
+				else if(function instanceof CrossesFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.coveredBy(rightConverted);
-				}
-				else if(function instanceof CoversFunc)
-				{
-					int targetSRID = leftGeom.getSRID();
-					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.covers(rightConverted);
+					funcResult = leftGeom.crosses(rightConverted);
 				}
 				else if(function instanceof DisjointFunc)
 				{
@@ -413,7 +405,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.equals(rightConverted);
 				}
-				else if(function instanceof InsideFunc)
+				else if(function instanceof WithinFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -427,7 +419,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightConverted.getEnvelopeInternal().getMinX();
 				}
-				else if(function instanceof OverlapFunc)
+				else if(function instanceof OverlapsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -441,7 +433,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightConverted.getEnvelopeInternal().getMaxX();
 				}
-				else if(function instanceof TouchFunc)
+				else if(function instanceof TouchesFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -456,7 +448,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelope().intersects(rightConverted.getEnvelope());
 				}
-				else if(function instanceof MbbInsideFunc)//within function will do the job!!!
+				else if(function instanceof MbbWithinFunc)//within function will do the job!!!
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
