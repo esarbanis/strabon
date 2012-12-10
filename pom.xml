@@ -406,11 +406,13 @@
 				<version>5.1.15</version>
 			</dependency>
 
+			<!--
 			<dependency>
 				<groupId>net.sf</groupId>
 				<artifactId>log4jdbc4</artifactId>
 				<version>1.2</version>
 			</dependency>
+			-->
 
 			<!--  LOG4J -->
 			<dependency>
@@ -580,7 +582,7 @@
 				<plugin>
 					<groupId>org.apache.tomcat.maven</groupId>
 					<artifactId>tomcat7-maven-plugin</artifactId>
-					<version>2.0-SNAPSHOT</version>
+					<version>2.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -660,7 +662,7 @@
 	</scm>
 
 	<repositories>
-
+		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -672,7 +674,7 @@
 			<name>Strabon - maven repository</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/testing</url>
 		</repository>
-
+		-->
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -695,8 +697,6 @@
 			<name>Strabon - maven repository - snapshots</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
 		</repository>
-
-
 		<repository>
 			<releases>
 				<enabled>true</enabled>
