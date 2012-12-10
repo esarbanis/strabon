@@ -804,7 +804,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		parameters.addAll(query.getParameters());
 
-		System.out.println("Query: \n"+query.toString()+"\n");
 		return query.toString();
 	}
 
