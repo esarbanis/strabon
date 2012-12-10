@@ -20,53 +20,40 @@ PREFIX strdf-ext: <http://strdf.di.uoa.gr/extensions/ontology#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
 
-SELECT (substr(str(?hStartTime), 12, 5) as ?start) (substr(str(max(?hTime)), 12, 5) as ?end) ?geo
-WHERE {
-	# -- FIND HOTSPOTS THAT DEFINE THE START OF A FIRE (GROUP ALA THEMOS) -- 
-	# Retrieve all hotstpots in time range...  
-	?hStart	noa:hasAcquisitionTime ?hStartTime ;
-            noa:hasGeometry ?geo ;
-			noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-			noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-	FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-	# ... narrow down results so that any previous hotspots is detected at least PERSISTENCE mins earlier
-    OPTIONAL {
-        ?hPrevious	noa:hasAcquisitionTime ?hPreviousTime ;
-        			noa:hasGeometry ?geo ;
-					noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-					noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-		FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-        FILTER(strdf-ext:diffDateTime(?hStartTime, ?hPreviousTime) <= PERSISTENCE*60000 && ?hStartTime > ?hPreviousTime).
-    } 
-    FILTER(!bound(?hPrevious)) .
+SELECT ?start (max(?hTime) as ?end) ?geo 
+WHERE
+{
+    {
+        SELECT (max(?hStartTime) as ?start) ?hTime ?geo ?h
+        WHERE {
+	        # -- FIND HOTSPOTS THAT DEFINE THE START OF A FIRE (GROUP ALA THEMOS) -- 
+	        # Retrieve all hotstpots in time range...  
+	        ?hStart	noa:hasAcquisitionTime ?hStartTime ;
+                    noa:hasGeometry ?geo ;
+			        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
+			        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
+	        FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
+	        # ... narrow down results so that any previous hotspots is detected at least PERSISTENCE mins earlier
+            OPTIONAL {
+                ?hPrevious	noa:hasAcquisitionTime ?hPreviousTime ;
+                			noa:hasGeometry ?geo ;
+					        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
+					        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
+		        FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
+                FILTER(strdf-ext:diffDateTime(?hStartTime, ?hPreviousTime) <= PERSISTENCE*60000 && ?hStartTime > ?hPreviousTime).
+            } 
+            FILTER(!bound(?hPrevious)) .
 
-    # FIND HOTSPOTS AFTER A FIRE STARTING TIME
-    ?h  noa:hasAcquisitionTime ?hTime;
-        noa:hasGeometry ?hGeo;
-		noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-		noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-	FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-    FILTER(?hTime >= ?hStartTime).
-
-    # OPTIONALLY FIND ANOTHER STARTING TIME BEFORE ?h and after ?hStart
-    OPTIONAL {
-        ?hStart2	noa:hasAcquisitionTime ?hStartTime2 ;
-   					noa:hasGeometry ?geo ;		
-					noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-					noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-		FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime2 && ?hStartTime2 <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-        OPTIONAL {                        		
-            ?hPrevious2	noa:hasAcquisitionTime ?hPreviousTime2 ;
-            			noa:hasGeometry ?geo ;
-						noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
-						noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-			FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime2 && ?hStartTime2 <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-            FILTER( strdf-ext:diffDateTime(?hStartTime2, ?hPreviousTime2) <= PERSISTENCE*60000 && ?hStartTime2 > ?hPreviousTime2).
-        } 
-        FILTER(!bound(?hPrevious2)) .
-        FILTER(?hStartTime < ?hStartTime2 && ?hStartTime2 <= ?hTime).
-    }    
-    FILTER(!bound(?hStart2))
+            # FIND HOTSPOTS AFTER A FIRE STARTING TIME
+            ?h  noa:hasAcquisitionTime ?hTime;
+                noa:hasGeometry ?hGeo;
+		        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
+		        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
+	        FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
+            FILTER(?hTime >= ?hStartTime).
+        }
+        group by ?h ?hTime ?geo
+    }.
 }
-GROUP BY ?hStartTime ?geo 
-HAVING (count(?h) >= REPEAT_IN_PERS)
+group by ?start ?geo
+having (count(?h) >= 3)
