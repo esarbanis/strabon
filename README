@@ -51,6 +51,14 @@ data model and stSPARQL query language, the User Guide, and the Developer Guide.
 stRDF and stSPARQL tutorial
 	http://www.strabon.di.uoa.gr/files/stSPARQL_tutorial.pdf
 
+
+stSPARQL Reference
+~~~~~~~~~~~~~~~~~~
+The reference for the spatial and temporal extension functions defined in 
+stSPARQL can be found at http://www.strabon.di.uoa.gr/stSPARQL#spatial and
+http://www.strabon.di.uoa.gr/stSPARQL#temporals respectively.
+
+
 User Guide
 ~~~~~~~~~~
 Assuming that you are familiar with Maven, the following steps need to be

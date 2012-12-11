@@ -1,5 +1,10 @@
 Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
+	* Version 3.2.6 released.
+
+	* Modified the names of the stSPARQL extension functions to comply  
+	with the OGC Simple Features Access standard 
+
 	* Version 3.2.5 released.
 
 	* Added support for querying temporal information.
