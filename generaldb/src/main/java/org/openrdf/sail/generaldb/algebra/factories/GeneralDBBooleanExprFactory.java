@@ -867,12 +867,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 
 			GeneralDBSqlExpr thirdArg)
 	{
-		//XXX stSPARQL
-		if(function.getURI().equals(GeoConstants.anyInteract))
-		{
-			return anyInteract(leftArg,rightArg);
-		}
-		
+		//XXX stSPARQL		
 		if(function.getURI().equals(GeoConstants.equals))
 		{
 			return equalsGeo(leftArg,rightArg);
@@ -927,7 +922,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return below(leftArg,rightArg);
 		}
 		// mbb
-		else if(function.getURI().equals(GeoConstants.mbbOverlaps))
+		else if(function.getURI().equals(GeoConstants.mbbIntersects))
 		{
 			return mbbIntersects(leftArg,rightArg);
 		}
@@ -937,7 +932,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		else if(function.getURI().equals(GeoConstants.mbbContains))
 		{
-			return ContainsMBB(leftArg,rightArg);
+			return mbbContains(leftArg,rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.mbbEquals))
 		{

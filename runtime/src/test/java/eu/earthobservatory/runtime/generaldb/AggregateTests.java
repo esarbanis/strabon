@@ -46,7 +46,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo (STR(?place) AS ?str) strdf:union(?placegeo,?placegeo) "+
 		"HAVING (AVG(?str) < 1) "+
@@ -62,7 +62,7 @@ public class AggregateTests {
 		"geo:geometry ?placegeo ; "+
 		"geo:geometry ?placegeo2 ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo ?placegeo2";
 
@@ -75,7 +75,7 @@ public class AggregateTests {
 		"geo:geometry ?placegeo ; "+
 		"geo:geometry ?placegeo2 ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo ?placegeo2";
 		
@@ -88,7 +88,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type. "+ 
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"ORDER BY strdf:union(?placegeo,?placegeo) ?placegeo ?place";
 		
@@ -101,7 +101,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"ORDER BY ?placegeo ";
 		

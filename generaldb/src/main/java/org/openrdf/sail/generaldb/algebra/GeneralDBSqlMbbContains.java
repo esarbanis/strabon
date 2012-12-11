@@ -10,9 +10,9 @@ import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlAnyInteract extends GeneralDBSqlGeoSpatial{
+public class GeneralDBSqlMbbContains extends GeneralDBSqlGeoSpatial{
 
-	public GeneralDBSqlAnyInteract(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public GeneralDBSqlMbbContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
 	}
 

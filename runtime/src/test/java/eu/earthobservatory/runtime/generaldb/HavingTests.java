@@ -51,7 +51,7 @@ public class HavingTests {
 			"strdf:hasGeometry ?baGeo. "+ 
 			"?urbanArea a noa:UrbanArea; "+ 
 			"strdf:hasGeometry ?uaGeo; "+ 
-			"FILTER(strdf:anyInteract(?baGeo,?uaGeo)). "+
+			"FILTER(strdf:mbbIntersects(?baGeo,?uaGeo)). "+
 			"} "+
 			"GROUP BY ?burntArea ?baGeo "+
 			"HAVING (strdf:area(strdf:union(?uaGeo)) > 8) ";
@@ -63,7 +63,7 @@ public class HavingTests {
 	"strdf:hasGeometry ?baGeo. "+ 
 	"?urbanArea a noa:UrbanArea; "+ 
 	"strdf:hasGeometry ?uaGeo; "+ 
-	"FILTER(strdf:anyInteract(?baGeo,?uaGeo)). "+
+	"FILTER(strdf:mbbIntersects(?baGeo,?uaGeo)). "+
 	"} "+
 	"GROUP BY ?burntArea ?baGeo "+
 	"HAVING (strdf:area(strdf:extent(?uaGeo)) > 8) ";
@@ -75,7 +75,7 @@ public class HavingTests {
 	"strdf:hasGeometry ?baGeo. "+ 
 	"?urbanArea a noa:UrbanArea; "+ 
 	"strdf:hasGeometry ?uaGeo; "+ 
-	"FILTER(strdf:anyInteract(?baGeo,?uaGeo)). "+
+	"FILTER(strdf:mbbIntersects(?baGeo,?uaGeo)). "+
 	"} "+
 	"GROUP BY ?burntArea ?baGeo "+
 	"HAVING (strdf:area(strdf:extent(?uaGeo)) > 8) ";
@@ -87,7 +87,7 @@ public class HavingTests {
 	"strdf:hasGeometry ?baGeo. "+ 
 	"?urbanArea a noa:UrbanArea; "+ 
 	"strdf:hasGeometry ?uaGeo; "+ 
-	"FILTER(strdf:anyInteract(?baGeo,?uaGeo)). "+
+	"FILTER(strdf:mbbIntersects(?baGeo,?uaGeo)). "+
 	"} "+
 	"GROUP BY ?burntArea "+
 	"HAVING (strdf:area(strdf:extent(?uaGeo)) < 8) ";

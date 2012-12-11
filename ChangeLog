@@ -1,9 +1,14 @@
 Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
+	* Version 3.2.7 released.
+
+	* Modified the names of the stSPARQL extension functions that
+	utilize the minimum bounding boxes of the involved geometries.
+
 	* Version 3.2.6 released.
 
 	* Modified the names of the stSPARQL extension functions to comply  
-	with the OGC Simple Features Access standard 
+	with the OGC Simple Features Access standard.
 
 	* Version 3.2.5 released.
 

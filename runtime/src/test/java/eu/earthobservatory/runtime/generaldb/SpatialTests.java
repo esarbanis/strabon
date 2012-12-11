@@ -215,7 +215,7 @@ public class SpatialTests {
 	}
 	
 	@Test
-	public void testStrdfAnyInteract() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
+	public void testStrdfmbbIntersects() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{
 		String query = 
 			prefixes+
@@ -226,7 +226,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) < str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( strdf:anyInteract(?g1, ?g2 ) ) . \n"+
+			" FILTER( strdf:mbbIntersects(?g1, ?g2 ) ) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")	

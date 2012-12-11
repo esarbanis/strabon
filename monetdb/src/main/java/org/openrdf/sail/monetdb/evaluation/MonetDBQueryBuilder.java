@@ -16,11 +16,10 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBLabelColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
@@ -128,7 +127,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Relate,
 
 		// These Spatial Relations are implemented in MonetDB as operands and they apply in MBB of a geometry
-		anyInteract, 
+		mbbIntersects, 
 		equals, 
 		contains, 
 		inside,		
@@ -379,20 +378,11 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		return this;
 			}
 
-	//Spatial Relationship Functions
-	@Override
-	protected void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
-		//		appendMonetDBSpatialOperand(expr, filter, SpatialOperandsMonetDB.anyInteract);
-			}
-
-
+	
 	@Override
 	protected void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.mbbIntersects);
 
 	}
 
@@ -488,7 +478,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlMbbIntersects expr,
 			GeneralDBSqlExprBuilder filter)
 					throws UnsupportedRdbmsOperatorException {
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.anyInteract);
+		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.mbbIntersects);
 
 	}
 
@@ -1178,7 +1168,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Crosses: filter.appendFunction("Crosses"); break;
 			case ST_Overlaps: filter.appendFunction("Overlaps"); break;
 			case ST_Within: filter.appendFunction("Within"); break;
-			case anyInteract: filter.appendFunction("NOT Disjoint"); break;
+			case mbbIntersects: filter.appendFunction("NOT Disjoint"); break;
 			case equals: filter.appendFunction("Equals"); break;
 			case contains: filter.appendFunction("Contains"); break;
 			case inside: filter.appendFunction("Within"); break;
@@ -2015,7 +2005,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlContainsMBB expr,
+	protected void append(GeneralDBSqlMbbContains expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub

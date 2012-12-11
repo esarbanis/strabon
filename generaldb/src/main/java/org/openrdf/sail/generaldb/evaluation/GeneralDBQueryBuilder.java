@@ -29,14 +29,13 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBRefIdColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbs;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
@@ -533,9 +532,6 @@ public abstract class GeneralDBQueryBuilder {
 		 * FIXME
 		 */
 		//Relationships - boolean - stSPARQL
-		else if (expr instanceof GeneralDBSqlAnyInteract) {
-			append((GeneralDBSqlAnyInteract)expr, filter);
-		}
 		else if (expr instanceof GeneralDBSqlCrosses) {
 			append((GeneralDBSqlCrosses)expr, filter);
 		}
@@ -578,8 +574,8 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlMbbWithin) {
 			append((GeneralDBSqlMbbWithin)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlContainsMBB) {
-			append((GeneralDBSqlContainsMBB)expr, filter);
+		else if (expr instanceof GeneralDBSqlMbbContains) {
+			append((GeneralDBSqlMbbContains)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlMbbEquals) {
 			append((GeneralDBSqlMbbEquals)expr, filter);
@@ -945,9 +941,6 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 
 	//Spatial Relationship Functions
-	protected abstract void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException;
-	
 	protected abstract void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 	
@@ -990,7 +983,7 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 	protected abstract void append(GeneralDBSqlMbbWithin expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
-	protected abstract void append(GeneralDBSqlContainsMBB expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 	protected abstract void append(GeneralDBSqlMbbEquals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;

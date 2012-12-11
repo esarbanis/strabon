@@ -24,7 +24,7 @@ WHERE {
        noa:hasConfidence ?conf .
 ?c     rdf:type noa:Coastline ;
        noa:hasGeometry ?cGeo .
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
   }
   GROUP BY ?h ?hGeo ?conf 
   HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))

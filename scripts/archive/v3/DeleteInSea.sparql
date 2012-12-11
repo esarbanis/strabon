@@ -14,7 +14,7 @@ WHERE {
   OPTIONAL {
     ?c rdf:type noa:Coastline;
        noa:hasGeometry ?cGeo . 
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) .
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) .
   } 
   FILTER(!bound(?c)) . 
 }

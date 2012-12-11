@@ -16,14 +16,13 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBFalseValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbs;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContainsMBB;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
@@ -274,11 +273,7 @@ public class GeneralDBExprSupport {
 	 * 
 	 */
 
-	//XXX Spatial Relationship Functions - all 10 of them - stSPARQL++
-	public static GeneralDBSqlExpr anyInteract(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlAnyInteract(left, right);
-	}
-	
+	//XXX Spatial Relationship Functions - all 9 of them - stSPARQL++	
 	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEqualsSpatial(left, right);
 	}
@@ -328,8 +323,8 @@ public class GeneralDBExprSupport {
 		return new GeneralDBSqlMbbEquals(left, right);
 	}
 
-	public static GeneralDBSqlExpr ContainsMBB(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlContainsMBB(left, right);
+	public static GeneralDBSqlExpr mbbContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbContains(left, right);
 	}
 	
 	// directional

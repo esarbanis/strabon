@@ -11,7 +11,6 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbI
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbContainsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc
-org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.EqualsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.DisjointFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc

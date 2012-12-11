@@ -364,7 +364,7 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 		 meetNode(node);
 	 }
 
-	 //	public void meet(GeneralDBSqlAnyInteract node) throws X
+	 //	public void meet(GeneralDBSqlmbbIntersects node) throws X
 	 //	{
 	 //		meetBinarySqlOperator(node);
 	 //	}

@@ -102,7 +102,7 @@ public class NOATests {
 	"OPTIONAL { "+
 	"?C rdf:type noa:Coastline . "+
 	"?C noa:hasGeometry ?CGEO . "+
-	"filter ( strdf:anyInteract(?HGEO , ?CGEO) ) . "+
+	"filter ( strdf:mbbIntersects(?HGEO , ?CGEO) ) . "+
 	"} FILTER( !bound(?C) ) "+
 	"}";
 

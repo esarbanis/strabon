@@ -43,7 +43,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFun
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CrossesFunc;
@@ -356,13 +355,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightConverted.getEnvelopeInternal().getMaxY();
 				}
-				else if(function instanceof AnyInteractFunc)
-				{
-					int targetSRID = leftGeom.getSRID();
-					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.intersects(rightConverted);
-				}
 				else if(function instanceof IntersectsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
@@ -438,7 +430,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					System.out.println("FUNCTION TOUCHFUNC CALLED AND JTS WILL BE USED!!!");
 					funcResult = leftGeom.touches(rightConverted);
 				}
 				else if(function instanceof MbbIntersectsFunc)
@@ -448,7 +439,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelope().intersects(rightConverted.getEnvelope());
 				}
-				else if(function instanceof MbbWithinFunc)//within function will do the job!!!
+				else if(function instanceof MbbWithinFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();

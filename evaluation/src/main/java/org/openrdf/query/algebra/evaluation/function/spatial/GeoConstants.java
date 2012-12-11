@@ -73,7 +73,6 @@ public class GeoConstants {
 	 *  							stSPARQL								*
 	 * 																		*/
 	// Spatial Relationships
-	public static final String anyInteract 		= stRDF + "anyInteract";
 	public static final String equals 			= stRDF + "equals";
 	public static final String disjoint 		= stRDF + "disjoint";
 	public static final String intersects 		= stRDF + "intersects";
@@ -87,7 +86,7 @@ public class GeoConstants {
 	public static final String relate 			= stRDF + "relate";
 	
 	// Topological Relationships utilizing mbb
-	public static final String mbbOverlaps 		= stRDF + "mbbOverlaps";
+	public static final String mbbIntersects	= stRDF + "mbbIntersects";
 	public static final String mbbContains 		= stRDF + "mbbContains";
 	public static final String mbbEquals 		= stRDF + "mbbEquals";
 	public static final String mbbWithin 		= stRDF + "mbbWithin";
