@@ -1,7 +1,7 @@
 # Παράδειγμα για το deleteReflections.rq
 # Έχει 4 ομάδες hotspot.
 # Η δύο πρώτες ομάδες (h111,h112,h121) απέχουν 10 λεπτά (persistence=10') άρα πάνε μαζί.
-# Η δύο τελευταίες (h211, h221) απέχουν πάλι δέκα λεπτά και πάνε μαζί.
+# Η δύο τελευταίες (h211, h221, h222) απέχουν πάλι δέκα λεπτά και πάνε μαζί.
 
 @prefix lgd: <http://linkedgeodata.org/triplify/> .
 @prefix lgdgeo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
@@ -41,4 +41,10 @@ noa:h221	noa:hasAcquisitionTime "2012-08-24T12:40:00"^^xsd:dateTime ;
 			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
 			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
      		noa:isDerivedFromSensor "MSG2"^^xsd:string .
+
+noa:h222	noa:hasAcquisitionTime "2012-08-24T12:45:00"^^xsd:dateTime ;
+			noa:hasGeometry "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"^^<http://strdf.di.uoa.gr/ontology#WKT> ;
+			noa:producedFromProcessingChain "StaticThresholds"^^xsd:string ;
+     		noa:isDerivedFromSensor "MSG2"^^xsd:string .
+
 
