@@ -13,6 +13,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDateTimeColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBLabelColumn;
+import org.openrdf.sail.generaldb.algebra.GeneralDBNumberValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
@@ -1348,22 +1349,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				String raw = arg.getValue();
 				filter.append(" "+raw+" ");
 			}
-//			else if(expr.getLeftArg() instanceof GeneralDBDoubleValue) //case met in buffer!
-//			{
-//				append(((GeneralDBDoubleValue)expr.getLeftArg()), filter);
-//			}
-//			else if(expr.getLeftArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-//			{
-//				append(((GeneralDBNumericColumn)expr.getLeftArg()), filter);
-//			}
-//			else if(expr.getLeftArg() instanceof GeneralDBURIColumn) //case met in transform!
-//			{
-//				filter.keepSRID_part1();
-//				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
-//				filter.keepSRID_part2();
-//				append(((GeneralDBURIColumn)expr.getLeftArg()), filter);
-//				filter.keepSRID_part3();
-//			}
+			else if(expr.getLeftArg() instanceof GeneralDBNumberValue)
+			{
+				append(((GeneralDBNumberValue)expr.getLeftArg()), filter);
+			}
 			else if(expr.getLeftArg() instanceof GeneralDBDateTimeColumn)
 			{
 				append(((GeneralDBDateTimeColumn)expr.getLeftArg()),filter);
@@ -1384,22 +1373,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				String raw = arg.getValue();
 				filter.append(" "+raw+" ");
 			}
-//			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
-//			{
-//				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
-//			}
-//			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
-//			{
-//				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-//			}
-//			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
-//			{
-//				filter.keepSRID_part1();
-//				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-//				filter.keepSRID_part2();
-//				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-//				filter.keepSRID_part3();
-//			}
+			else if(expr.getRightArg() instanceof GeneralDBNumberValue)
+			{
+				append(((GeneralDBNumberValue)expr.getRightArg()), filter);
+			}
 			else if(expr.getRightArg() instanceof GeneralDBDateTimeColumn)
 			{
 				append(((GeneralDBDateTimeColumn)expr.getRightArg()),filter);	
