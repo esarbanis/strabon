@@ -1,25 +1,35 @@
 #! /bin/bash
-
+# 
+# This Source Code Form is subject to the terms of the Mozilla Public 
+# License, v. 2.0. If a copy of the MPL was not distributed with this file, you
+# can obtain one at http://mozilla.org/MPL/2.0/. 
+# 
+# Copyright (C) 2010, 2011, 2012, Pyravlos Team 
+# 
+# http://www.strabon.di.uoa.gr/ 
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2010, 2011, 2012, Pyravlos Team
-#
-# http://www.strabon.di.uoa.gr/
-#
 
-LOC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Command name
+cmd="$(basename ${0})" 
+# Get the directory where the script resides
+loc="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ENDPOINT="http://teleios4.di.uoa.gr:8080/NOA"
-DB="NOA2012"
+function help() {                                                               
+    echo "Usage: ${cmd} [OPTIONS] "                        
+    echo                                                                        
+    echo "Execute NOA chain with refinements and measure time."
+    echo                                                                        
+    echo "OPTIONS can be any of the following"                                  
+    echo "  -d,--db   		: PostGIS database"                
+    echo "  -e,--endpoint   : Strabon Endpoint"
+    echo "  -h,--hotposts	: URL where hotspots are stored"
+	echo "  -b,--background	: Background data"                                           
+	echo "  -l,--log		: Log file"                                           
+}
 
-HOTSPOTS_URL="http://challenge.strabon.di.uoa.gr/MSG1"
-ENDPOINT_SCRIPT=../../scripts/endpoint
-
-logFile="chain.log"
-
+# If no arguments are given it returns miliseconds from 1970-01-01 00:00:00 UTC
+# Else if a time (miliseconds form ...) is given it returns the delta between
+# given time and current time
 function timer()
 {
    if [[ $# -eq 0 ]]; then
@@ -42,12 +52,63 @@ function timer()
    fi
 }
 
-# find out the postgres service to use
-postgres=$(ls -1 /etc/init.d/| grep postgres | head -1)
-
-tomcat=
-function chooseTomcat()
+# Handle the postgres service
+# -$1: Command for the service
+function handlePostgresService()
 {
+	# find out the postgres service to use
+	postgres=$(ls -1 /etc/init.d/| grep postgres | head -1)
+
+	echo "Postgres service received command: $1"
+	sudo service ${postgres} $1
+}
+
+# Handled a postgres database
+# -$1: Command (create/drop/store)
+# -$2: Dump file to store (if store is given as $1)
+#	   'spatial' to create a spatial database (if create is given as $1)
+function handlePostgresDatabase() {
+	local command=$1
+	local db=$2
+	shift; shift
+	local options="$*"
+	case "${command}" in
+		create)
+			echo "Creating database ${db}..."
+			createdb -U postgres ${db} ${options}	
+			;;
+		drop)
+			if test ! -z "${options}"; then
+				echo "ERROR: dropdb takes no extra options"
+				echo "options: ${options}"
+				exit -1
+			fi
+			echo "Dropping database ${db}..."
+			dropdb -U postgres ${db} 
+			;;
+		vacuum)
+			if test "${options}" = "analyze"; then
+				psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
+			else
+				psql -U postgres ${DB} -c 'VACUUM' 
+			fi
+			;;
+		run)
+			if test ! [ -f "${options}" ]; then
+				echo "ERROR: No dump file to run"
+				exit -1
+			fi
+			echo "Storing dump file ${options} in database ${db}..."
+			psql ${db} -f ${options}
+			;;
+	esac
+}
+
+# Handle the tomcat service
+# -$1: Command for the service
+function handleTomcatService()
+{
+	# find out the tomcat service to use
 	if test -s /etc/fedora-release ; then
 		tomcat="tomcat"
 	#elif test -s /etc/centos-release ; then
@@ -56,220 +117,303 @@ function chooseTomcat()
 	#elif test -s /etc/SuSE-release ; then
 	#elif test -s /etc/gentoo-release ; then
 	elif test -s /etc/lsb-release ; then # Ubuntu
-			tomcat=$(ls -1 /etc/init.d/| grep tomcat | head -1)
+		tomcat=$(ls -1 /etc/init.d/| grep tomcat | head -1)
 	elif test -s /etc/debian_version ; then
 		tomcat="tomcat"
 	fi
 
 	# check for service availability
 	if ! test -e "/etc/init.d/${tomcat}"; then
-		tomcat=
+		echo "ERROR: No tomcat service found"
+		exit -1
 	fi
+
+	echo "Service ${tomcat} received command: $1"
+	sudo service ${tomcat} $1
 }
 
-insertMunicipalities=`cat ${LOC}/insertMunicipalities.rq`
-deleteSeaHotspots=`cat ${LOC}/deleteSeaHotspots.rq` # | sed 's/\"/\\\"/g'`
-refinePartialSeaHotspots=`cat ${LOC}/refinePartialSeaHotspots.rq` # | sed 's/\"/\\\"/g'`
-invalidForFires=`cat ${LOC}/landUseInvalidForFires.rq`
-refineTimePersistence=`cat ${LOC}/refineTimePersistence.rq` # | sed 's/\"/\\\"/g'`
-discover=`cat ${LOC}/discover.rq`
-#InsertMunicipalities =`cat ${LOC}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
-
-# Initialize (stop tomcat, restart postgres, drop/create database, start tomcat)
-chooseTomcat
-echo "stopping tomcat"
-if test -z "${tomcat}"; then
-	# work-around for babis (standalone tomcat, with start_tomcat.sh and stop_tomcat.sh scripts)
-	stop_tomcat.sh
-else
-	sudo service ${tomcat} stop
-fi
-
-sudo service ${postgres} restart
-
 # get the main version of postgres
-POSTGRES_MAIN_VERSION=$(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
+function getPostgresMainVersion() {
+	echo $(sudo service ${postgres} status | grep -o '.\..' | cut -b 1)
+}
 
-#echo "Dropping endpoint database";
-dropdb -U postgres ${DB}
+# It stores the backgroud data
+# - $1: database
+# - $2: backgound data file
+function storeBackgroundData() {
+	local db=$1
+	local bgFile=$2
 
-#echo "Creating endpoint database"
-createdb -U postgres ${DB} 
-
-# load data
-#curl -s http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-${POSTGRES_MAIN_VERSION}.tgz | tar xz -O | psql -d ${DB}
-psql -U postgres -d ${DB} -f /tmp/Kallikratis-Coastline-ExcludeArea-dump.sql
-#psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
-
-echo "starting tomcat"
-if test -z "${tomcat}"; then
-	# work-around for babis (standalone tomcat, with start_tomcat.sh and stop_tomcat.sh scripts)
-	start_tomcat.sh
-	sleep 2
-else
-	sudo service ${tomcat} start
-fi
-
-echo "initializing database"
-echo "Timestamp Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence" > stderr.txt
-
-
-#./scripts/endpoint query ${ENDPOINT} "SELECT (COUNT(*) AS ?C) WHERE {?s ?p ?o}"
-#sudo -u postgres psql -d endpoint -c 'CREATE INDEX datetime_values_idx_value ON datetime_values USING btree(value)';
-#sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
-
-#for y in 2007 2008 2010 2011; do
-for y in 2012; do
-	# get hotpost URLS
-	for hot in $(curl -s ${HOTSPOTS_URL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
-		file="${HOTSPOTS_URL}/${y}/${hot}"
-
-		time_status=$(echo ${hot} | egrep -o '[[:digit:]]{6}_[[:digit:]]{4}')
+	if test -f ${bgFile}; then
+		handlePostgresDatabase run ${db} ${bgFile}	
+	elif test "${bgFile:0:7}" = "http://"; then
+		#curl -s ${bgFile} | tar xz -O | psql -d ${DB}
+		wget ${bgFile} -O /tmp/bgFile$$.tar.gz
+		tar xz -O /tmp/bgFile$$.tar.gz
 		
-		# get sensor
-		SENSOR=$(echo ${hot} | grep -o 'MSG.')
+		handlePostgresDatabase run ${db} /tmp/bgFile$$.tar.tz
+		rm /tmp/bgFiile$$.tar.gz
+	else
+		echo "Backgound file not foung"
+		exit -1
+	fi
+	handlePostgresDatabase vacuum ${db} analyze
+}
 
-		# get satellite and set number of acquisitions per hour
-		if test "${SENSOR}" = "MSG2"; then
-			SAT="METEOSAT9"
+# Handle Stabon Endpoint
+# - $1: endpoint
+# - $2: command (store/query)
+# - $2: file/query
+function handleStrabonEndpoint(){
+	endpoint=$1
+	command=$2
+	option=$3
 
-			N_ACQUISITIONS=3.0
-		else
-			SAT="METEOSAT8"
-			SENSOR="MSG1_RSS"
+	endpointScript=${loc}/../../scripts/endpoint
+	case ${command} in
+		store)
+			url=${options}
 
-			N_ACQUISITIONS=7.0
-		fi
+			# print timestamp
+			echo -n "${TIMESTAMP} " >> ${logFile}
 
-		# get time information for acquisition and construct timestamp
-		year="20$(expr substr ${time_status} 1 2)"
-		month=$(expr substr ${time_status} 3 2)
-		day=$(expr substr ${time_status} 5 2)
-		time2=$(expr substr ${time_status} 8 2)
-		time2="${time2}:$(expr substr ${time_status} 10 2)"
+			tmr1=$(timer)
+			${endpointScript} store ${endpoint} N-Triples -u ${url}
+			tmr2=$(timer)
+			printf '%s ' $((tmr2-tmr1)) >> ${logFile}
+			;;
+		query)
+			query=${option}
 
-		# construct timestamp
-		TIMESTAMP="${year}-${month}-${day}T${time2}:00"
+			tmr1=$(timer)
+			${endpointScript} query ${endpoint} "${query}"
+			tmr2=$(timer)
+			printf '%s ' $((tmr2-tmr1)) >> ${logFile} 
+			;;
+		update)
+			update=${option}
+			tmr1=$(timer)
+			${endpointScript} update ${endpoint} "${update}"
+			tmr2=$(timer)
+			printf '%s ' $((tmr2-tmr1)) >> stderr.txt
+			;;
+		*)
+			echo "ERROR: ..."
+			exit -1
+			;;
+	esac
+}
 
-		# store file
-		echo -n "storing " $file; echo; echo; 
-		# ${countTime} ./strabon -db endpoint store $file
+# $1: queryFile
+function makeUpdate() {
+	queryFile=$1
+	instansiateScript=${loc}/../scripts/instantiate.sh
+}
+# default values
+endpoint="http://pathway.di.uoa.gr:8080/endpoint"
+db="NOA2012"
+hotspots_url="http://pathway.di.uoag.r/hotspots/2012"
+bgFile="http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-9.tgz"
+logFile="runChain.log"
 
-		# print timestamp
-		echo -n "${TIMESTAMP} " >> stderr.txt
-
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} store ${ENDPOINT} N-Triples -u ${file}
-		tmr2=$(timer)
-		printf '%s ' $((tmr2-tmr1)) >> stderr.txt
-
-		# sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
-
-		echo;echo;echo;echo "File ${file} stored!" >> ${logFile}
-
-		# insertMunicipalities
-		echo -n "inserting Municipalities " ;echo; echo; echo;
-		# query=`echo "${insertMunicipalities}" `
-		# ${countTime} ./strabon -db endpoint update "${query}"
-
-		tmr1=$(timer)
-
-		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
-		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g"`
-
-		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
-		
-		tmr2=$(timer)
-		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
-		echo;echo;echo;echo "File ${file} inserted Municipalities!"
-
-		# execute an explicit VACUUM ANALYZE when a query takes longer than it should
-		duration=$((tmr2-tmr1))
-		if test ${duration} -ge 30000; then
-			psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
-			echo "Explicit VACUUM ANALYZE"
-		fi
-		
-		# deleteSeaHotspots
-		echo -n "Going to deleteSeaHotspots ${TIMESTAMP} " ;echo; echo; echo;
-		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
-		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g"`
-		# ${countTime} ./strabon -db endpoint update "${query}"
-
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
-
-		tmr2=$(timer)
-		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
-		echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
-
-		# invalidForFires
-		echo -n "invalidForFires ${TIMESTAMP} "  ; echo; echo ; echo;
-		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
-		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g"` 
-
-		# ${countTime} ./strabon -db endpoint update "${query}"
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
-		tmr2=$(timer)
-		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
-		echo "File ${file} invalidForFires done!"
- 
-		# refinePartialSeaHotspots
-		echo -n "refinePartialSeaHotspots ${TIMESTAMP} "  ; echo; echo ; echo;
-		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
-		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g" |\
-		sed "s/SAT/${SAT}/g"`
-		# ${countTime} ./strabon -db endpoint update "${query}"
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
-		tmr2=$(timer)
-		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
-
-		echo "File ${file} refinePartialSeaHotspots done!"
-		# echo "Continue?"
-		# read a
-
-		# refineTimePersistence
-		echo -n "Going to refineTimePersistence ${TIMESTAMP} ";echo;echo;echo; 
-		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
-		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
-		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-		sed "s/SENSOR/${SENSOR}/g" | \
-		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/${N_ACQUISITIONS}/g" | \
-		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
-		sed "s/SAT/${SAT}/g"`
-
-		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
-
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
-		 tmr2=$(timer)
-		printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
-		echo;echo;echo;echo "File ${file} timePersistence done!"
-		# echo "Continue?"
-		# read a
-
-
-		# discover
-		echo -n "Going to discover ${TIMESTAMP} ";echo;echo;echo; 
-		min_acquisition_time=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
-		max_acquisition_time=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
-		query=`echo "${discover}" | \
-			sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
-			sed "s/SENSOR/${SENSOR}/g" | \
-			sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
-			sed "s/MAX_ACQUISITION_TIME/${max_acquisition_time}/g"`
-			
-		tmr1=$(timer)
-		${ENDPOINT_SCRIPT} query ${ENDPOINT} "${query}"
-		tmr2=$(timer)
-		printf '%s \n' $((tmr2-tmr1)) >>discover.txt
-		echo;echo;echo;echo "Discovered hotspots done!"
-	done
+# read script options
+while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
+    case "${1}" in
+        --help)
+            help
+            exit 0
+            ;;
+        -e|--endpoint)
+            shift
+			endpoint=${1}
+            shift
+            ;;
+        -d|--db)
+            shift
+			db=${1}
+			shift
+			;;
+		-h|--hotspots)
+            shift
+			hotspots_url=${1}
+			shift
+			;;
+		-b|--background)
+            shift
+			bgFile=${1}
+			shift
+			;;
+		-l|--log)
+            shift
+			logFile=${1}
+			shift
+			;;
+		*)
+			echo "unknown argument ${1}"
+			help
+			exit -1
+			;;
+	esac
 done
 
+echo "endpoint: ${endpoint}"
+echo "db: ${db}"
+echo "hotspots: ${hotspots_url}"
+echo "background: ${bgFile}"
+echo "logFile: ${logfile}"
+
+
+# Get queries and updates
+insertMunicipalities=`cat ${loc}/insertMunicipalities.rq`
+deleteSeaHotspots=`cat ${loc}/deleteSeaHotspots.rq` # | sed 's/\"/\\\"/g'`
+refinePartialSeaHotspots=`cat ${loc}/refinePartialSeaHotspots.rq` # | sed 's/\"/\\\"/g'`
+invalidForFires=`cat ${loc}/landUseInvalidForFires.rq`
+refineTimePersistence=`cat ${loc}/refineTimePersistence.rq` # | sed 's/\"/\\\"/g'`
+discover=`cat ${loc}/discover.rq`
+InsertMunicipalities=`cat ${loc}/InsertMunicipalities.sparql` # | sed 's/\"/\\\"/g'`
+
+
+#Initialize (stop tomcat, restart postgres, drop/create database, start tomcat)
+handleTomcatService stop
+handlePostgresService restart
+
+# get the main version of postgres
+postgres_main_version=$(getPostgresMainVersion)
+
+handlePostgresDatabase drop ${db}
+handlePostgresDatabase create ${db}
+
+storeBackgroundData ${db} ${bgFile}
+
+handleTomcatService start
+
+echo "Timestamp Store Municipalities DeleteInSea InvalidForFires RefineInCoast
+TimePersistence" $ > stderr.txt
+
+years="2007 2008 2010 2011"
+for year in "${years}"; do
+for month in `seq 5 9`; do
+for day in `seq 1 31`; do
+for hour in `seq 0 23`; do
+for minute in `seq 0 60 5`; do
+
+		month=$(printf "%02d" ${month})
+		day=$(printf "%02d" ${day})k
+		hour=$(printf "%02d" ${hour})
+		minute=$(printf "%02d" ${minute})k
+
+		# construct timestamp
+		timestamp="${year}-${month}-${day}T${hour}:${minute}:00"
+
+		fileURL="HMSG1_RSS_039_s7_${year}${month}${day}_${hour}${minute}.hotspots.nt"
+		handleStrabonEndpoint store ${fileURL} ${fileURL}
+
+##		# sudo -u postgres psql -d endpoint -c 'VACUUM ANALYZE;';
+
+
+##		# insertMunicipalities
+##		echo -n "inserting Municipalities " ;echo; echo; echo;
+##		# query=`echo "${insertMunicipalities}" `
+##		# ${countTime} ./strabon -db endpoint update "${query}"
+##
+##		tmr1=$(timer)
+##
+##		query=`echo "${insertMunicipalities}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
+##		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##		sed "s/SENSOR/${SENSOR}/g"`
+##
+##		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
+##		
+##		tmr2=$(timer)
+##		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+##		echo;echo;echo;echo "File ${file} inserted Municipalities!"
+##
+##		# execute an explicit VACUUM ANALYZE when a query takes longer than it should
+##		duration=$((tmr2-tmr1))
+##		if test ${duration} -ge 30000; then
+##			psql -U postgres ${DB} -c 'VACUUM ANALYZE' 
+##			echo "Explicit VACUUM ANALYZE"
+##		fi
+##		
+##		# deleteSeaHotspots
+##		echo -n "Going to deleteSeaHotspots ${TIMESTAMP} " ;echo; echo; echo;
+##		query=`echo "${deleteSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
+##		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##		sed "s/SENSOR/${SENSOR}/g"`
+##		# ${countTime} ./strabon -db endpoint update "${query}"
+##
+##		tmr1=$(timer)
+##		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
+##
+##		tmr2=$(timer)
+##		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+##		echo;echo;echo;echo "File ${file} deleteSeaHotspots done!"
+##
+##		# invalidForFires
+##		echo -n "invalidForFires ${TIMESTAMP} "  ; echo; echo ; echo;
+##		query=`echo "${invalidForFires}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
+##		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##		sed "s/SENSOR/${SENSOR}/g"` 
+##
+##		# ${countTime} ./strabon -db endpoint update "${query}"
+##		tmr1=$(timer)
+##		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
+##		tmr2=$(timer)
+##		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+##		echo "File ${file} invalidForFires done!"
+## 
+##		# refinePartialSeaHotspots
+##		echo -n "refinePartialSeaHotspots ${TIMESTAMP} "  ; echo; echo ; echo;
+##		query=`echo "${refinePartialSeaHotspots}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
+##		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##		sed "s/SENSOR/${SENSOR}/g" |\
+##		sed "s/SAT/${SAT}/g"`
+##		# ${countTime} ./strabon -db endpoint update "${query}"
+##		tmr1=$(timer)
+##		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
+##		tmr2=$(timer)
+##		printf '%s ' $((tmr2-tmr1)) >>stderr.txt
+##
+##		echo "File ${file} refinePartialSeaHotspots done!"
+##		# echo "Continue?"
+##		# read a
+##
+##		# refineTimePersistence
+##		echo -n "Going to refineTimePersistence ${TIMESTAMP} ";echo;echo;echo; 
+##		min_acquisition_time=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
+##		query=`echo "${refineTimePersistence}" | sed "s/TIMESTAMP/${TIMESTAMP}/g" | \
+##		sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##		sed "s/SENSOR/${SENSOR}/g" | \
+##		sed "s/ACQUISITIONS_IN_HALF_AN_HOUR/${N_ACQUISITIONS}/g" | \
+##		sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
+##		sed "s/SAT/${SAT}/g"`
+##
+##		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
+##
+##		tmr1=$(timer)
+##		${ENDPOINT_SCRIPT} update ${ENDPOINT} "${query}"
+##		 tmr2=$(timer)
+##		printf '%s \n' $((tmr2-tmr1)) >>stderr.txt
+##		echo;echo;echo;echo "File ${file} timePersistence done!"
+##		# echo "Continue?"
+##		# read a
+##
+##
+##		# discover
+##		echo -n "Going to discover ${TIMESTAMP} ";echo;echo;echo; 
+##		min_acquisition_time=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
+##		max_acquisition_time=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
+##		query=`echo "${discover}" | \
+##			sed "s/PROCESSING_CHAIN/DynamicThresholds/g" | \
+##			sed "s/SENSOR/${SENSOR}/g" | \
+##			sed "s/MIN_ACQUISITION_TIME/${min_acquisition_time}/g" |\
+##			sed "s/MAX_ACQUISITION_TIME/${max_acquisition_time}/g"`
+##			
+##		tmr1=$(timer)
+##		${ENDPOINT_SCRIPT} query ${ENDPOINT} "${query}"
+##		tmr2=$(timer)
+##		printf '%s \n' $((tmr2-tmr1)) >>discover.txt
+##		echo;echo;echo;echo "Discovered hotspots done!"
+##	done
+##done
+##
