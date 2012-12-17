@@ -202,10 +202,12 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     public Resource createValidTimeURI(String sb) throws ParseException, RDFParseException
     {
     	String strdf = "http://strdf.di.uoa.gr/ontology#validTime";
+    	String period = "http://strdf.di.uoa.gr/ontology#period";
     	validTimeLiteral=sb;
     	int i2=0; 
     	
-    	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
+    	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>")||
+    			sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
      	{	
     	
      	String[] splits = sb.toString().split(",");

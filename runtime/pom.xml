@@ -415,18 +415,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.6</version>
 				<executions>
-					<execution>
-						<id>process-classes</id>
-						<phase>process-classes</phase>
-						<configuration>
-							<target>
-								<chmod file="target/classes/pg_restart_clear_caches.sh" perm="777" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>

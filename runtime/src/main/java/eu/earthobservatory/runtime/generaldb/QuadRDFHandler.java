@@ -49,7 +49,8 @@ public class QuadRDFHandler extends StatementCollector {
 	        @Override
 	        public void handleStatement(Statement st) {
 	            //super.handleStatement(st);
-	            if(st.getContext().toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>"))
+	            if(st.getContext().toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>")||
+	        			st.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
 	         	{	
 	         	    NQuadsParser parser = new NQuadsParser();
 	         		try {
@@ -60,7 +61,7 @@ public class QuadRDFHandler extends StatementCollector {
 							 int i = context.indexOf('"')+1;
 							 int j = context.lastIndexOf('"');
 							 validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
-
+							 //validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>";
 							// validPeriod = context.replace("]",","+context.substring(i, j)+"]");
 						 }
 					 Resource graph = parser.createValidTimeURI(validPeriod);
