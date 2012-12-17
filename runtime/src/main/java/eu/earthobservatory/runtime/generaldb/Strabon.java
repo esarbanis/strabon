@@ -372,9 +372,9 @@ public abstract class Strabon {
 	{
 		logger.info("[Strabon.storeURL] Storing file.");
 		logger.info("[Strabon.storeURL] URL      : {}", url.toString());
+		logger.info("[Strabon.storeURL] Context  : {}", ((context == null) ? "default" : context));
 		if (logger.isDebugEnabled()) {
 			logger.debug("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? "null" : baseURI));
-			logger.debug("[Strabon.storeURL] Context  : {}", ((context == null) ? "null" : context));
 			logger.debug("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
 		}
 
