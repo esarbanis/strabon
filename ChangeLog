@@ -2,6 +2,13 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.7 released.
 
+	* Modified strabon script and postgis/monetdb.StoreOP class to get an
+	option for storing a RDF file in a named graph. Moreover, the RDF
+	format of the input RDF file now is given as an option (still, if it
+	is missing, it is assumed that the input is in N-TRIPLES format). The
+	option for the format is -f and the option for the named graph is -g
+	(takes a URI as an argument).
+
 	* Modified the names of the stSPARQL extension functions that
 	utilize the minimum bounding boxes of the involved geometries.
 
