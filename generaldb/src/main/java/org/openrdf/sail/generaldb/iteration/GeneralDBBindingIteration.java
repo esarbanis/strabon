@@ -205,6 +205,9 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected RdbmsValue createValue(ResultSet rs, int index)
 	throws SQLException
 	{
+		System.out.println("Object in index "+index+" is: "+ rs.getObject(index).toString());
+		System.out.println("Object in index "+ --index+" is: "+ rs.getObject(index).toString());
+
 		Number id = ids.idOf(rs.getLong(index));
 		if (ids.isLiteral(id)) {
 			String label = rs.getString(index + 1);
