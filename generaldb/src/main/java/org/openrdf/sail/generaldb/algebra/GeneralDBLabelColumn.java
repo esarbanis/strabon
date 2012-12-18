@@ -52,6 +52,10 @@ public class GeneralDBLabelColumn extends GeneralDBValueColumnBase {
 		{
 			setSpatial(true);
 		}
+		else if(var.isTemporal())
+		{
+			setTemporal(true);
+		}
 		
 	}
 	
@@ -60,6 +64,8 @@ public class GeneralDBLabelColumn extends GeneralDBValueColumnBase {
 		
 		setSpatial(isSpatial);
 	}
+
+
 
 	public boolean isSpatial() {
 		return spatial;
@@ -73,8 +79,8 @@ public class GeneralDBLabelColumn extends GeneralDBValueColumnBase {
 		return temporal;
 	}
 
-	public void setTemporal(boolean spatial) {
-		this.temporal = spatial;
+	public void setTemporal(boolean temporal) {
+		this.temporal = temporal;
 	}
 
 	

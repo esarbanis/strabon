@@ -10,10 +10,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.openrdf.model.URI;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 /**
@@ -60,10 +63,15 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 	protected RdbmsValue createTemporalValue(ResultSet rs, int index)
 	throws SQLException
 	{
-//TODO implement method 
-//		System.out.println("CREATE TEMPORAL VALUE!");
-
-		return null;
+		Number id = ids.idOf(rs.getLong(index));
+		if (ids.isLiteral(id))
+		{
+			String label = rs.getObject(index+1).toString();
+		    URI datatype = vf.createURI(TemporalConstants.PERIOD);
+		    return vf.createLiteral(label, datatype);
+		    
+		}
+		return createResource(rs, index);
 	}
 
 

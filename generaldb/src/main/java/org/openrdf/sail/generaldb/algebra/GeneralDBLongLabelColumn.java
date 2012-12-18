@@ -57,6 +57,9 @@ private boolean spatial = false;
 	public void setSpatial(boolean spatial) {
 		this.spatial = spatial;
 	}
+	public void setTemporal(boolean temporal) {
+		this.spatial = temporal;
+	}
 
 	@Override
 	public <X extends Exception> void visit(GeneralDBQueryModelVisitorBase<X> visitor)
