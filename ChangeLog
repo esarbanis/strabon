@@ -12,14 +12,19 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	* Modified the names of the stSPARQL extension functions that
 	utilize the minimum bounding boxes of the involved geometries.
 
+Tue Dec 11 19:33:45 2012   Pyravlos Team
+
 	* Version 3.2.6 released.
 
 	* Modified the names of the stSPARQL extension functions to comply  
 	with the OGC Simple Features Access standard.
 
+Tue Dec 11 00:11:43 2012   Pyravlos Team
+
 	* Version 3.2.5 released.
 
-	* Added support for querying temporal information.
+	* Added support for querying temporal information. This functionality
+	may be found in the `temporals' branch.
 
 	* Changed behaviour of Strabon and Strabon Endpoint for connecting to
 	a spatially-enabled database. Only one instance of Strabon is allowed
