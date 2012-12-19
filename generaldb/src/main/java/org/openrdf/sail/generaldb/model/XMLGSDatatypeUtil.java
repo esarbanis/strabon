@@ -18,6 +18,7 @@ import org.openrdf.model.vocabulary.XMLSchema;
 
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 
 
 
@@ -128,7 +129,7 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 	
-		return GeoConstants.PERIOD.equals(datatype.stringValue());
+		return TemporalConstants.PERIOD.equals(datatype.stringValue());
 	}
 	
 	/**

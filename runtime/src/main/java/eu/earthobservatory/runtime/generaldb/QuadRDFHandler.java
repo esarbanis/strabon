@@ -20,6 +20,7 @@ import java.text.ParseException;
 //import org.junit.Assert;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 //import org.openrdf.model.URI;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -48,8 +49,7 @@ public class QuadRDFHandler extends StatementCollector {
 	        
 	        @Override
 	        public void handleStatement(Statement st) {
-	            //super.handleStatement(st);
-	            if(st.getContext().toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>")||
+	            if(st.getContext().toString().contains("^^"+TemporalConstants.PERIOD)||
 	        			st.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
 	         	{	
 	         	    NQuadsParser parser = new NQuadsParser();
@@ -60,9 +60,8 @@ public class QuadRDFHandler extends StatementCollector {
 						 {
 							 int i = context.indexOf('"')+1;
 							 int j = context.lastIndexOf('"');
-							 validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
-							 //validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>";
-							// validPeriod = context.replace("]",","+context.substring(i, j)+"]");
+							 validPeriod = "\"[" + context.substring(i,j)+","+context.substring(i,j) + "]\"^^"+TemporalConstants.PERIOD; 
+
 						 }
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
@@ -70,7 +69,6 @@ public class QuadRDFHandler extends StatementCollector {
 					 if (!triples.toString().contains(triple))
 					 {
 						 triples.append(triple);
-//						 System.out.println("TRIPLE:"+triple);
 
 					 }
 					

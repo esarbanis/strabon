@@ -43,6 +43,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.resultio.Format;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultWriterFactory;
@@ -500,7 +501,7 @@ public abstract class Strabon {
 					 {
 						 int i = cont.indexOf('"')+1;
 						 int j = cont.lastIndexOf('"');
-						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
+						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^"+TemporalConstants.PERIOD; 
 						 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
 						 
 					 }
@@ -570,7 +571,7 @@ public abstract class Strabon {
 				 {
 					 int i = cont.indexOf('"')+1;
 					 int j = cont.lastIndexOf('"');
-					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<http://strdf.di.uoa.gr/ontology#validTime>"; 
+					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^"+TemporalConstants.PERIOD; 
 					 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
 					 
 				 }

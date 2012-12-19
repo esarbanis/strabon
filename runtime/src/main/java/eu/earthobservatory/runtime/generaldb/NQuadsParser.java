@@ -2,6 +2,7 @@ package eu.earthobservatory.runtime.generaldb;
 
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -201,12 +202,12 @@ public class NQuadsParser extends ModifiedNTriplesParser {
 
     public Resource createValidTimeURI(String sb) throws ParseException, RDFParseException
     {
-    	String strdf = "http://strdf.di.uoa.gr/ontology#validTime";
+    	String strdf = TemporalConstants.PERIOD;
     	String period = "http://strdf.di.uoa.gr/ontology#period";
     	validTimeLiteral=sb;
     	int i2=0; 
     	
-    	if(sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#validTime>")||
+    	if(sb.toString().contains("^^"+TemporalConstants.PERIOD)||
     			sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
      	{	
     	

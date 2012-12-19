@@ -29,6 +29,7 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr> (added suport for temporal variables)
  * 
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
