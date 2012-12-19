@@ -727,8 +727,6 @@ System.out.println("Function RI= "+fc.getURI());
 						if(var.isTemporal()) 
 						{
 							this.temporalVars.put(var.getIndex()+1,var.getName());
-							//no SRID here, a single shift is needed
-							index++;
 						}
 						query.select(proj.getId());
 						query.select(proj.getStringValue());
