@@ -257,7 +257,7 @@ public class NQuadsParser extends ModifiedNTriplesParser {
      		endDate = element2;
      	}
      	
-     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
      	Date start = format.parse(startDate);
      	//System.out.println("start date:"+startDate.toString());
      	Date end = format.parse(endDate);

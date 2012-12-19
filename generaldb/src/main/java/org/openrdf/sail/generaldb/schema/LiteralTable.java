@@ -196,9 +196,10 @@ public class LiteralTable {
 		//TODO the label should be validated as a period before reaching this point. Not sure yet on which level this should be done
 //		System.out.println("LABEL: "+label);
 //		System.out.println("NUMBER: "+id.toString());
-
-		temporalTable.insert(id, label);
+		String postgresPeriodLabel = label.replace("T"," ");
+		temporalTable.insert(id, postgresPeriodLabel);
 	}
+	
 	
 	/********************************************************************/
 	public void insertGeoSpatial(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, InterruptedException
