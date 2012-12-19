@@ -490,6 +490,7 @@ public abstract class Strabon {
 			System.out.println("Translated NQUADS to NTRIPLES!");
 			Iterator iterator = statements.iterator();
 			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+			System.out.println("handled triples"+ translator.getHandledTriples().toString());
 			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			for(Statement st: statements)
 			{
@@ -501,7 +502,7 @@ public abstract class Strabon {
 					 {
 						 int i = cont.indexOf('"')+1;
 						 int j = cont.lastIndexOf('"');
-						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^"+TemporalConstants.PERIOD; 
+						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 
 						 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
 						 
 					 }
@@ -571,7 +572,7 @@ public abstract class Strabon {
 				 {
 					 int i = cont.indexOf('"')+1;
 					 int j = cont.lastIndexOf('"');
-					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^"+TemporalConstants.PERIOD; 
+					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 
 					 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
 					 
 				 }

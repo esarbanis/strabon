@@ -9,6 +9,10 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.openrdf.model.URI;
 import org.openrdf.query.BindingSet;
@@ -65,8 +69,26 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 	{
 		Number id = ids.idOf(rs.getLong(index));
 		if (ids.isLiteral(id))
-		{
-			String label = rs.getObject(index+1).toString();
+		{	String temp = rs.getString(index + 1);
+		int i = temp.indexOf("[");
+		int j = temp.indexOf(")"); //postgres always returns periods in the following format: [start, end)
+		String label = null;
+		String[] periods = temp.substring(++i, j).split(",");
+
+		SimpleDateFormat postgres = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		SimpleDateFormat xsd = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		try {
+			
+			String newStart = xsd.format(postgres.parse(periods[0])).toString();
+			String newEnd = xsd.format(postgres.parse(periods[1])).toString();
+			label = temp.replace(periods[0], newStart).replace(periods[1], newEnd);
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// label=temp.replace(" ", "T");
+			//String label = rs.getObject(index+1).toString();
 		    URI datatype = vf.createURI(TemporalConstants.PERIOD);
 		    return vf.createLiteral(label, datatype);
 		    

@@ -207,8 +207,8 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     	validTimeLiteral=sb;
     	int i2=0; 
     	
-    	if(sb.toString().contains("^^"+TemporalConstants.PERIOD)||
-    			sb.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
+    	if(sb.toString().contains("^^<"+TemporalConstants.PERIOD)||
+    			sb.toString().contains("^^http://strdf.di.uoa.gr/ontology#period>"))
      	{	
     	
      	String[] splits = sb.toString().split(",");
