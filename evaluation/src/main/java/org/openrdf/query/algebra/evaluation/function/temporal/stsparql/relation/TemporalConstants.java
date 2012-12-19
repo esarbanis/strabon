@@ -19,6 +19,8 @@ public class TemporalConstants extends GeoConstants {
 	
 	public static final String PERIOD                = stRDF + "period";
 	
+	public static final String INSTANT = "http://www.w3.org/2001/XMLSchema#dateTime";
+	
 	//Temporal Relationships
 	public static final String periodContains= stRDF+ "PeriodContains";
 

@@ -49,14 +49,13 @@ public class QuadRDFHandler extends StatementCollector {
 	        
 	        @Override
 	        public void handleStatement(Statement st) {
-	            if(st.getContext().toString().contains("^^<"+TemporalConstants.PERIOD)||
-	        			st.toString().contains("^^<http://strdf.di.uoa.gr/ontology#period>"))
+	            if(st.getContext().toString().contains("^^<"+TemporalConstants.PERIOD)||st.getContext().toString().contains("^^<"+TemporalConstants.INSTANT))
 	         	{	
 	         	    NQuadsParser parser = new NQuadsParser();
 	         		try {
 	         			String context = st.getContext().toString();
 						 String validPeriod= context;
-						 if(!context.contains(","))
+						 if(context.contains("^^<"+TemporalConstants.INSTANT))
 						 {
 							 int i = context.indexOf('"')+1;
 							 int j = context.lastIndexOf('"');
