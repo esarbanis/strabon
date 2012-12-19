@@ -17,7 +17,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
  */
 public class TemporalConstants extends GeoConstants {
 	
-	public static final String PERIOD                = stRDF + "validTime";
+	public static final String PERIOD                = stRDF + "period";
 	
 	//Temporal Relationships
 	public static final String periodContains= stRDF+ "PeriodContains";
