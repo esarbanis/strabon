@@ -78,6 +78,8 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 
 		SimpleDateFormat postgres = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
 		SimpleDateFormat xsd = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		Calendar now = new GregorianCalendar().getInstance();
+		Calendar cal = new GregorianCalendar();
 		try {
 			
 			String newStart = xsd.format(postgres.parse(periods[0])).toString();
@@ -89,8 +91,18 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 			}
 			else
 			{
-				label = temp.replace(periods[0], newStart).replace(periods[1], newEnd);
-			    datatype = vf.createURI(TemporalConstants.PERIOD);		
+				 now = new GregorianCalendar().getInstance();
+				 cal.setTime(postgres.parse(periods[1]));
+				 if(cal.after(now))
+				 {
+						label = temp.replace(periods[0], newStart).replace(periods[1], "UC");
+
+				 }
+				 else
+				 {
+					 label = temp.replace(periods[0], newStart).replace(periods[1], newEnd); 
+				 }
+				datatype = vf.createURI(TemporalConstants.PERIOD);		
 			}			
 			
 		} catch (ParseException e) {
