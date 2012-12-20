@@ -19,7 +19,7 @@ public class AdjacentPeriodFunc extends TemporalRelationFunc {
 	@Override
 	public String getURI() {
 	
-		return TemporalConstants.adjacentPeriod;
+		return TemporalConstants.adjacent;
 	}
 
 

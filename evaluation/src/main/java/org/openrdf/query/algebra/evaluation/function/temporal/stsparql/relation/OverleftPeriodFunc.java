@@ -19,7 +19,7 @@ public class OverleftPeriodFunc extends TemporalRelationFunc {
 	@Override
 	public String getURI() {
 	
-		return TemporalConstants.overleftPeriod;
+		return TemporalConstants.overleft;
 	}
 
 

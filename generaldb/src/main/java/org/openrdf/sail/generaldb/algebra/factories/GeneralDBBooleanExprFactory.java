@@ -1066,11 +1066,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return mbbEqualsGeo(leftArg,rightArg);
 		}
 		//stSPARQL temporal functions
-		else if(function.getURI().equals(TemporalConstants.afterPeriod))
+		else if(function.getURI().equals(TemporalConstants.after))
 		{
 			return afterPeriod(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(TemporalConstants.beforePeriod))
+		else if(function.getURI().equals(TemporalConstants.before))
 		{
 			return beforePeriod(leftArg,rightArg);
 		}

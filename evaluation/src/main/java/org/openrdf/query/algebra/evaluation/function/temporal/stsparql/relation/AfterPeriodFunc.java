@@ -19,7 +19,7 @@ public class AfterPeriodFunc extends TemporalRelationFunc {
 	@Override
 	public String getURI() {
 	
-		return TemporalConstants.afterPeriod;
+		return TemporalConstants.after;
 	}
 
 	

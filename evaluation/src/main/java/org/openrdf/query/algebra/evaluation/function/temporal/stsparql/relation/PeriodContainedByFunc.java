@@ -18,7 +18,7 @@ public class PeriodContainedByFunc extends TemporalRelationFunc {
 	
 
 	public String getURI() {
-		return TemporalConstants.containedByPeriod;
+		return TemporalConstants.during;
 
 	}
 

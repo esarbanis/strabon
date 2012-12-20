@@ -24,7 +24,7 @@ public class TemporalConstants extends GeoConstants {
 	//Temporal Relationships
 	public static final String periodContains= stRDF+ "PeriodContains";
 
-	public static final String containedByPeriod= stRDF+ "containedByPeriod";
+	public static final String during= stRDF+ "during";
 
 	public static final String periodOverlaps= stRDF+ "PeriodOverlaps";
 
@@ -32,17 +32,17 @@ public class TemporalConstants extends GeoConstants {
 
 	public static final String nequalsPeriod= stRDF+ "nequalsPeriod";
 
-	public static final String adjacentPeriod= stRDF+ "adjacentPeriod";
+	public static final String adjacent= stRDF+ "adjacent";
 
-	public static final String beforePeriod= stRDF+ "beforePeriod";
+	public static final String before= stRDF+ "beforePeriod";
 
-	public static final String afterPeriod=stRDF+ "afterPeriod";
+	public static final String after=stRDF+ "after";
 
-	public static final String overleftPeriod=stRDF+ "overleftPeriod";
+	public static final String overleft=stRDF+ "overleft";
 
-	public static final String overrightPeriod=stRDF+ "overrightPeriod";
+	public static final String overright=stRDF+ "overright";
 
-	public static final String meetsPeriod=stRDF+ "meetsPeriod";
+	public static final String meets=stRDF+ "meets";
 	
 	//Temporal Constructs
 	public static final String periodIntersection=stRDF+ "periodIntersection";
