@@ -46,9 +46,11 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AfterPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.BeforePeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.EqualsPeriodFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.MeetsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.NequalsPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverleftPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverrightPeriodFunc;
@@ -56,7 +58,9 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.finishesFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.periodOverlapsFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.startsFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBFalseValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBRefIdColumn;
@@ -975,6 +979,22 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return periodOverlaps(leftArg, rightArg);
 		}
+		else if(function instanceof MeetsFunc)
+		{
+			return meets(leftArg, rightArg);
+		}
+		else if(function instanceof startsFunc)
+		{
+			return starts(leftArg, rightArg);
+		}
+		else if(function instanceof finishesFunc)
+		{
+			return finishes(leftArg, rightArg);
+		}
+		else if(function instanceof AdjacentPeriodFunc)
+		{
+			return adjacent(leftArg, rightArg);
+		}
 		else 
 		{
 			return null;
@@ -1081,6 +1101,22 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(TemporalConstants.periodOverlaps))
 		{
 			return periodOverlaps(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.adjacent))
+		{
+			return adjacent(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.meets))
+		{
+			return meets(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.starts))
+		{
+			return starts(leftArg,rightArg);
+		}
+		else if(function.getURI().equals(TemporalConstants.finishes))
+		{
+			return finishes(leftArg,rightArg);
 		}
 		//XXX GeoSPARQL
 		//Simple Features

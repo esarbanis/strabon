@@ -43,6 +43,8 @@ public class TemporalConstants extends GeoConstants {
 	public static final String overright=stRDF+ "overright";
 
 	public static final String meets=stRDF+ "meets";
+	public static final String starts= stRDF+ "starts";
+	public static final String finishes= stRDF +"finishes";
 	
 	//Temporal Constructs
 	public static final String periodIntersection=stRDF+ "periodIntersection";

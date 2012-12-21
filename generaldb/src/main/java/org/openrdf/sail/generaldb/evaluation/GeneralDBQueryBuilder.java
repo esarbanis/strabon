@@ -113,9 +113,12 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Intersects;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAdjacentPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlAfterPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlBeforePeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlEqualsPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlFinishes;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlMeets;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlNequalsPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
@@ -125,6 +128,7 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersectio
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlStarts;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
@@ -628,6 +632,23 @@ public abstract class GeneralDBQueryBuilder {
 		else if(expr instanceof GeneralDBSqlPeriodOverlaps){
 			append((GeneralDBSqlPeriodOverlaps)expr, filter);
 		}
+		else if(expr instanceof GeneralDBSqlPeriodOverlaps){
+			append((GeneralDBSqlPeriodOverlaps)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlMeets){
+			append((GeneralDBSqlMeets)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlStarts){
+			append((GeneralDBSqlStarts)expr, filter);
+		}
+		
+		else if(expr instanceof GeneralDBSqlFinishes){
+			append((GeneralDBSqlFinishes)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlAdjacentPeriod){
+			append((GeneralDBSqlAdjacentPeriod)expr, filter);
+		}
+		
 		//GeoSPARQL
 		//Simple Features
 		else if (expr instanceof GeneralDBSqlSF_Contains) {
@@ -1336,6 +1357,18 @@ protected abstract void append(GeneralDBSqlNequalsPeriod expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
 protected abstract void append(GeneralDBSqlBeforePeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+protected abstract void append(GeneralDBSqlMeets expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+protected abstract void append(GeneralDBSqlStarts expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+protected abstract void append(GeneralDBSqlFinishes expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+protected abstract void append(GeneralDBSqlAdjacentPeriod expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
 

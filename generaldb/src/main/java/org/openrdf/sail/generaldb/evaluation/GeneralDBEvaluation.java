@@ -254,10 +254,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// get the function corresponding to the function call
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
-		if(fc.getURI().equalsIgnoreCase("http://strdf.di.uoa.gr/ontology#afterPeriod"))
-		{
-			function = FunctionRegistry.getInstance().get("http://strdf.di.uoa.gr/ontology#afterPeriod");
-		}
+		
 		
 		// get the first argument of the function call
 		ValueExpr left = fc.getArgs().get(0);

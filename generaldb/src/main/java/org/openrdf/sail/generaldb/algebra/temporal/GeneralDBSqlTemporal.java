@@ -25,6 +25,7 @@ public abstract class GeneralDBSqlTemporal extends BinaryGeneralDBOperator
 	 * of stSPARQL queries to spatiotemporally extended SQL queries
 	 * */
 	public abstract  String getOperator();
+	
 	//This method returns the respective function of the Postgres Temporal extension
 	public abstract  String getPostgresFunction();
 
