@@ -11,8 +11,6 @@
 #(γραμμές 1614..1630).
 #- Αυτές τις καταγραφές τις διαγράφουμε θεωρώντας τις θόρυβο
 
-# ../../scripts/strabon -db testNOANewRefinements query  "`./instantiate.sh -s MSG2 -c StaticThresholds  -m '2012-08-24T12:00:00' -M '2012-08-24T12:40:00' -p 10 -r 3 discoverFires-start.rq | grep -v '#[[:alpha:]]' | grep -v '#[ \(-]' | sed 's/"/\\\\"/g'`" TSV
-
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
@@ -37,15 +35,15 @@ WHERE
                     noa:hasGeometry ?geo ;
 			        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
 			        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-	       # FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hStartTime && ?hStartTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
-             FILTER(strdf-ext:diffDateTime("MIN_ACQUISITION_TIME"^^xsd:dateTime,?hStartTime)<=0 && strdf-ext:diffDateTime("MAX_ACQUISITION_TIME"^^xsd:dateTime,?hStartTime)>=0).
+            OPTIONAL {?hStart noa:isDiscarded ?hStartDisc }. FILTER (!bound(?hStartDisc)) .
+            FILTER(strdf-ext:diffDateTime("MIN_ACQUISITION_TIME"^^xsd:dateTime,?hStartTime)<=0 && strdf-ext:diffDateTime("MAX_ACQUISITION_TIME"^^xsd:dateTime,?hStartTime)>=0).
 	        # ... narrow down results so that any previous hotspots is detected at least PERSISTENCE mins earlier
             OPTIONAL {
                 ?hPrevious	noa:hasAcquisitionTime ?hPreviousTime ;
                 			noa:hasGeometry ?geo ;
 					        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
 					        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-		    #    FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hPreviousTime && ?hPreviousTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
+                OPTIONAL {?hPrevious noa:isDiscarded ?hPreviousDisc }. FILTER (!bound(?hPreviousDisc)) .
          		FILTER(strdf-ext:diffDateTime("MIN_ACQUISITION_TIME"^^xsd:dateTime,?hPreviousTime)<=0 && strdf-ext:diffDateTime("MAX_ACQUISITION_TIME"^^xsd:dateTime,?hPreviousTime)>=0).                
 		        FILTER(strdf-ext:diffDateTime(?hStartTime, ?hPreviousTime) <= PERSISTENCE*60000 && strdf-ext:diffDateTime(?hStartTime, ?hPreviousTime) > 0).
             } 
@@ -56,7 +54,7 @@ WHERE
                 noa:hasGeometry ?geo;
 		        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ;
 		        noa:isDerivedFromSensor "SENSOR"^^xsd:string .
-	        # FILTER("MIN_ACQUISITION_TIME"^^xsd:dateTime <= ?hTime && ?hTime <= "MAX_ACQUISITION_TIME"^^xsd:dateTime).
+            OPTIONAL {?h noa:isDiscarded ?hDisc }. FILTER (!bound(?hDisc)) .
         	FILTER(strdf-ext:diffDateTime("MIN_ACQUISITION_TIME"^^xsd:dateTime,?hTime)<=0 && strdf-ext:diffDateTime("MAX_ACQUISITION_TIME"^^xsd:dateTime,?hTime)>=0).   
 	 	    FILTER(strdf-ext:diffDateTime(?hTime, ?hStartTime) >= 0).
         }
@@ -65,4 +63,5 @@ WHERE
     }.
 }
 group by ?start ?geo
-having (count(?h) >= 3)
+having (count(?h) >= REPEAT_IN_PERS)
+
