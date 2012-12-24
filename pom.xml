@@ -27,10 +27,11 @@
 		<module>resultio-spatial</module>
 		<module>endpoint</module>
 		<module>endpoint-client</module>
+		<module>endpoint-exec</module>
 	</modules>
 
 	<properties>
-        	<eu.earthobservatory.version>3.2.7-SNAPSHOT</eu.earthobservatory.version>
+        <eu.earthobservatory.version>3.2.7-SNAPSHOT</eu.earthobservatory.version>
 		<sesame.version>2.6.3</sesame.version>
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
 		<!--slf4j.version>1.5.8</slf4j.version-->
