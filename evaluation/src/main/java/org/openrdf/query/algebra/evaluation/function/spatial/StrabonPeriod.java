@@ -1,5 +1,20 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2013, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ */
+
 package org.openrdf.query.algebra.evaluation.function.spatial;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import net.sf.jtemporal.Instant;
 import net.sf.jtemporal.Period;
@@ -11,7 +26,7 @@ import org.openrdf.model.Value;
  * This class provides a java implementation of a set of temporal functinos using the JTemporal library. 
  * This implementation is respective to the Postgresql Temporal implementation of these functions
  * 
- * @author Konstantina Bereta <Konstantina.Brereta@di.uoa.gr>
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
 public class StrabonPeriod implements Value {
@@ -22,8 +37,17 @@ public class StrabonPeriod implements Value {
 	{
 		this.period = null;
 	}
-	public StrabonPeriod(Instant start, Instant end)
+	public StrabonPeriod(String period) throws ParseException
 	{
+		int i = period.indexOf('[');
+		int j = period.indexOf(')');
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		GregorianCalendar startCal = new GregorianCalendar();
+		GregorianCalendar endCal = new GregorianCalendar();
+		startCal.setTime(sdf.parse(period.substring(period.indexOf('[')+1,period.indexOf(',') )));
+		endCal.setTime(sdf.parse(period.substring(period.indexOf(',')+1,period.indexOf(')') )));
+		Instant start = new StrabonInstant(startCal);
+		Instant end = new StrabonInstant(endCal);
 		this.period = new Period(start, end);
 	}
 	public Period getPeriod() {

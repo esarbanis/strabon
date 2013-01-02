@@ -41,6 +41,7 @@ import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPeriod;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
@@ -60,6 +61,9 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.m
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbInsideFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
@@ -487,6 +491,13 @@ System.out.println("Function RI= "+fc.getURI());
 
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
 			}
+			else if(function instanceof TemporalConstructFunc) {
+				return temporalConstructPicker(function, leftResult, rightResult);
+			}
+			else if(function instanceof TemporalRelationFunc){
+				Boolean temporalFuncResult =  temporalRelationshipPicker(function, leftResult, rightResult);
+				return temporalFuncResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
+			}
 			else {
 				//Default Sesame Behavior
 				List<ValueExpr> args = fc.getArgs();
@@ -506,6 +517,59 @@ System.out.println("Function RI= "+fc.getURI());
 
 	}
 
+	public StrabonPeriod temporalConstructPicker(Function function, Value left, Value right)
+	{
+		if(function.getURI().equals(TemporalConstants.periodUnion))
+		{
+			return StrabonPeriod.union((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.periodIntersection))
+		{
+			System.out.println("left= "+left.toString());
+			System.out.println("right= "+right.toString());
+			return StrabonPeriod.intersection((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.minusPeriod))
+		{
+			return StrabonPeriod.union((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.precedingPeriod))
+		{
+			return StrabonPeriod.precedingPeriod((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.succedingPeriod))
+		{
+			return StrabonPeriod.succedingPeriod((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else
+		{
+			return null;			
+		}
+	}
+	
+	public boolean temporalRelationshipPicker (Function function, Value left, Value right)
+	{
+		if(function.getURI().equals(TemporalConstants.adjacent))
+		{
+			return StrabonPeriod.meets((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.after))
+		{
+			return StrabonPeriod.succedes((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.meetsBefore))
+		{
+			return StrabonPeriod.meetsBefore((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else if(function.getURI().equals(TemporalConstants.meetsAfter))
+		{
+			return StrabonPeriod.meetsAfter((StrabonPeriod) left, (StrabonPeriod) right);
+		}
+		else
+		{
+			return false;
+		}
+	}
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
 	{
 		StrabonPolyhedron leftArg = ((GeneralDBPolyhedron) left).getPolyhedron();
