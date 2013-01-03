@@ -14,6 +14,8 @@
 # Author: Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
 #
 
+# Example run command: examples/teleios/runChain.sh -b http://dev.strabon.di.uoa.gr/rdf/data-dump-postgres-9.tgz  -l /home/ggarbis/runChain.log -e http://pathway.di.uoa.gr:8080/endpoint
+
 # Command name
 cmd="$(basename ${0})" 
 # Get the directory where the script resides
@@ -166,11 +168,10 @@ function storeBackgroundData() {
 	elif test "${bgFile:0:7}" = "http://"; then
 		curl -s ${bgFile} | tar xzf - -O > /tmp/bgFiles$$.sql
 #		wget ${bgFile} -O /tmp/bgFile$$.tar.gz
-#		tar xzf /tmp/bgFile$$.tar.gz
-		
+#		tar xzf /tmp/bgFile$$.tar.gz		
 		handlePostgresDatabase runscript ${db} /tmp/bgFiles$$.sql
-		rm /tmp/bgFile$$.tar.gz
-		rm /tmp/bgFile$$.sql
+#		rm /tmp/bgFile$$.tar.gz
+		rm /tmp/bgFiles$$.sql
 	else
 		echo "Backgound file not foung"
 		exit -1
@@ -231,7 +232,8 @@ function handleStrabonEndpoint(){
 endpoint="http://pathway.di.uoa.gr:8080/endpoint"
 db="NOA2012"
 hotspotsURL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
-bgFile="http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-9.tgz"
+#                                 ./examples/teleios/data/data-dump-9.sql
+bgFile="http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-ExcludeArea-dump.tgz"
 logFile="runChain.log"
 
 chain="DynamicThresholds"
@@ -370,7 +372,7 @@ for y in ${years}; do
         # Delete Reflections
     	minTime=`date --date="${year}-${month}-${day} ${time2}:00 EEST -60 minutes" +%Y-%m-%dT%H:%M:00`
 		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} -m ${minTime} ${loc}/deleteReflections.rq`"
-        echo "Delete Reflections: ${update}" ;
+#        echo "Delete Reflections: ${update}" ;
 		handleStrabonEndpoint ${endpoint} update "${update}"
 
 		# Refine Partial Sea Hotspots
@@ -391,14 +393,14 @@ for y in ${years}; do
 		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} ${loc}/discover.rq`"
 #        echo "Discover: ${query}" ; #read t
-		handleStrabonEndpoint ${endpoint} query "${query}" 2>&1 >> /home/ggarbis/discover.log
+		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discover.log
     
 		# Discover Fires
 		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
 		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} -p 10 -r 3 ${loc}/discoverFires.rq`"
 #        echo "Discover Fires: ${query}" ; #read t
-		handleStrabonEndpoint ${endpoint} query "${query}" 2>&1 >> /home/ggarbis/discoverFires.log
+		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discoverFires.log
 
         echo >> ${logFile}    
 	done
