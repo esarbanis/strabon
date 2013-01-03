@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file, you
 # can obtain one at http://mozilla.org/MPL/2.0/. 
 # 
-# Copyright (C) 2010, 2011, 2012, Pyravlos Team 
+# Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team 
 # 
 # http://www.strabon.di.uoa.gr/ 
 #
@@ -25,11 +25,14 @@ function help() {
     echo "Execute NOA chain with refinements and measure time."
     echo                                                                        
     echo "OPTIONS can be any of the following"                                  
-    echo "  -d,--db   		: PostGIS database"                
-    echo "  -e,--endpoint   : Strabon Endpoint"
-    echo "  -h,--hotposts	: URL where hotspots are stored"
-	echo "  -b,--background	: Background data"                                           
-	echo "  -l,--log		: Log file"                                           
+    echo "  -d,--db   					: PostGIS database"                
+    echo "  -e,--endpoint   			: Strabon Endpoint"
+    echo "  -h,--hotposts				: URL where hotspots are stored"
+	echo "  -b,--background         	: Background data"                                           
+	echo "  -l,--log		            : Log file"                                           
+	echo "  -c,--chain		            : Processing chain of hotspots"
+	echo "  -p,--persistence            : Value of persistence of discoverFires query"
+	echo "  -r,--repeat_in_persistence  : Value of repeat_in_persistence of discoverFires query"     
 }
 
 # If no arguments are given it returns miliseconds from 1970-01-01 00:00:00 UTC
@@ -70,8 +73,8 @@ function handlePostgresService()
 
 # Handled a postgres database
 # -$1: Command (create/drop/store)
-# -$2: Dump file to store (if store is given as $1)
-#	   'spatial' to create a spatial database (if create is given as $1)
+# -$2: Dump file to store (if runscript is given as command)
+#	   or 'spatial' to create a spatial database (if create is given as command)
 function handlePostgresDatabase() {
 	local command=$1
 	local db=$2
@@ -226,7 +229,7 @@ function handleStrabonEndpoint(){
 # default values
 endpoint="http://pathway.di.uoa.gr:8080/endpoint"
 db="NOA2012"
-hotspotsURL="http://pathway.di.uoa.gr/hotspots"
+hotspotsURL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
 bgFile="http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-Corine-dump-postgres-9.tgz"
 logFile="runChain.log"
 
@@ -266,6 +269,21 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			logFile=${1}
 			shift
 			;;
+        -c|--chain)
+            shift
+            chain=${1}
+            shift
+            ;;
+        -p|--persistence)
+            shift
+            persistence=${1}
+            shift
+            ;;
+        -r|--repeat_in_persistence)
+            shift
+            repeat_in_persistence=${1}
+            shift
+            ;;
 		*)
 			echo "unknown argument ${1}"
 			help
@@ -295,14 +313,16 @@ handleTomcatService start
 
 #${loc}/../../scripts/endpoint query ${endpoint} size 
 #exit -1
-echo "Timestamp Store Municipalities DeleteInSea InvalidForFires DeleteReflections RefineInCoast TimePersistence" > ${logFile}
+echo "Timestamp Store Municipalities DeleteInSea InvalidForFires DeleteReflections RefineInCoast TimePersistence DiscoverHotspots DiscoverFires" > ${logFile}
+echo > /home/ggarbis/discoverFires.log
+echo > /home/ggarbis/discover.log
 
 years="2012" #"2007 2008 2010 2011"
 for y in ${years}; do
-    hotspots="`ls /var/www/hotspots/${y} | sort | grep -o 'HMSG.*\.nt'`"
+#    hotspots="`ls /var/www/hotspots/${y} | sort | grep -o 'HMSG.*\.nt'`"
 	# get hotpost URLS
-#	for hot in $(curl -s ${hotspotsURL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
-	for hot in ${hotspots}; do
+	for hot in $(curl -s ${hotspotsURL}/${y}/ | grep -o '>HMSG.*\.nt' | colrm 1 1); do
+#	for hot in ${hotspots}; do
 		file="${hotspotsURL}/${y}/${hot}"
 
 		time_status=$(echo ${hot} | egrep -o '[[:digit:]]{6}_[[:digit:]]{4}')
@@ -328,7 +348,7 @@ for y in ${years}; do
 		echo -n "${timestamp} " >> ${logFile}
         
 		handleStrabonEndpoint ${endpoint} store ${file}
-        echo "Store ${file}" ; # read t
+        echo "Processing File ${file}" ; # read t
 
 		# Insert Municipalities	
 		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} ${loc}/insertMunicipalities.rq`"
@@ -361,24 +381,24 @@ for y in ${years}; do
 		minTime=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
 		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} -m ${minTime} ${loc}/refineTimePersistence.rq`"
 #       echo "Refine Time Persistence: ${update}" ; read t
-		handleStrabonEndpoint ${endpoint} update "${update}"
+		handleStrabonEndpoint ${endpoint} update "${update}" #2>&1 | tee /home/ggarbis/timePersistence.log
 
-##		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
+		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
         
 		# Discover
 		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
 		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} ${loc}/discover.rq`"
-       echo "Discover: ${query}" ; read t
-		handleStrabonEndpoint ${endpoint} query "${query}" | tee /home/ggarbis/discover.log
+#        echo "Discover: ${query}" ; #read t
+		handleStrabonEndpoint ${endpoint} query "${query}" 2>&1 >> /home/ggarbis/discover.log
     
 		# Discover Fires
 		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
 		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} -p 10 -r 3 ${loc}/discoverFires.rq`"
-        echo "Discover Fires: ${query}" ; #read t
-		handleStrabonEndpoint ${endpoint} query "${query}" #| tee /home/ggarbis/discoverFires.log
-#    
+#        echo "Discover Fires: ${query}" ; #read t
+		handleStrabonEndpoint ${endpoint} query "${query}" 2>&1 >> /home/ggarbis/discoverFires.log
+
         echo >> ${logFile}    
 	done
 done
