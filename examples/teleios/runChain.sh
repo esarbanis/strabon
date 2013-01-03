@@ -164,12 +164,13 @@ function storeBackgroundData() {
 	if test -f ${bgFile}; then
 		handlePostgresDatabase runscript ${db} ${bgFile}	
 	elif test "${bgFile:0:7}" = "http://"; then
-		#curl -s ${bgFile} | tar xz -O | psql -d ${DB}
-		wget ${bgFile} -O /tmp/bgFile$$.tar.gz
-		tar xz -O /tmp/bgFile$$.tar.gz
+		curl -s ${bgFile} | tar xzf - -O > /tmp/bgFiles$$.sql
+#		wget ${bgFile} -O /tmp/bgFile$$.tar.gz
+#		tar xzf /tmp/bgFile$$.tar.gz
 		
-		handlePostgresDatabase runscript ${db} /tmp/bgFile$$.tar.tz
-		rm /tmp/bgFiile$$.tar.gz
+		handlePostgresDatabase runscript ${db} /tmp/bgFiles$$.sql
+		rm /tmp/bgFile$$.tar.gz
+		rm /tmp/bgFile$$.sql
 	else
 		echo "Backgound file not foung"
 		exit -1
