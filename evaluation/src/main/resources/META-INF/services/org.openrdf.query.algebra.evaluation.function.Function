@@ -79,6 +79,9 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeature
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeaturesWithinFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeatureTouchesFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodIntersectionFunc
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodPrecedingFunc
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodSucceedingFunc
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc

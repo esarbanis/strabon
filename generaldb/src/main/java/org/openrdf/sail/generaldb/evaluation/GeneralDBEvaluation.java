@@ -586,6 +586,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			return StrabonPeriod.succedingPeriod(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
+		else if(function.getURI().equals(TemporalConstants.PERIOD))
+		{ //constracting a new period given two dateTime values
+			if(left.toString().contains(",") || right.toString().contains(","))
+				return null;
+			return new StrabonPeriod(left.toString(), right.toString());
+		}
 		else
 		{
 			return null;			

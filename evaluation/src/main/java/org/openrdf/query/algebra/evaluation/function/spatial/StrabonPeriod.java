@@ -60,19 +60,18 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	
 	}
 	
-	public StrabonPeriod(String period1, String period2) throws ParseException
+	public StrabonPeriod(String instant1, String instant2) throws ParseException
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
 	
 			GregorianCalendar startCal = new GregorianCalendar();
 			GregorianCalendar endCal = new GregorianCalendar();
-			startCal.setTime(sdf.parse(period1.substring(period1.indexOf('"')+1,period1.lastIndexOf('"') )));
-			endCal.setTime(sdf.parse(period2.substring(period2.indexOf('"')+1,period2.lastIndexOf('"') )));
+			startCal.setTime(sdf.parse(instant1.substring(instant1.indexOf('"')+1,instant1.lastIndexOf('"') )));
+			endCal.setTime(sdf.parse(instant2.substring(instant2.indexOf('"')+1,instant2.lastIndexOf('"') )));
 			StrabonInstant start = new StrabonInstant(startCal);
 			StrabonInstant end = new StrabonInstant(endCal);
 			this.period = new Period(start, end);
 			this.datatype = new URIImpl(TemporalConstants.PERIOD);
-
 	}
 	
 	public void setDatatype(URI datatype) {
