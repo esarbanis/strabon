@@ -459,7 +459,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					System.out.println("FUNCTION TOUCHFUNC CALLED AND JTS WILL BE USED!!!");
 					funcResult = leftGeom.touches(rightConverted);
 				}
 				else if(function instanceof MbbIntersectsFunc)

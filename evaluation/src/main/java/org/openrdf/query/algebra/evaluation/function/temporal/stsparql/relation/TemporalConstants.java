@@ -50,9 +50,11 @@ public class TemporalConstants extends GeoConstants {
 	public static final String finishes= stRDF +"finishes";
 	
 	//Temporal Constructs
-	public static final String periodIntersection=stRDF+ "periodIntersection";
-	public static final String periodUnion=stRDF+ "periodUnion";
-	public static final String minusPeriod=stRDF+ "minusPeriod";
-	public static final String precedingPeriod=stRDF+ "precedingPeriod";
-	public static final String succedingPeriod=stRDF+ "succeedingPeriod";
+	public static final String periodIntersection=stRDF+ "period_intersect";
+	public static final String periodUnion=stRDF+ "period_union";
+	public static final String minusPeriod=stRDF+ "period_minus";
+	public static final String precedingPeriod=stRDF+ "preceding_period";
+	public static final String succedingPeriod=stRDF+ "succeeding_period";
+	public static final String start=stRDF+ "period_end";
+	public static final String end=stRDF+ "period_start";
 }
