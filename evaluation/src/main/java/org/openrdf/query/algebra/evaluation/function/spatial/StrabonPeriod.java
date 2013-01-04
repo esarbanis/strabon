@@ -27,7 +27,7 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 
 
 /**
- * This class provides a java implementation of a set of temporal functinos using the JTemporal library. 
+ * This class provides a java implementation of a set of temporal functions using the JTemporal library. 
  * This implementation is respective to the Postgresql Temporal implementation of these functions
  * 
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
@@ -40,6 +40,7 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	public StrabonPeriod()
 	{
 		this.period = null;
+		this.datatype = new URIImpl(TemporalConstants.PERIOD);
 	}
 	public StrabonPeriod(String period) throws ParseException
 	{
@@ -52,6 +53,7 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 			endCal.setTime(sdf.parse(period.substring(period.indexOf(',')+1,period.indexOf(')') )));
 			StrabonInstant start = new StrabonInstant(startCal);
 			StrabonInstant end = new StrabonInstant(endCal);
+			this.datatype = new URIImpl(TemporalConstants.PERIOD);
 			this.period = new Period(start, end);
 
 		}
@@ -69,12 +71,13 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 			StrabonInstant start = new StrabonInstant(startCal);
 			StrabonInstant end = new StrabonInstant(endCal);
 			this.period = new Period(start, end);
+			this.datatype = new URIImpl(TemporalConstants.PERIOD);
 
 	}
 	
 	public void setDatatype(URI datatype) {
 		
-		this.setDatatype(new URIImpl(TemporalConstants.PERIOD));
+		this.setDatatype(datatype);
 	}
 	
 	
@@ -100,17 +103,91 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 		return period.toString().replace("Period:(","[");
 	}
 
-	public static StrabonPeriod union(StrabonPeriod A, StrabonPeriod B)
+	public static StrabonPeriod union(StrabonTemporalElement A, StrabonTemporalElement B)
 	{
-		StrabonPeriod period = new StrabonPeriod();
-		period.setPeriod( A.getPeriod().union(B.getPeriod()));
-		return period;
+		if(A instanceof StrabonPeriod && B instanceof StrabonPeriod)
+		{
+			if(((StrabonPeriod)A).getPeriod().toString().equals(((StrabonPeriod)B).getPeriod().toString()))
+			{
+				return (StrabonPeriod)A;
+			}
+			if(((StrabonPeriod)A).getPeriod().contains(((StrabonPeriod)B).getPeriod()))
+			{
+				return (StrabonPeriod)A;
+			}
+			if(((StrabonPeriod)B).getPeriod().contains(((StrabonPeriod)A).getPeriod()))
+			{
+				return (StrabonPeriod)B;
+			}
+			StrabonPeriod period = new StrabonPeriod();
+			period.setPeriod( ((StrabonPeriod)A).getPeriod().union(((StrabonPeriod)B).getPeriod()));
+			return period;
+			
+		}
+		else if(A instanceof StrabonPeriod && B instanceof StrabonInstant)
+		{
+		if(((StrabonPeriod) A).contains((StrabonPeriod)A ,B ))
+		{
+			return (StrabonPeriod) A;
+		}
+		else
+			return null;
+		}
+		
+		else if(B instanceof StrabonPeriod && A instanceof StrabonInstant)
+		{
+			if(((StrabonPeriod) B).contains((StrabonPeriod)B ,A ))
+			{
+				return (StrabonPeriod) B;
+			}
+				else
+					return null;
+		}
+		else
+			return null;
 	}
-	public static StrabonPeriod intersection(StrabonPeriod A, StrabonPeriod B)
+	public static StrabonTemporalElement intersection(StrabonTemporalElement A, StrabonTemporalElement B)
 	{
-		StrabonPeriod period = new StrabonPeriod();
-		period.setPeriod( A.getPeriod().intersect(B.getPeriod()));
-		return period;
+		if(A instanceof StrabonPeriod && B instanceof StrabonPeriod)
+		{
+			if(((StrabonPeriod)A).getPeriod().equals(((StrabonPeriod)B).getPeriod()))
+			{
+				return (StrabonPeriod)A;
+			}
+			if(((StrabonPeriod)A).getPeriod().contains(((StrabonPeriod)B).getPeriod()))
+			{
+				return (StrabonPeriod)B;
+			}
+			if(((StrabonPeriod)B).getPeriod().contains(((StrabonPeriod)A).getPeriod()))
+			{
+				return (StrabonPeriod)A;
+			}
+			StrabonPeriod period = new StrabonPeriod();
+			period.setPeriod( ((StrabonPeriod)A).getPeriod().intersect(((StrabonPeriod)B).getPeriod()));
+			return period;
+			
+		}
+		else if(A instanceof StrabonPeriod && B instanceof StrabonInstant)
+		{
+		if(((StrabonPeriod) A).contains((StrabonPeriod)A ,B ))
+		{
+			return (StrabonInstant) B;
+		}
+		else
+			return null;
+		}
+		
+		else if(B instanceof StrabonPeriod && A instanceof StrabonInstant)
+		{
+			if(((StrabonPeriod) B).contains((StrabonPeriod)B ,A ))
+			{
+				return (StrabonInstant)A;
+			}
+				else
+					return null;
+		}
+		else
+			return null;
 	}
 	public static StrabonPeriod except(StrabonPeriod A, StrabonPeriod B)
 	{
@@ -134,13 +211,12 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	{
 		return A.getPeriod().compareTo(B.getPeriod());
 	}
-	public static boolean contains(StrabonPeriod A, StrabonInstant B)
+	public static boolean contains(StrabonPeriod A, StrabonTemporalElement B)
 	{
-		return A.getPeriod().contains(B);
-	}
-	public static boolean contains(StrabonPeriod A, StrabonPeriod B)
-	{
-		return A.getPeriod().contains(B.getPeriod());
+		if(B instanceof StrabonInstant)
+			return A.getPeriod().contains((StrabonInstant)B);
+		else 
+			return A.getPeriod().contains(((StrabonPeriod)B).getPeriod());
 	}
 	public static boolean equals(StrabonPeriod A, StrabonPeriod B)
 	{
@@ -162,17 +238,19 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	{
 		return A.getPeriod().overlaps(B.getPeriod());
 	}
-	public static boolean precedes(StrabonPeriod A, StrabonInstant B)
+	public static boolean precedes(StrabonPeriod A, StrabonTemporalElement B)
 	{
-		return A.getPeriod().precedes(B);
+		if(B instanceof StrabonInstant)
+			return A.getPeriod().precedes((StrabonInstant)B);
+		else
+			return A.getPeriod().precedes(((StrabonPeriod)B).getPeriod());
 	}
-	public static boolean precedes(StrabonPeriod A, StrabonPeriod B)
+	public static boolean succedes(StrabonPeriod A, StrabonTemporalElement B)
 	{
-		return A.getPeriod().precedes(B.getPeriod());
-	}
-	public static boolean succedes(StrabonPeriod A, StrabonPeriod B)
-	{
-		return A.getPeriod().succeeds(B.getPeriod());
+		if(B instanceof StrabonPeriod)
+			return A.getPeriod().succeeds(((StrabonPeriod)B).getPeriod());
+		else
+			return A.getPeriod().succeeds((StrabonInstant)B);
 	}
 	
 }

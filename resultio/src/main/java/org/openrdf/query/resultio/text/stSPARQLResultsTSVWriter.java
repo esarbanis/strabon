@@ -24,7 +24,7 @@ import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr> (extended for the temporal case)
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr> (extensions for the temporal case)
  * 
  */
 public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
@@ -44,7 +44,6 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 		else if(val instanceof StrabonTemporalElement){
 			val = new LiteralImpl(((StrabonTemporalElement)val).stringValue(), ((StrabonTemporalElement) val).getDatatype());
 		}
-
 		
 		// write value
 		super.writeValue(val);

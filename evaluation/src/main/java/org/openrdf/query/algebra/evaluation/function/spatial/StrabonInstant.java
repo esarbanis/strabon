@@ -35,8 +35,9 @@ public class StrabonInstant extends StrabonTemporalElement implements Instant{
 	public GregorianCalendar getValue() {
 		return value;
 	}
+	
 
-	public String stringValue(){
+	public String toString(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
 		return sdf.format(this.value.getTime()).toString();
 	}
@@ -44,10 +45,13 @@ public class StrabonInstant extends StrabonTemporalElement implements Instant{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(sdf.parse(instant.substring(instant.indexOf('"')+1,instant.lastIndexOf('"') )));
-		return new StrabonInstant(cal);
+		StrabonInstant inst = new StrabonInstant(cal);
+		inst.datatype = new URIImpl(TemporalConstants.INSTANT);
+		return inst;
 	}
 
 	public StrabonInstant(GregorianCalendar value) throws ParseException{
+		this.datatype = new URIImpl(TemporalConstants.INSTANT);
 		this.value = value;
 	}
 	@Override
@@ -82,7 +86,17 @@ public class StrabonInstant extends StrabonTemporalElement implements Instant{
 	@Override
 	public void setDatatype(URI datatype) {
 		
-		this.setDatatype(new URIImpl(TemporalConstants.INSTANT));
+		this.setDatatype(datatype);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.query.algebra.evaluation.function.spatial.StrabonTemporalElement#stringValue()
+	 */
+	@Override
+	public String stringValue() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		return sdf.format(this.value.getTime()).toString();
 	}
 
 }

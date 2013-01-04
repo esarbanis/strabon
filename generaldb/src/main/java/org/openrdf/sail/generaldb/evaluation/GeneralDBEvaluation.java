@@ -45,6 +45,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationship
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonInstant;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPeriod;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonTemporalElement;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
@@ -264,7 +265,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		
 		// get the first argument of the function call
 		ValueExpr left = fc.getArgs().get(0);
-System.out.println("Function RI= "+fc.getURI());
 		// evaluated first argument of function
 		Value leftResult = null;
 		
@@ -519,48 +519,59 @@ System.out.println("Function RI= "+fc.getURI());
 
 	}
 
-	public StrabonPeriod temporalConstructPicker(Function function, Value left, Value right) throws ParseException
+	public StrabonTemporalElement temporalConstructPicker(Function function, Value left, Value right) throws ParseException
 	{
 		if(function.getURI().equals(TemporalConstants.periodUnion))
 		{
-			System.out.println("left= "+left.toString());
-			System.out.println("right= "+right.toString());
-			if(!left.toString().contains(",") && right.toString().contains(","))
+
+			StrabonTemporalElement rightArg= null;
+			StrabonTemporalElement leftArg= null;
+			
+			if(left.toString().contains(","))
 			{
-				StrabonInstant leftArg = StrabonInstant.read(left.toString());
-				StrabonPeriod rightArg= new StrabonPeriod(right.toString());
-				if(rightArg.contains(rightArg, leftArg))
-				{
-					return rightArg;
-				}
-				else
-					return null;
+				 leftArg= new StrabonPeriod(left.toString());
 			}
-			else if(left.toString().contains(",") && !right.toString().contains(","))
+			else
 			{
-				StrabonInstant rightArg = StrabonInstant.read(right.toString());
-				StrabonPeriod leftArg= new StrabonPeriod(left.toString());
-				if(leftArg.contains(leftArg, rightArg))
-				{
-					return leftArg;
-				}
-				else
-					return null;
+				 leftArg = StrabonInstant.read(left.toString());
 			}
-			else if(!left.toString().contains(",") && !right.toString().contains(","))
+			if(right.toString().contains(","))
 			{
-				return null;
+				 rightArg= new StrabonPeriod(right.toString());
 			}
-			else if(left.equals(right))
+			else
 			{
-				return new StrabonPeriod(right.toString());
+				 rightArg = StrabonInstant.read(right.toString());
 			}
 			
-			return StrabonPeriod.union(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
+			return StrabonPeriod.union(rightArg, leftArg);
+			
 		}
 		else if(function.getURI().equals(TemporalConstants.periodIntersection))
 		{			
-			return StrabonPeriod.intersection(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
+			System.out.println("left= "+left.toString());
+			System.out.println("right= "+right.toString());
+			StrabonTemporalElement rightArg= null;
+			StrabonTemporalElement leftArg= null;
+			
+			if(left.toString().contains(","))
+			{
+				 leftArg= new StrabonPeriod(left.toString());
+			}
+			else
+			{
+				 leftArg = StrabonInstant.read(left.toString());
+			}
+			if(right.toString().contains(","))
+			{
+				 rightArg= new StrabonPeriod(right.toString());
+			}
+			else
+			{
+				 rightArg = StrabonInstant.read(right.toString());
+			}
+			
+			return StrabonPeriod.intersection(rightArg, leftArg);
 		}
 		else if(function.getURI().equals(TemporalConstants.minusPeriod))
 		{
