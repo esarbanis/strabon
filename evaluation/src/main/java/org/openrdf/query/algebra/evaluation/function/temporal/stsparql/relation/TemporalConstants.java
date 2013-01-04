@@ -54,5 +54,5 @@ public class TemporalConstants extends GeoConstants {
 	public static final String periodUnion=stRDF+ "periodUnion";
 	public static final String minusPeriod=stRDF+ "minusPeriod";
 	public static final String precedingPeriod=stRDF+ "precedingPeriod";
-	public static final String succedingPeriod=stRDF+ "succedingPeriod";
+	public static final String succedingPeriod=stRDF+ "succeedingPeriod";
 }

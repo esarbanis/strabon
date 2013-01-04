@@ -580,10 +580,14 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(function.getURI().equals(TemporalConstants.precedingPeriod))
 		{
+			if(!right.toString().contains(",") || !left.toString().contains(","))
+				return null;
 			return StrabonPeriod.precedingPeriod(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.succedingPeriod))
 		{
+			if(!right.toString().contains(",") || !left.toString().contains(","))
+				return null;
 			return StrabonPeriod.succedingPeriod(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.PERIOD))
