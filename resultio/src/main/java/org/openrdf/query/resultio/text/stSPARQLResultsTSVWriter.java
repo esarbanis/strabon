@@ -14,11 +14,17 @@ import java.io.OutputStream;
 
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonInstant;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPeriod;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonTemporalElement;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr> (extended for the temporal case)
  * 
  */
 public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
@@ -35,6 +41,10 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
 			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep(), dbpolyhedron.getDatatype());
 		}
+		else if(val instanceof StrabonTemporalElement){
+			val = new LiteralImpl(((StrabonTemporalElement)val).stringValue(), ((StrabonTemporalElement) val).getDatatype());
+		}
+
 		
 		// write value
 		super.writeValue(val);

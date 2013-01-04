@@ -7,6 +7,7 @@ package org.openrdf.sail.generaldb.evaluation;
 
 import info.aduna.iteration.CloseableIteration;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonInstant;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPeriod;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
@@ -517,29 +519,60 @@ System.out.println("Function RI= "+fc.getURI());
 
 	}
 
-	public StrabonPeriod temporalConstructPicker(Function function, Value left, Value right)
+	public StrabonPeriod temporalConstructPicker(Function function, Value left, Value right) throws ParseException
 	{
 		if(function.getURI().equals(TemporalConstants.periodUnion))
 		{
-			return StrabonPeriod.union((StrabonPeriod) left, (StrabonPeriod) right);
-		}
-		else if(function.getURI().equals(TemporalConstants.periodIntersection))
-		{
 			System.out.println("left= "+left.toString());
 			System.out.println("right= "+right.toString());
-			return StrabonPeriod.intersection((StrabonPeriod) left, (StrabonPeriod) right);
+			if(!left.toString().contains(",") && right.toString().contains(","))
+			{
+				StrabonInstant leftArg = StrabonInstant.read(left.toString());
+				StrabonPeriod rightArg= new StrabonPeriod(right.toString());
+				if(rightArg.contains(rightArg, leftArg))
+				{
+					return rightArg;
+				}
+				else
+					return null;
+			}
+			else if(left.toString().contains(",") && !right.toString().contains(","))
+			{
+				StrabonInstant rightArg = StrabonInstant.read(right.toString());
+				StrabonPeriod leftArg= new StrabonPeriod(left.toString());
+				if(leftArg.contains(leftArg, rightArg))
+				{
+					return leftArg;
+				}
+				else
+					return null;
+			}
+			else if(!left.toString().contains(",") && !right.toString().contains(","))
+			{
+				return null;
+			}
+			else if(left.equals(right))
+			{
+				return new StrabonPeriod(right.toString());
+			}
+			
+			return StrabonPeriod.union(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
+		}
+		else if(function.getURI().equals(TemporalConstants.periodIntersection))
+		{			
+			return StrabonPeriod.intersection(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.minusPeriod))
 		{
-			return StrabonPeriod.union((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.except(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.precedingPeriod))
 		{
-			return StrabonPeriod.precedingPeriod((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.precedingPeriod(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.succedingPeriod))
 		{
-			return StrabonPeriod.succedingPeriod((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.succedingPeriod(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else
 		{
@@ -547,23 +580,23 @@ System.out.println("Function RI= "+fc.getURI());
 		}
 	}
 	
-	public boolean temporalRelationshipPicker (Function function, Value left, Value right)
+	public boolean temporalRelationshipPicker (Function function, Value left, Value right) throws ParseException
 	{
 		if(function.getURI().equals(TemporalConstants.adjacent))
 		{
-			return StrabonPeriod.meets((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.meets(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.after))
 		{
-			return StrabonPeriod.succedes((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.succedes(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.meetsBefore))
 		{
-			return StrabonPeriod.meetsBefore((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.meetsBefore(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.meetsAfter))
 		{
-			return StrabonPeriod.meetsAfter((StrabonPeriod) left, (StrabonPeriod) right);
+			return StrabonPeriod.meetsAfter(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else
 		{

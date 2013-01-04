@@ -17,9 +17,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import net.sf.jtemporal.Instant;
+
 import net.sf.jtemporal.Period;
 
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 
 
 /**
@@ -29,7 +33,7 @@ import org.openrdf.model.Value;
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class StrabonPeriod implements Value {
+public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	
 	private Period period;
 
@@ -39,17 +43,41 @@ public class StrabonPeriod implements Value {
 	}
 	public StrabonPeriod(String period) throws ParseException
 	{
-		int i = period.indexOf('[');
-		int j = period.indexOf(')');
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
-		GregorianCalendar startCal = new GregorianCalendar();
-		GregorianCalendar endCal = new GregorianCalendar();
-		startCal.setTime(sdf.parse(period.substring(period.indexOf('[')+1,period.indexOf(',') )));
-		endCal.setTime(sdf.parse(period.substring(period.indexOf(',')+1,period.indexOf(')') )));
-		Instant start = new StrabonInstant(startCal);
-		Instant end = new StrabonInstant(endCal);
-		this.period = new Period(start, end);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		if(period.contains(","))
+		{
+			GregorianCalendar startCal = new GregorianCalendar();
+			GregorianCalendar endCal = new GregorianCalendar();
+			startCal.setTime(sdf.parse(period.substring(period.indexOf('[')+1,period.indexOf(',') )));
+			endCal.setTime(sdf.parse(period.substring(period.indexOf(',')+1,period.indexOf(')') )));
+			StrabonInstant start = new StrabonInstant(startCal);
+			StrabonInstant end = new StrabonInstant(endCal);
+			this.period = new Period(start, end);
+
+		}
+	
 	}
+	
+	public StrabonPeriod(String period1, String period2) throws ParseException
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+	
+			GregorianCalendar startCal = new GregorianCalendar();
+			GregorianCalendar endCal = new GregorianCalendar();
+			startCal.setTime(sdf.parse(period1.substring(period1.indexOf('"')+1,period1.lastIndexOf('"') )));
+			endCal.setTime(sdf.parse(period2.substring(period2.indexOf('"')+1,period2.lastIndexOf('"') )));
+			StrabonInstant start = new StrabonInstant(startCal);
+			StrabonInstant end = new StrabonInstant(endCal);
+			this.period = new Period(start, end);
+
+	}
+	
+	public void setDatatype(URI datatype) {
+		
+		this.setDatatype(new URIImpl(TemporalConstants.PERIOD));
+	}
+	
+	
 	public Period getPeriod() {
 		return period;
 	}
@@ -69,8 +97,7 @@ public class StrabonPeriod implements Value {
 	@Override
 	public String stringValue() 
 	{
-		// TODO Auto-generated method stub
-		return period.toString();
+		return period.toString().replace("Period:(","[");
 	}
 
 	public static StrabonPeriod union(StrabonPeriod A, StrabonPeriod B)
@@ -107,7 +134,7 @@ public class StrabonPeriod implements Value {
 	{
 		return A.getPeriod().compareTo(B.getPeriod());
 	}
-	public static boolean contains(StrabonPeriod A, Instant B)
+	public static boolean contains(StrabonPeriod A, StrabonInstant B)
 	{
 		return A.getPeriod().contains(B);
 	}
@@ -135,7 +162,7 @@ public class StrabonPeriod implements Value {
 	{
 		return A.getPeriod().overlaps(B.getPeriod());
 	}
-	public static boolean precedes(StrabonPeriod A, Instant B)
+	public static boolean precedes(StrabonPeriod A, StrabonInstant B)
 	{
 		return A.getPeriod().precedes(B);
 	}
