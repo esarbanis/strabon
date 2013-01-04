@@ -34,7 +34,7 @@ public class TemporalConstants extends GeoConstants {
 
 	public static final String adjacent= stRDF+ "adjacent";
 
-	public static final String before= stRDF+ "beforePeriod";
+	public static final String before= stRDF+ "before";
 
 	public static final String after=stRDF+ "after";
 
