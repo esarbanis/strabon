@@ -100,6 +100,8 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 	@Override
 	public String stringValue() 
 	{
+		if(this.period == null)
+			return null;
 		return period.toString().replace("Period:(","[");
 	}
 

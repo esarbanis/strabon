@@ -549,8 +549,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(function.getURI().equals(TemporalConstants.periodIntersection))
 		{			
-			System.out.println("left= "+left.toString());
-			System.out.println("right= "+right.toString());
+
 			StrabonTemporalElement rightArg= null;
 			StrabonTemporalElement leftArg= null;
 			
@@ -574,7 +573,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return StrabonPeriod.intersection(rightArg, leftArg);
 		}
 		else if(function.getURI().equals(TemporalConstants.minusPeriod))
-		{
+		{ //this functions takes only periods as arguments
+			if(!right.toString().contains(",") || !left.toString().contains(","))
+				return null;
 			return StrabonPeriod.except(new StrabonPeriod(left.toString()), new StrabonPeriod(right.toString()));
 		}
 		else if(function.getURI().equals(TemporalConstants.precedingPeriod))

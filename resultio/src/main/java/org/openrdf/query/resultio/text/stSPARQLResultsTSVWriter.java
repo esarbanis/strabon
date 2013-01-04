@@ -35,6 +35,8 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 
 	@Override
 	protected void writeValue(Value val) throws IOException {
+		if (val.stringValue()== null)
+			return;
 		if (val instanceof GeneralDBPolyhedron) {
 			// catch the spatial case and create a new literal
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
@@ -42,10 +44,12 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep(), dbpolyhedron.getDatatype());
 		}
 		else if(val instanceof StrabonTemporalElement){
+			//creating a temporal literal, which is either a period or an instant
+			
 			val = new LiteralImpl(((StrabonTemporalElement)val).stringValue(), ((StrabonTemporalElement) val).getDatatype());
 		}
 		
-		// write value
+		// write value		
 		super.writeValue(val);
 		
 	}
