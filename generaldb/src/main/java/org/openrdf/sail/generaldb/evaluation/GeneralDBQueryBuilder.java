@@ -648,6 +648,15 @@ public abstract class GeneralDBQueryBuilder {
 		else if(expr instanceof GeneralDBSqlAdjacentPeriod){
 			append((GeneralDBSqlAdjacentPeriod)expr, filter);
 		}
+		else if(expr instanceof GeneralDBSqlPeriodIntersection){
+			append((GeneralDBSqlPeriodIntersection)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlPeriodUnion){
+			append((GeneralDBSqlPeriodUnion)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlPeriodMinus){
+			append((GeneralDBSqlPeriodMinus)expr, filter);
+		}
 		
 		//GeoSPARQL
 		//Simple Features
@@ -1278,6 +1287,18 @@ public abstract class GeneralDBQueryBuilder {
 		else if(constr instanceof GeneralDBSqlGeoSymDifference)
 		{
 			append((GeneralDBSqlGeoSymDifference)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlPeriodIntersection)
+		{
+			append((GeneralDBSqlPeriodIntersection)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlPeriodMinus)
+		{
+			append((GeneralDBSqlPeriodMinus)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlPeriodUnion)
+		{
+			append((GeneralDBSqlPeriodUnion)constr, filter);
 		}
 
 			}

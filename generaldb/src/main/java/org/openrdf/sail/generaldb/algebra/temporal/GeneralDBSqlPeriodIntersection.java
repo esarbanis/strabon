@@ -45,7 +45,7 @@ public class GeneralDBSqlPeriodIntersection extends GeneralDBSqlTemporalConstruc
 	@Override
 	public String getPostgresFunction() {
 
-		return null;
+		return "period_intersect";
 	}
 
 }

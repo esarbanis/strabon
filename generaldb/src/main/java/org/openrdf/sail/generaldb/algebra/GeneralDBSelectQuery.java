@@ -49,9 +49,13 @@ public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements
 	
 	/**
 	 * XXX addition for spatial constructs in select
+	 * cloned behaviour to apply for the temporal case, too
 	 */
 	
 	private Map<String, GeneralDBSqlExpr> spatialConstructs = new HashMap<String, GeneralDBSqlExpr>();
+	
+	private Map<String, GeneralDBSqlExpr> temporalConstructs = new HashMap<String, GeneralDBSqlExpr>();
+
 	
 	//Extra addition for true spatial selections and joins in FROM clause - 07/09/2011
 	//private List<GeneralDBSqlExpr> spatialFilters = new ArrayList<GeneralDBSqlExpr>();
@@ -79,6 +83,14 @@ public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements
 
 	public void setSpatialConstructs(Map<String, GeneralDBSqlExpr> spatialConstructs) {
 		this.spatialConstructs = spatialConstructs;
+	}
+	
+	public Map<String, GeneralDBSqlExpr> getTemporalConstructs() {
+		return temporalConstructs;
+	}
+
+	public void setTemporalConstructs(Map<String, GeneralDBSqlExpr> temporalConstructs) {
+		this.temporalConstructs = temporalConstructs;
 	}
 	
 	//09/09/2011 XXX
@@ -248,6 +260,8 @@ public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements
 		clone.from = from.clone();
 		clone.order = new ArrayList<OrderElem>(order);
 		clone.spatialConstructs = new HashMap<String, GeneralDBSqlExpr>(spatialConstructs);
+		clone.temporalConstructs = new HashMap<String, GeneralDBSqlExpr>(temporalConstructs);
+
 		return clone;
 	}
 

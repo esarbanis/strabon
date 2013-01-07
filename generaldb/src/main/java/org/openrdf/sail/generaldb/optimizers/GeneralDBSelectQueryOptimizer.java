@@ -1057,6 +1057,16 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 						}
 						iter.remove();
 					}
+					else if(function instanceof TemporalConstructFunc || function instanceof TemporalRelationFunc)
+					{
+						try {
+							sqlExpr= sql.getBooleanExprFactory().temporalFunction((FunctionCall)expr);
+							reference.getTemporalConstructs().put(name, sqlExpr);
+						} catch (UnsupportedRdbmsOperatorException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 				else //Union (or Extent) is used as an aggregate function on Select Clause!
 				{
@@ -1082,6 +1092,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 						sqlExpr = sql.getNumericExprFactory().createNumericExpr(expr);
 
 						reference.getSpatialConstructs().put(name, sqlExpr);
+						reference.getTemporalConstructs().put(name, sqlExpr);
+
 						iter.remove();
 					}
 				} catch (UnsupportedRdbmsOperatorException e) {

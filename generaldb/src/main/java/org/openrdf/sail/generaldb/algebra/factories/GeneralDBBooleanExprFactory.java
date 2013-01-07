@@ -46,6 +46,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodIntersectionFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AfterPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.BeforePeriodFunc;
@@ -751,10 +755,48 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return temporalRelationFunction(functionCall,function);	
 		}
+		else if(function instanceof TemporalConstructFunc) //copied behaviour to capture the temporal cases
+		{
+			return temporalConstructFunction(functionCall,function);
+		}
 		
 		return null;
 	}
+	
+	GeneralDBSqlExpr temporalConstructFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
+	{
 
+		GeneralDBSqlExpr leftArg = null;
+		GeneralDBSqlExpr rightArg = null;
+
+		ValueExpr left = functionCall.getArgs().get(0);
+
+
+		if(left instanceof FunctionCall)
+		{
+			leftArg = temporalFunction((FunctionCall) left);
+		}
+		else
+		{
+			leftArg = label(left);
+		}
+
+		if(!( functionCall.getArgs().size()==1))
+		{
+			ValueExpr right = functionCall.getArgs().get(1);
+			if(right instanceof FunctionCall)
+			{
+				rightArg = temporalFunction((FunctionCall) right);
+			}
+			else
+			{
+				rightArg = label(right);
+			}
+		}
+
+		return temporalConstructPicker(function, leftArg, rightArg);
+
+	}
 	GeneralDBSqlExpr temporalRelationFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		ValueExpr left = functionCall.getArgs().get(0);
@@ -938,6 +980,24 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 		return spatialPropertyPicker(function, expr);
 
+	}
+	
+	GeneralDBSqlExpr temporalConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	{
+		if(function instanceof PeriodIntersectionFunc)
+		{
+			return periodIntersection(leftArg, rightArg);
+		}
+		else if(function instanceof periodUnionFunc)
+		{
+			return periodUnion(leftArg, rightArg);
+		}
+		else if(function instanceof PeriodMinusFunc)
+		{
+			return periodMinus(leftArg, rightArg);
+		}
+		else
+			return null;
 	}
 	
 	GeneralDBSqlExpr temporalRelationPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 

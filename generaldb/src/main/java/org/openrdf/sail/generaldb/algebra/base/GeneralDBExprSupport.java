@@ -101,7 +101,10 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlStarts;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 /**
@@ -364,6 +367,17 @@ public class GeneralDBExprSupport {
 	
 	public static GeneralDBSqlExpr below(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlBelow(left, right);
+	}
+	//stSPARQL Temporal Construct Functions
+	
+	public static GeneralDBSqlExpr periodIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodIntersection(left, right);
+	}
+	public static GeneralDBSqlExpr periodUnion(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodUnion(left, right);
+	}
+	public static GeneralDBSqlExpr periodMinus(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodMinus(left, right);
 	}
 	
 	//stSparql Temporal Relation Functions

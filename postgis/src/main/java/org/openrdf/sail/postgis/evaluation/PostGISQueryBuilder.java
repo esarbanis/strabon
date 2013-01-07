@@ -352,9 +352,11 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
-				&&!(expr instanceof GeneralDBSqlSpatialProperty))
+				&&!(expr instanceof GeneralDBSqlSpatialProperty)
+			&&!(expr instanceof GeneralDBSqlTemporal))
 		{
 			query.select().appendFunction(ST_ASBINARY);
+			System.out.println("appended st_asBinary!");
 		}
 		else
 		{
@@ -1110,21 +1112,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlPeriodIntersection expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
 			}
 	
 	@Override
 	protected void append(GeneralDBSqlPeriodMinus expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
 			}
 	
 	@Override
 	protected void append(GeneralDBSqlPeriodUnion expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		//appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_IsEmpty);
+	appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
 			}
 
 

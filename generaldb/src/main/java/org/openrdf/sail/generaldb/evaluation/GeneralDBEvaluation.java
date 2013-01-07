@@ -100,6 +100,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructBinary;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
@@ -139,7 +140,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, PERIOD,NULL};
 
 	
 	//used to retrieve the appropriate column in the Binding Iteration
@@ -916,6 +917,37 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				}
 			}
 		}
+		Iterator iter = qb.getTemporalConstructs().entrySet().iterator();
+		while (iter.hasNext()) {
+			@SuppressWarnings("rawtypes")
+			Map.Entry pairs = (Map.Entry)iter.next();
+			//System.out.println(pairs.getKey() + " = " + pairs.getValue());
+
+			//Trying to fill what's missing
+			GeneralDBSqlExpr expr = (GeneralDBSqlExpr) pairs.getValue();
+			locateColumnVars(expr,qb.getVars());
+
+			//Assuming thematic aggregates and spatial expressions won't be combined
+			if(!this.thematicExpressions.contains(expr))
+			{
+				query.construct(expr);
+				boolean increaseIndex = false;
+
+				GeneralDBSpatialFuncInfo info = null;
+				
+				ResultType type = getResultType(expr);
+				if (type == ResultType.NULL) {
+					throw new UnsupportedRdbmsOperatorException("No such temporal expression exists!");
+					
+				} else {
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);				
+					
+				}
+
+				constructIndexesAndNames.put(info,index++);
+
+			}
+		}
 		//
 
 		for (OrderElem by : qb.getOrderElems()) {
@@ -1053,6 +1085,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			locateColumnVars(((GeneralDBSqlMathExpr)expr).getLeftArg(),allKnown);
 			locateColumnVars(((GeneralDBSqlMathExpr)expr).getRightArg(),allKnown);
 		}
+		else if(expr instanceof GeneralDBSqlTemporalConstructBinary)
+		{
+			locateColumnVars(((GeneralDBSqlTemporalConstructBinary)expr).getLeftArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlTemporalConstructBinary)expr).getRightArg(),allKnown);
+		}
 		else
 		{
 			//must recurse
@@ -1085,6 +1122,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	/**
 	 * Given an expression get the type of the result. 
+	 * Extended it to take into account the temporal constructs
 	 * 
 	 * @param expr
 	 * @return
@@ -1121,6 +1159,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				expr instanceof GeneralDBSqlMathExpr)
 		{
 			return ResultType.DOUBLE;
+		}
+		else if(expr instanceof GeneralDBSqlTemporalConstructBinary)
+		{
+			return ResultType.PERIOD;
 		}
 		return ResultType.NULL;//SHOULD NEVER REACH THIS CASE
 	}
