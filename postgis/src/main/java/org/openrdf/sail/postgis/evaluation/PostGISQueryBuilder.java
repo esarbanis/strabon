@@ -353,7 +353,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty)
-			&&!(expr instanceof GeneralDBSqlTemporal))
+			&&!(expr instanceof GeneralDBSqlTemporal)
+			&&!(expr instanceof GeneralDBSqlTemporalConstructBinary))
 		{
 			query.select().appendFunction(ST_ASBINARY);
 			System.out.println("appended st_asBinary!");
