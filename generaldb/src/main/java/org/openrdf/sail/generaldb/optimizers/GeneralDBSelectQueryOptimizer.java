@@ -74,6 +74,9 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodPrecedingFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodSucceedingFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.iterator.SPARQLMinusIteration;
@@ -1264,7 +1267,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		if(expr instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc))
+			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc) && !(function instanceof PeriodPrecedingFunc)
+					&& !(function instanceof PeriodSucceedingFunc) && !(function instanceof PeriodMinusFunc))
 			{
 				//Recursively check arguments
 				boolean unionPresent = false;
