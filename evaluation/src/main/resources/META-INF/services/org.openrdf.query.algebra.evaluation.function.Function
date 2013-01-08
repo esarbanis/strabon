@@ -78,3 +78,5 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeature
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeaturesOverlapsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeaturesWithinFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeatureTouchesFunc
+
+org.openrdf.query.algebra.evaluation.function.datetime.stsparql.metric.DiffDateTime

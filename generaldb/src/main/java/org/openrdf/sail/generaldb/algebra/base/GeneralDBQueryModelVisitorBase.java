@@ -29,6 +29,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDateTimeMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
@@ -330,7 +331,7 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetUnarySqlOperator(node);
 	 }
-
+	 
 	 public void meet(GeneralDBSqlSpatialMetricBinary node) throws X 
 	 {
 		 meetBinarySqlOperator(node);
@@ -364,7 +365,18 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 		 meetNode(node);
 	 }
 
-	 //	public void meet(GeneralDBSqlmbbIntersects node) throws X
+	 /** Addition for datetime metric functions
+	  * 
+	  * @author George Garbis <ggarbis@di.uoa.gr>
+	  * 
+	  */ 
+	public void meet(GeneralDBSqlDateTimeMetricBinary node) 
+	throws X {
+		meetBinarySqlOperator(node);
+	}
+	/***/
+	
+	 //	public void meet(GeneralDBSqlAnyInteract node) throws X
 	 //	{
 	 //		meetBinarySqlOperator(node);
 	 //	}

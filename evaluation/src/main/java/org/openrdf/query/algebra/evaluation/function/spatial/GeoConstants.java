@@ -176,5 +176,13 @@ public class GeoConstants {
 	
 	// The generic relate function
 	public static final String geoSparqlRelate 					 = geof + "relate";
-	
+
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public static final String diffDateTime = "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";
+	/** End of addition **/
 }

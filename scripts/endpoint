@@ -380,6 +380,6 @@ if test $DEBUG -eq 1; then
 	echo "${CMD}: Printing command for execution"	
 	echo "	$EXEC"
 else
-	eval ${EXEC}
+	eval "${EXEC}"
 fi
 

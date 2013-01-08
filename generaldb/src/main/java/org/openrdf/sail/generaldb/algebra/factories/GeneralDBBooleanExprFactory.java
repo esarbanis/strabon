@@ -32,6 +32,7 @@ import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.link.AddDateTimeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
@@ -105,7 +106,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	@Override
 	public void meet(Compare compare)
 			throws UnsupportedRdbmsOperatorException
-			{
+	{
 		ValueExpr left = compare.getLeftArg();
 		ValueExpr right = compare.getRightArg();
 		CompareOp op = compare.getOperator();
@@ -114,7 +115,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		 * 
 		 */
 		boolean leftIsSpatial = false;
+		boolean leftIsDateTime = false;
 		boolean rightIsSpatial = false;
+		boolean rightIsDateTime = false;
 		GeneralDBSqlExpr leftSql = null;
 		GeneralDBSqlExpr rightSql = null;
 
@@ -124,12 +127,25 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			if(function instanceof SpatialMetricFunc)
 			{
 				leftSql = spatialMetricFunction((FunctionCall) left, function);
+				leftIsSpatial = true;
 			}
+			/**
+			 * Addition for datetime metric functions
+			 * 
+			 * @author George Garbis <ggarbis@di.uoa.gr>
+			 * 
+			 */
+			else if (function instanceof DateTimeMetricFunc){
+				// Edw prepei na epistrafei ena GenearalDBSqlDiffDateTime me parent=null
+				leftSql = dateTimeMetricFunction((FunctionCall)left, function);
+				leftIsDateTime = true;
+			}
+			/***/
 			else //spatial property
 			{
 				leftSql = spatialPropertyFunction((FunctionCall) left, function);
+				leftIsSpatial = true;
 			}
-			leftIsSpatial = true;
 		}
 		else if(left instanceof MathExpr)
 		{
@@ -143,30 +159,35 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 		if(right instanceof FunctionCall)
 		{
-			System.out.println("FUNCTION:"+right.toString());
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall)right).getURI());
 			if(function instanceof SpatialMetricFunc)
 			{
 				rightSql = spatialMetricFunction((FunctionCall) right, function);
+				rightIsSpatial = true;
 			}
-			else if(((FunctionCall) right).getURI().toString().equalsIgnoreCase("http://example.org/custom-function/addDatetime"))
-			{
-				System.out.println("ADD DATE TIME FUNC!");
-				FunctionRegistry fr =  FunctionRegistry.getInstance();
-				Function f = fr.get("http://example.org/custom-function/addDatetime");
-				if (f == null){System.out.println("COULD NOT GET DA FUNCTION!");}
+			/**
+			 * Addition for datetime metric functions
+			 * 
+			 * @author George Garbis <ggarbis@di.uoa.gr>
+			 * 
+			 */
+			else if (function instanceof DateTimeMetricFunc){
+				// Edw prepei na epistrafei ena GenearalDBSqlDiffDateTime me parent=null
+				rightSql = dateTimeMetricFunction((FunctionCall)right, function);
+				rightIsDateTime = true;
 			}
+			/***/
 			else //spatial property
 			{
 				System.out.println("SPATIAL PROPERTY!!!");
 				rightSql = spatialPropertyFunction((FunctionCall) right, function);
+				rightIsSpatial = true;
 			}
-			rightIsSpatial = true;
 		}
 		else if(right instanceof MathExpr)
 		{
 			//some recursive function plainly to find out whether there is some nested metric
-			rightIsSpatial = containsMetric((MathExpr)left);
+			rightIsSpatial = containsMetric((MathExpr)right);
 			if(rightIsSpatial)
 			{
 				rightSql = numeric(right);
@@ -179,7 +200,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 		switch (op) {
 		case EQ:
-			if(!rightIsSpatial&&!leftIsSpatial)
+			if( (!rightIsSpatial && !rightIsDateTime) && (!leftIsSpatial && !leftIsDateTime) )
 			{
 				//default cases
 				if (isTerm(left) && isTerm(right)) {
@@ -193,12 +214,12 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			else
 			{
 				//more complicated cases
-				if(!rightIsSpatial)
+				if(!rightIsSpatial && !rightIsDateTime)
 				{
 					rightSql = numeric(right);
 				}
 
-				if(!leftIsSpatial)
+				if(!leftIsSpatial && !leftIsDateTime)
 				{
 					leftSql = numeric(right);
 				}
@@ -206,7 +227,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			break;
 		case NE:
-			if(!rightIsSpatial&&!leftIsSpatial)
+			if( (!rightIsSpatial && !rightIsDateTime) && (!leftIsSpatial && !leftIsDateTime) )
 			{
 				//default cases
 				if (isTerm(left) && isTerm(right)) {
@@ -220,12 +241,12 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			else
 			{
 				//more complicated cases
-				if(!rightIsSpatial)
+				if(!rightIsSpatial && !rightIsDateTime)
 				{
 					rightSql = numeric(right);
 				}
 
-				if(!leftIsSpatial)
+				if(!leftIsSpatial && !leftIsSpatial)
 				{
 					leftSql = numeric(right);
 				}
@@ -237,7 +258,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		case LE:
 		case LT:
 
-			if(!rightIsSpatial&&!leftIsSpatial)
+			if( (!rightIsSpatial && !rightIsDateTime) && (!leftIsSpatial && !leftIsDateTime) )
 			{
 				//default cases
 				GeneralDBSqlExpr simple = and(simple(type(left)), simple(type(right)));
@@ -257,12 +278,12 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			else
 			{
 				//more complicated cases
-				if(!rightIsSpatial)
+				if(!rightIsSpatial && !rightIsDateTime)
 				{
 					rightSql = numeric(right);
 				}
 
-				if(!leftIsSpatial)
+				if(!leftIsSpatial && !leftIsDateTime)
 				{
 					leftSql = numeric(right);
 				}
@@ -271,7 +292,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 			break;
 		}
-			}
+	}
 
 	@Override
 	public void meet(IsBNode node)
@@ -687,6 +708,24 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 			}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
+	{
+		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
+		if(function instanceof DateTimeMetricFunc) //1 argument
+		{
+			return dateTimeMetricFunction(functionCall,function);	
+		}
+		return null;
+	}
+
+	/***/
+	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
@@ -808,6 +847,45 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
+	{
+		GeneralDBSqlExpr leftArg = null;
+		GeneralDBSqlExpr rightArg = null;
+
+		ValueExpr left = functionCall.getArgs().get(0);
+		ValueExpr right = functionCall.getArgs().get(1);
+
+		if(left instanceof FunctionCall)
+		{
+			leftArg = dateTimeFunction((FunctionCall) left);
+		}
+		else
+		{
+			leftArg = time(left);
+		}
+
+		if(right instanceof FunctionCall)
+		{
+			rightArg = spatialFunction((FunctionCall) right);
+			rightArg = dateTimeFunction((FunctionCall) right);
+		}
+		else
+		{
+			rightArg = time(right);
+		}
+		
+		return dateTimeMetricPicker(function, leftArg, rightArg);
+
+	}
+
+	/***/
+	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -1120,6 +1198,25 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	
+	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	{
+		if(function.getURI().equals(GeoConstants.diffDateTime))
+		{
+			return diffDateTime(leftArg, rightArg);
+		}
+
+		//Should never reach this place
+		return null;
+	}
+	
+	/***/
+	
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{

@@ -9,9 +9,15 @@ package org.openrdf.sail.generaldb.algebra;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-public class GeneralDBSqlGeoDistance extends GeneralDBSqlSpatialMetricBinary {
+/** Addition for datetime metric functions
+ * 
+ * @author George Garbis <ggarbis@di.uoa.gr>
+ * 
+ */
 
-	public GeneralDBSqlGeoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+public class GeneralDBSqlDiffDateTime extends GeneralDBSqlDateTimeMetricBinary {
+	
+	public GeneralDBSqlDiffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
 	}
 

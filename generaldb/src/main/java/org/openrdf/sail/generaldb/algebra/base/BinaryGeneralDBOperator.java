@@ -27,7 +27,7 @@ public abstract class BinaryGeneralDBOperator extends GeneralDBQueryModelNodeBas
 	}
 
 	public BinaryGeneralDBOperator(GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg) {
-		super();
+		super(); // Edw to this(distance) exei ginei GeneralDBSqlGeoDistance
 		setLeftArg(leftArg);
 		setRightArg(rightArg);
 	}
