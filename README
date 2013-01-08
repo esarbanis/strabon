@@ -230,16 +230,25 @@ the Strabon-devel mailing-list Strabon-devel@di.uoa.gr.
 
 Known Issues
 ============
-By default, Tomcat uses ISO-8859-1 character encoding when decoding URLs received 
-from a browser. This can cause problems when encoding is UTF-8, and you are using 
-international characters. In order to fix this, edit conf/server.xml and find the 
-line where the Connector is defined. Add the parameter URIEncoding and set it to 
-UTF-8. For example:
+ * By default, Tomcat uses ISO-8859-1 character encoding when decoding URLs received 
+   from a browser. This can cause problems when encoding is UTF-8, and you are using 
+   international characters. In order to fix this, edit conf/server.xml and find the 
+   line where the Connector is defined. Add the parameter URIEncoding and set it to 
+   UTF-8. For example:
 
-<Connector port="8080" protocol="HTTP/1.1" 
-               connectionTimeout="20000" 
-               URIEncoding="UTF-8"
-               redirectPort="8443" />
+   <Connector port="8080" protocol="HTTP/1.1" 
+                  connectionTimeout="20000" 
+                  URIEncoding="UTF-8"
+                  redirectPort="8443" />
+
+ * Building and executing any maven goals fails for maven versions <3.0 due to a
+   dependency to the `shade' plugin that is available only for maven version 3.0
+   (http://maven.apache.org/plugins/maven-shade-plugin/). In such systems, you may
+   disable execution of this plugin by setting the environmental variable
+   `shade.skip'. For example, to build Strabon using maven version 2.0 you may
+   execute the following command:
+
+   	$ mvn clean package -Dshade.skip
 
 
 License
