@@ -83,6 +83,8 @@ org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.Period
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodSucceedingFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc
+org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodStartsFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc
 org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AfterPeriodFunc

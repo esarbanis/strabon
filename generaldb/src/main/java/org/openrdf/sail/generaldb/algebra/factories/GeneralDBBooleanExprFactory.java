@@ -46,8 +46,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodIntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodStartsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.periodUnionFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.AdjacentPeriodFunc;
@@ -995,6 +997,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function instanceof PeriodMinusFunc)
 		{
 			return periodMinus(leftArg, rightArg);
+		}
+		else if(function instanceof PeriodStartsFunc)
+		{
+			return periodStart(leftArg);
+		}
+		else if(function instanceof PeriodEndsFunc)
+		{
+			return periodEnd(leftArg);
 		}
 		else
 			return null;

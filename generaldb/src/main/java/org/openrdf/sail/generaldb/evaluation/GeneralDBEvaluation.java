@@ -101,6 +101,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructBinary;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructUnary;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
@@ -940,11 +941,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					throw new UnsupportedRdbmsOperatorException("No such temporal expression exists!");
 					
 				} else {
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);				
-					
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);		
 				}
 
 				constructIndexesAndNames.put(info,index++);
+				
 
 			}
 		}
@@ -963,7 +964,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			query.offset(qb.getOffset());
 		}
 		parameters.addAll(query.getParameters());
-
 		return query.toString();
 	}
 
@@ -1090,6 +1090,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			locateColumnVars(((GeneralDBSqlTemporalConstructBinary)expr).getLeftArg(),allKnown);
 			locateColumnVars(((GeneralDBSqlTemporalConstructBinary)expr).getRightArg(),allKnown);
 		}
+		else if(expr instanceof GeneralDBSqlTemporalConstructUnary)
+		{
+			locateColumnVars(((GeneralDBSqlTemporalConstructUnary)expr).getArg(),allKnown);
+		}
 		else
 		{
 			//must recurse
@@ -1164,6 +1168,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			return ResultType.PERIOD;
 		}
+		else if(expr instanceof GeneralDBSqlTemporalConstructUnary)
+		{
+			return ResultType.PERIOD;
+		}
+		System.out.println("NOT SUPPORTED OPERATOR!!!");
 		return ResultType.NULL;//SHOULD NEVER REACH THIS CASE
 	}
 }

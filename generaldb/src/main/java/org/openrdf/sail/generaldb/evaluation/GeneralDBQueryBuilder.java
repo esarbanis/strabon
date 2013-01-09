@@ -124,9 +124,11 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlStarts;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
@@ -657,6 +659,7 @@ public abstract class GeneralDBQueryBuilder {
 		else if(expr instanceof GeneralDBSqlPeriodMinus){
 			append((GeneralDBSqlPeriodMinus)expr, filter);
 		}
+	
 		
 		//GeoSPARQL
 		//Simple Features
@@ -852,6 +855,12 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoBoundary) {
 			append((GeneralDBSqlGeoBoundary)expr, filter);
 		}
+		else if (expr instanceof GeneralDBSqlPeriodStart) {
+			append((GeneralDBSqlPeriodStart)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlPeriodEnd) {
+			append((GeneralDBSqlPeriodEnd)expr, filter);
+		}
 		//Metrics
 		else if (expr instanceof GeneralDBSqlGeoArea) {
 			append((GeneralDBSqlGeoArea)expr, filter);
@@ -883,6 +892,11 @@ public abstract class GeneralDBQueryBuilder {
 			throw unsupported(expr);
 		}
 			}
+
+	/**
+	 * @param expr
+	 * @param filter
+	 */
 
 	protected void dispatchValueColumnBase(GeneralDBValueColumnBase expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -1300,6 +1314,15 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlPeriodUnion)constr, filter);
 		}
+		else if(constr instanceof GeneralDBSqlPeriodStart)
+		{
+			append((GeneralDBSqlPeriodStart)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlPeriodEnd)
+		{
+			append((GeneralDBSqlPeriodEnd)constr, filter);
+		}
+		
 
 			}
 
@@ -1350,6 +1373,14 @@ protected abstract void append(GeneralDBSqlPeriodMinus expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
 
+protected abstract void append(GeneralDBSqlPeriodStart expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlPeriodEnd expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
 protected abstract void append(GeneralDBSqlPeriodOverlaps expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
@@ -1392,6 +1423,15 @@ protected abstract void append(GeneralDBSqlFinishes expr,
 protected abstract void append(GeneralDBSqlAdjacentPeriod expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
+
+
+
+/**
+ * @param expr
+ * @param filter
+ * @throws UnsupportedRdbmsOperatorException
+ */
+
 
 
 }

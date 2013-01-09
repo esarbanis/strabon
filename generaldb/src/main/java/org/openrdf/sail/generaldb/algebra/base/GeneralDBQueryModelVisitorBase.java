@@ -60,6 +60,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporal;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructBinary;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlTemporalConstructUnary;
 
 /**
  * Base class for RDBMS visitor classes. This class is extended with additional
@@ -386,6 +387,14 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetNode(node);
 	 }
+
+	/**
+	 * @param generalDBSqlPeriodStart
+	 */
+	public void meet(GeneralDBSqlTemporalConstructUnary node) {
+		meet(node);
+		
+	}
 
 
 

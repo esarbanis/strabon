@@ -74,8 +74,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodPrecedingFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodStartsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodSucceedingFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
@@ -1268,7 +1270,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
 			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc) && !(function instanceof PeriodPrecedingFunc)
-					&& !(function instanceof PeriodSucceedingFunc) && !(function instanceof PeriodMinusFunc))
+					&& !(function instanceof PeriodSucceedingFunc))
 			{
 				//Recursively check arguments
 				boolean unionPresent = false;
@@ -1283,11 +1285,13 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			}
 			else
 			{
+				System.out.println("Will be evaluated in Java");
 				return true;
 			}
 		}
 		else //Var
 		{
+			System.out.println("Should not be evaluated in Java");
 			return false;
 		}
 

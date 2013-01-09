@@ -355,7 +355,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty)
 			&&!(expr instanceof GeneralDBSqlTemporal)
-			&&!(expr instanceof GeneralDBSqlTemporalConstructBinary))
+			&&!(expr instanceof GeneralDBSqlTemporalConstructBinary)
+			&&!(expr instanceof GeneralDBSqlTemporalConstructUnary))
 		{
 			query.select().appendFunction(ST_ASBINARY);
 		}
@@ -1130,8 +1131,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
 			}
 
+	@Override
+	protected void append(GeneralDBSqlPeriodStart expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+	appendGeneralDBTemporalFunctionUnary(expr, filter, expr.getPostgresFunction());
+			}
 
-
+	@Override
+	protected void append(GeneralDBSqlPeriodEnd expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+	appendGeneralDBTemporalFunctionUnary(expr, filter, expr.getPostgresFunction());
+			}
 
 
 
@@ -1540,7 +1552,22 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			
 		//TODO:Think about adding more temporal function types (e.g., metrics, unary operators)
 			
+			/*else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg(functionName) instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+			}*/
+			//filter.appendComma();
 
+						//filter.openBracket();
 			filter.appendComma();
 			if (expr.getRightArg() instanceof GeneralDBSqlTemporalConstructBinary)
 			{
@@ -1553,6 +1580,75 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else
 			{
 				appendPeriod((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
+
+		}
+		filter.closeBracket();
+
+
+			}
+	
+	protected void appendGeneralDBTemporalFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, String func)
+			throws UnsupportedRdbmsOperatorException
+			{
+	
+		//filter.openBracket();
+
+		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getArg(), filter);
+
+		}
+		else
+		{
+
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlTemporalConstructUnary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+			
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+												break;
+					}
+
+				}
+				
+			}
+			/////
+			filter.appendFunction(func); //postgres temporal operators get deprecated. I will use the function names instead- constant
+			filter.openBracket();
+			if ((expr.getArg() instanceof GeneralDBSqlTemporalConstructBinary) || (expr.getArg() instanceof GeneralDBSqlTemporalConstructUnary))
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBStringValue)
+			{
+				appendPeriodConstant(expr.getArg(), filter);
+			}
+			else
+			{			
+				appendPeriod((GeneralDBLabelColumn)(expr.getArg()),filter);
+
 			}
 
 		}

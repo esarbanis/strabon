@@ -106,9 +106,11 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodUnion;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlStarts;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilder;
@@ -2229,6 +2231,28 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlAdjacentPeriod expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilder#append(org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart, org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder)
+	 */
+	@Override
+	protected void append(GeneralDBSqlPeriodStart expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilder#append(org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd, org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder)
+	 */
+	@Override
+	protected void append(GeneralDBSqlPeriodEnd expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub
