@@ -24,8 +24,24 @@ Tue Dec 11 00:11:43 2012   Pyravlos Team
 	* Version 3.2.5 released.
 
 	* Added support for querying temporal information. This functionality
-	may be found in the `temporals' branch.
-
+	may be found in the `temporals' branch. 
+	
+		The datatypes <http://strdf.di.uoa.gr/ontology#period> and <http://www.w3.org/2001/XMLSchema#dateTime>
+		are used to represent periods and instants respectively.
+	
+		The valid time time of triples is represented using quadtruples, with the valid time
+		annotation(instant or period) being the fourth element of the quad. In the same way, 
+		temporal triple patterns are used in queries to retrieve the valid time of triples.
+		
+		Some functions have been renamed (their URIs have changed) to follow the names of the 
+		respective relations of Allen's interval algebra and other functions have
+		been added. 
+		
+		The following temporal functions are supported:
+		during, periodOverlaps, equalsPeriod, nequalsPeriod, adjacent, before, ,after,
+		 overleft, overright, meets, starts, finishes, 
+		period_intersect, period_union, preceding_period, succeeding_period.
+	
 	* Changed behaviour of Strabon and Strabon Endpoint for connecting to
 	a spatially-enabled database. Only one instance of Strabon is allowed
 	at a time.
