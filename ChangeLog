@@ -1,6 +1,12 @@
 Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
+	* Version 3.2.8 released.
+
+Wed Jan 09 18:06:41 2013   Pyravlos Team
+
 	* Version 3.2.7 released.
+
+	* ???
 
 	* Modified strabon script and postgis/monetdb.StoreOP class to get an
 	option for storing a RDF file in a named graph. Moreover, the RDF
