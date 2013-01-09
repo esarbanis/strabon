@@ -350,15 +350,24 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	@Override
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr) throws UnsupportedRdbmsOperatorException
 	{
+		boolean isTemporalConstruct = false;
+		
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty)
-			&&!(expr instanceof GeneralDBSqlTemporal)
-			&&!(expr instanceof GeneralDBSqlTemporalConstructBinary)
-			&&!(expr instanceof GeneralDBSqlTemporalConstructUnary))
+				&&!(expr instanceof GeneralDBSqlTemporalConstructUnary)
+				&&!(expr instanceof GeneralDBSqlTemporalConstructBinary))
 		{
+			
 			query.select().appendFunction(ST_ASBINARY);
+		}
+		else if(expr instanceof GeneralDBSqlTemporalConstructUnary || expr instanceof GeneralDBSqlTemporalConstructBinary)
+		{
+			isTemporalConstruct = true;
+			query.select().append(CSTRING_TO_TEXT);
+			query.select.append("(");
+			query.select.append(PERIOD_TO_CSTRING+"(");
 		}
 		else
 		{
@@ -372,8 +381,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, query.select);
 		}
+		if(isTemporalConstruct)
+		{
+			query.select.append("))");	}
 		//SRID support must be explicitly added!
-
 		return this;
 	}
 
@@ -1886,7 +1897,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 
 			GeneralDBSqlExpr tmp = expr;
-
 
 			if(tmp instanceof GeneralDBSqlSpatialConstructUnary && tmp.getParentNode() == null)
 			{
