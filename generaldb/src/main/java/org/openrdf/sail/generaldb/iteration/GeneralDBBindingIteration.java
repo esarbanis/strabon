@@ -8,13 +8,22 @@ package org.openrdf.sail.generaldb.iteration;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonInstant;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPeriod;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -180,6 +189,13 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case WKB: 
 				value = createBinaryGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
+			case PERIOD: 
+				value = createPeriodValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
+			case INSTANT: 
+				value = createPeriodValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
+
 
 			}
 			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
@@ -242,6 +258,45 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		potentialMetric = rs.getFloat(index + 1);
 
 		return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
+
+	}
+	
+	protected RdbmsValue createPeriodValueForSelectConstructs(ResultSet rs, int index)
+	throws SQLException
+	{
+		String datatype = null; 
+		String label = rs.getString(index + 1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+
+		if(label.contains(",")) //period representation
+		{		
+			String start = label.substring(label.indexOf('[')+1,label.indexOf(','));
+			String end = label.substring(label.indexOf(',')+1,label.indexOf(')') );
+				
+			if(start.equals(end))
+			{
+				datatype = TemporalConstants.INSTANT;
+				label = end;
+			}
+			else
+			{
+				datatype = TemporalConstants.PERIOD;
+			}
+		}
+		else
+		{
+			label = label.replace(" ", "T");
+			datatype = TemporalConstants.INSTANT;
+		}
+		return vf.asRdbmsLiteral(vf.createLiteral(label,new URIImpl("<"+datatype+">")));
+	}
+	protected RdbmsValue createInstantValueForSelectConstructs(ResultSet rs, int index)
+	throws SQLException
+	{
+		String  instant = rs.getString(index + 1);
+
+		return vf.asRdbmsLiteral(vf.createLiteral(instant, new URIImpl(TemporalConstants.INSTANT)));
 
 	}
 

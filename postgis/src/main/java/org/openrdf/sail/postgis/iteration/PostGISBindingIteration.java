@@ -114,6 +114,10 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		    return vf.createLiteral(label, datatype);
 		    
 		}
+		else
+		{
+			System.out.println("createTemporalValue: THIS IS NOT A LITERAL!!!!!");
+		}
 		return createResource(rs, index);
 	}
 

@@ -141,7 +141,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, PERIOD,NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, PERIOD,INSTANT, NULL};
 
 	
 	//used to retrieve the appropriate column in the Binding Iteration
@@ -548,7 +548,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			return StrabonPeriod.union(rightArg, leftArg);
 			
 		}
-		else if(function.getURI().equals(TemporalConstants.periodIntersection))
+		/*else if(function.getURI().equals(TemporalConstants.periodIntersection))
 		{			
 
 			StrabonTemporalElement rightArg= null;
@@ -570,9 +570,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			{
 				 rightArg = StrabonInstant.read(right.toString());
 			}
-			
 			return StrabonPeriod.intersection(rightArg, leftArg);
-		}
+		}*/
 		else if(function.getURI().equals(TemporalConstants.minusPeriod))
 		{ //this functions takes only periods as arguments
 			if(!right.toString().contains(",") || !left.toString().contains(","))
@@ -907,7 +906,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					}
 					
 				}
-
 				//constructIndexesAndNames.put((String) pairs.getKey(),index++);
 				constructIndexesAndNames.put(info,index++);
 				if(increaseIndex)
@@ -1170,7 +1168,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBSqlTemporalConstructUnary)
 		{
-			return ResultType.PERIOD;
+			return ResultType.INSTANT;
 		}
 		System.out.println("NOT SUPPORTED OPERATOR!!!");
 		return ResultType.NULL;//SHOULD NEVER REACH THIS CASE

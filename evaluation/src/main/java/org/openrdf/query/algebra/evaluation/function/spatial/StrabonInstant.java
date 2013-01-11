@@ -13,7 +13,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
+import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 
@@ -97,6 +99,11 @@ public class StrabonInstant extends StrabonTemporalElement implements Instant{
 	public String stringValue() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
 		return sdf.format(this.value.getTime()).toString();
+	}
+	
+	public Literal export2Literal()
+	{
+		return new LiteralImpl(this.stringValue(), this.datatype);
 	}
 
 }

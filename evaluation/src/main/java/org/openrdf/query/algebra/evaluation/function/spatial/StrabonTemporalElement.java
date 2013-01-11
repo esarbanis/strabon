@@ -9,6 +9,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
@@ -29,7 +30,6 @@ public abstract class StrabonTemporalElement implements Value{
 	
 	abstract public String stringValue();
 	abstract public void setDatatype(URI datatype);
-	
-	
+	abstract public Literal export2Literal();
 
 }

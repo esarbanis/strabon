@@ -20,8 +20,10 @@ import net.sf.jtemporal.Instant;
 
 import net.sf.jtemporal.Period;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 
@@ -252,6 +254,12 @@ public class StrabonPeriod extends StrabonTemporalElement implements Value {
 			return A.getPeriod().succeeds(((StrabonPeriod)B).getPeriod());
 		else
 			return A.getPeriod().succeeds((StrabonInstant)B);
+	}
+	
+	public Literal export2Literal()
+	{
+		//if(this.getStart() !=  this.getEnd())
+			return new LiteralImpl(this.stringValue(), this.datatype);
 	}
 	
 }

@@ -362,7 +362,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			
 			query.select().appendFunction(ST_ASBINARY);
 		}
-		else if(expr instanceof GeneralDBSqlTemporalConstructUnary || expr instanceof GeneralDBSqlTemporalConstructBinary)
+		else if( expr instanceof GeneralDBSqlTemporalConstructBinary)
 		{
 			isTemporalConstruct = true;
 			query.select().append(CSTRING_TO_TEXT);
