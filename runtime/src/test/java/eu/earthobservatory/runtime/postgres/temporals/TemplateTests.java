@@ -7,7 +7,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis.temporals;
+package eu.earthobservatory.runtime.postgres.temporals;
 
 import java.io.IOException;
 import java.io.InputStream;

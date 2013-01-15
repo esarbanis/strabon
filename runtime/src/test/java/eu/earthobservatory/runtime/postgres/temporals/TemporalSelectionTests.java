@@ -7,7 +7,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis.temporals;
+package eu.earthobservatory.runtime.postgres.temporals;
 
 
 
@@ -29,7 +29,7 @@ import org.openrdf.rio.RDFParseException;
 
 
 import eu.earthobservatory.runtime.generaldb.*;
-import eu.earthobservatory.runtime.postgis.temporals.TemplateTests;
+import eu.earthobservatory.runtime.postgres.temporals.TemplateTests;
 
 
 /**
