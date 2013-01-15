@@ -79,26 +79,50 @@ public class TemporalRelationTests {
 	
 		String query = 
 			prefixes+
-			"SELECT ?x1 "+ 
+			"SELECT distinct ?x1 ?x2 "+ 
 			"WHERE { "+
 				"?x1 ?y1 ?z1 ?t1 . "+
 				"?x2 ?y2 ?z2 ?t2 . "+
-				"FILTER(strdf:after(?t1, ?t2))."+
+				"FILTER(strdf:after(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 		
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
-		assertEquals(5, bindings.size());
-		assertTrue(-1 < bindings.indexOf("[x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x1=http://example.org/item2]"));
-		assertTrue(-1 < bindings.indexOf("[x1=http://example.org/item3]"));
-		assertTrue(-1 < bindings.indexOf("[x1=http://example.org/item5]"));
-		assertTrue(-1 < bindings.indexOf("[x1=http://example.org/item6]"));
+		assertEquals(25, bindings.size());
+		//assertTrue(-1 < bindings.indexOf(""));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item8]"));
+		
+		
+
 	}
 	
 	@Test
@@ -118,26 +142,39 @@ public class TemporalRelationTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 		//System.out.println(bindings.toString());
 		
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
-		assertEquals(14, bindings.size());
+		assertEquals(25, bindings.size());
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item5]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item5]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item6]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item4]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item5]"));
+	
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item4]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item4]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item4]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item5]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item6]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item4]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item6]"));
 	}
 	
 	@Test
@@ -154,12 +191,12 @@ public class TemporalRelationTests {
 				"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		assertEquals(18, bindings.size());
+		assertEquals(31, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item1]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item2]"));
@@ -179,6 +216,37 @@ public class TemporalRelationTests {
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item2]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item2]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
 	}
 	
 	@Test
@@ -195,19 +263,28 @@ public class TemporalRelationTests {
 				"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		assertEquals(6, bindings.size());
+		assertEquals(14, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item7]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item7]"));
 	}
 	
 	@Test
@@ -225,19 +302,28 @@ public class TemporalRelationTests {
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 	
-		assertEquals(6, bindings.size());
+		assertEquals(14, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
-		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item7]"));
+		
 	}
 	
 	@Test
@@ -255,12 +341,12 @@ public class TemporalRelationTests {
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 	
-		assertEquals(6, bindings.size());
+		assertEquals(8, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
@@ -268,6 +354,8 @@ public class TemporalRelationTests {
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item1]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
 		
 	}
 	@Test
@@ -276,20 +364,21 @@ public class TemporalRelationTests {
 	
 		String query = 
 			prefixes+
-			"SELECT ?x1 ?x2 "+ 
+			"SELECT distinct ?x1 ?x2 "+ 
 			"WHERE { "+
 				"?x1 ?y1 ?z1 ?t1 . "+
 				"?x2 ?y2 ?z2 ?t2 . "+
-				"FILTER(strdf:adjacent(?t1, ?t2))."+
+				"FILTER(strdf:adjacent(?t1, ?t2) && str(?x1) < str(?x2))."+
 				"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
-		//assertEquals(14, bindings.size());
+		}*/
+		assertEquals(1, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item7]"));
 	}
 	
 	@Test
@@ -298,20 +387,23 @@ public class TemporalRelationTests {
 	
 		String query = 
 			prefixes+
-			"SELECT ?x1 ?x2 "+ 
+			"SELECT distinct ?x1 ?x2 "+ 
 			"WHERE { "+
 				"?x1 ?y1 ?z1 ?t1 . "+
 				"?x2 ?y2 ?z2 ?t2 . "+
-				"FILTER(strdf:meets(?t1, ?t2))."+
+				"FILTER(strdf:meets(?t1, ?t2) && ?x1 != ?x2)."+
 				"}";
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
-		//assertEquals(14, bindings.size());
+		}*/
+		assertEquals(3, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item2]"));
 	}
 	
 	@Test
@@ -331,10 +423,10 @@ public class TemporalRelationTests {
 
 		assertEquals(6, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
@@ -360,16 +452,17 @@ public class TemporalRelationTests {
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 		
-		assertEquals(3, bindings.size());
+		assertEquals(4, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item3]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item1;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item8]"));
 	}
 	
 	@Test
@@ -388,10 +481,10 @@ public class TemporalRelationTests {
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 		//assertEquals(3, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
+		}*/
 		
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item3;x1=http://example.org/item2]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item2;x1=http://example.org/item1]"));
@@ -413,13 +506,12 @@ public class TemporalRelationTests {
 		
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
 		
-		assertEquals(15, bindings.size());
+		assertEquals(28, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
-		for(String result: bindings)
+		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
-		}
-		
+		}*/
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item1]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item1]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item5;x1=http://example.org/item2]"));
@@ -435,7 +527,25 @@ public class TemporalRelationTests {
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item4]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item6;x1=http://example.org/item2]"));
 		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item2]"));
-		
-	}
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item4;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item7]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item4]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item6]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item3]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item2]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item7;x1=http://example.org/item1]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item5]"));
+		assertTrue(-1 < bindings.indexOf("[x2=http://example.org/item8;x1=http://example.org/item2]"));
+
+}
 }
 	
