@@ -76,7 +76,7 @@ PREFIX lgdgeo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX lgdont:<http://linkedgeodata.org/ontology/>
 PREFIX geonames:<http://www.geonames.org/ontology#>
 PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
-PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 PREFIX dlr: <http://www.earthobservatory.eu/ontologies/dlrOntology-v2.owl#>
 PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
