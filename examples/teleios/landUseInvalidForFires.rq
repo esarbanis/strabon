@@ -16,7 +16,7 @@ WHERE {
 			noa:hasGeometry ?hGeo.
 		?a  rdf:type   clc:ExcludeArea;
 			clc:hasGeometry ?aGeo.
-		FILTER(strdf:mbbOverlaps(?hGeo,?aGeo)).
+		FILTER(strdf:mbbIntersects(?hGeo,?aGeo)).
 	} 
 	GROUP BY ?h ?hGeo
 	HAVING strdf:contains(strdf:union(?aGeo),?hGeo)
