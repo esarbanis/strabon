@@ -264,7 +264,8 @@ http://www.strabon.di.uoa.gr/
 
 How to apply the license
 ========================
-In the beginning of script files (after the ???) paste the following statement:
+ * In the beginning of script files (after the shell directive) paste the
+   following statement:
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -275,7 +276,7 @@ In the beginning of script files (after the ???) paste the following statement:
 # http://www.strabon.di.uoa.gr/
 #
 
-In the beginning of Java source code files paste the following statement:
+ * In the beginning of Java source code files paste the following statement:
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -286,7 +287,7 @@ In the beginning of Java source code files paste the following statement:
  * http://www.strabon.di.uoa.gr/
  */
 
-In the beginning of HTML/XML files paste the following statement:
+ * In the beginning of HTML/XML files paste the following statement:
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. 
