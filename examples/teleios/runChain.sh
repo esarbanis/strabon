@@ -14,6 +14,8 @@
 # Author: Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
 #
 
+# If tomcat is standalone then environment variable TOMCATPATH should be set
+
 # Example run command: examples/teleios/runChain.sh -b http://dev.strabon.di.uoa.gr/rdf/data-dump-postgres-9.tgz  -l /home/ggarbis/runChain.log -e http://pathway.di.uoa.gr:8080/endpoint
 
 # Command name
@@ -118,7 +120,7 @@ function handlePostgresDatabase() {
 				exit -1
 			fi
 			echo "Storing dump file ${options} in database ${db}..."
-			psql ${db} -f ${options}
+			psql -U postgres ${db} -f ${options}
 			;;
 	esac
 }
@@ -127,8 +129,22 @@ function handlePostgresDatabase() {
 # -$1: Command for the service
 function handleTomcatService()
 {
+	if test ! -z "${TOMCATPATH}" ; then
+		case "${1}" in
+			start)
+				${TOMCATPATH}/bin/startup.sh
+				;;
+			stop)
+				${TOMCATPATH}/bin/shutdown.sh
+				;;
+			restart)
+				${TOMCATPATH}/bin/startup.sh
+				${TOMCATPATH}/bin/shutdown.sh
+				;;	
+		esac	
+		return
 	# find out the tomcat service to use
-	if test -s /etc/fedora-release ; then
+	elif test -s /etc/fedora-release ; then
 		tomcat="tomcat"
 	#elif test -s /etc/centos-release ; then
 	#elif test -s /etc/yellowdog-release ; then
@@ -150,6 +166,7 @@ function handleTomcatService()
 	echo "Service ${tomcat} received command: $1"
 	sudo service ${tomcat} $1
 }
+
 
 # get the main version of postgres
 function getPostgresMainVersion() {
@@ -194,6 +211,8 @@ function handleStrabonEndpoint(){
 			url=${options}
 
 			tmr1=$(timer)
+			#${endpointScript} store ${endpoint} N-Triples -u ${url}
+			#read t
 			${endpointScript} store ${endpoint} N-Triples -u ${url}
 			tmr2=$(timer)
 
@@ -210,6 +229,8 @@ function handleStrabonEndpoint(){
 		query)
 			query=${options}
 			tmr1=$(timer)
+			#${endpointScript} query ${endpoint} "${query}"
+			#read t
 			${endpointScript} query ${endpoint} "${query}"
 			tmr2=$(timer)
 			printf '%s ' $((tmr2-tmr1)) >> ${logFile} 
@@ -217,6 +238,8 @@ function handleStrabonEndpoint(){
 		update)
 			update=${options}
 			tmr1=$(timer)
+			#${endpointScript} update ${endpoint} "${update}"
+			#read t
 			${endpointScript} update ${endpoint} "${update}"
 			tmr2=$(timer)
 			printf '%s ' $((tmr2-tmr1)) >> ${logFile}
@@ -229,12 +252,12 @@ function handleStrabonEndpoint(){
 }
 
 # default values
-endpoint="http://pathway.di.uoa.gr:8080/endpoint"
+endpoint="http://teleios3.di.uoa.gr:8080/endpoint"
 db="NOA2012"
 hotspotsURL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
 #                                 ./examples/teleios/data/data-dump-9.sql
-bgFile="http://dev.strabon.di.uoa.gr/rdf/Kallikratis-Coastline-ExcludeArea-dump.tgz"
-logFile="runChain.log"
+bgFile="http://dev.strabon.di.uoa.gr/rdf/data-dump-9.sql"
+logFile="/home/ggarbis/runChain.log"
 
 chain="DynamicThresholds"
 persistence=10
@@ -301,9 +324,12 @@ echo "hotspots: ${hotspotsURL}"
 echo "background: ${bgFile}"
 echo "logFile: ${logFile}"
 
+echo > ${logFile}
+echo 2222
 instantiate=${loc}/instantiate.sh
 
 #Initialize (stop tomcat, restart postgres, drop/create database, start tomcat)
+echo 111
 handleTomcatService stop
 handlePostgresService restart
 
@@ -313,10 +339,13 @@ handlePostgresDatabase create ${db}
 storeBackgroundData ${db} ${bgFile} # ~/Temp/Kallikratis-Coastline-Corine-postgres-9.sql
 
 handleTomcatService start
+# Wait until tomcat server is up
+until [ "`curl --silent --show-error --connect-timeout 1 -I ${endpoint} | grep 'Coyote'`" != "" ]; do sleep 1; done;
+
 
 #${loc}/../../scripts/endpoint query ${endpoint} size 
 #exit -1
-echo "Timestamp Store Municipalities DeleteInSea InvalidForFires DeleteReflections RefineInCoast TimePersistence DiscoverHotspots DiscoverFires" > ${logFile}
+echo "Timestamp Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence DiscoverHotspots" > ${logFile}
 echo > /home/ggarbis/discoverFires.log
 echo > /home/ggarbis/discover.log
 
@@ -369,11 +398,11 @@ for y in ${years}; do
 #       echo "Invalid For Fires: ${update}" ; read t
 		handleStrabonEndpoint ${endpoint} update "${update}"
  
-        # Delete Reflections
-    	minTime=`date --date="${year}-${month}-${day} ${time2}:00 EEST -60 minutes" +%Y-%m-%dT%H:%M:00`
-		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} -m ${minTime} ${loc}/deleteReflections.rq`"
-#        echo "Delete Reflections: ${update}" ;
-		handleStrabonEndpoint ${endpoint} update "${update}"
+#        # Delete Reflections
+#    	minTime=`date --date="${year}-${month}-${day} ${time2}:00 EEST -60 minutes" +%Y-%m-%dT%H:%M:00`
+#		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} -m ${minTime} ${loc}/deleteReflections.rq`"
+##        echo "Delete Reflections: ${update}" ;
+#		handleStrabonEndpoint ${endpoint} update "${update}"
 
 		# Refine Partial Sea Hotspots
 		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} ${loc}/refinePartialSeaHotspots.rq`"
@@ -386,7 +415,7 @@ for y in ${years}; do
 #       echo "Refine Time Persistence: ${update}" ; read t
 		handleStrabonEndpoint ${endpoint} update "${update}" #2>&1 | tee /home/ggarbis/timePersistence.log
 
-		#sudo -u postgres psql -d ${DB} -c 'VACUUM ANALYZE;';
+		#psql -U postgres -d ${DB} -c 'VACUUM ANALYZE;';
         
 		# Discover
 		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
@@ -394,14 +423,15 @@ for y in ${years}; do
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} ${loc}/discover.rq`"
 #        echo "Discover: ${query}" ; #read t
 		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discover.log
-    
-		# Discover Fires
-		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
-		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
-        query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} -p 10 -r 3 ${loc}/discoverFires.rq`"
-#        echo "Discover Fires: ${query}" ; #read t
-		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discoverFires.log
+#    
+#		# Discover Fires
+#		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
+#		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
+#        query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} -p 10 -r 3 ${loc}/discoverFires.rq`"
+##        echo "Discover Fires: ${query}" ; #read t
+#		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discoverFires.log
 
+		# Add a new line
         echo >> ${logFile}    
 	done
 done
