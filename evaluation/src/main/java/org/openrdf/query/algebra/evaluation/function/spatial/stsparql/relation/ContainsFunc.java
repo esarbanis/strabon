@@ -20,6 +20,6 @@ public class ContainsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.crosses;
+		return GeoConstants.contains;
 	}
 }
