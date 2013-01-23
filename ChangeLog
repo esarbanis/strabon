@@ -1,6 +1,20 @@
 Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
+	* Version 3.2.8 released.
+
+Wed Jan 09 18:06:41 2013   Pyravlos Team
+
 	* Version 3.2.7 released.
+
+	* Add an extension function 
+	<http://strdf.di.uoa.gr/extensions/ontology#diffDateTime> for computing the
+	span (in milliseconds) between two timestamps.
+
+	* Added an <endpoint-exec> module. This module builds an executable jar file 
+	with an embedded Apache Tomcat 7. To create and run the executable jar just 
+	type:
+		$ mvn clean package
+		$ java -jar endpoint-exec/target/strabon-endpoint-executable-*.jar
 
 	* Modified strabon script and postgis/monetdb.StoreOP class to get an
 	option for storing a RDF file in a named graph. Moreover, the RDF
