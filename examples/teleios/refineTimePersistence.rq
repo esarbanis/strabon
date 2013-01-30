@@ -42,6 +42,6 @@ WHERE {
     }
     FILTER( !BOUND(?h2) ) .
   }
-  GROUP BY ?hGeometry1 ?hMunicipality1
+  GROUP BY ?hGeometry1 ?hMunicipality1 ?refined
   HAVING(SUM(?hConfidence1)>0.0)
 }
