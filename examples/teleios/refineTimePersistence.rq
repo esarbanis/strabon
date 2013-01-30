@@ -20,7 +20,7 @@ INSERT {?newHotspot rdf:type noa:Hotspot ;
 WHERE {
 	SELECT  (URI(CONCAT(STR(MAX(?h1)),"/virtual/", substr("TIMESTAMP", 3, 2), substr("TIMESTAMP", 6, 2), substr("TIMESTAMP", 9, 2), "_", substr("TIMESTAMP", 12, 2), substr("TIMESTAMP", 15, 2) )) AS ?newHotspot)
 			(SUM(?hConfidence1)/ACQUISITIONS_IN_HALF_AN_HOUR AS ?hConfidence)
-			?hGeometry1 ?hMunicipality1
+			?hGeometry1 ?hMunicipality1 ?refined
   WHERE {
     ?h1 noa:hasConfidence ?hConfidence1 ;
         noa:hasGeometry ?hGeometry1 ;
