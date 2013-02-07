@@ -522,6 +522,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	public StrabonTemporalElement temporalConstructPicker(Function function, Value left, Value right) throws ParseException
 	{
+		//temporarily commented out the following so that they will be evaluated in postgres temporal and not in Java
+		/*
 		if(function.getURI().equals(TemporalConstants.periodUnion))
 		{
 
@@ -571,7 +573,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				 rightArg = StrabonInstant.read(right.toString());
 			}
 			return StrabonPeriod.intersection(rightArg, leftArg);
-		}*/
+		}
 		else if(function.getURI().equals(TemporalConstants.minusPeriod))
 		{ //this functions takes only periods as arguments
 			if(!right.toString().contains(",") || !left.toString().contains(","))
@@ -599,7 +601,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		else
 		{
 			return null;			
-		}
+		}*/
+		return null;
 	}
 	
 	public boolean temporalRelationshipPicker (Function function, Value left, Value right) throws ParseException

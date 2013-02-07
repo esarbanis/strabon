@@ -65,6 +65,7 @@ public class QuadRDFHandler extends StatementCollector {
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
 					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
+					
 					 if (!triples.toString().contains(triple))
 					 {
 						 triples.append(triple);

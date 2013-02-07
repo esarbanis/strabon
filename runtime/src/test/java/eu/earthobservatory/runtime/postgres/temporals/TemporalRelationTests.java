@@ -9,7 +9,7 @@
  */
 
 /**
- * A set of simple tests on temporal selection functionality 
+ * 
  * 
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  * 
