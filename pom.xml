@@ -258,7 +258,7 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-api</artifactId>
-				<version>${sesame.version}</version>
+				<version>2.6.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>

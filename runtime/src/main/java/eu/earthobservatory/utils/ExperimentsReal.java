@@ -215,7 +215,7 @@ public class ExperimentsReal {
 
 		System.out.println("Executing query. Caches: " + cacheState + ". Repetition: " + repetition);
 
-		long[] resp = (long[])strabon.query(query, org.openrdf.query.resultio.Format.EXP, null);
+		long[] resp = (long[])strabon.query(query, eu.earthobservatory.utils.Format.EXP, null);
 		
 //		Statement st;
 //		System.out.println("Evaluating query (naive).");

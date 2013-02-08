@@ -246,7 +246,7 @@ public abstract class Strabon {
 		logger.info("[Strabon.query] Executing query: \n{}", queryString);
 		
 		// check for null stream
-		if ((out == null) && (resultsFormat != org.openrdf.query.resultio.Format.EXP)) {
+		if ((out == null) && (resultsFormat != eu.earthobservatory.utils.Format.EXP)) {
 			logger.error("[Strabon.query] Cannot write to null stream.");
 			
 			return false;

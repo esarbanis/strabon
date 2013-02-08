@@ -76,7 +76,13 @@ public class TemplateTests {
 		}
 		stmt.close();
 		
-	    Strabon strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, username, password, port, serverName, true);
+	    Strabon strabon=null;
+		try {
+			strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, username, password, port, serverName, true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		loadTestData(inputFile, strabon, format);
 		
