@@ -19,6 +19,6 @@ WHERE {
 ?d   rdf:type gag:Dhmos;
      strdf:hasGeometry ?dGeo;
      rdfs:label ?dLabel.
-  FILTER(strdf:anyInteract(?dGeo, ?hGeo)).
+  FILTER(strdf:mbbIntersects(?dGeo, ?hGeo)).
 }
 GROUP BY ?h (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) AS ?geo) ?conf 

@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.5-SNAPSHOT</version>
+		<version>3.2.8-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.openrdf.sesame</groupId>
 	<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-	<name>OpenRDF Sesame: Query algebra - evaluation -spatial</name>
+	<name>OpenRDF Sesame: Query algebra - evaluation - spatial</name>
 	<description>Spatial Extension Functions - stSPARQL </description>
 
 	<dependencies>

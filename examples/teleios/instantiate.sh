@@ -36,6 +36,8 @@ function help() {
 	echo "	-t, --timestamp		: the timestamp to use, e.g., \`2010-08-21T19:50:00'"
 	echo "	-m, --min_acq_time	: the minimum acquisition time (used in a persistence query only)"
 	echo "	-M, --max_acq_time	: the maximum acquisition time (used in a discovery query only)"
+	echo "	-p, --persistence	: "
+	echo "	-r, --repeat_in_persistence	: "
 	echo
 	echo "Example run:"
 	echo "	./instantiate.sh -s MSG1 -t '2010-08-21T19:50:00' -c "DynamicThresholds" -m '2010-08-21T19:50:00' -M '2010-08-21T19:50:00' *.rq"
@@ -45,9 +47,12 @@ SENSOR=
 CHAIN=
 SAT=
 N_ACQUISITIONS=
+N_ACQUISITIONS_PER_HOUR=
 TIMESTAMP=
 MIN_ACQ_TIME=
 MAX_ACQ_TIME=
+PERSISTENCE=
+REPEAT_IN_PERS= 
 
 if test $# -eq 0; then
 	help
@@ -69,10 +74,12 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			if test "${SENSOR}" = "MSG2"; then
 				SAT="METEOSAT9"
 				N_ACQUISITIONS=3.0
+				N_ACQUISITIONS_PER_HOUR=5.0
 			else
 				SAT="METEOSAT8"
 				N_ACQUISITIONS=7.0
-
+				N_ACQUISITIONS_PER_HOUR=13.0 
+				
 				# change MSG1 to MSG1_RSS (for whatever reason NOA uses it :-))
 				SENSOR="MSG1_RSS"
 			fi
@@ -96,6 +103,16 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 		-M|--max_acq_time)
 			shift
 			MAX_ACQ_TIME="${1}"
+			shift
+			;;
+		-p|--persistence)
+			shift
+			PERSISTENCE="${1}"
+			shift
+			;;
+		-r|--repeat_in_persistence)
+			shift
+			REPEAT_IN_PERS="${1}"
 			shift
 			;;
 		-*)
@@ -125,6 +142,10 @@ if test ! -z "${N_ACQUISITIONS}"; then
 	ARGS="${ARGS} -e 's/ACQUISITIONS_IN_HALF_AN_HOUR/${N_ACQUISITIONS}/g'"
 fi
 
+if test ! -z "${N_ACQUISITIONS_PER_HOUR}"; then
+	ARGS="${ARGS} -e 's/ACQUISITIONS_IN_AN_HOUR/${N_ACQUISITIONS_PER_HOUR}/g'"
+fi
+
 if test ! -z "${TIMESTAMP}"; then
 	ARGS="${ARGS} -e 's/TIMESTAMP/${TIMESTAMP}/g'"
 fi
@@ -135,6 +156,14 @@ fi
 
 if test ! -z "${MAX_ACQ_TIME}"; then
 	ARGS="${ARGS} -e 's/MAX_ACQUISITION_TIME/${MAX_ACQ_TIME}/g'"
+fi
+
+if test ! -z "${PERSISTENCE}"; then
+	ARGS="${ARGS} -e 's/PERSISTENCE/${PERSISTENCE}/g'"
+fi
+
+if test ! -z "${REPEAT_IN_PERS}"; then
+	ARGS="${ARGS} -e 's/REPEAT_IN_PERS/${REPEAT_IN_PERS}/g'"
 fi
 
 if test -z "${ARGS}"; then
@@ -148,10 +177,10 @@ QUERY="`eval sed ${ARGS} ${@}`"
 #echo eval sed ${ARGS} ${@}
 
 # check for unbounded variables
-GREP_RESULT=`echo "${QUERY}" | egrep -o 'PROCESSING_CHAIN|SENSOR|"SAT"|ACQUISITIONS_IN_HALF_AN_HOUR|TIMESTAMP|MIN_ACQUISITION_TIME|MAX_ACQUISITION_TIME'`
+GREP_RESULT=`echo "${QUERY}" | egrep -o 'PROCESSING_CHAIN|SENSOR|"SAT"|ACQUISITIONS_IN_HALF_AN_HOUR|TIMESTAMP|MIN_ACQUISITION_TIME|MAX_ACQUISITION_TIME|PERSISTENCE|REPEAT_IN_PERS'`
+
 if ! test $? -eq 0; then
 	echo "${QUERY}"
-
 else
 	echo -e "${CMD}: WARNING: found unbounded variables "$(echo "${GREP_RESULT}"|sort -u)""
 	echo

@@ -41,7 +41,7 @@ public class TransformTests {
 			"?H1 noa:hasConfidence ?HCONF1 . \n"+
 			"?H1 noa:hasGeometry ?HGEO1 . \n"+
 			"?H1 noa:hasAcquisitionTime ?HAT1 . \n"+
-//			" FILTER(strdf:anyInteract(?HGEO1,?HGEO1)) "+
+//			" FILTER(strdf:mbbIntersects(?HGEO1,?HGEO1)) "+
 			"}" +
 			" LIMIT 5 \n";
 
@@ -54,7 +54,7 @@ public class TransformTests {
 //			"?H2 noa:hasGeometry ?HGEO2 . \n"+
 ////			"?H1 noa:producedFromProcessingChain ?PC1 . \n"+
 ////			"?H2 noa:producedFromProcessingChain ?PC2 . \n"+
-////			" FILTER(strdf:anyInteract(?HGEO1,?HGEO2)) "+
+////			" FILTER(strdf:mbbIntersects(?HGEO1,?HGEO2)) "+
 //			" FILTER(?H1 != ?H2) "+
 //			"}" +
 //			" LIMIT 5 \n";
@@ -73,7 +73,7 @@ public class TransformTests {
 			"	FILTER(str(?HAT) = \"2007-08-24T14:45:00\") . \n"+
 			"	?C rdf:type noa:Coastline ; \n"+
 			"	   noa:hasGeometry ?CGEO . \n"+    
-			"	FILTER( strdf:anyInteract(?HGEO, ?CGEO) ) . \n"+
+			"	FILTER( strdf:mbbIntersects(?HGEO, ?CGEO) ) . \n"+
 			"} \n"+
 			"GROUP BY ?H ?HAT ?HGEO\n"+
 			"HAVING strdf:overlap(strdf:union(?CGEO), ?HGEO) " +

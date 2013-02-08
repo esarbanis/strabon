@@ -9,6 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
+import eu.earthobservatory.utils.Format;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -23,7 +25,6 @@ import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.resultio.Format;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
@@ -64,7 +65,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
-		this.maxLimit = maxLimit;
+		this.maxLimit = maxLimit;		
 		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
@@ -131,7 +132,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			try {
 				logger.warn("[StrabonEndpoint] Strabon not initialized yet.");
 				logger.warn("[StrabonEndpoint] Initializing Strabon.");
-				logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
+				//logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
 				
 				// initialize Strabon according to user preference
 				if (Common.DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
@@ -149,7 +150,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				
 				
 			} catch (Exception e) {
-				logger.error("[StrabonEndpoint] Exception occured while creating Strabon.\n" + this.getDetails(), e);
+				logger.error("[StrabonEndpoint] Exception occured while creating Strabon. {}\n{}", e.getMessage(), this.getDetails());
 				return false;
 			}
 		}
@@ -349,6 +350,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	 * */
 	public String addLimit(String queryString, String maxLimit){
 		String limitedQuery = queryString;
+		String lowerLimit = null;
 		int max;
 		
 		if(maxLimit == null)
@@ -358,23 +360,26 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		
 		if(max > 0)
 		{	
-			Pattern limitPattern = Pattern.compile(".*limit \\d+", Pattern.DOTALL);							
+			queryString = queryString.trim();		
+			Pattern limitPattern = Pattern.compile("limit(\\s*)(\\d+)(\\s*)(offset(\\s*)\\d+)?$", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 			Matcher limitMatcher = limitPattern.matcher(queryString);
 			
 			// check whether the query contains a limit clause
-			if(limitMatcher.matches())		
-			{								
-				Pattern rowsNumberPattern = Pattern.compile("\\d+$");				
-				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(queryString);
-				rowsNumberMatcher.find();				
+			if(limitMatcher.find())
+			{					
+				Pattern rowsNumberPattern = Pattern.compile("\\d+");
+				Matcher rowsNumberMatcher = rowsNumberPattern.matcher(limitMatcher.group());
+				rowsNumberMatcher.find();
 				
 				// if the initial limit is greater than the maximum, set it to the maximum
 				if(Integer.valueOf(rowsNumberMatcher.group()) > max)
-					limitedQuery = rowsNumberMatcher.replaceAll(String.valueOf(max));			
+				{	
+					lowerLimit = rowsNumberMatcher.replaceFirst(String.valueOf(max));					
+					limitedQuery = limitMatcher.replaceFirst(lowerLimit); 					
+				}								
 			}	
 			else // add a limit to the query 
-				limitedQuery = queryString+" limit "+max;
-		
+				limitedQuery = queryString+" limit "+max;			
 		}
 		return limitedQuery;
 	}

@@ -9,13 +9,14 @@
  */
 package eu.earthobservatory.runtime.monetdb;
 
+import eu.earthobservatory.utils.Format;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.openrdf.query.resultio.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class QueryDir {
 
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 
 			File dir = new File(path);
 			FilenameFilter filter = new FilenameFilter() {

@@ -43,7 +43,7 @@ public class UpdateOp {
 		
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 			strabon.update(queryString, strabon.getSailRepoConnection());
 			
 		} catch (Exception e) {

@@ -45,9 +45,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
-import org.openrdf.query.resultio.Format;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
-import org.openrdf.query.resultio.stSPARQLQueryResultWriterFactory;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
@@ -60,7 +58,9 @@ import org.openrdf.sail.helpers.SailBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.utils.Format;
 import eu.earthobservatory.utils.RDFHandlerFactory;
+import eu.earthobservatory.utils.stSPARQLQueryResultToFormatAdapter;
 
 
 public abstract class Strabon {
@@ -90,15 +90,19 @@ public abstract class Strabon {
 	private SailRepository repo1;
 	private SailRepositoryConnection con1 = null;
 
-	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws SQLException, ClassNotFoundException {
+	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws Exception {
 		this.databaseName = databaseName;
 		this.user = user;
 		this.password = password;
 		this.port = port;
 		this.serverName = serverName;
 		
-		if (checkForLockTable == true) {
+		if (checkForLockTable == true) { // force check of locked table and delete if exists
 			checkAndDeleteLock(databaseName, user, password, port, serverName);
+			
+		} else if (isLocked()) { // check for lock and exit if exists
+			throw new Exception("Cannot connect to database. Database is already locked by another process.");
+			
 		}
 
 		initiate(databaseName, user, password, port, serverName);
@@ -157,6 +161,12 @@ public abstract class Strabon {
 		}
 	}
 
+	/**
+	 * Check whether the database is locked by another instance of Strabon or Endpoint.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean isLocked() throws SQLException, ClassNotFoundException;
 
 	protected abstract void checkAndDeleteLock(String databaseName, String user, String password, int port, String serverName)
 			throws SQLException, ClassNotFoundException;
@@ -180,8 +190,17 @@ public abstract class Strabon {
 			con1.close();
 			repo1.shutDown();
 			
+			// delete the lock as well
+			checkAndDeleteLock(databaseName, user, password, port, serverName);
+			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
+			
+		} catch (SQLException e) {
+			logger.error("[Strabon.close] Error in deleting lock", e);
+			
+		} catch (ClassNotFoundException e) {
+			logger.error("[Strabon.close] Error in deleting lock", e);
 		}
 
 		logger.info("[Strabon.close] Connection closed.");
@@ -268,7 +287,7 @@ public abstract class Strabon {
 				
 		default:
 			// get the writer for the specified format
-			TupleQueryResultWriter resultWriter = stSPARQLQueryResultWriterFactory.createstSPARQLQueryResultWriter(resultsFormat, out);
+			TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
 			
 			// check for null format
 			if (resultWriter == null) {
@@ -471,9 +490,9 @@ public abstract class Strabon {
 	{
 		logger.info("[Strabon.storeURL] Storing file.");
 		logger.info("[Strabon.storeURL] URL      : {}", url.toString());
+		logger.info("[Strabon.storeURL] Context  : {}", ((context == null) ? "default" : context));
 		if (logger.isDebugEnabled()) {
 			logger.debug("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? url.toExternalForm() : baseURI));
-			logger.debug("[Strabon.storeURL] Context  : {}", ((context == null) ? "null" : context));
 			logger.debug("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
 		}
 

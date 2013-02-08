@@ -64,6 +64,7 @@ import org.openrdf.query.algebra.StatementPattern.Scope;
 import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry; 
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
@@ -831,7 +832,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							//					}
 							//					else //DEFAULT CASE
 							//					{
-							query.addFilter(sql.createBooleanExpr(expr));
+ 							query.addFilter(sql.createBooleanExpr(expr));
 							//					}
 
 						}
@@ -911,6 +912,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			throws RuntimeException
 			{
 		super.meet(node);
+		// Edw ftanei to Filter GeneralDBSqlDiffDateTime!
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 
@@ -938,13 +940,13 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	@Override
 	public void meet(FunctionCall node)
 			throws RuntimeException
-			{
+	{
 		Function function = FunctionRegistry.getInstance().get(node.getURI());
 
 		super.meet(node);
 
 		if(function instanceof SpatialRelationshipFunc || function instanceof SpatialConstructFunc 
-				|| function instanceof SpatialMetricFunc || function instanceof SpatialPropertyFunc)
+				|| function instanceof SpatialMetricFunc || function instanceof SpatialPropertyFunc )
 		{
 			List<ValueExpr> allArgs = node.getArgs();
 
@@ -1028,7 +1030,30 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		
 		
 
-			}
+		/**
+		    		 * Addition for datetime metric functions
+		    		 * @author George Garbis <ggarbis@di.uoa.gr>
+		    		 * 
+		    		 */
+		    		else if (function instanceof DateTimeMetricFunc)
+		    		{
+		    			List<ValueExpr> allArgs = node.getArgs();
+		    
+		    			int argNo = 0; 
+		    			//Used so that the second argument of buffer func is not 
+		    			//mistakenly confused with a spatial variable
+		    			for(ValueExpr arg : allArgs)
+		    			{	
+		    				argNo++;
+		    				if(arg instanceof Var && argNo!=2)
+		    				{
+		    					String originalName = ((Var)arg).getName();
+		    					((Var)arg).setName(originalName);
+		    				}
+		    			}
+		    		}
+		 
+	}
 
 	//
 	@Override

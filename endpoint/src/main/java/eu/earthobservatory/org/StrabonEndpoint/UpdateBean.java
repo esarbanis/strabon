@@ -54,15 +54,34 @@ public class UpdateBean extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		
-		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
-			// HTML visual interface
-			processVIEWRequest(request, response);
-			
-		} else {// invoked as a service
-			processRequest(request, response);
-	    }
+		boolean authorized;
+		
+		request.setCharacterEncoding("UTF-8");						
+		ServletContext context = getServletContext();
+		if(!request.getLocalAddr().equals("127.0.0.1")) {
+			Authenticate authenticate = new Authenticate();
+			String authorization = request.getHeader("Authorization");
+	   		
+			authorized = authenticate.authenticateUser(authorization, context);
+		}
+		else
+			authorized = true;
+				
+	   	 if (!authorized) {	   		 
+	   		 // not allowed, so report he's unauthorized
+	   		 response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
+	   		 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
+	   	 }
+	   	 else {	 		
+	   		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+				// HTML visual interface
+				processVIEWRequest(request, response);
+				
+			} else {// invoked as a service
+				processRequest(request, response);
+		    }		
+	   	 }	
 	}
 
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -1,4 +1,4 @@
-<%@page import="java.net.URLEncoder"%>
+<%@page import="java.net.URLDecoder"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@page import="org.springframework.web.context.WebApplicationContext"%>
@@ -69,8 +69,8 @@
       </TD>
 	</TR>
 </TABLE>
-	<h1>About: </h1>
-	<a href=""><%=request.getAttribute("resource")%></a>
+	<h1>About: </h1>	
+	<a href="#"><%=URLDecoder.decode(request.getAttribute("resource").toString(), "UTF-8")%></a>
 	<div id="response">
 		<!-- Response -->	
 		<% if (request.getAttribute("response") != null) {

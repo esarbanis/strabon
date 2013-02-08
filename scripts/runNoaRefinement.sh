@@ -36,7 +36,7 @@ WHERE {
   OPTIONAL {
     ?c rdf:type noa:Coastline;
        noa:hasGeometry ?cGeo . 
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) .
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) .
   } 
   FILTER(!bound(?c)) . 
 }"
@@ -59,7 +59,7 @@ WHERE {
     FILTER(\"TIMESTAMP\"^^xsd:dateTime = ?hAcqTime) .
     ?c rdf:type noa:Coastline;
        noa:hasGeometry ?cGeo .
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
   }
   GROUP BY ?h ?hGeo 
   HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))

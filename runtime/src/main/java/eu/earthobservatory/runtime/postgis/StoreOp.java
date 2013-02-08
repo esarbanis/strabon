@@ -23,16 +23,8 @@ public class StoreOp {
 	public static void main(String[] args) {
 
 		if (args.length < 6) {
-			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <FILE> [<FORMAT>]");
-			System.err.println("       where <HOST>       is the postgis database host to connect to");
-			System.err.println("             <PORT>       is the port to connect to on the database host");		
-			System.err.println("             <DATABASE>   is the spatially enabled postgis database that Strabon will use as a backend, ");
-			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
-			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
-			System.err.println("             <FILE>       is the file to be stored");
-			System.err.println("             [<FORMAT>]   is the format of the file (default: NTRIPLES)");
-			System.err.println("Args: "+args.length);
-			System.exit(0);
+			help();
+			System.exit(1);
 		}
 
 		String host = args[0];
@@ -42,15 +34,45 @@ public class StoreOp {
 		String passwd = args[4];		
 		String src = args[5];
 		String format = "NTRIPLES";
-		if ( args.length == 7 ) {
-			format = args[6];
+		String graph = null;
+		
+		for (int i = 6; i < args.length; i += 2) {
+			if (args[i].equals("-f")) {
+				if (i + 1 >= args.length) {
+					System.err.println("Option \"-f\" requires an argument.");
+					help();
+					System.exit(1);
+					
+				} else {
+					format = args[i+1];
+				}
+			} else if (args[i].equals("-g")) {
+				if (i + 1 >= args.length) {
+					System.err.println("Option \"-g\" requires an argument.");
+					help();
+					System.exit(1);
+					
+				} else {
+					graph = args[i+1];
+				}
+				
+			} else {
+				System.err.println("Unknown argument \"" + args[i] + "\".");
+				help();
+				System.exit(1);
+			}
 		}
 
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
-			strabon.storeInRepo(src, format);
+			strabon = new Strabon(db, user, passwd, port, host, false);
+			if (graph == null) {
+				strabon.storeInRepo(src, format);
 			System.out.println("STORED");
+				
+			} else {
+				strabon.storeInRepo(src, null, graph, format);
+			}
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.StoreOp] Error during store.", e);
@@ -62,4 +84,15 @@ public class StoreOp {
 		}
 	}
 
+	private static void help() {
+		System.err.println("Usage: eu.earthobservatory.runtime.postgis.StoreOp <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <FILE> [-f <FORMAT>] [-g <NAMED_GRAPH>]");
+		System.err.println("       where <HOST>       		 is the postgis database host to connect to");
+		System.err.println("             <PORT>       		 is the port to connect to on the database host");		
+		System.err.println("             <DATABASE>   		 is the spatially enabled postgis database that Strabon will use as a backend, ");
+		System.err.println("             <USERNAME>   		 is the username to use when connecting to the database ");
+		System.err.println("             <PASSWORD>   		 is the password to use when connecting to the database");
+		System.err.println("             <FILE>       		 is the file to be stored");
+		System.err.println("             [-f <FORMAT>] 		 is the format of the file (default: NTRIPLES)");
+		System.err.println("             [-g <NAMED_GRAPH>]  is the URI of the named graph to store the input file (default: default graph)");
+	}
 }

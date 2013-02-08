@@ -83,7 +83,7 @@ public class MeaningfulAggregateTests {
 			" 		     strdf:hasGeometry ?baGeo. " +
 			" ?urbanArea a noa:UrbanArea; " +
 			"			 strdf:hasGeometry ?uaGeo. " +
-			" FILTER(strdf:anyInteract(?baGeo,?uaGeo))" +
+			" FILTER(strdf:mbbIntersects(?baGeo,?uaGeo))" +
 			" } " +
 			" GROUP BY ?burntArea ?baGeo "+ 
 			" ";
@@ -97,7 +97,7 @@ public class MeaningfulAggregateTests {
 			" 		     strdf:hasGeometry ?baGeo. " +
 			" ?urbanArea a noa:UrbanArea; " +
 			"			 strdf:hasGeometry ?uaGeo. " +
-			" FILTER(strdf:anyInteract(?baGeo,?uaGeo))" +
+			" FILTER(strdf:mbbIntersects(?baGeo,?uaGeo))" +
 			" } " +
 			" GROUP BY ?burntArea" +
 //			" ?baGeo "+ 
@@ -111,7 +111,7 @@ public class MeaningfulAggregateTests {
 			" 		     strdf:hasGeometry ?baGeo. " +
 			" ?urbanArea a noa:UrbanArea; " +
 			"			 strdf:hasGeometry ?uaGeo. " +
-			" FILTER(strdf:anyInteract(?baGeo,?uaGeo))" +
+			" FILTER(strdf:mbbIntersects(?baGeo,?uaGeo))" +
 			" } " +
 			" GROUP BY ?burntArea ?baGeo "+ 
 			" ";
@@ -124,7 +124,7 @@ public class MeaningfulAggregateTests {
 			" 		     strdf:hasGeometry ?baGeo. " +
 			" ?urbanArea a noa:UrbanArea; " +
 			"			 strdf:hasGeometry ?uaGeo. " +
-			" FILTER(strdf:anyInteract(?baGeo,?uaGeo))" +
+			" FILTER(strdf:mbbIntersects(?baGeo,?uaGeo))" +
 			" } " +
 			" GROUP BY ?burntArea ?baGeo "+ 
 			" ";
@@ -140,7 +140,7 @@ public class MeaningfulAggregateTests {
 	" 		     strdf:hasGeometry ?baGeo. " +
 	" ?urbanArea a noa:UrbanArea; " +
 	"			 strdf:hasGeometry ?uaGeo. " +
-	" FILTER(strdf:anyInteract(?baGeo,?uaGeo))" +
+	" FILTER(strdf:mbbIntersects(?baGeo,?uaGeo))" +
 	" } " +
 	" GROUP BY ?burntArea ?baGeo "+ 
 	" HAVING (COUNT(?uaGeo) > 1 )"+

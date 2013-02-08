@@ -44,8 +44,7 @@ public class TemplateTests {
 	public static Integer port = null;
 	
 	@BeforeClass
-	public static Strabon beforeClass(String inputFile)
-		throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static Strabon beforeClass(String inputFile) throws Exception
 	{
 		// Read properties
 		Properties properties = new Properties();
@@ -67,8 +66,10 @@ public class TemplateTests {
 		Statement stmt = conn.createStatement();
 		ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
 						"table_schema='public' AND table_name <> 'spatial_ref_sys' " +
-						"AND table_name <> 'geometry_columns' AND " +
-						"table_name <> 'geography_columns' AND table_name <> 'locked'");
+						"AND table_name <> 'geometry_columns' AND table_name <> 'geography_columns' " +
+						"AND table_name <> 'raster_columns' AND table_name <> 'raster_overviews' " +
+						"AND table_name <> 'locked'"
+					);
 		while (results.next()) {
 			String table_name = results.getString("table_name");
 			Statement stmt2 = conn.createStatement();

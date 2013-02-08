@@ -16,6 +16,7 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
  * is assumed in Strabon.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
  */
 public class GeoConstants {
 	/**																		*
@@ -72,28 +73,29 @@ public class GeoConstants {
 	 *  							stSPARQL								*
 	 * 																		*/
 	// Spatial Relationships
-	public static final String anyInteract 		= stRDF + "anyInteract";
-	public static final String intersects 		= stRDF + "intersects";
-	public static final String contains 		= stRDF + "contains";
-	public static final String within 		= stRDF + "within";
-	public static final String coveredBy 		= stRDF + "coveredBy";
-	public static final String covers 			= stRDF + "covers";
-	public static final String disjoint 		= stRDF + "disjoint";
 	public static final String equals 			= stRDF + "equals";
-	public static final String inside 			= stRDF + "inside";
-	public static final String overlap 			= stRDF + "overlap";
-	public static final String touch 			= stRDF + "touch";
+	public static final String disjoint 		= stRDF + "disjoint";
+	public static final String intersects 		= stRDF + "intersects";
+	public static final String touches 			= stRDF + "touches";
+	public static final String within 			= stRDF + "within";
+	public static final String contains 		= stRDF + "contains";
+	public static final String overlaps 		= stRDF + "overlaps";
+	public static final String crosses 			= stRDF + "crosses";
+	
+	// The generic relate function
 	public static final String relate 			= stRDF + "relate";
+	
+	// Topological Relationships utilizing mbb
+	public static final String mbbIntersects	= stRDF + "mbbIntersects";
+	public static final String mbbContains 		= stRDF + "mbbContains";
+	public static final String mbbEquals 		= stRDF + "mbbEquals";
+	public static final String mbbWithin 		= stRDF + "mbbWithin";
+	
+	// Directional functions
 	public static final String left 			= stRDF + "left";
 	public static final String right			= stRDF + "right";
 	public static final String above 			= stRDF + "above";
 	public static final String below			= stRDF + "below";
-	
-	// Spatial Relationships utilizing mbb
-	public static final String mbbOverlaps 	= stRDF + "mbbOverlaps";
-	public static final String mbbContains 	= stRDF + "mbbContains";
-	public static final String mbbEquals 	= stRDF + "mbbEquals";
-	public static final String mbbInside 	= stRDF + "mbbInside";
 
 	// Spatial Constructs
 	public static final String union 			= stRDF + "union";
@@ -171,6 +173,16 @@ public class GeoConstants {
 	public static final String rccTangentialProperPart 			 = geof + "rcc8-tpp";
 	public static final String rccNonTangentialProperPart 		 = geof + "rcc8-ntpp";
 	public static final String rccNonTangentialProperPartInverse = geof + "rcc8-ntppi";
-	public static final String geoSparqlRelate 					 = geof + "relate";
 	
+	// The generic relate function
+	public static final String geoSparqlRelate 					 = geof + "relate";
+
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public static final String diffDateTime = "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";
+	/** End of addition **/
 }

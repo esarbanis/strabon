@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+
 /**
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
@@ -52,25 +53,31 @@ public class StoreBean extends HttpServlet {
 	private static final String STORE_ERROR 	= "An error occurred while storing input data!";
 	private static final String PARAM_ERROR 	= "RDF format or input data are not set or are invalid!";
 	private static final String STORE_OK		= "Data stored successfully!";
-
+	
 	/**
 	 * Strabon wrapper
 	 */
 	private StrabonBeanWrapper strabon;
 	
+	/**
+	 * The context of the servlet
+	 */
+	private ServletContext context;
+			
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
 		
 		// get strabon wrapper
-		ServletContext context = getServletContext();
+		context = getServletContext();
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-		strabon = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
+		strabon = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");				
 	}
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+   	         	
+		doPost(request, response);	
 	}
 	
 	private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
@@ -83,14 +90,31 @@ public class StoreBean extends HttpServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+						 
+		boolean authorized;
 		
-		// check whether the request was from store.jsp
-		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
-			processVIEWRequest(request, response);
-			
-		} else {
-			processRequest(request, response);
+		if(!request.getLocalAddr().equals("127.0.0.1")) {
+			Authenticate authenticate = new Authenticate();
+			String authorization = request.getHeader("Authorization");
+	   		
+			authorized = authenticate.authenticateUser(authorization, context);
 		}
+		else
+			authorized = true;
+				
+	   	 if (!authorized) {	   		 
+	   		 // not allowed, so report he's unauthorized
+	   		 response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
+	   		 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
+	   	 }
+	   	 else {	 		
+			// check whether the request was from store.jsp
+			if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+				processVIEWRequest(request, response);				
+			} else {
+				processRequest(request, response);
+			}
+	   	 }							
 	}
 	
 	/**
@@ -101,8 +125,9 @@ public class StoreBean extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// check whether we read from INPUT or URL
+    private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {    	
+    	 	
+    	// check whether we read from INPUT or URL
 		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
     	// get the dispatcher for forwarding the rendering of the response
@@ -132,6 +157,7 @@ public class StoreBean extends HttpServlet {
     	}
     	
 		dispatcher.forward(request, response);
+    	 
     }
     
     /**

@@ -55,6 +55,9 @@ QUERY=
 # the RDF format of the files to store (defaults to ntriples)
 FORMAT="ntriples"
 
+# the URI of the named graph into which the RDF files shall be stored
+NAMED_GRAPH=
+
 # predefined queries
 QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
 QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
@@ -161,6 +164,8 @@ function help_store() {
 	echo "OPTIONS can be one of the following"
 	echo "	-f FORMAT : the RDF format of the files to store. The format can be one of the following:"
 	echo "		    \`ntriples' (default), \`n3', \`rdfxml', or \`turtle'."
+	echo "	-g NAMED_GRAPH : the URI of the named graph into which the RDF files shall be stored"
+	echo "	                 (defaults to the default graph)."
 }
 
 function help_describe() {
@@ -422,7 +427,7 @@ case "${1}" in
 			RESULT_FORMAT="${1}"
 			shift
 			case "${RESULT_FORMAT}" in
-				[xX][mM][lL]|[hH][tT][mM][lL]|[kK][mM][lL]|[kK][mM][zZ]|[gG][eE][oO][jJ][sS][oO][nN])
+				[xX][mM][lL]|[hH][tT][mM][lL]|[kK][mM][lL]|[kK][mM][zZ]|[gG][eE][oO][jJ][sS][oO][nN]|[tT][sS][vV])
 				;;
 			*)
 				echo "${CMD}: invalid result format \"${RESULT_FORMAT}\""
@@ -455,31 +460,49 @@ case "${1}" in
 			help_store
 			exit 1
 		fi
-		# check whether format is specified
-		if test "${1}" = "-f"; then
-			shift
-			if ! test $# -ge 1; then
-				echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')"
-				exit 2
-			else
-				FORMAT="${1}"
-				case "${FORMAT}" in
+
+		while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
+			# check whether format is specified
+			if test "${1}" = "-f"; then
+				shift
+				if ! test $# -ge 1; then
+					echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')"
+					exit 2
+				else
+					FORMAT="${1}"
+					case "${FORMAT}" in
 					ntriples|n3|rdfxml|turtle|nquads)
-						shift
-						;;
-					*)
-						echo "${CMD}: invalid RDF format \"${FORMAT}\"."
-						echo "${CMD}: valid RDF formats are \`ntriples', \`n3', \`rdfxml', or \`turtle'"
-						exit 2
-						;;
-				esac
+							shift
+							;;
+						*)
+							echo "${CMD}: invalid RDF format \"${FORMAT}\"."
+							echo "${CMD}: valid RDF formats are \`ntriples', \`n3', \`rdfxml', or \`turtle'"
+							exit 2
+							;;
+					esac
+				fi
 			fi
-		fi
+
+			# check whether a named graph is specified
+			if test "${1}" = "-g"; then
+				shift
+				if ! test $# -ge 1; then
+					echo "${CMD}: Option -g requires a URI argument"
+					exit 2
+				else
+					NAMED_GRAPH="-g ${1}"
+					shift
+				fi
+			fi
+
+		done
+
 		# if no files are given
 		if ! test $# -ge 1; then
 			help_store
 			exit 1
 		fi
+
 		# do not make an assignment of the files to QUERY
 		# handle the case of storing multiple files afterwards
 		# QUERY="${@}"
@@ -537,7 +560,7 @@ if test "${CLASS}" = "StoreOp"; then
 			file="$(pwd)/${file}"
 		fi
 
-		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" ${FORMAT});
+		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" -f ${FORMAT} ${NAMED_GRAPH});
 "
 	done
 else
