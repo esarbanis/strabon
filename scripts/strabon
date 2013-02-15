@@ -163,7 +163,7 @@ function help_store() {
 	echo 
 	echo "OPTIONS can be one of the following"
 	echo "	-f FORMAT : the RDF format of the files to store. The format can be one of the following:"
-	echo "		    \`ntriples' (default), \`n3', \`rdfxml', or \`turtle'."
+	echo "		    \`ntriples' (default), \`n3', \`rdfxml', \`turtle', or \`nquads'."
 	echo "	-g NAMED_GRAPH : the URI of the named graph into which the RDF files shall be stored"
 	echo "	                 (defaults to the default graph)."
 }
@@ -466,7 +466,7 @@ case "${1}" in
 			if test "${1}" = "-f"; then
 				shift
 				if ! test $# -ge 1; then
-					echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', or \`turtle')"
+					echo "${CMD}: Option -f requires an RDF format (\`ntriples', \`n3', \`rdfxml', \`turtle', or \`nquads')"
 					exit 2
 				else
 					FORMAT="${1}"
