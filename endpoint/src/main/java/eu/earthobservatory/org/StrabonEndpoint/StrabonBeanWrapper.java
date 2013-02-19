@@ -11,20 +11,26 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import eu.earthobservatory.utils.Format;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
@@ -32,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration;
+import eu.earthobservatory.runtime.generaldb.NQuadsParser;
+import eu.earthobservatory.runtime.generaldb.NQuadsTranslator;
 import eu.earthobservatory.runtime.generaldb.Strabon;
 
 
@@ -259,16 +267,60 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 		try {
 			// store data
+			URL source=null;
+			
 			if (url) {
-				URL source = new URL(source_data);
+				source = new URL(source_data);
 				if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
 					// it would be a security issue if we read from the server's filesystem
 					throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
-				} 
-				conn.add(source, "", format, new Resource[1]);
-
-			} else {
-				conn.add(new StringReader(source_data), "", format, new Resource[1]);
+				}
+			}
+				
+			if(!format.equals(RDFFormat.NQUADS))
+			{
+				if (url) {				
+					conn.add(source, "", format, new Resource[1]);
+	
+				} else {
+					conn.add(new StringReader(source_data), "", format, new Resource[1]);
+				}			
+			}
+			else
+			{
+				InputStream in=null;
+				if (url) {				
+					in= source.openStream();
+				} else {
+					in= new ByteArrayInputStream(source_data.getBytes());
+				}
+				//ByteArrayInputStream in = new ByteArrayInputStream();
+				NQuadsTranslator translator = new NQuadsTranslator();
+							 
+				Collection<Statement> statements = translator.translate(in, "");
+				for(Statement st: statements)
+				{
+					String cont = st.getContext().toString();
+					 String validPeriod= cont;
+					 if(!cont.contains(","))
+					 {
+						 int i = cont.indexOf('"')+1;
+						 int j = cont.lastIndexOf('"');
+						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 
+						 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");		 
+					 }
+					 
+					try {
+						Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
+						conn.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
+					} catch (ParseException e) {
+						logger.error(this.getClass().toString()+": error when constructing the new context");
+						e.printStackTrace();
+					}
+		
+				}
+				StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+				conn.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			}
 			
 			logger.info("[StrabonEndpoint] STORE was successful.");
