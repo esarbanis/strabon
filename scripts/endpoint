@@ -73,7 +73,7 @@ function help_store() {
 	echo "Usage: ${CMD} store ENDPOINT FORMAT -t TRIPLES|-u TRIPLES_URL"
 	echo
 	echo "	ENDPOINT    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
-	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, or BinaryRDF)"
+	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, BinaryRDF or N-Quads)"
 	echo "	TRIPLES	    : the RDF triples to store"
 	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
 }
@@ -293,9 +293,12 @@ case "${1}" in
 			BinaryRDF)
 				MIME_TYPE="application/x-binary-rdf"
 				;;
+			N-Quads)
+				MIME_TYPE="text/x-nquads"
+				;;
 			*)
 				echo "${CMD}: unknown format \"${FORMAT}\"."
-				echo "${CMD}: possible values are \`N-Triples' (default), \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', and \`BinaryRDF'"
+				echo "${CMD}: possible values are \`N-Triples' (default), \`RDM/XML', \`N3', \`TURTLE', \`TRIG', \`TRIX', \`BinaryRDF' and \`N-Quads'"
 				exit 2
 				;;
 		esac
