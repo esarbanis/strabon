@@ -29,10 +29,15 @@ public class GeoConstants {
 	public static final String stRDF					= "http://strdf.di.uoa.gr/ontology#";
 	
 	/**
+	 * The namespace for the RDFi framework
+	 */
+	public static final String rdfi						= "http://rdfi.di.uoa.gr/ontology#";
+
+	/**
 	 * The URI for the datatype SemiLinearPointSet
 	 * (linear constraint-based representation of geometries)
 	 */
-	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
+	public static final String stRDFSemiLinearPointset			= stRDF + "SemiLinearPointSet";
 
 	/**
 	 * The URI for the datatype Well-Known Text (WKT)
@@ -185,4 +190,17 @@ public class GeoConstants {
 	 */
 	public static final String diffDateTime = "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";
 	/** End of addition **/
+
+
+	/**
+	 * RCC-8 relations for the RDFi framework
+	 */
+	public static final String rdfiDC						= rdfi + "DC";
+	public static final String rdfiEC						= rdfi + "EC";
+	public static final String rdfiPO						= rdfi + "PO";
+	public static final String rdfiNTPP						= rdfi + "NTPP";
+	public static final String rdfiNTPPi						= rdfi + "NTPPi";
+	public static final String rdfiTPP						= rdfi + "TPP";
+	public static final String rdfiTPPi						= rdfi + "TPPi";
+	public static final String rdfiEQ						= rdfi + "EQ";
 }
