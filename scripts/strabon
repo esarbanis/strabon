@@ -71,14 +71,14 @@ QUERY_EXPORT="CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}"
 # further options for java
 JAVA_OPTS=
 
+# base max memory memory
+BASE_MEMORY=1024
+
 # more memory
 MORE_MEMORY="-Xms512M -Xmx1024M"
 
 # much more memory
 MMORE_MEMORY="-Xms512M -Xmx1536M"
-
-# much much more memory
-MMMORE_MEMORY="-Xms512M -Xmx3072M"
 
 # flag for not setting the memory limit more than once
 MEMORY_INCREASED=false
@@ -108,9 +108,9 @@ function help() {
 	echo "	-d		: don't run, just print what shall be executed"
 	echo "			  Variable for configuration file: \`DEBUG'"
 	echo "			  Values: \`true' or \`false'" 
-	echo "	-m		: use more memory \`${MORE_MEMORY}' (useful in \"out of memory exceptions\""
-	echo "	-M		: use much more memory \`${MMORE_MEMORY}' (useful in \"out of memory exceptions\""
-	echo "	-MM		: use much much more memory \`${MMMORE_MEMORY}' (useful in \"out of memory exceptions\""
+	echo "	-m		: use more memory \`${MORE_MEMORY}' (useful in \"out of memory exceptions\")"
+	echo "	-M		: use much more memory \`${MMORE_MEMORY}' (useful in \"out of memory exceptions\")"
+	echo "	-MM MULT	: use MULT * ${BASE_MEMORY} MB of memory (useful in \"out of memory exceptions\")"
 	echo "	-i		: include URI prefixes in the SPARQL query. Prefixes are taken from file"
 	echo "			  \`prefixes.sparql'"
 	echo "	-e DATABASE	: the database engine to connect (one of \`postgis' (default) or \`monetdb')"
@@ -227,8 +227,15 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 			shift
 			;;
 		-MM)
+			shift
+			if ! test $# -gt 1; then
+				help
+				exit 1
+			fi
+			MULT=${1}
+
 			if ! ${MEMORY_INCREASED}; then
-				JAVA_OPTS="${JAVA_OPTS} ${MMMORE_MEMORY}"
+				JAVA_OPTS="${JAVA_OPTS} -Xms512M -Xmx$((${MULT}*${BASE_MEMORY}))M"
 				MEMORY_INCREASED=true
 			else
 				echo "${CMD}: memory has already been increased; option \`${1}' will be ignored."
