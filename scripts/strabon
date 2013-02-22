@@ -77,6 +77,9 @@ MORE_MEMORY="-Xms512M -Xmx1024M"
 # much more memory
 MMORE_MEMORY="-Xms512M -Xmx1536M"
 
+# much much more memory
+MMMORE_MEMORY="-Xms512M -Xmx3072M"
+
 # flag for not setting the memory limit more than once
 MEMORY_INCREASED=false
 
@@ -107,6 +110,7 @@ function help() {
 	echo "			  Values: \`true' or \`false'" 
 	echo "	-m		: use more memory \`${MORE_MEMORY}' (useful in \"out of memory exceptions\""
 	echo "	-M		: use much more memory \`${MMORE_MEMORY}' (useful in \"out of memory exceptions\""
+	echo "	-MM		: use much much more memory \`${MMMORE_MEMORY}' (useful in \"out of memory exceptions\""
 	echo "	-i		: include URI prefixes in the SPARQL query. Prefixes are taken from file"
 	echo "			  \`prefixes.sparql'"
 	echo "	-e DATABASE	: the database engine to connect (one of \`postgis' (default) or \`monetdb')"
@@ -216,6 +220,15 @@ while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
 		-M)
 			if ! ${MEMORY_INCREASED}; then
 				JAVA_OPTS="${JAVA_OPTS} ${MMORE_MEMORY}"
+				MEMORY_INCREASED=true
+			else
+				echo "${CMD}: memory has already been increased; option \`${1}' will be ignored."
+			fi
+			shift
+			;;
+		-MM)
+			if ! ${MEMORY_INCREASED}; then
+				JAVA_OPTS="${JAVA_OPTS} ${MMMORE_MEMORY}"
 				MEMORY_INCREASED=true
 			else
 				echo "${CMD}: memory has already been increased; option \`${1}' will be ignored."
