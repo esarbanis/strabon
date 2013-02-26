@@ -593,7 +593,9 @@ public abstract class Strabon {
 			for(Statement st: statements)
 			{
 				String cont = st.getContext().toString();
-				 String validPeriod= cont;
+				if(cont.contains(TemporalConstants.PERIOD) ||cont.contains(TemporalConstants.INSTANT))
+				 {
+					String validPeriod= cont;
 				 if(!cont.contains(","))
 				 {
 					 int i = cont.indexOf('"')+1;
@@ -606,11 +608,16 @@ public abstract class Strabon {
 				try {
 					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
 					con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
-				} catch (ParseException e) {
+				}
+				 catch (ParseException e) {
 					logger.error(this.getClass().toString()+": error when constructing the new context");
 					e.printStackTrace();
 				}
 	
+			}
+			else
+			{
+				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
 			}
 			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
 			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
@@ -644,7 +651,7 @@ public abstract class Strabon {
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
 		georeader.close();
 		logger.info("[Strabon.storeString] Storing was successful.");
-	}
+	}}
 
 	public void describe(String describeString, String format, SailRepositoryConnection con, OutputStream out) throws MalformedQueryException
 	{
