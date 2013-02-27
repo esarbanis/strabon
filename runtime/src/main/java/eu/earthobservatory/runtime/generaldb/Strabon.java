@@ -504,9 +504,21 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			String line;
+			StringBuilder lineToStore=new StringBuilder();
+			int counter=0;
 			BufferedReader br = new BufferedReader(reader);
 			while ((line = br.readLine()) != null) {
-			    storeString(line, baseURI, context, format);
+				counter++;
+				if(counter%500==0)
+				{
+					storeString(line, baseURI, context, format);
+					lineToStore = new StringBuilder();
+				}
+				else
+				{
+					lineToStore.append(line);
+				}
+			    
 			}
 			
 			/*NQuadsTranslator translator = new NQuadsTranslator();
