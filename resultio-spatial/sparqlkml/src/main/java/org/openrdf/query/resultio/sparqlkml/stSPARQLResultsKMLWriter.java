@@ -73,17 +73,18 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String NAME_ATTR			= NAME_TAG;
 
 	private static final String STYLE_ID 			= "resultStyle";
-	private static final String TABLE_ROW_BEGIN 	= "<TR>";
+	private static final String TABLE_ROW_BEGIN 		= "<TR>";
 	private static final String TABLE_ROW_END 		= "</TR>";
-	private static final String TABLE_DATA_BEGIN 	= "<TD>";
+	private static final String TABLE_DATA_BEGIN 		= "<TD>";
 	private static final String TABLE_DATA_END 		= "</TD>";
 	private static final String NEWLINE 			= "\n";
-	private static final String TABLE_DESC_BEGIN 	= "<![CDATA[<TABLE border=\"1\">"+ NEWLINE;
+	private static final String TABLE_DESC_BEGIN 		= "<![CDATA[<TABLE border=\"1\">"+ NEWLINE;
 	private static final String TABLE_DESC_END 		= "</TABLE>]]>" + NEWLINE;
 
 	private static final String GEOMETRY_NAME 		= "Geometry";
 	private static final String MULTIGEOMETRY 		= "MultiGeometry";
 
+	/*
 	// Styling options
 	private static final int numOfStyles = 5;
 	private static final String[][] styles = {
@@ -110,7 +111,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 					"ad0000ff" },
 			{ STYLE_ID + "5", "1.5", "7dff0000", "adff0000", "1.5", "7dff0000",
 					"adff0000" } };
-
+	*/
 	/**
 	 * The underlying XML formatter.
 	 */
@@ -184,6 +185,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.startTag(ROOT_TAG);
 			xmlWriter.startTag(RESULT_SET_TAG);
 
+			/*
 			// add default styles
 			for (String[] style : styles) {
 				String id = style[0];
@@ -232,6 +234,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				xmlWriter.endTag(STYLEMAP_TAG);
 			}
 			// end of default style definition
+			*/
 		} catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
 		}
@@ -310,7 +313,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				for (String geometry : geometries) {
 					xmlWriter.startTag(PLACEMARK_TAG);
 					xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-					xmlWriter.textElement("styleUrl", "#"+ styles[geometries.indexOf(geometry) % (numOfStyles - 2)][0]);
+					//xmlWriter.textElement("styleUrl", "#"+ styles[geometries.indexOf(geometry) % (numOfStyles - 2)][0]);
 					xmlWriter.startTag(MULTIGEOMETRY);
 					xmlWriter.unescapedText(geometry);
 					xmlWriter.endTag(MULTIGEOMETRY);
@@ -321,7 +324,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// also write them in the same placemarks
 			xmlWriter.startTag(PLACEMARK_TAG);
 			xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-			xmlWriter.textElement("styleUrl", "#" + styles[(numOfStyles - 1)][0]);
+			//xmlWriter.textElement("styleUrl", "#" + styles[(numOfStyles - 1)][0]);
 			xmlWriter.startTag(MULTIGEOMETRY);
 			
 			for (String geometry : geometries) {
