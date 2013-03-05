@@ -491,8 +491,10 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeURL] Storing file.");
 		logger.info("[Strabon.storeURL] URL      : {}", url.toString());
 		logger.info("[Strabon.storeURL] Context  : {}", ((context == null) ? "default" : context));
-		logger.info("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? "null" : baseURI));
-		logger.info("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
+		if (logger.isDebugEnabled()) {
+			logger.debug("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? url.toExternalForm() : baseURI));
+			logger.debug("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
+		}
 
 		InputStream in = (InputStream) url.openStream();
 		InputStreamReader reader = new InputStreamReader(in);
@@ -591,9 +593,7 @@ public abstract class Strabon {
 			for(Statement st: statements)
 			{
 				String cont = st.getContext().toString();
-				if(cont.contains(TemporalConstants.PERIOD) ||cont.contains(TemporalConstants.INSTANT))
-				 {
-					String validPeriod= cont;
+				 String validPeriod= cont;
 				 if(!cont.contains(","))
 				 {
 					 int i = cont.indexOf('"')+1;
@@ -606,16 +606,11 @@ public abstract class Strabon {
 				try {
 					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
 					con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
-				}
-				 catch (ParseException e) {
+				} catch (ParseException e) {
 					logger.error(this.getClass().toString()+": error when constructing the new context");
 					e.printStackTrace();
 				}
 	
-			}
-			else
-			{
-				con1.add(st.getSubject(), st.getPredicate(), st.getObject(), st.getContext());
 			}
 			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
 			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
@@ -649,7 +644,7 @@ public abstract class Strabon {
 		con1.add(georeader, "", RDFFormat.NTRIPLES);
 		georeader.close();
 		logger.info("[Strabon.storeString] Storing was successful.");
-	}}
+	}
 
 	public void describe(String describeString, String format, SailRepositoryConnection con, OutputStream out) throws MalformedQueryException
 	{
