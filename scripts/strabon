@@ -491,7 +491,7 @@ case "${1}" in
 				else
 					FORMAT="${1}"
 					case "${FORMAT}" in
-					ntriples|n3|rdfxml|turtle|nquads)
+						[nN][tT][rR][iI][pP][lL][eE][sS]|[nN]3|[rR][dD][fF][xX][mM][lL]|[tT][uU][rR][tT][lL][eE]|[nN][qQ][uU][aA][dD][sS])
 							shift
 							;;
 						*)
