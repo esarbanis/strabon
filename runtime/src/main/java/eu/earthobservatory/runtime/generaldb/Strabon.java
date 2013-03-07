@@ -137,8 +137,6 @@ public abstract class Strabon {
 			logger.error("[Strabon.init] initialize", e);
 		}
 
-		logger.info("[Strabon.init] Clearing Successful.");
-
 		try {
 			con1 = repo1.getConnection();
 			

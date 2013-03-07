@@ -61,9 +61,12 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 			st.execute("DROP TABLE IF EXISTS locked;");
 			st.close();
 			conn.close();
+			logger.info("[Strabon] Clearing Successful.");
+			
 		} catch (SQLException e) {
 			logger.error("[Strabon.checkAndDeleteLock] SQL Exception occured. Connection URL is <"+url+">: " + e.getMessage());
 			throw e;
+			
 		} catch (ClassNotFoundException e) {
 			logger.error("[Strabon.checkAndDeleteLock] Could not load postgres jdbc driver: " + e.getMessage());
 			throw e;
