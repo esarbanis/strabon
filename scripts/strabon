@@ -447,7 +447,7 @@ case "${1}" in
 			RESULT_FORMAT="${1}"
 			shift
 			case "${RESULT_FORMAT}" in
-				[xX][mM][lL]|[hH][tT][mM][lL]|[kK][mM][lL]|[kK][mM][zZ]|[gG][eE][oO][jJ][sS][oO][nN]|[tT][sS][vV])
+				[xX][mM][lL]|[hH][tT][mM][lL]|[kK][mM][lL]|[kK][mM][zZ]|[gG][eE][oO][jJ][sS][oO][nN]|[tT][sS][vV]|[eE][xX][pP])
 				;;
 			*)
 				echo "${CMD}: invalid result format \"${RESULT_FORMAT}\""
