@@ -260,12 +260,13 @@ public abstract class Strabon {
 				
 				while (result.hasNext()) {
 					results++;
+					result.next();
 				}
 				
 				long t3 = System.nanoTime();
 	
-				//return new long[]{t2-t1, t3-t2, t3-t1, results};
-				break;
+				return new long[]{t2-t1, t3-t2, t3-t1, results};
+//				break;
 				
 		default:
 			// get the writer for the specified format
