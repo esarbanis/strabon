@@ -34,6 +34,11 @@ public class GeoConstants {
 	public static final String rdfi						= "http://rdfi.di.uoa.gr/ontology#";
 
 	/**
+	 * The namespace for GeoSPARQL
+	 */
+	public static final String geo						= "http://www.opengis.net/ont/geosparql#";
+	
+	/**
 	 * The URI for the datatype SemiLinearPointSet
 	 * (linear constraint-based representation of geometries)
 	 */
@@ -42,13 +47,17 @@ public class GeoConstants {
 	/**
 	 * The URI for the datatype Well-Known Text (WKT)
 	 */
-	public static final String WKT 						= stRDF + "WKT";
+	// TODO ggarbis variable WKT variable changed to support geo:wktLiteral for benchmarking
+	public static final String WKT 						= geo + "wktLiteral";
+//	public static final String WKT 						= = stRDF + "WKT";
 
 	/**
 	 * The URI for the datatype Geography Markup Language (GML) as it defined
 	 * in the model stRDF and query language stSPARQL
 	 */
-	public static final String GML						= stRDF + "GML";
+	// TODO ggarbis variable GML variable changed to support geo:gmlLiteral for benchmarking
+	public static final String GML						= geo + "wktLiteral";//= stRDF + "GML";
+//	public static final String GML						= = stRDF + "GML";
 
 	/**
 	 * 
