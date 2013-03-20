@@ -24,7 +24,7 @@ public class QueryOp {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length < 6) {
+		if (args.length < 7) {
 			System.err.println("Usage: eu.ist.semsorgrid4env.strabon.Strabon <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <QUERY> ");
 			System.err.println("       where <HOST>       is the postgis database host to connect to");
 			System.err.println("             <PORT>       is the port to connect to on the database host");		
@@ -32,7 +32,8 @@ public class QueryOp {
 			System.err.println("             <USERNAME>   is the username to use when connecting to the database ");
 			System.err.println("             <PASSWORD>   is the password to use when connecting to the database");
 			System.err.println("             <QUERY>      is the stSPARQL query to evaluate.");
-			System.err.println("             [<FORMAT>]     is the format of your results (XML)");
+			System.err.println("             <DELET_LOCK> is true when deletion of \"locked\" table should be enforced (e.g., when Strabon has been ungracefully shutdown).");
+			System.err.println("             [<FORMAT>]   is the format of your results (XML)");
 			System.exit(0);
 		}
 
@@ -42,14 +43,15 @@ public class QueryOp {
 		String user = args[3];
 		String passwd = args[4];		
 		String queryString = args[5];
+		boolean forceDelete = Boolean.valueOf(args[6]);
 		String resultsFormat = "";
-		if ( args.length == 7 ) {
-			resultsFormat = args[6];
+		if ( args.length == 8 ) {
+			resultsFormat = args[7];
 		}
 
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, false);
+			strabon = new Strabon(db, user, passwd, port, host, forceDelete);
 			strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {

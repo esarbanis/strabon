@@ -59,9 +59,9 @@ public abstract class Strabon {
 	public static final String FORMAT_KMZ		= "KMZ";
 	public static final String FORMAT_GEOJSON	= "GeoJSON";
 	public static final String FORMAT_EXP		= "EXP";
-	public static final String FORMAT_HTML		= "HTML";
+	public static final String FORMAT_HTML	= "HTML";
 	
-	public static final String NEWLINE	= "\n";
+	public static final String NEWLINE		= "\n";
 	
 	/**
 	 * Connection details (shared with subclasses)
