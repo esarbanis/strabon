@@ -19,7 +19,7 @@ import org.openrdf.rio.ntriples.NTriplesParser;
 
 public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
-	public static String geonamespace = "http://www.opengis.net/def/function/geosparql/";
+	public static String geonamespace = "http://www.opengis.net/ont/geosparql#";
 	public static String gml="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
 	public static String sf="http://www.opengis.net/def/geometryType/OGC-SF/1.0/";
 	public static String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
@@ -85,7 +85,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		String predicate = st.getPredicate().toString();
 		String object = st.getObject().toString();
 		
-		if(predicate.startsWith("http://www.opengis.net/def/function/geosparql/sf")||predicate.startsWith(geonamespace+"eh")|| 
+		if(predicate.startsWith("http://www.opengis.net/ont/geosparql#sf")||predicate.startsWith(geonamespace+"eh")|| 
 				rcc8.contains(predicate))
 		{
 			String triple = "<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n" +
@@ -315,10 +315,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		parser.setVerifyData(true);
 
 		String text = 
-				"<http://example.org/rcc8Obj1> <http://www.opengis.net/def/function/geosparql/rcc8eq> <http://example.org/rcc8Obj2> . " +
-				"<http://example.org/simpleGeometry1> <http://www.opengis.net/def/function/geosparql/isEmpty> _:nai . \n"+
-		"<http://example.org/ForestArea1> <http://www.opengis.net/def/function/geosparql/defaultGeometry> _:b2 . \n"+
-		"<http://example.org/SpatialObject1> <http://www.opengis.net/def/function/geosparql/ehIntersects> <http://example.org/SpatialObject2> . \n";
+				"<http://example.org/rcc8Obj1> <http://www.opengis.net/ont/geosparql#rcc8eq> <http://example.org/rcc8Obj2> . " +
+				"<http://example.org/simpleGeometry1> <http://www.opengis.net/ont/geosparql#isEmpty> _:nai . \n"+
+		"<http://example.org/ForestArea1> <http://www.opengis.net/ont/geosparql#defaultGeometry> _:b2 . \n"+
+		"<http://example.org/SpatialObject1> <http://www.opengis.net/ont/geosparql#ehIntersects> <http://example.org/SpatialObject2> . \n";
         
 		String gmltext= "<http://example.org/GM_MultiSolid> <"+type+"> <"+gml+"GM_Object> .\n"; 
 		String sftext= "<http://example.org/Line> <"+type+"> <"+sf+"Geometry> .\n"; 

@@ -72,22 +72,50 @@ public class GeoConstants {
 	/**
 	 * The namespace for GeoSPARQL ontology
 	 */
-	public static final String geo						= "http://www.opengis.net/ont/geosparql#";
+	public static final String GEO						= "http://www.opengis.net/ont/geosparql#";
 	
 	/**
 	 * The namespace for geometry functions declared by GeoSPARQL
 	 */
-	public static final String geof						= "http://www.opengis.net/def/function/geosparql/";
+	public static final String GEOF						= "http://www.opengis.net/def/function/geosparql/";
 	
 	/**
 	 * The URI for the datatype wktLiteral
 	 */
-	public static final String WKTLITERAL				=  geo + "wktLiteral";
+	public static final String WKTLITERAL				=  GEO + "wktLiteral";
 	
 	/**
 	 * The URI for the datatype gmlLiteral
 	 */
-	public static final String GMLLITERAL				=  geo + "gmlLiteral";
+	public static final String GMLLITERAL				=  GEO + "gmlLiteral";
+	
+	/**
+	 * The URIs for GeoSPARQL classes
+	 */
+/*	public static final String SpatialObject			=  geo + "SpatialObject";
+	public static final String Geometry				    =  geo + "Geometry";
+	public static final String Feauture					=  geo + "Feature";
+*/	
+		
+	/**
+	 * The URIs for GeoSPARQL properties
+	 */
+/*	public static final String hasGeometry_OGC				=  geo + "hasGeometry";
+	public static final String defaultGeometry_OGC			=  geo + "defaultGeometry";
+	public static final String dimension_OGC				=  geo + "dimension";
+	public static final String coordinateDimension_OGC		=  geo + "coordinateDimension";
+	public static final String spatialDimension_OGC		    =  geo + "spatialDimension";
+	public static final String isEmpty_OGC					=  geo + "isEmpty";
+	public static final String isSimple_OGC					=  geo + "isSimple";
+	public static final String asWKT_OGC					=  geo + "asWKT";
+	public static final String asGML_OGC					=  geo + "asGML";
+*/
+	
+	/**
+	 * The namespace for the ontology of simple features
+	 */
+//	public static final String SF							= "http://www.opengis.net/ont/sf#";
+	
 	
 	/**																		*
 	 *  						Extended functions 							*
@@ -155,48 +183,48 @@ public class GeoConstants {
 	 *  							GeoSPARQL								*
 	 * 																		*/	
 	// Non-topological
-	public static final String geoSparqlDistance 				= geof + "distance"; //3 arguments
-	public static final String geoSparqlBuffer 					= geof + "buffer"; //3 arguments
-	public static final String geoSparqlConvexHull 				= geof + "convexHull";
-	public static final String geoSparqlIntersection 			= geof + "intersection";
-	public static final String geoSparqlUnion 					= geof + "union";
-	public static final String geoSparqlDifference 				= geof + "difference";
-	public static final String geoSparqlSymmetricDifference 	= geof + "symmetricDifference";
-	public static final String geoSparqlEnvelope 				= geof + "envelope";
-	public static final String geoSparqlBoundary 				= geof + "boundary";
+	public static final String geoSparqlDistance 				= GEOF + "distance"; //3 arguments
+	public static final String geoSparqlBuffer 					= GEOF + "buffer"; //3 arguments
+	public static final String geoSparqlConvexHull 				= GEOF + "convexHull";
+	public static final String geoSparqlIntersection 			= GEOF + "intersection";
+	public static final String geoSparqlUnion 					= GEOF + "union";
+	public static final String geoSparqlDifference 				= GEOF + "difference";
+	public static final String geoSparqlSymmetricDifference 	= GEOF + "symmetricDifference";
+	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
+	public static final String geoSparqlBoundary 				= GEOF + "boundary";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
-	public static final String sfEquals 						= geof + "sfEquals";
-	public static final String sfDisjoint 						= geof + "sfDisjoint";
-	public static final String sfIntersects 					= geof + "sfIntersects";
-	public static final String sfTouches 						= geof + "sfTouches";
-	public static final String sfCrosses 						= geof + "sfCrosses";
-	public static final String sfWithin 						= geof + "sfWithin";
-	public static final String sfContains 						= geof + "sfContains";
-	public static final String sfOverlaps 						= geof + "sfOverlaps";
+	public static final String sfEquals 						= GEOF + "sfEquals";
+	public static final String sfDisjoint 						= GEOF + "sfDisjoint";
+	public static final String sfIntersects 					= GEOF + "sfIntersects";
+	public static final String sfTouches 						= GEOF + "sfTouches";
+	public static final String sfCrosses 						= GEOF + "sfCrosses";
+	public static final String sfWithin 						= GEOF + "sfWithin";
+	public static final String sfContains 						= GEOF + "sfContains";
+	public static final String sfOverlaps 						= GEOF + "sfOverlaps";
 
 	// Egenhofer - 8 functions - all with 2 arguments + boolean
-	public static final String ehEquals 						= geof + "ehEquals";
-	public static final String ehDisjoint 						= geof + "ehDisjoint";
-	public static final String ehMeet 							= geof + "ehMeet";
-	public static final String ehOverlap 						= geof + "ehOverlap";
-	public static final String ehCovers 						= geof + "ehCovers";
-	public static final String ehCoveredBy 						= geof + "ehCoveredBy";
-	public static final String ehInside 						= geof + "ehInside";
-	public static final String ehContains 						= geof + "ehContains";
+	public static final String ehEquals 						= GEOF + "ehEquals";
+	public static final String ehDisjoint 						= GEOF + "ehDisjoint";
+	public static final String ehMeet 							= GEOF + "ehMeet";
+	public static final String ehOverlap 						= GEOF + "ehOverlap";
+	public static final String ehCovers 						= GEOF + "ehCovers";
+	public static final String ehCoveredBy 						= GEOF + "ehCoveredBy";
+	public static final String ehInside 						= GEOF + "ehInside";
+	public static final String ehContains 						= GEOF + "ehContains";
 
 	// RCC8 - 8 functions - all with 2 arguments + boolean
-	public static final String rccEquals 						 = geof + "rcc8eq";
-	public static final String rccDisconnected 					 = geof + "rcc8dc";
-	public static final String rccExternallyConnected 			 = geof + "rcc8ec";
-	public static final String rccPartiallyOverlapping 			 = geof + "rcc8po";
-	public static final String rccTangentialProperPartInverse 	 = geof + "rcc8tppi";
-	public static final String rccTangentialProperPart 			 = geof + "rcc8tpp";
-	public static final String rccNonTangentialProperPart 		 = geof + "rcc8ntpp";
-	public static final String rccNonTangentialProperPartInverse = geof + "rcc8ntppi";
+	public static final String rccEquals 						 = GEOF + "rcc8eq";
+	public static final String rccDisconnected 					 = GEOF + "rcc8dc";
+	public static final String rccExternallyConnected 			 = GEOF + "rcc8ec";
+	public static final String rccPartiallyOverlapping 			 = GEOF + "rcc8po";
+	public static final String rccTangentialProperPartInverse 	 = GEOF + "rcc8tppi";
+	public static final String rccTangentialProperPart 			 = GEOF + "rcc8tpp";
+	public static final String rccNonTangentialProperPart 		 = GEOF + "rcc8ntpp";
+	public static final String rccNonTangentialProperPartInverse = GEOF + "rcc8ntppi";
 	
 	// The generic relate function
-	public static final String geoSparqlRelate 					 = geof + "relate";
+	public static final String geoSparqlRelate 					 = GEOF + "relate";
 
 	/**
 	 * Addition for datetime metric functions
