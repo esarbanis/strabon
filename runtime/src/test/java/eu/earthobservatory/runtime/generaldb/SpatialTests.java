@@ -29,7 +29,7 @@ public class SpatialTests {
 	public String 	STRDF_NS = "http://strdf.di.uoa.gr/ontology#",
 					EX_NS = "http://example.org/",
 					NOA_NS = "http://teleios.di.uoa.gr/ontologies/noaOntology.owl#",
-					GEOF_NS ="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+					GEOF_NS ="http://www.opengis.net/def/function/geosparql/";
 
 	protected String prefixes = 
 		"PREFIX rdf: <"+RDF.NAMESPACE+"> \n" +
