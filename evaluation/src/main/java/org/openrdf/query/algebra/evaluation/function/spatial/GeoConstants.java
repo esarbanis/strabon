@@ -166,34 +166,34 @@ public class GeoConstants {
 	public static final String geoSparqlBoundary 				= geof + "boundary";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
-	public static final String sfEquals 						= geof + "sf-equals";
-	public static final String sfDisjoint 						= geof + "sf-disjoint";
-	public static final String sfIntersects 					= geof + "sf-intersects";
-	public static final String sfTouches 						= geof + "sf-touches";
-	public static final String sfCrosses 						= geof + "sf-crosses";
-	public static final String sfWithin 						= geof + "sf-within";
-	public static final String sfContains 						= geof + "sf-contains";
-	public static final String sfOverlaps 						= geof + "sf-overlaps";
+	public static final String sfEquals 						= geof + "sfEquals";
+	public static final String sfDisjoint 						= geof + "sfDisjoint";
+	public static final String sfIntersects 					= geof + "sfIntersects";
+	public static final String sfTouches 						= geof + "sfTouches";
+	public static final String sfCrosses 						= geof + "sfCrosses";
+	public static final String sfWithin 						= geof + "sfWithin";
+	public static final String sfContains 						= geof + "sfContains";
+	public static final String sfOverlaps 						= geof + "sfOverlaps";
 
 	// Egenhofer - 8 functions - all with 2 arguments + boolean
-	public static final String ehEquals 						= geof + "eh-equals";
-	public static final String ehDisjoint 						= geof + "eh-disjoint";
-	public static final String ehMeet 							= geof + "eh-meet";
-	public static final String ehOverlap 						= geof + "eh-overlap";
-	public static final String ehCovers 						= geof + "eh-covers";
-	public static final String ehCoveredBy 						= geof + "eh-coveredBy";
-	public static final String ehInside 						= geof + "eh-inside";
-	public static final String ehContains 						= geof + "eh-contains";
+	public static final String ehEquals 						= geof + "ehEquals";
+	public static final String ehDisjoint 						= geof + "ehDisjoint";
+	public static final String ehMeet 							= geof + "ehMeet";
+	public static final String ehOverlap 						= geof + "ehOverlap";
+	public static final String ehCovers 						= geof + "ehCovers";
+	public static final String ehCoveredBy 						= geof + "ehCoveredBy";
+	public static final String ehInside 						= geof + "ehInside";
+	public static final String ehContains 						= geof + "ehContains";
 
 	// RCC8 - 8 functions - all with 2 arguments + boolean
-	public static final String rccEquals 						 = geof + "rcc8-eq";
-	public static final String rccDisconnected 					 = geof + "rcc8-dc";
-	public static final String rccExternallyConnected 			 = geof + "rcc8-ec";
-	public static final String rccPartiallyOverlapping 			 = geof + "rcc8-po";
-	public static final String rccTangentialProperPartInverse 	 = geof + "rcc8-tppi";
-	public static final String rccTangentialProperPart 			 = geof + "rcc8-tpp";
-	public static final String rccNonTangentialProperPart 		 = geof + "rcc8-ntpp";
-	public static final String rccNonTangentialProperPartInverse = geof + "rcc8-ntppi";
+	public static final String rccEquals 						 = geof + "rcc8eq";
+	public static final String rccDisconnected 					 = geof + "rcc8dc";
+	public static final String rccExternallyConnected 			 = geof + "rcc8ec";
+	public static final String rccPartiallyOverlapping 			 = geof + "rcc8po";
+	public static final String rccTangentialProperPartInverse 	 = geof + "rcc8tppi";
+	public static final String rccTangentialProperPart 			 = geof + "rcc8tpp";
+	public static final String rccNonTangentialProperPart 		 = geof + "rcc8ntpp";
+	public static final String rccNonTangentialProperPartInverse = geof + "rcc8ntppi";
 	
 	// The generic relate function
 	public static final String geoSparqlRelate 					 = geof + "relate";

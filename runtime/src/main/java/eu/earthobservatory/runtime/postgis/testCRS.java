@@ -38,10 +38,10 @@ public class testCRS {
 		}
 		
 		String text = 
-				"<http://example.org/rcc8Obj1> <http://www.opengis.net/ont/OGC-GeoSPARQL/1.0/rcc8-eq> <http://example.org/rcc8Obj2> . \n" +
-				"<http://example.org/simpleGeometry1> <http://www.opengis.net/ont/OGC-GeoSPARQL/1.0/isEmpty> <http://example.org/nai> . \n"+
-		"<http://example.org/ForestArea1> <http://www.opengis.net/ont/OGC-GeoSPARQL/1.0/defaultGeometry> <http://example.org/defaultgeom> . \n"+
-		"<http://example.org/SpatialObject1> <http://www.opengis.net/ont/OGC-GeoSPARQL/1.0/eh-intersects> <http://example.org/SpatialObject2> . \n";
+				"<http://example.org/rcc8Obj1> <http://www.opengis.net/def/function/geosparql/rcc8eq> <http://example.org/rcc8Obj2> . \n" +
+				"<http://example.org/simpleGeometry1> <http://www.opengis.net/def/function/geosparql/isEmpty> <http://example.org/nai> . \n"+
+		"<http://example.org/ForestArea1> <http://www.opengis.net/def/function/geosparql/defaultGeometry> <http://example.org/defaultgeom> . \n"+
+		"<http://example.org/SpatialObject1> <http://www.opengis.net/def/function/geosparql/ehIntersects> <http://example.org/SpatialObject2> . \n";
 
 		String statement1= "<http://example.org/CoastLine4> <http://www.earthobservatory.eu/ontologies/noaOntology.owl#hasGeometry> " +
 				"\"POLYGON((34.80 19.37,41.74 19.37,41.74 29.64 ,34.80 29.64,34.80 19.37));http://www.opengis.net/def/crs/EPSG/0/4326" +
