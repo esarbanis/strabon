@@ -33,27 +33,30 @@ public class GeoConstants {
 	 * The namespace for the RDFi framework
 	 */
 	public static final String rdfi						= "http://rdfi.di.uoa.gr/ontology#";
-
+	
+	
+	/**																*
+	 *  GeoSPARQL	Version 1.0.1	Document#  11-052r4 			*
+	 *	http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip	*/
+	
 	/**
-	 * The URI for the datatype SemiLinearPointSet
-	 * (linear constraint-based representation of geometries)
+	 * The namespace for GeoSPARQL ontology
 	 */
-	public static final String stRDFSemiLinearPointset			= stRDF + "SemiLinearPointSet";
-
+	public static final String GEO						= "http://www.opengis.net/ont/geosparql#";
+	
 	/**
-	 * The URI for the datatype Well-Known Text (WKT)
+	 * The namespace for geometry functions declared by GeoSPARQL
 	 */
-	public static final String WKT 						= stRDF + "WKT";
-
+	public static final String GEOF						= "http://www.opengis.net/def/function/geosparql/";
+	
 	/**
-	 * The URI for the datatype Geography Markup Language (GML) as it defined
-	 * in the model stRDF and query language stSPARQL
+	 * The namespace for the ontology of simple features
 	 */
-	public static final String GML						= stRDF + "GML";
-
+	public static final String SF						= "http://www.opengis.net/ont/sf#";
+	
 	/**
 	 * 
-	 * The URI for the namespace of GML.
+	 * The namespace of GML.
 	 * 
 	 * Initially, it was set to "http://www.opengis.net/def/geometryType/OGC-GML/3.2/".
 	 * Afterwards, it was set to "http://www.opengis.net/gml/3.2/" in order to be compliant
@@ -69,15 +72,66 @@ public class GeoConstants {
 	 */
 	public static final String GML_OGC					= "http://www.opengis.net/gml";
 	
-	/**
-	 * The namespace for GeoSPARQL ontology
-	 */
-	public static final String GEO						= "http://www.opengis.net/ont/geosparql#";
+	
+	
+	
+	/**																		*
+	 *  						URIs										*
+	 * 																		*/
+	
+	/**																*
+	 *  GeoSPARQL	Version 1.0.1	Document#  11-052r4 			*
+	 *	http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip	*/
+
+	/** The following GeoSPARQL classes and properties are       
+	 *  commented out because they are not currently used.			
+ 	 */
 	
 	/**
-	 * The namespace for geometry functions declared by GeoSPARQL
+	 * The URIs for GeoSPARQL classes
 	 */
-	public static final String GEOF						= "http://www.opengis.net/def/function/geosparql/";
+/*	public static final String SpatialObject			=  GEO + "SpatialObject";
+	public static final String Geometry				    =  GEO + "Geometry";
+	public static final String Feauture					=  GEO + "Feature";
+*/	
+		
+	/**
+	 * The URIs for GeoSPARQL properties
+	 */
+/*	public static final String hasGeometry_OGC				=  GEO + "hasGeometry";
+	public static final String defaultGeometry_OGC			=  GEO + "defaultGeometry";
+	public static final String dimension_OGC				=  GEO + "dimension";
+	public static final String coordinateDimension_OGC		=  GEO + "coordinateDimension";
+	public static final String spatialDimension_OGC		    =  GEO + "spatialDimension";
+	public static final String isEmpty_OGC					=  GEO + "isEmpty";
+	public static final String isSimple_OGC					=  GEO + "isSimple";
+	public static final String asWKT_OGC					=  GEO + "asWKT";
+	public static final String asGML_OGC					=  GEO + "asGML";
+*/
+	
+	
+	/**																		*
+	 *  						URIs for datatypes							*
+	 * 																		*/
+	
+	
+	/**
+	 * The URI for the datatype SemiLinearPointSet
+	 * (linear constraint-based representation of geometries)
+	 */
+	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
+	
+	
+	/**
+	 * The URI for the datatype Well-Known Text (WKT)
+	 */
+	public static final String WKT 						= stRDF + "WKT";
+
+	/**
+	 * The URI for the datatype Geography Markup Language (GML) as it defined
+	 * in the model stRDF and query language stSPARQL
+	 */
+	public static final String GML						= stRDF + "GML";
 	
 	/**
 	 * The URI for the datatype wktLiteral
@@ -89,32 +143,7 @@ public class GeoConstants {
 	 */
 	public static final String GMLLITERAL				=  GEO + "gmlLiteral";
 	
-	/**
-	 * The URIs for GeoSPARQL classes
-	 */
-/*	public static final String SpatialObject			=  geo + "SpatialObject";
-	public static final String Geometry				    =  geo + "Geometry";
-	public static final String Feauture					=  geo + "Feature";
-*/	
-		
-	/**
-	 * The URIs for GeoSPARQL properties
-	 */
-/*	public static final String hasGeometry_OGC				=  geo + "hasGeometry";
-	public static final String defaultGeometry_OGC			=  geo + "defaultGeometry";
-	public static final String dimension_OGC				=  geo + "dimension";
-	public static final String coordinateDimension_OGC		=  geo + "coordinateDimension";
-	public static final String spatialDimension_OGC		    =  geo + "spatialDimension";
-	public static final String isEmpty_OGC					=  geo + "isEmpty";
-	public static final String isSimple_OGC					=  geo + "isSimple";
-	public static final String asWKT_OGC					=  geo + "asWKT";
-	public static final String asGML_OGC					=  geo + "asGML";
-*/
 	
-	/**
-	 * The namespace for the ontology of simple features
-	 */
-//	public static final String SF							= "http://www.opengis.net/ont/sf#";
 	
 	
 	/**																		*
