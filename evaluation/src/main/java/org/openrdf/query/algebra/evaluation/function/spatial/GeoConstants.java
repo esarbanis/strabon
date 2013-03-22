@@ -17,6 +17,7 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
+ * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  */
 public class GeoConstants {
 	/**																		*
@@ -69,9 +70,24 @@ public class GeoConstants {
 	public static final String GML_OGC					= "http://www.opengis.net/gml";
 	
 	/**
+	 * The namespace for GeoSPARQL ontology
+	 */
+	public static final String geo						= "http://www.opengis.net/ont/geosparql#";
+	
+	/**
 	 * The namespace for geometry functions declared by GeoSPARQL
 	 */
-	public static final String geof						= "http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+	public static final String geof						= "http://www.opengis.net/def/function/geosparql/";
+	
+	/**
+	 * The URI for the datatype wktLiteral
+	 */
+	public static final String WKTLITERAL				=  geo + "wktLiteral";
+	
+	/**
+	 * The URI for the datatype gmlLiteral
+	 */
+	public static final String GMLLITERAL				=  geo + "gmlLiteral";
 	
 	/**																		*
 	 *  						Extended functions 							*
@@ -199,7 +215,7 @@ public class GeoConstants {
 	public static final String rdfiEC						= rdfi + "EC";
 	public static final String rdfiPO						= rdfi + "PO";
 	public static final String rdfiNTPP						= rdfi + "NTPP";
-	public static final String rdfiNTPPi						= rdfi + "NTPPi";
+	public static final String rdfiNTPPi					= rdfi + "NTPPi";
 	public static final String rdfiTPP						= rdfi + "TPP";
 	public static final String rdfiTPPi						= rdfi + "TPPi";
 	public static final String rdfiEQ						= rdfi + "EQ";
