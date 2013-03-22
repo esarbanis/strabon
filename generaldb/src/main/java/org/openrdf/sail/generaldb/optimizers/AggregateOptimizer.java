@@ -25,6 +25,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 /**
  *
  * @author Stella Giannakopoulou <sgian@di.uoa.gr>
+ *
  */
 
 public class AggregateOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException>
