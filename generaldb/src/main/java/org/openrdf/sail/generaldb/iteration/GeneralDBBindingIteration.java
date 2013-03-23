@@ -29,7 +29,6 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
 
@@ -62,8 +61,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	{
 		super(stmt);
 	}
-
-	////
 
 	public HashMap<GeneralDBSpatialFuncInfo, Integer> getConstructIndexesAndNames() {
 		return sp_ConstructIndexesAndNames;

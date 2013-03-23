@@ -85,19 +85,16 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 		String label = literal.getLabel();
 		String language = literal.getLanguage();
 		URI datatype = literal.getDatatype();
+		
 		if (datatype == null && language == null) {
 			table.insertSimple(id, label);
 		}
 		else if (datatype == null) {
 			table.insertLanguage(id, label, language);
 		}
-		else {
+		else { // literal with datatype
 			String dt = datatype.stringValue();
-			/**********************************************/
-			//my additions
-			//http://stsparql.di.uoa.gr/SemiLinearPointSet
-			//System.out.println("the datatype i am gonna process is "+dt);
-			/**********************************************/
+			
 			try {
 				if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
 //					if (logger.isDebugEnabled()) {
