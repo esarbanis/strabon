@@ -198,7 +198,7 @@ public class LiteralTable {
 	}
 	
 	//the new version will actually deal with WKB
-	public void insertWKT(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
+	public void insertWKT(Number id, String label, String datatype, Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
 		try {
 			Geometry geom = JTSWrapper.getInstance().WKTread(label);
