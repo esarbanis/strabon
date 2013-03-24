@@ -203,9 +203,31 @@ public class GeoConstants {
 	public static final String extent 			= stRDF + "extent";
 	
 	/**
-	 * Default SRID
+	 * WGS 84 latitude-longitude (EPSG:4326)
 	 */
-	public static final Integer defaultSRID 	= 4326;
+	public static final String WGS84_LAT_LON	= "http://www.opengis.net/def/crs/EPSG/0/4326";
+	
+	/**
+	 * WGS 84 longitude-longitude
+	 * (used as the default CRS for GeoSPARQL geometries)
+	 */
+	public static final String WGS84_LON_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+
+	/**
+	 * EPSG:4326
+	 */
+	public static final Integer WGS84_LAT_LON_SRID = 4326;
+	
+	/**
+	 * EPSG:3857 (not sure whether this is correct for WGS84_LON_LAT)
+	 * http://spatialreference.org/ref/sr-org/7483/
+	 */
+	public static final Integer WGS84_LON_LAT_SRID = 3857;
+
+	/**
+	 * Default SRID (WGS84 latitude-longitude)
+	 */
+	public static final Integer defaultSRID 	= WGS84_LAT_LON_SRID;
 	
 	/**																		*
 	 *  						Extended functions 							*
