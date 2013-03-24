@@ -17,8 +17,6 @@ import org.openrdf.model.URI;
 import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.openrdf.sail.generaldb.schema.LiteralTable;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Manages RDBMS Literals. Including creation, id lookup, and inserting them
@@ -29,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 
-	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.managers.LiteralManager.class);
+	//private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.managers.LiteralManager.class);
 	
 	private static TimeZone Z = TimeZone.getTimeZone("GMT");
 
@@ -97,9 +95,6 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 			
 			try {
 				if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
-//					if (logger.isDebugEnabled()) {
-//						logger.debug("about to insert double value: {}", literal.doubleValue());
-//					}
 					table.insertNumeric(id, label, dt, literal.doubleValue());
 				}
 				else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {

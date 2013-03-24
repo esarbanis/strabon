@@ -22,6 +22,19 @@ import java.net.URI;
  */
 public class AbstractWKT {
 
+	/**
+	 * WKT representation for an empty geometry
+	 * 
+	 * When used with POINT instead of MULTIPOLYGON, JTS throws an
+	 * Illegal argument exception, since empty geometries for points
+	 * are not represented in WKB (see 
+	 * http://tsusiatsoftware.net/jts/javadoc/com/vividsolutions/jts/io/WKBWriter.html).
+	 * 
+	 * EMPTY_GEOM is present here to address Req. 13 of GeoSPARQL for empty geometries.
+	 * However, we act in the same way for strdf:WKT.
+	 */
+	protected final String EMPTY_GEOM = "MULTIPOLYGON EMPTY"; 
+	
 	/** 
 	 * The datatype of this WKT literal
 	 * 
@@ -67,6 +80,10 @@ public class AbstractWKT {
 	 * @param literalValue
 	 */
 	private void parsestRDFWKT(String literalValue) {
+		if (wkt.trim().length() == 0) {
+			wkt = EMPTY_GEOM;
+		}
+		
 		// we already have this case in {@link WKTHelper}
 		wkt = WKTHelper.getWithoutSRID(literalValue);
 		srid = WKTHelper.getSRID(literalValue);
@@ -76,6 +93,10 @@ public class AbstractWKT {
 		wkt = literalValue.trim();
 		// FIXME: the default value for wktLiteral
 		srid = GeoConstants.defaultSRID;
+		
+		if (wkt.length() == 0) { // empty geometry
+			wkt = EMPTY_GEOM;
+		}
 		
 		if (wkt.charAt(0) == '<') {// if a CRS URI is specified
 			int uriIndx = wkt.indexOf('>');
