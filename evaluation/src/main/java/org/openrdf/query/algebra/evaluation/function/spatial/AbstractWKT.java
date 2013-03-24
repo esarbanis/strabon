@@ -92,7 +92,7 @@ public class AbstractWKT {
 	private void parseWKTLITERAL(String literalValue) {
 		wkt = literalValue.trim();
 		// FIXME: the default value for wktLiteral
-		srid = GeoConstants.defaultSRID;
+		srid = GeoConstants.WGS84_LON_LAT_SRID;
 		
 		if (wkt.length() == 0) { // empty geometry
 			wkt = EMPTY_GEOM;
@@ -102,6 +102,7 @@ public class AbstractWKT {
 			int uriIndx = wkt.indexOf('>');
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
+			// FIXME: handle invalid URIs
 			// FIXME: get the SRID for crs! HOW??
 			
 			// trim spaces after URI and get the WKT value
