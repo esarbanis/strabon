@@ -13,6 +13,7 @@ import java.lang.IllegalArgumentException;
 import javax.xml.bind.JAXBException;
 
 import org.openrdf.sail.generaldb.exceptions.conversionException;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
@@ -201,8 +202,9 @@ public class LiteralTable {
 	public void insertWKT(Number id, String label, String datatype, Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
 		try {
-			Geometry geom = JTSWrapper.getInstance().WKTread(label);
-			geoSpatialTable.insert(id, WKTHelper.getSRID(label),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
+			AbstractWKT awkt = new AbstractWKT(label, datatype);
+			Geometry geom = JTSWrapper.getInstance().WKTread(awkt.getWKT());
+			geoSpatialTable.insert(id, awkt.getSRID(),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
 			
 		} catch (ParseException e) {
 			throw new IllegalArgumentException(e);

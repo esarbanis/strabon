@@ -73,9 +73,9 @@ public class AbstractWKT {
 	}
 	
 	private void parseWKTLITERAL(String literalValue) {
-		String wkt = literalValue.trim();
+		wkt = literalValue.trim();
 		// FIXME: the default value for wktLiteral
-		//srid = ;
+		srid = GeoConstants.defaultSRID;
 		
 		if (wkt.charAt(0) == '<') {// if a CRS URI is specified
 			int uriIndx = wkt.indexOf('>');
