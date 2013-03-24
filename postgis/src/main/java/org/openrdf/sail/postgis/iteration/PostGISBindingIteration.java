@@ -28,14 +28,6 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		super(stmt);
 	}
 
-	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
-	 */
 	@Override
 	protected RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException
@@ -51,7 +43,6 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 
 		return createResource(rs, index);
 	}
-
 
 	@Override
 	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
