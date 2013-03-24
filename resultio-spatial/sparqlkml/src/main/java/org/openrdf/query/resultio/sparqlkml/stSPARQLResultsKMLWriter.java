@@ -367,11 +367,10 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				encoder.encode(geom, geometryType, baos);
 				geometry = baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
 
+				/*
 				if (geometryType == KML.MultiGeometry) {
 					geometry = geometry.substring(geometry.indexOf("<MultiGeometry>") + 15,	geometry.indexOf("</MultiGeometry>"));
 				}
-				
-				/*
 				 * if(geom instanceof Point) { geometry =
 				 * geometry.substring(geometry.indexOf("<Point>"),
 				 * geometry.indexOf("</Point>") + 8); } else if(geom instanceof
