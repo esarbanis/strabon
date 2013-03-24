@@ -171,23 +171,30 @@ public abstract class Strabon {
 
 		try {
 			con1.commit();
-			con1.close();
-			repo1.shutDown();
-			
-			// delete the lock as well
-			checkAndDeleteLock(databaseName, user, password, port, serverName);
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
 			
-		} catch (SQLException e) {
-			logger.error("[Strabon.close] Error in deleting lock", e);
+		} finally {
+			try {
+				con1.close();
+				repo1.shutDown();
+				
+				// delete the lock as well
+				checkAndDeleteLock(databaseName, user, password, port, serverName);
+				
+			} catch (RepositoryException e) {
+				logger.error("[Strabon.close]", e);
+				
+			}catch (SQLException e) {
+				logger.error("[Strabon.close] Error in deleting lock", e);
+				
+			} catch (ClassNotFoundException e) {
+				logger.error("[Strabon.close] Error in deleting lock", e);
+			}
 			
-		} catch (ClassNotFoundException e) {
-			logger.error("[Strabon.close] Error in deleting lock", e);
+			logger.info("[Strabon.close] Connection closed.");
 		}
-
-		logger.info("[Strabon.close] Connection closed.");
 	}
 
 	public Object query(String queryString, OutputStream out)

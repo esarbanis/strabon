@@ -80,8 +80,8 @@ public class AbstractWKT {
 	 * @param literalValue
 	 */
 	private void parsestRDFWKT(String literalValue) {
-		if (wkt.trim().length() == 0) {
-			wkt = EMPTY_GEOM;
+		if (literalValue.trim().length() == 0) {
+			literalValue = EMPTY_GEOM;
 		}
 		
 		// we already have this case in {@link WKTHelper}
