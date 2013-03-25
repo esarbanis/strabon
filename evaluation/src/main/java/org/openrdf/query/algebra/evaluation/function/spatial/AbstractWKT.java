@@ -103,7 +103,14 @@ public class AbstractWKT {
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
 			// FIXME: handle invalid URIs
-			// FIXME: get the SRID for crs! HOW??
+			// FIXME: get the SRID for crs properly. HOW??
+			if (GeoConstants.WGS84_LAT_LON.equals(crs.toString())) {
+				srid = GeoConstants.WGS84_LAT_LON_SRID;
+				
+			} else if (GeoConstants.WGS84_LON_LAT.equals(crs.toString())) {
+				srid = GeoConstants.WGS84_LON_LAT_SRID;
+				
+			}
 			
 			// trim spaces after URI and get the WKT value
 			wkt = wkt.substring(uriIndx + 1).trim();
