@@ -16,7 +16,6 @@ import org.openrdf.query.algebra.evaluation.EvaluationStrategy;
 import org.openrdf.query.algebra.evaluation.impl.BindingAssigner;
 import org.openrdf.query.algebra.evaluation.impl.CompareOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.ConjunctiveConstraintSplitter;
-import org.openrdf.query.algebra.evaluation.impl.ConstantOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.DisjunctiveConstraintOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.SameTermFilterOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.SpatialJoinOptimizer;
@@ -85,13 +84,19 @@ public class GeneralDBQueryOptimizer {
 			tupleExpr = new QueryRoot(tupleExpr);
 		}
 
+		fixAggregates(tupleExpr);
 		coreOptimizations(strategy, tupleExpr, dataset, bindings);
-
 		rdbmsOptimizations(tupleExpr, dataset, bindings);
 
 		new GeneralDBSqlConstantOptimizer().optimize(tupleExpr, dataset, bindings);
 
 		return tupleExpr;
+	}
+
+	private void fixAggregates(TupleExpr expr)
+	{
+		AggregateOptimizer agg = new AggregateOptimizer();
+		agg.optimize(expr);
 	}
 
 	private void coreOptimizations(EvaluationStrategy strategy, TupleExpr expr, Dataset dataset,

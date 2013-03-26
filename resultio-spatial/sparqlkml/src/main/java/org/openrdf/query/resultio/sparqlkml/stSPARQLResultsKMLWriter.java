@@ -25,8 +25,8 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
-import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
@@ -63,16 +63,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String PLACEMARK_TAG 		= "Placemark";
 	private static final String NAME_TAG 			= "name";
 	private static final String DESC_TAG 			= "description";
-	private static final String STYLE_TAG 			= "Style";
-	private static final String STYLEMAP_TAG 		= "StyleMap";
-	private static final String LINESTYLE_TAG 		= "LineStyle";
-	private static final String POLYSTYLE_TAG 		= "PolyStyle";
 	private static final String EXT_DATA_TAG 		= "ExtendedData";
 	private static final String DATA_TAG 			= "Data";
 	private static final String VALUE_TAG			= "value";
 	private static final String NAME_ATTR			= NAME_TAG;
 
-	private static final String STYLE_ID 			= "resultStyle";
 	private static final String TABLE_ROW_BEGIN 		= "<TR>";
 	private static final String TABLE_ROW_END 		= "</TR>";
 	private static final String TABLE_DATA_BEGIN 		= "<TD>";
@@ -84,34 +79,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String GEOMETRY_NAME 		= "Geometry";
 	private static final String MULTIGEOMETRY 		= "MultiGeometry";
 
-	/*
-	// Styling options
-	private static final int numOfStyles = 5;
-	private static final String[][] styles = {
-			// note that colors are encoded as "aabbggrr" strings where
-			// aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff);
-			// rr=red
-			// (00 to ff).
-			// id, line width, line color, polygon fill, mouse over line width,
-			// mouse over line color mouse over polygon fill
-			// {STYLE_ID + "1", "1.5", "7d0000ff", "ad0000ff", "1.5",
-			// "7d0000ff", "ad0000ff"}, {STYLE_ID + "2", "1.5", "7d0000ff",
-			// "ad0000ff", "1.5", "7d0000ff", "ad0000ff"}, {STYLE_ID + "3",
-			// "1.5", "7d550000", "ad550000", "1.5", "7d0000ff", "ad0000ff"},
-			// {STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5",
-			// "7d0000ff", "ad0000ff"}, {STYLE_ID + "5", "1.5", "7d000055",
-			// "ad000055", "1.5", "7d0000ff", "ad0000ff"}};
-			{ STYLE_ID + "1", "1.5", "000000ff", "000000ff", "1.5", "000000ff",
-					"000000ff" },
-			{ STYLE_ID + "2", "1.5", "000000ff", "000000ff", "1.5", "000000ff",
-					"000000ff" },
-			{ STYLE_ID + "3", "1.5", "7d550000", "ad550000", "1.5", "7d0000ff",
-					"ad0000ff" },
-			{ STYLE_ID + "4", "1.5", "7d005500", "ad005500", "1.5", "7d0000ff",
-					"ad0000ff" },
-			{ STYLE_ID + "5", "1.5", "7dff0000", "adff0000", "1.5", "7dff0000",
-					"adff0000" } };
-	*/
 	/**
 	 * The underlying XML formatter.
 	 */
@@ -176,65 +143,13 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	}
 
 	@Override
-	public void startQueryResult(List<String> bindingNames)
-			throws TupleQueryResultHandlerException {
+	public void startQueryResult(List<String> bindingNames) throws TupleQueryResultHandlerException {
 		try {
-
 			xmlWriter.startDocument();
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
 			xmlWriter.startTag(ROOT_TAG);
 			xmlWriter.startTag(RESULT_SET_TAG);
 
-			/*
-			// add default styles
-			for (String[] style : styles) {
-				String id = style[0];
-				String lineWidth = style[1];
-				String lineColor = style[2];
-				String polygonFill = style[3];
-				String mouseOverLineWidth = style[4];
-				String mouseOverLineColor = style[5];
-				String mouseOverPolygonFill = style[6];
-
-				// append normal style
-				xmlWriter.setAttribute("id", "normal_" + id);
-				xmlWriter.startTag(STYLE_TAG);
-				xmlWriter.startTag(LINESTYLE_TAG);
-				xmlWriter.textElement("width", lineWidth);
-				xmlWriter.textElement("color", lineColor);
-				xmlWriter.endTag(LINESTYLE_TAG);
-				xmlWriter.startTag(POLYSTYLE_TAG);
-				xmlWriter.textElement("color", polygonFill);
-				xmlWriter.endTag(POLYSTYLE_TAG);
-				xmlWriter.endTag(STYLE_TAG);
-
-				// append highlight style
-				xmlWriter.setAttribute("id", "highlight_" + id);
-				xmlWriter.startTag(STYLE_TAG);
-				xmlWriter.startTag(LINESTYLE_TAG);
-				xmlWriter.textElement("width", mouseOverLineWidth);
-				xmlWriter.textElement("color", mouseOverLineColor);
-				xmlWriter.endTag(LINESTYLE_TAG);
-				xmlWriter.startTag(POLYSTYLE_TAG);
-				xmlWriter.textElement("color", mouseOverPolygonFill);
-				xmlWriter.endTag(POLYSTYLE_TAG);
-				xmlWriter.endTag(STYLE_TAG);
-
-				// define map style combining the above styles
-				xmlWriter.setAttribute("id", id);
-				xmlWriter.startTag(STYLEMAP_TAG);
-				xmlWriter.startTag("Pair");
-				xmlWriter.textElement("key", "normal");
-				xmlWriter.textElement("styleUrl", "#normal_" + id);
-				xmlWriter.endTag("Pair");
-				xmlWriter.startTag("Pair");
-				xmlWriter.textElement("key", "highlight");
-				xmlWriter.textElement("styleUrl", "#highlight_" + id);
-				xmlWriter.endTag("Pair");
-				xmlWriter.endTag(STYLEMAP_TAG);
-			}
-			// end of default style definition
-			*/
 		} catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
 		}
@@ -313,7 +228,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				for (String geometry : geometries) {
 					xmlWriter.startTag(PLACEMARK_TAG);
 					xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-					//xmlWriter.textElement("styleUrl", "#"+ styles[geometries.indexOf(geometry) % (numOfStyles - 2)][0]);
 					xmlWriter.startTag(MULTIGEOMETRY);
 					xmlWriter.unescapedText(geometry);
 					xmlWriter.endTag(MULTIGEOMETRY);
@@ -324,7 +238,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// also write them in the same placemarks
 			xmlWriter.startTag(PLACEMARK_TAG);
 			xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-			//xmlWriter.textElement("styleUrl", "#" + styles[(numOfStyles - 1)][0]);
 			xmlWriter.startTag(MULTIGEOMETRY);
 			
 			for (String geometry : geometries) {
@@ -384,48 +297,69 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 
 	private String getGeometry(Value value) {
 		String geometry = "";
+		
 		QName geometryType = null;
+		
 		// the underlying geometry in value
 		Geometry geom = null;
+		
 		// the underlying SRID of the geometry
 		int srid = -1;
+		
 		// get the KML encoder
 		Encoder encoder = null;
+		
 		try {
 			encoder = new Encoder(new KMLConfiguration());
 			encoder.setIndenting(true);
+			
 			if (value instanceof GeneralDBPolyhedron) {
 				GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) value;
 				geom = dbpolyhedron.getPolyhedron().getGeometry();
 				srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
+				
 			} else { // spatial literal
 				Literal spatial = (Literal) value;
 				String geomRep = spatial.stringValue();
+				
 				if (XMLGSDatatypeUtil.isWKTLiteral(spatial)) { // WKT
-					geom = jts.WKTread(WKTHelper.getWithoutSRID(geomRep));
-					srid = WKTHelper.getSRID(geomRep);
+					AbstractWKT awkt = new AbstractWKT(geomRep, spatial.getDatatype().stringValue());
+					
+					geom = jts.WKTread(awkt.getWKT());
+					srid = awkt.getSRID();
+					
 				} else { // GML
 					geom = jts.GMLread(geomRep);
 					srid = geom.getSRID();
 				}
 			}
+			
 			// transform the geometry to {@link GeoConstants#defaultSRID}
 			geom = jts.transform(geom, srid, GeoConstants.defaultSRID);
+			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;
+				
 			} else if (geom instanceof Polygon) {
 				geometryType = KML.Polygon;
+				
 			} else if (geom instanceof LineString) {
 				geometryType = KML.LineString;
+				
 			} else if (geom instanceof MultiPoint) {
 				geometryType = KML.MultiGeometry;
+				
 			} else if (geom instanceof MultiLineString) {
 				geometryType = KML.MultiGeometry;
+				
 			} else if (geom instanceof MultiPolygon) {
 				geometryType = KML.MultiGeometry;
+				
 			} else if (geom instanceof GeometryCollection) {
 				geometryType = KML.MultiGeometry;
+				
 			}
+			
 			if (geometryType == null) {
 				logger.warn("[Strabon.KMLWriter] Found unknown geometry type.");
 				
@@ -433,11 +367,10 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				encoder.encode(geom, geometryType, baos);
 				geometry = baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
 
+				/*
 				if (geometryType == KML.MultiGeometry) {
 					geometry = geometry.substring(geometry.indexOf("<MultiGeometry>") + 15,	geometry.indexOf("</MultiGeometry>"));
 				}
-				
-				/*
 				 * if(geom instanceof Point) { geometry =
 				 * geometry.substring(geometry.indexOf("<Point>"),
 				 * geometry.indexOf("</Point>") + 8); } else if(geom instanceof

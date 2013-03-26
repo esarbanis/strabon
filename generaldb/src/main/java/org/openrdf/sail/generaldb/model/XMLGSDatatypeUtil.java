@@ -95,7 +95,8 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 		
-		return GeoConstants.WKT.equals(datatype.stringValue());
+		return GeoConstants.WKT.equals(datatype.stringValue()) || 
+				GeoConstants.WKTLITERAL.equals(datatype.stringValue());
 	}
 	
 	/**

@@ -29,7 +29,7 @@ public class SpatialTests {
 	public String 	STRDF_NS = "http://strdf.di.uoa.gr/ontology#",
 					EX_NS = "http://example.org/",
 					NOA_NS = "http://teleios.di.uoa.gr/ontologies/noaOntology.owl#",
-					GEOF_NS ="http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+					GEOF_NS ="http://www.opengis.net/def/function/geosparql/";
 
 	protected String prefixes = 
 		"PREFIX rdf: <"+RDF.NAMESPACE+"> \n" +
@@ -780,7 +780,7 @@ public class SpatialTests {
 			" ?s1 ex:geometry ?g1 . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( geof:sf-equals(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfEquals(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -799,7 +799,7 @@ public class SpatialTests {
 			" ?s1 ex:geometry ?g1 . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( geof:sf-disjoint(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfDisjoint(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -821,7 +821,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) < str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-intersects(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfIntersects(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -846,7 +846,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) < str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-touches(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfTouches(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -867,7 +867,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-crosses(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfCrosses(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -889,7 +889,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-within(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfWithin(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -911,7 +911,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-contains(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfContains(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -933,7 +933,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:sf-overlaps(?g1, ?g2 )) . \n"+
+			" FILTER( geof:sfOverlaps(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -955,7 +955,7 @@ public class SpatialTests {
 			" ?s1 ex:geometry ?g1 . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( geof:eh-equals(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehEquals(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -974,7 +974,7 @@ public class SpatialTests {
 			" ?s1 ex:geometry ?g1 . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( geof:eh-disjoint(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehDisjoint(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -996,7 +996,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-meet(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehMeet(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1018,7 +1018,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-overlap(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehOverlap(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1040,7 +1040,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-covers(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehCovers(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1061,7 +1061,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-coveredBy(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehCoveredBy(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1082,7 +1082,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-inside(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehInside(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1103,7 +1103,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:eh-contains(?g1, ?g2 )) . \n"+
+			" FILTER( geof:ehContains(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1124,7 +1124,7 @@ public class SpatialTests {
 			" ?s1 ex:geometry ?g1 . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" FILTER( str(?s1) < str(?s2) ) . \n"+
-			" FILTER( geof:rcc8-dc(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8dc(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1146,7 +1146,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:rcc8-po(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8po(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1168,7 +1168,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:rcc8-tppi(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8tppi(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1189,7 +1189,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:rcc8-tpp(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8tpp(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1211,7 +1211,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:rcc8-ntpp(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8ntpp(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")
@@ -1231,7 +1231,7 @@ public class SpatialTests {
 			" FILTER( str(?id1) != str(?id2) ) . \n"+
 			" ?s2 ex:geometry ?g2 . \n" +
 			" ?s1 ex:geometry ?g1 . \n"+
-			" FILTER( geof:rcc8-ntpp(?g1, ?g2 )) . \n"+
+			" FILTER( geof:rcc8ntpp(?g1, ?g2 )) . \n"+
 			"}";
 		
 		@SuppressWarnings("unchecked")

@@ -55,11 +55,15 @@ QUERY=
 # the RDF format of the files to store (defaults to ntriples)
 FORMAT="ntriples"
 
+# true to force deletion of locked table, false otherwise
+FORCE_DELETE="false"
+
 # the URI of the named graph into which the RDF files shall be stored
 NAMED_GRAPH=
 
 # predefined queries
 QUERY_SIZE="SELECT (COUNT(*) as ?C) WHERE {?s ?p ?o}"
+QUERY_GETALL="SELECT * WHERE {?s ?p ?o}"
 QUERY_DELETEALL="DELETE {?s ?p ?o} WHERE {?s ?p ?o}"
 QUERY_HOTSPOT_SIZE="SELECT (COUNT(*) as ?C) WHERE {?h <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#Hotspot>}"
 QUERY_EXPORT="CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}"
@@ -135,15 +139,20 @@ function help() {
 }
 
 function help_query() {
-	echo "Usage: ${CMD} query SPARQL_QUERY [RESULT_FORMAT]"
+	echo "Usage: ${CMD} query [OPTIONS] SPARQL_QUERY [RESULT_FORMAT]"
 	echo
 	echo "Execute a SPARQL query on Strabon."
 	echo
 	echo "	SPARQL_QUERY	: the SPARQL query to execute or an alias name such as the following:"
 	echo "				size: returns the number of triples"
+	echo "				all: returns all triples"
 	echo "				hotspots: returns the number of hotspots"
-	echo "  RESULT_FORMAT	: the format of the result. Possible values are \`???' (default), \`xml'"
+	echo "	RESULT_FORMAT	: the format of the result. Possible values are \`???' (default), \`xml'"
 	echo "			  \`html', \`kml', \`kmz', or \`geojson'"
+	echo
+	echo "OPTIONS can be one of the following"
+	echo "	--force-delete  : forces deletion of \"locked\" table (e.g., when Strabon has been"
+	echo "			  ungracefully shutdown)"
 }
 
 function help_update() {
@@ -429,6 +438,13 @@ case "${1}" in
 			help_query
 			exit 1
 		fi
+
+		# check whether force deletion of locked table has been specified
+		if test "${1}" = "--force-delete"; then
+			shift
+			FORCE_DELETE="true"
+		fi
+
 		QUERY="${1}"
 		shift
 
@@ -439,6 +455,9 @@ case "${1}" in
 				;;
 			hotspots)
 				QUERY="${QUERY_HOTSPOT_SIZE}"
+				;;
+			all)
+				QUERY="${QUERY_GETALL}"
 				;;
 		esac
 
@@ -583,6 +602,8 @@ if test "${CLASS}" = "StoreOp"; then
 		STRABON_EXEC="${STRABON_EXEC}(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${file}\" -f ${FORMAT} ${NAMED_GRAPH});
 "
 	done
+elif test "${CLASS}" = "QueryOp"; then
+	STRABON_EXEC="(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${PREFIXES}${QUERY}\" ${FORCE_DELETE} ${RESULT_FORMAT})"
 else
 	STRABON_EXEC="(cd ${RUNTIME} && java ${JAVA_OPTS} -cp ./target/\*:. ${PKG}.${DATABASE}.${CLASS} ${HOST} ${PORT} ${DB} ${DBUSER} ${DBPASS} \"${PREFIXES}${QUERY}\" ${RESULT_FORMAT})"
 fi

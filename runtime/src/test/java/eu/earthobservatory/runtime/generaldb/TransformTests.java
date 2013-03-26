@@ -30,7 +30,7 @@ public class TransformTests {
 			"PREFIX base: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> \n"+
 			"PREFIX ex: <http://www.example.org/ontology#> \n"+
 			"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-			"PREFIX geof: <http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/> \n";
+			"PREFIX geof: <http://www.opengis.net/def/function/geosparql/> \n";
 
 	protected String query1 = prefixes +
 			"SELECT    ?H1 ?HAT1 ?HGEO1 " +

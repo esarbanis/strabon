@@ -17,6 +17,7 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
+ * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  */
 public class GeoConstants {
 	/**																		*
@@ -32,36 +33,30 @@ public class GeoConstants {
 	 * The namespace for the RDFi framework
 	 */
 	public static final String rdfi						= "http://rdfi.di.uoa.gr/ontology#";
-
-	/**
-	 * The namespace for GeoSPARQL
-	 */
-	public static final String geo						= "http://www.opengis.net/ont/geosparql#";
+	
+	
+	/**																*
+	 *  GeoSPARQL	Version 1.0.1	Document#  11-052r4 			*
+	 *	http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip	*/
 	
 	/**
-	 * The URI for the datatype SemiLinearPointSet
-	 * (linear constraint-based representation of geometries)
+	 * The namespace for GeoSPARQL ontology
 	 */
-	public static final String stRDFSemiLinearPointset			= stRDF + "SemiLinearPointSet";
-
+	public static final String GEO						= "http://www.opengis.net/ont/geosparql#";
+	
 	/**
-	 * The URI for the datatype Well-Known Text (WKT)
+	 * The namespace for geometry functions declared by GeoSPARQL
 	 */
-	// TODO ggarbis variable WKT variable changed to support geo:wktLiteral for benchmarking
-	public static final String WKT 						= geo + "wktLiteral";
-//	public static final String WKT 						= = stRDF + "WKT";
-
+	public static final String GEOF						= "http://www.opengis.net/def/function/geosparql/";
+	
 	/**
-	 * The URI for the datatype Geography Markup Language (GML) as it defined
-	 * in the model stRDF and query language stSPARQL
+	 * The namespace for the ontology of simple features
 	 */
-	// TODO ggarbis variable GML variable changed to support geo:gmlLiteral for benchmarking
-	public static final String GML						= geo + "wktLiteral";//= stRDF + "GML";
-//	public static final String GML						= = stRDF + "GML";
-
+	public static final String SF						= "http://www.opengis.net/ont/sf#";
+	
 	/**
 	 * 
-	 * The URI for the namespace of GML.
+	 * The namespace of GML.
 	 * 
 	 * Initially, it was set to "http://www.opengis.net/def/geometryType/OGC-GML/3.2/".
 	 * Afterwards, it was set to "http://www.opengis.net/gml/3.2/" in order to be compliant
@@ -77,10 +72,79 @@ public class GeoConstants {
 	 */
 	public static final String GML_OGC					= "http://www.opengis.net/gml";
 	
+	
+	
+	
+	/**																		*
+	 *  						URIs										*
+	 * 																		*/
+	
+	/**																*
+	 *  GeoSPARQL	Version 1.0.1	Document#  11-052r4 			*
+	 *	http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip	*/
+
+	/** The following GeoSPARQL classes and properties are       
+	 *  commented out because they are not currently used.			
+ 	 */
+	
 	/**
-	 * The namespace for geometry functions declared by GeoSPARQL
+	 * The URIs for GeoSPARQL classes
 	 */
-	public static final String geof						= "http://www.opengis.net/def/queryLanguage/OGC-GeoSPARQL/1.0/function/";
+/*	public static final String SpatialObject			=  GEO + "SpatialObject";
+	public static final String Geometry				    =  GEO + "Geometry";
+	public static final String Feauture					=  GEO + "Feature";
+*/	
+		
+	/**
+	 * The URIs for GeoSPARQL properties
+	 */
+/*	public static final String hasGeometry_OGC				=  GEO + "hasGeometry";
+	public static final String defaultGeometry_OGC			=  GEO + "defaultGeometry";
+	public static final String dimension_OGC				=  GEO + "dimension";
+	public static final String coordinateDimension_OGC		=  GEO + "coordinateDimension";
+	public static final String spatialDimension_OGC		    =  GEO + "spatialDimension";
+	public static final String isEmpty_OGC					=  GEO + "isEmpty";
+	public static final String isSimple_OGC					=  GEO + "isSimple";
+	public static final String asWKT_OGC					=  GEO + "asWKT";
+	public static final String asGML_OGC					=  GEO + "asGML";
+*/
+	
+	
+	/**																		*
+	 *  						URIs for datatypes							*
+	 * 																		*/
+	
+	
+	/**
+	 * The URI for the datatype SemiLinearPointSet
+	 * (linear constraint-based representation of geometries)
+	 */
+	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
+	
+	
+	/**
+	 * The URI for the datatype Well-Known Text (WKT)
+	 */
+	public static final String WKT 						= stRDF + "WKT";
+
+	/**
+	 * The URI for the datatype Geography Markup Language (GML) as it defined
+	 * in the model stRDF and query language stSPARQL
+	 */
+	public static final String GML						= stRDF + "GML";
+	
+	/**
+	 * The URI for the datatype wktLiteral
+	 */
+	public static final String WKTLITERAL				=  GEO + "wktLiteral";
+	
+	/**
+	 * The URI for the datatype gmlLiteral
+	 */
+	public static final String GMLLITERAL				=  GEO + "gmlLiteral";
+	
+	
+	
 	
 	/**																		*
 	 *  						Extended functions 							*
@@ -139,57 +203,79 @@ public class GeoConstants {
 	public static final String extent 			= stRDF + "extent";
 	
 	/**
-	 * Default SRID
+	 * WGS 84 latitude-longitude (EPSG:4326)
 	 */
-	public static final Integer defaultSRID 	= 4326;
+	public static final String WGS84_LAT_LON	= "http://www.opengis.net/def/crs/EPSG/0/4326";
+	
+	/**
+	 * WGS 84 longitude-longitude
+	 * (used as the default CRS for GeoSPARQL geometries)
+	 */
+	public static final String WGS84_LON_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+
+	/**
+	 * EPSG:4326
+	 */
+	public static final Integer WGS84_LAT_LON_SRID = 4326;
+	
+	/**
+	 * EPSG:3857 (not sure whether this is correct for WGS84_LON_LAT)
+	 * http://spatialreference.org/ref/sr-org/7483/
+	 */
+	public static final Integer WGS84_LON_LAT_SRID = 3857;
+
+	/**
+	 * Default SRID (WGS84 latitude-longitude)
+	 */
+	public static final Integer defaultSRID 	= WGS84_LAT_LON_SRID;
 	
 	/**																		*
 	 *  						Extended functions 							*
 	 *  							GeoSPARQL								*
 	 * 																		*/	
 	// Non-topological
-	public static final String geoSparqlDistance 				= geof + "distance"; //3 arguments
-	public static final String geoSparqlBuffer 					= geof + "buffer"; //3 arguments
-	public static final String geoSparqlConvexHull 				= geof + "convexHull";
-	public static final String geoSparqlIntersection 			= geof + "intersection";
-	public static final String geoSparqlUnion 					= geof + "union";
-	public static final String geoSparqlDifference 				= geof + "difference";
-	public static final String geoSparqlSymmetricDifference 	= geof + "symmetricDifference";
-	public static final String geoSparqlEnvelope 				= geof + "envelope";
-	public static final String geoSparqlBoundary 				= geof + "boundary";
+	public static final String geoSparqlDistance 				= GEOF + "distance"; //3 arguments
+	public static final String geoSparqlBuffer 					= GEOF + "buffer"; //3 arguments
+	public static final String geoSparqlConvexHull 				= GEOF + "convexHull";
+	public static final String geoSparqlIntersection 			= GEOF + "intersection";
+	public static final String geoSparqlUnion 					= GEOF + "union";
+	public static final String geoSparqlDifference 				= GEOF + "difference";
+	public static final String geoSparqlSymmetricDifference 	= GEOF + "symmetricDifference";
+	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
+	public static final String geoSparqlBoundary 				= GEOF + "boundary";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
-	public static final String sfEquals 						= geof + "sf-equals";
-	public static final String sfDisjoint 						= geof + "sf-disjoint";
-	public static final String sfIntersects 					= geof + "sf-intersects";
-	public static final String sfTouches 						= geof + "sf-touches";
-	public static final String sfCrosses 						= geof + "sf-crosses";
-	public static final String sfWithin 						= geof + "sf-within";
-	public static final String sfContains 						= geof + "sf-contains";
-	public static final String sfOverlaps 						= geof + "sf-overlaps";
+	public static final String sfEquals 						= GEOF + "sfEquals";
+	public static final String sfDisjoint 						= GEOF + "sfDisjoint";
+	public static final String sfIntersects 					= GEOF + "sfIntersects";
+	public static final String sfTouches 						= GEOF + "sfTouches";
+	public static final String sfCrosses 						= GEOF + "sfCrosses";
+	public static final String sfWithin 						= GEOF + "sfWithin";
+	public static final String sfContains 						= GEOF + "sfContains";
+	public static final String sfOverlaps 						= GEOF + "sfOverlaps";
 
 	// Egenhofer - 8 functions - all with 2 arguments + boolean
-	public static final String ehEquals 						= geof + "eh-equals";
-	public static final String ehDisjoint 						= geof + "eh-disjoint";
-	public static final String ehMeet 							= geof + "eh-meet";
-	public static final String ehOverlap 						= geof + "eh-overlap";
-	public static final String ehCovers 						= geof + "eh-covers";
-	public static final String ehCoveredBy 						= geof + "eh-coveredBy";
-	public static final String ehInside 						= geof + "eh-inside";
-	public static final String ehContains 						= geof + "eh-contains";
+	public static final String ehEquals 						= GEOF + "ehEquals";
+	public static final String ehDisjoint 						= GEOF + "ehDisjoint";
+	public static final String ehMeet 							= GEOF + "ehMeet";
+	public static final String ehOverlap 						= GEOF + "ehOverlap";
+	public static final String ehCovers 						= GEOF + "ehCovers";
+	public static final String ehCoveredBy 						= GEOF + "ehCoveredBy";
+	public static final String ehInside 						= GEOF + "ehInside";
+	public static final String ehContains 						= GEOF + "ehContains";
 
 	// RCC8 - 8 functions - all with 2 arguments + boolean
-	public static final String rccEquals 						 = geof + "rcc8-eq";
-	public static final String rccDisconnected 					 = geof + "rcc8-dc";
-	public static final String rccExternallyConnected 			 = geof + "rcc8-ec";
-	public static final String rccPartiallyOverlapping 			 = geof + "rcc8-po";
-	public static final String rccTangentialProperPartInverse 	 = geof + "rcc8-tppi";
-	public static final String rccTangentialProperPart 			 = geof + "rcc8-tpp";
-	public static final String rccNonTangentialProperPart 		 = geof + "rcc8-ntpp";
-	public static final String rccNonTangentialProperPartInverse = geof + "rcc8-ntppi";
+	public static final String rccEquals 						 = GEOF + "rcc8eq";
+	public static final String rccDisconnected 					 = GEOF + "rcc8dc";
+	public static final String rccExternallyConnected 			 = GEOF + "rcc8ec";
+	public static final String rccPartiallyOverlapping 			 = GEOF + "rcc8po";
+	public static final String rccTangentialProperPartInverse 	 = GEOF + "rcc8tppi";
+	public static final String rccTangentialProperPart 			 = GEOF + "rcc8tpp";
+	public static final String rccNonTangentialProperPart 		 = GEOF + "rcc8ntpp";
+	public static final String rccNonTangentialProperPartInverse = GEOF + "rcc8ntppi";
 	
 	// The generic relate function
-	public static final String geoSparqlRelate 					 = geof + "relate";
+	public static final String geoSparqlRelate 					 = GEOF + "relate";
 
 	/**
 	 * Addition for datetime metric functions
@@ -208,7 +294,7 @@ public class GeoConstants {
 	public static final String rdfiEC						= rdfi + "EC";
 	public static final String rdfiPO						= rdfi + "PO";
 	public static final String rdfiNTPP						= rdfi + "NTPP";
-	public static final String rdfiNTPPi						= rdfi + "NTPPi";
+	public static final String rdfiNTPPi					= rdfi + "NTPPi";
 	public static final String rdfiTPP						= rdfi + "TPP";
 	public static final String rdfiTPPi						= rdfi + "TPPi";
 	public static final String rdfiEQ						= rdfi + "EQ";

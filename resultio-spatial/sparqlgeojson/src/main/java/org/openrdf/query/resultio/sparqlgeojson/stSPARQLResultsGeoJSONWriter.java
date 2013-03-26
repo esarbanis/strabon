@@ -28,6 +28,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -159,13 +160,16 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 					} else { // spatial literal WKT or GML
 						// get the textual representation of the geometry (WKT or GML)
 						String geoText = value.stringValue();
+						Literal literal = (Literal) value;
 						
-						if (XMLGSDatatypeUtil.isWKTLiteral((Literal) value)) {// WKT
+						if (XMLGSDatatypeUtil.isWKTLiteral(literal)) {// WKT
+							AbstractWKT awkt = new AbstractWKT(geoText, literal.getDatatype().stringValue());
+							
 							// get its geometry
-							geom = jts.WKTread(WKTHelper.getWithoutSRID(geoText));
+							geom = jts.WKTread(awkt.getWKT());
 							
 							// get its SRID
-							srid = WKTHelper.getSRID(geoText);
+							srid = awkt.getSRID();
 							
 						} else { // GML
 							// get its geometry
@@ -173,7 +177,6 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 							
 							// get its SRID
 							srid = geom.getSRID();
-								
 						}
 					}
 					

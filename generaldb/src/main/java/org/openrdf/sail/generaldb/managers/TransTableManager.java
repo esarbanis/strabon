@@ -6,14 +6,12 @@
 package org.openrdf.sail.generaldb.managers;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.generaldb.schema.Batch;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.schema.TransactionTable;
@@ -308,7 +306,6 @@ public class TransTableManager {
 
 	private String getEmptyTableName() {
 		StringBuilder sb = new StringBuilder(256);
-		GeneralDBSqlTable temp = (GeneralDBSqlTable)temporaryTable;
 		sb.append("(");
 		sb.append("SELECT ");
 		sb.append(getZeroBigInt()).append(" AS ctx, ");

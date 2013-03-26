@@ -15,6 +15,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -29,7 +30,6 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
 
@@ -41,7 +41,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 
 	protected IdSequence ids;
 
-	//XXX addition
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer, String>();
 
 	//protected HashMap<String, Integer> sp_ConstructIndexesAndNames = new HashMap<String, Integer>();
@@ -62,8 +61,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	{
 		super(stmt);
 	}
-
-	////
 
 	public HashMap<GeneralDBSpatialFuncInfo, Integer> getConstructIndexesAndNames() {
 		return sp_ConstructIndexesAndNames;
@@ -97,7 +94,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		this.ids = ids;
 	}
 
-	//XXX Numerous additions here!
 	@Override
 	protected BindingSet convert(ResultSet rs)
 	throws SQLException
@@ -202,18 +198,22 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	}
 
 	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
+	 * FIXME the implementation of this function for PostGIS and MonetDB
+	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
+	 * literals. What about geo:wktLiteral?
+	 * However, this method is called by {@link convert} method only, which
+	 * in turn is not called by any method!
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
 
-
-
+	/**
+	 * FIXME the implementation of this function for PostGIS and MonetDB
+	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
+	 * literals. What about geo:wktLiteral?
+	 * However, this method is called by {@link convert} method only, which
+	 * in turn is not called by any method!
+	 */
 	protected abstract RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
 	throws SQLException;
 
@@ -253,26 +253,4 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		return vf.asRdbmsLiteral(vf.createLiteral(spProperty));
 
 	}
-
-	//	protected RdbmsValue createGeoValueForSelectConstructs(ResultSet rs, int index)
-	//	throws SQLException
-	//	{
-	//		double potentialMetric;
-	//		try
-	//		{
-	//			//case of metrics
-	//			potentialMetric = rs.getFloat(index + 1);
-	//
-	//			return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
-	//
-	//		}
-	//		catch(SQLException e)
-	//		{
-	//			//Case of spatial constructs
-	//			byte[] label = rs.getBytes(index + 1);
-	//			return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label);
-	//		}
-	//
-	//	}
-
 }
