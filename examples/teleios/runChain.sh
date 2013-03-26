@@ -24,19 +24,19 @@ cmd="$(basename ${0})"
 loc="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 function help() {                                                               
-    echo "Usage: ${cmd} [OPTIONS] "                        
-    echo                                                                        
-    echo "Execute NOA chain with refinements and measure time."
-    echo                                                                        
-    echo "OPTIONS can be any of the following"                                  
-    echo "  -d,--db   					: PostGIS database"                
-    echo "  -e,--endpoint   			: Strabon Endpoint"
-    echo "  -h,--hotposts				: URL where hotspots are stored"
-	echo "  -b,--background         	: Background data"                                           
-	echo "  -l,--log		            : Log file"                                           
-	echo "  -c,--chain		            : Processing chain of hotspots"
-	echo "  -p,--persistence            : Value of persistence of discoverFires query"
-	echo "  -r,--repeat_in_persistence  : Value of repeat_in_persistence of discoverFires query"     
+	echo "Usage: ${cmd} [OPTIONS] "                        
+	echo                                                                        
+	echo "Execute NOA chain with refinements and measure time."
+	echo                                                                        
+	echo "OPTIONS can be any of the following"                                  
+	echo "  -d,--db			: PostGIS database"                
+	echo "  -e,--endpoint			: Strabon Endpoint"
+	echo "  -h,--hotposts			: URL where hotspots are stored"
+	echo "  -b,--background		: Background data"                                           
+	echo "  -l,--log			: Log file"                                           
+	echo "  -c,--chain			: Processing chain of hotspots"
+	echo "  -p,--persistence		: Value of persistence of discoverFires query"
+	echo "  -r,--repeat_in_persistence	: Value of repeat_in_persistence of discoverFires query"     
 }
 
 # If no arguments are given it returns miliseconds from 1970-01-01 00:00:00 UTC
