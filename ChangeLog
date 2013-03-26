@@ -1,3 +1,11 @@
+Day Month Date Hour:Min:Sec Year   Pyravlos Team
+
+	* Version 3.2.9 released.
+
+	* Support for parsing EPSG URIs in geometry literals with datatype
+	geo:wktLiteral.
+	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
+
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
 	* Version 3.2.8 released.

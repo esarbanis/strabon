@@ -11,6 +11,9 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
 
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * This class generalizes WKT literal values that can be given according
@@ -22,6 +25,8 @@ import java.net.URI;
  */
 public class AbstractWKT {
 
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT.class);
+	
 	/**
 	 * WKT representation for an empty geometry
 	 * 
@@ -91,7 +96,6 @@ public class AbstractWKT {
 	
 	private void parseWKTLITERAL(String literalValue) {
 		wkt = literalValue.trim();
-		// FIXME: the default value for wktLiteral
 		srid = GeoConstants.WGS84_LON_LAT_SRID;
 		
 		if (wkt.length() == 0) { // empty geometry
@@ -100,15 +104,17 @@ public class AbstractWKT {
 		
 		if (wkt.charAt(0) == '<') {// if a CRS URI is specified
 			int uriIndx = wkt.indexOf('>');
-			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
 			// FIXME: handle invalid URIs
+			URI crs = URI.create(wkt.substring(1, uriIndx));
+			
 			// FIXME: get the SRID for crs properly. HOW??
-			if (GeoConstants.WGS84_LAT_LON.equals(crs.toString())) {
-				srid = GeoConstants.WGS84_LAT_LON_SRID;
-				
-			} else if (GeoConstants.WGS84_LON_LAT.equals(crs.toString())) {
+			if (GeoConstants.WGS84_LON_LAT.equals(crs.toString())) {
 				srid = GeoConstants.WGS84_LON_LAT_SRID;
+				
+			} else { // parse it to get the srid
+				// FIXME: this code assumes an EPSG URI
+				srid = getEPSG_SRID(crs.toString());
 				
 			}
 			
@@ -131,5 +137,28 @@ public class AbstractWKT {
 	
 	boolean isstRDFWKT() {
 		return isstRDFWKT;
+	}
+	
+	/**
+	 * Returns the SRID corresponding to the URI of the given CRS. We assume
+	 * EPSG URIs only.
+	 * 
+	 * In case of an error, the default is returned, i.e., {@link GeoConstants#defaultSRID}.
+	 * 
+	 * @param wkt
+	 * @return
+	 */
+	protected int getEPSG_SRID(String wkt) {
+		int srid = GeoConstants.defaultSRID;
+		
+		try {
+			srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf('/') + 1).replace(">", ""));
+			
+		} catch (NumberFormatException e) {
+			logger.warn("[Strabon.AbstractWKT] Was expecting an integer. The URL of the EPSG SRID was {}. Continuing with the default SRID, {}", wkt, srid);
+			
+		}
+		
+		return srid;
 	}
 }
