@@ -506,11 +506,27 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			String line;
+			StringBuilder batch=new StringBuilder();
+			int counter=0;
 			BufferedReader br = new BufferedReader(reader);
 			while ((line = br.readLine()) != null) {
-			    storeString(line, baseURI, context, format);
+				counter++;
+				if(counter%500 ==0 )
+				{
+					storeString(batch.toString(), baseURI, context, format);
+					batch = new StringBuilder();
+				}
+				else
+				{
+					batch.append("\n").append(line);
+				}
+			    
 			}
-			
+			if(batch.length()>0)
+			{
+				storeString(batch.toString(), baseURI, context, format);
+			}
+		
 			/*NQuadsTranslator translator = new NQuadsTranslator();
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			System.out.println("Translated NQUADS to NTRIPLES!");
