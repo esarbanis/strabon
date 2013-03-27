@@ -6,10 +6,8 @@
 package org.openrdf.sail.generaldb.managers;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import org.openrdf.generaldb.managers.base.ManagerBase;
-import org.openrdf.sail.generaldb.managers.TransTableManager;
 /**
  * 
  * @author James Leigh

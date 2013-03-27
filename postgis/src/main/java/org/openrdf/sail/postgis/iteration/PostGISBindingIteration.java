@@ -5,7 +5,6 @@
  */
 package org.openrdf.sail.postgis.iteration;
 
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +18,6 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
@@ -37,14 +35,6 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		super(stmt);
 	}
 
-	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
-	 */
 	@Override
 	protected RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException

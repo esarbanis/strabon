@@ -48,6 +48,7 @@ import org.openrdf.sail.generaldb.schema.ValueTable;
  * {@link LiteralTable} for adding, removing, and retrieving statements from the
  * database.
  * 
+ * @author Manos Karpathiotatis <mk@di.uoa.gr>
  * @author James Leigh
  */
 public abstract class GeneralDBTripleRepository {
@@ -490,20 +491,19 @@ public abstract class GeneralDBTripleRepository {
 		}
 	}
 	
-	/****XXX MY ADDITION 21/4/10 ***/
-	public void clearGeoValues()
-	throws RdbmsException
+	/**
+	 * @author Manos Karpathiotatis <mk@di.uoa.gr>
+	 * @throws RdbmsException
+	 */
+	public void clearGeoValues() throws RdbmsException
 	{
-
 		try
 		{
-
-			String query = buildDeleteQuery("geo_values", null,null,null,null);
+			String query = buildDeleteQuery("geo_values", null, null, null, (RdbmsResource[]) null);
 			PreparedStatement stmt = conn.prepareStatement(query);
 			try {
-				setSelectQuery(stmt, null,null,null,null);
-				int count = stmt.executeUpdate();
-
+				setSelectQuery(stmt, null, null, null,(RdbmsResource[]) null);
+				stmt.executeUpdate();
 			}
 			finally {
 				stmt.close();
@@ -513,7 +513,6 @@ public abstract class GeneralDBTripleRepository {
 		catch (SQLException e) {
 			throw new RdbmsException(e);
 		}
-
 	}
 
 }

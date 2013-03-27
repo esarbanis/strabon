@@ -233,20 +233,25 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	}
 
 	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
+	 * FIXME the implementation of this function for PostGIS and MonetDB
+	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
+	 * literals. What about geo:wktLiteral?
+	 * However, this method is called by {@link convert} method only, which
+	 * in turn is not called by any method!
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
 
 	protected abstract RdbmsValue createTemporalValue(ResultSet rs, int index)
 	throws SQLException;
-
-
+	
+	/**
+	 * FIXME the implementation of this function for PostGIS and MonetDB
+	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
+	 * literals. What about geo:wktLiteral?
+	 * However, this method is called by {@link convert} method only, which
+	 * in turn is not called by any method!
+	 */
 	protected abstract RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
 	throws SQLException;
 

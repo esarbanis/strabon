@@ -73,9 +73,9 @@ public abstract class Strabon {
 	public static final String FORMAT_KMZ		= "KMZ";
 	public static final String FORMAT_GEOJSON	= "GeoJSON";
 	public static final String FORMAT_EXP		= "EXP";
-	public static final String FORMAT_HTML		= "HTML";
+	public static final String FORMAT_HTML	= "HTML";
 	
-	public static final String NEWLINE	= "\n";
+	public static final String NEWLINE		= "\n";
 	
 	/**
 	 * Connection details (shared with subclasses)
@@ -151,8 +151,6 @@ public abstract class Strabon {
 			logger.error("[Strabon.init] initialize", e);
 		}
 
-		logger.info("[Strabon.init] Clearing Successful.");
-
 		try {
 			con1 = repo1.getConnection();
 			
@@ -187,23 +185,30 @@ public abstract class Strabon {
 
 		try {
 			con1.commit();
-			con1.close();
-			repo1.shutDown();
-			
-			// delete the lock as well
-			checkAndDeleteLock(databaseName, user, password, port, serverName);
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
 			
-		} catch (SQLException e) {
-			logger.error("[Strabon.close] Error in deleting lock", e);
+		} finally {
+			try {
+				con1.close();
+				repo1.shutDown();
+				
+				// delete the lock as well
+				checkAndDeleteLock(databaseName, user, password, port, serverName);
+				
+			} catch (RepositoryException e) {
+				logger.error("[Strabon.close]", e);
+				
+			}catch (SQLException e) {
+				logger.error("[Strabon.close] Error in deleting lock", e);
+				
+			} catch (ClassNotFoundException e) {
+				logger.error("[Strabon.close] Error in deleting lock", e);
+			}
 			
-		} catch (ClassNotFoundException e) {
-			logger.error("[Strabon.close] Error in deleting lock", e);
+			logger.info("[Strabon.close] Connection closed.");
 		}
-
-		logger.info("[Strabon.close] Connection closed.");
 	}
 
 	public Object query(String queryString, OutputStream out)
@@ -278,6 +283,7 @@ public abstract class Strabon {
 				while (result.hasNext()) {
 					String r = result.next().toString();
 					results++;
+					result.next();
 				}
 				
 				long t3 = System.nanoTime();

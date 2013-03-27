@@ -1,6 +1,30 @@
 Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
+	* Version 3.2.9 released.
+
+	* Support for parsing EPSG URIs in geometry literals with datatype
+	geo:wktLiteral.
+	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
+
+Tue Mar 26 13:28:26 2013   Pyravlos Team
+
 	* Version 3.2.8 released.
+
+	* Added support for handling (storing/querying) GeoSPARQL datatypes.
+	(bug #31: http://bug.strabon.di.uoa.gr/ticket/31)
+
+	* Fixed a bug in StoreOp that wouldn't close the connection, neither
+	rollback the transaction upon an exception. This had as a side effect
+	the abnormal termination of StoreOp (through for example the use of
+	Ctrl-C signal) which was leaving the database locked.
+
+	* Fixed bug where spatial aggregates (e.g., union) didn't work as
+	expected when the query didn't contain a `GROUP BY' clause.
+	(bug #22: http://bug.strabon.di.uoa.gr/ticket/22)
+
+	* Updated GeoSPARQL namespaces and fixed function names to comply with
+	the GeoSPARQL specification.
+	(bug #25: http://bug.strabon.di.uoa.gr/ticket/25)
 
 Wed Jan 09 18:06:41 2013   Pyravlos Team
 
