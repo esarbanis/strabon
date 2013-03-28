@@ -16,7 +16,7 @@
 
 # If tomcat is standalone then environment variable TOMCATPATH should be set
 
-# Example run command: examples/teleios/runChain.sh -b http://dev.strabon.di.uoa.gr/rdf/data-dump-postgres-9.tgz  -l /home/ggarbis/runChain.log -e http://pathway.di.uoa.gr:8080/endpoint
+# Example run command: examples/teleios/runChain.sh -b http://dev.strabon.di.uoa.gr/rdf/data-dump-postgres-9.tgz  -l ${HOME}/runChain.log -e http://pathway.di.uoa.gr:8080/endpoint
 
 # Command name
 cmd="$(basename ${0})" 
@@ -190,7 +190,7 @@ function storeBackgroundData() {
 #		rm /tmp/bgFile$$.tar.gz
 		rm /tmp/bgFiles$$.sql
 	else
-		echo "Backgound file not foung"
+		echo "Backgound file not found"
 		exit -1
 	fi
 	handlePostgresDatabase vacuum ${db} analyze
@@ -257,7 +257,7 @@ db="NOA2012"
 hotspotsURL="http://jose.di.uoa.gr/rdf/hotspots/MSG1"
 #                                 ./examples/teleios/data/data-dump-9.sql
 bgFile="http://dev.strabon.di.uoa.gr/rdf/data-dump-9.sql"
-logFile="/home/ggarbis/runChain.log"
+logFile="${HOME}/runChain.log"
 
 chain="DynamicThresholds"
 persistence=10
@@ -325,11 +325,9 @@ echo "background: ${bgFile}"
 echo "logFile: ${logFile}"
 
 echo > ${logFile}
-echo 2222
 instantiate=${loc}/instantiate.sh
 
 #Initialize (stop tomcat, restart postgres, drop/create database, start tomcat)
-echo 111
 handleTomcatService stop
 handlePostgresService restart
 
@@ -346,8 +344,8 @@ until [ "`curl --silent --show-error --connect-timeout 1 -I ${endpoint} | grep '
 #${loc}/../../scripts/endpoint query ${endpoint} size 
 #exit -1
 echo "Timestamp Store Municipalities DeleteInSea InvalidForFires RefineInCoast TimePersistence DiscoverHotspots" > ${logFile}
-echo > /home/ggarbis/discoverFires.log
-echo > /home/ggarbis/discover.log
+echo > ${HOME}/discoverFires.log
+echo > ${HOME}/discover.log
 
 years="2012" #"2007 2008 2010 2011"
 for y in ${years}; do
@@ -413,7 +411,7 @@ for y in ${years}; do
 		minTime=`date --date="${year}-${month}-${day} ${time2}:00 EEST -30 minutes" +%Y-%m-%dT%H:%M:00`
 		update="`${instantiate} -t ${timestamp} -c ${chain} -s ${sensor} -m ${minTime} ${loc}/refineTimePersistence.rq`"
 #       echo "Refine Time Persistence: ${update}" ; read t
-		handleStrabonEndpoint ${endpoint} update "${update}" #2>&1 | tee /home/ggarbis/timePersistence.log
+		handleStrabonEndpoint ${endpoint} update "${update}" #2>&1 | tee ${HOME}/timePersistence.log
 
 		#psql -U postgres -d ${DB} -c 'VACUUM ANALYZE;';
         
@@ -422,14 +420,14 @@ for y in ${years}; do
 		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
         query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} ${loc}/discover.rq`"
 #        echo "Discover: ${query}" ; #read t
-		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discover.log
+		handleStrabonEndpoint ${endpoint} query "${query}" &>> ${HOME}/discover.log
 #    
 #		# Discover Fires
 #		minTime=`date --date="${year}-${month}-${day} 00:00 EEST" +%Y-%m-%dT%H:%M:00`
 #		maxTime=`date --date="${year}-${month}-${day} 23:59 EEST" +%Y-%m-%dT%H:%M:00`
 #        query="`${instantiate} -c ${chain} -s ${sensor} -m ${minTime} -M ${maxTime} -p 10 -r 3 ${loc}/discoverFires.rq`"
 ##        echo "Discover Fires: ${query}" ; #read t
-#		handleStrabonEndpoint ${endpoint} query "${query}" &>> /home/ggarbis/discoverFires.log
+#		handleStrabonEndpoint ${endpoint} query "${query}" &>> ${HOME}/discoverFires.log
 
 		# Add a new line
         echo >> ${logFile}    

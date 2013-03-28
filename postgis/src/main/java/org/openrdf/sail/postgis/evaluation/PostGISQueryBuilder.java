@@ -550,7 +550,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlSF_Crosses expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Crosses);
+		//follow the same approach as stSPARQL, because the implementation used in
+		//appendgeoSPARQLSpatialRelation (which is based on ST_Relate) is not correct for this case
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Crosses);
 			}
 
 	@Override
@@ -578,7 +580,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlSF_Overlaps expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Overlaps);
+		//follow the same approach as stSPARQL, because the implementation used in
+		//appendgeoSPARQLSpatialRelation (which is based on ST_Relate) is not correct for this case
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Overlaps);
 			}
 
 	@Override
@@ -649,7 +653,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlEgenhofer_Overlap expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.EH_Overlap);
+		//follow the same approach as stSPARQL, because the implementation used in
+		//appendgeoSPARQLSpatialRelation (which is based on ST_Relate) is not correct for this case
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Overlaps);
 			}
 
 	//RCC8
@@ -1618,7 +1624,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	}	
 	/***/
 
-	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
+	//Used in all the generaldb stsparql (and geosparql) boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	//EXCEPT ST_Transform!!!
 	protected void appendGeneralDBTemporalFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, String func)
 			throws UnsupportedRdbmsOperatorException
