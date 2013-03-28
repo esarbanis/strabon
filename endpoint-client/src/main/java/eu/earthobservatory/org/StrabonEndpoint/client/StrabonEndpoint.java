@@ -123,28 +123,28 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 	}
 
 	@Override
-	public boolean store(String data, RDFFormat format) {
-		return false;
+	public boolean store(String data, RDFFormat format, URL namedGraph) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean store(URL data, RDFFormat format) {
-		return false;
+	public boolean store(URL data, RDFFormat format, URL namedGraph) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean update(String sparqlUpdate) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public EndpointResult describe(String sparqlDescribe) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public EndpointResult construct(String sparqlConstruct) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 	
 	public static void main(String args[]) {

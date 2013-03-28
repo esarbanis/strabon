@@ -26,10 +26,36 @@ public interface SpatialEndpoint {
 
 	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException;
 	
-	public boolean store(String data, RDFFormat format);
+	/**
+	 * Stores the RDF <code>data</code> which are in the RDF format
+	 * <code>format</code> in the named graph specified by the URL
+	 * <code>namedGraph</code>.
+	 * 
+	 * @param data 
+	 * @param format
+	 * @param namedGraph
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
+	public boolean store(String data, RDFFormat format, URL namedGraph);
 	
-	public boolean store(URL data, RDFFormat format);
+	/**
+	 * Stores the RDF data located at <code>data</code> which are in the
+	 * RDF format <code>format</code> in the named graph specified by the
+	 * URL <code>namedGraph</code>.
+	 * 
+	 * @param data
+	 * @param format
+	 * @param namedGraph
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
+	public boolean store(URL data, RDFFormat format, URL namedGraph);
 	
+	/**
+	 * Executes the SPARQL Update query specified in <code>sparqlUpdate</code>.
+	 * 
+	 * @param sparqlUpdate
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
 	public boolean update(String sparqlUpdate);
 	
 	public EndpointResult describe(String sparqlDescribe);
