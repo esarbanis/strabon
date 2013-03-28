@@ -615,29 +615,32 @@ public abstract class Strabon {
 			Iterator iterator = statements.iterator();
 			for(Statement st: statements)
 			{
-				String cont = st.getContext().toString();
-				 String validPeriod= cont;
-				 if(!cont.contains(","))
-				 {
-					 int i = cont.indexOf('"')+1;
-					 int j = cont.lastIndexOf('"');
-					 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 
-					 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");
-					 
-				 }
-				 
-				try {
-					Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
-					con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
-				} catch (ParseException e) {
-					logger.error(this.getClass().toString()+": error when constructing the new context");
-					e.printStackTrace();
+				if(st.getContext() == null)
+				{ //this statement of the NQUAD graph is a triple- (null context)
+
+					con1.add(st.getSubject(), st.getPredicate(), st.getObject());
+
 				}
-	
+				else //this statement of the NQUAD graph is a quad
+				{
+					String cont = st.getContext().toString();
+					 String validPeriod= cont;
+					 if(!cont.contains(","))
+					 {
+						 int i = cont.indexOf('"')+1;
+						 int j = cont.lastIndexOf('"');
+						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 				 
+					 }	 
+					try {
+						Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
+						con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
+					} catch (ParseException e) {
+						logger.error(this.getClass().toString()+": error when constructing the new context");
+						e.printStackTrace();
+					}
+		
+				}
 			}
-			//StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
-			//System.out.println("HANDLED TRIPLES" +translator.getHandledTriples().toString());
-			//con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			return;
 		}
 		

@@ -31,7 +31,6 @@ import eu.earthobservatory.runtime.postgres.temporals.TemplateTests;
 
 
 /**
- * A set of simple tests on query rewriting functionality 
  * 
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  */
@@ -122,6 +121,44 @@ public class storeTests {
 	public void testStoreFile() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault 
 	{
 		strabon.storeInRepo("/temporal-periods.nq", "NQUADS");
+
+	}
+	
+	@Test
+	public void testStoreNQUADString() 
+	{
+		String text1 = "<http://example.org/itemOfString1> <http://example.org/id> \"String111\" \"[2005-11-19T12:41:00,2010-11-19T13:41:00]\"^^<http://strdf.di.uoa.gr/ontology#period> . \n" +
+				"<http://example.org/itemOfString2> <http://example.org/id> \"String112\" \"[2005-11-19T12:42:00,2010-11-19T13:41:00]\"^^<http://strdf.di.uoa.gr/ontology#period>.";
+		
+		String text2 = "<http://example.org/itemOfString31> <http://example.org/id> \"String3121\"  . \n" +
+				"<http://example.org/itemOfString322> <http://example.org/id> \"String3122\" .";
+		try {
+			strabon.storeInRepo(text1, "NQUADS");
+			strabon.storeInRepo(text2, "NQUADS");
+
+		} catch (RDFParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RDFHandlerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidDatasetFormatFault e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testNQUADSFile() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault 
+	{
+		strabon.storeInRepo("/triples-and-quads.nq", "NQUADS");
 
 	}
 	

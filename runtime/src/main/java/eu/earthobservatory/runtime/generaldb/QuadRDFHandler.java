@@ -30,6 +30,8 @@ import org.openrdf.rio.RDFFormat;
 //import org.openrdf.model.URI;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.StatementCollector;
 
 public class QuadRDFHandler extends StatementCollector {
@@ -56,7 +58,17 @@ public class QuadRDFHandler extends StatementCollector {
 	        
 	        @Override
 	        public void handleStatement(Statement st) {
-	            if(st.getContext().toString().contains("^^<"+TemporalConstants.PERIOD)||st.getContext().toString().contains("^^<"+TemporalConstants.INSTANT))
+	        	if(st.getContext() == null)
+	        	{ //commented out code so that the statement will be stored in Strabon.Store as it will be handled
+	        		/*try {
+	        			RDFParser parser = Rio.createParser(RDFFormat.NTRIPLES);
+						connection.add(st);
+					} catch (RepositoryException e) {
+						System.out.println("QuadRDFHandler: error in storing the triple ");
+						e.printStackTrace();
+					}*/
+	        	}
+	        	else if(st.getContext().toString().contains("^^<"+TemporalConstants.PERIOD)||st.getContext().toString().contains("^^<"+TemporalConstants.INSTANT))
 	         	{	
 	         	    NQuadsParser parser = new NQuadsParser();
 	         		try {
@@ -73,14 +85,13 @@ public class QuadRDFHandler extends StatementCollector {
 					 
 					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
 				
-					 
 					 try {
 						//connection.add(new URIImpl("<"+graph.toString()+">"),new URIImpl(" <http://strdf.di.uoa.gr/ontology#hasValidTime>"), new URIImpl(validPeriod));
 					   StringReader reader = new StringReader(triple);
 						 connection.add(reader, "null", RDFFormat.NTRIPLES);
 					 } catch (RepositoryException e) {
 						// TODO Auto-generated catch block
-						System.out.println("Error in QuadRDFHandler: could not store rewritter triple");
+						System.out.println("Error in QuadRDFHandler: could not store rewritten triple");
 						e.printStackTrace();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
