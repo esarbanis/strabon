@@ -15,12 +15,18 @@
  */
 package eu.earthobservatory.runtime.generaldb;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 
 //import org.junit.Assert;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.rio.RDFFormat;
 //import org.openrdf.model.URI;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -28,19 +34,20 @@ import org.openrdf.rio.helpers.StatementCollector;
 
 public class QuadRDFHandler extends StatementCollector {
 	        
-	        private StringBuffer triples = new StringBuffer(4096);
-
+	        private SailRepositoryConnection connection= null;
+	        
+	        
 	   
-	        @Override
+	        public QuadRDFHandler(SailRepositoryConnection connection) {
+				super();
+				this.connection = connection;
+			}
+
+			@Override
 	        public void startRDF() throws RDFHandlerException {
 	            super.startRDF();
-	            triples.append("\n");
 	        }
-	        
-	        public StringBuffer getTriples()
-	    	{
-	    		return triples;
-	    	};
+	             
 	    	
 	        @Override
 	        public void endRDF() throws RDFHandlerException {
@@ -65,12 +72,20 @@ public class QuadRDFHandler extends StatementCollector {
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
 					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
-					
-					 if (!triples.toString().contains(triple))
-					 {
-						 triples.append(triple);
-
-					 }
+				
+					 
+					 try {
+						//connection.add(new URIImpl("<"+graph.toString()+">"),new URIImpl(" <http://strdf.di.uoa.gr/ontology#hasValidTime>"), new URIImpl(validPeriod));
+					   StringReader reader = new StringReader(triple);
+						 connection.add(reader, "null", RDFFormat.NTRIPLES);
+					 } catch (RepositoryException e) {
+						// TODO Auto-generated catch block
+						System.out.println("Error in QuadRDFHandler: could not store rewritter triple");
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 						 
 					} catch (RDFParseException e) {

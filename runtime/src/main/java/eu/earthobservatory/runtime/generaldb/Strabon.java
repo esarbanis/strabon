@@ -74,6 +74,7 @@ public abstract class Strabon {
 	public static final String FORMAT_GEOJSON	= "GeoJSON";
 	public static final String FORMAT_EXP		= "EXP";
 	public static final String FORMAT_HTML	= "HTML";
+	public static final int LINES_IN_BATCH = 100;
 	
 	public static final String NEWLINE		= "\n";
 	
@@ -517,7 +518,7 @@ public abstract class Strabon {
 			BufferedReader br = new BufferedReader(reader);
 			while ((line = br.readLine()) != null) {
 				counter++;
-				if(counter%500 ==0 )
+				if(counter%LINES_IN_BATCH ==0 )
 				{
 					storeString(batch.toString(), baseURI, context, format);
 					batch = new StringBuilder();
@@ -608,7 +609,7 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
-			NQuadsTranslator translator = new NQuadsTranslator();
+			NQuadsTranslator translator = new NQuadsTranslator(con1);
 						 
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
@@ -634,8 +635,9 @@ public abstract class Strabon {
 				}
 	
 			}
-			StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
-			con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
+			//StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
+			//System.out.println("HANDLED TRIPLES" +translator.getHandledTriples().toString());
+			//con1.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			return;
 		}
 		

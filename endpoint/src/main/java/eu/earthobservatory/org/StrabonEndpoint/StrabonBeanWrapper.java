@@ -295,7 +295,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					in= new ByteArrayInputStream(source_data.getBytes());
 				}
 				//ByteArrayInputStream in = new ByteArrayInputStream();
-				NQuadsTranslator translator = new NQuadsTranslator();
+				NQuadsTranslator translator = new NQuadsTranslator(conn);
 							 
 				Collection<Statement> statements = translator.translate(in, "");
 				for(Statement st: statements)

@@ -22,6 +22,7 @@ import java.util.Collection;
 
 
 import org.openrdf.model.Statement;
+import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.helpers.StatementCollector;
@@ -33,21 +34,16 @@ public class NQuadsTranslator {
 	
     private NQuadsParser parser;
     private QuadRDFHandler handler;
-    private StringBuffer handledTriples;
-    
-
-    
-    public NQuadsTranslator() {
+    private SailRepositoryConnection connection;
+   
+    public NQuadsTranslator(SailRepositoryConnection connection) {
 		super();
 		this.parser = new NQuadsParser();
-		this.handler = new QuadRDFHandler();
-		this.handledTriples = new StringBuffer(1024);
+		this.handler = new QuadRDFHandler(connection);
+		this.connection = connection;
 	}
 
-	public StringBuffer getHandledTriples() {
-		return handledTriples;
-	}
-
+	
 	public Collection<Statement>  translate(InputStream is,String baseURI)
     {
     	Collection<Statement> statements = null; 
@@ -56,8 +52,6 @@ public class NQuadsTranslator {
     	try {
     		
 			parser.parse(is, "http://test.base.uri");
-		    handledTriples = handler.getTriples();
-	       // System.out.println("HANDLED TRIPLES: "+handledTriples.toString());
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
