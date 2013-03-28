@@ -319,8 +319,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					}
 		
 				}
-				StringReader quadGraphReader = new StringReader(translator.getHandledTriples().toString());
-				conn.add(quadGraphReader, "", RDFFormat.NTRIPLES);
 			}
 			
 			logger.info("[StrabonEndpoint] STORE was successful.");
