@@ -27,6 +27,8 @@ public class TemporalConstants extends GeoConstants {
 	public static final String during= stRDF+ "during";
 
 	public static final String periodOverlaps= stRDF+ "PeriodOverlaps";
+	
+	public static final String periodIntersects= stRDF+ "PeriodIntersects";
 
 	public static final String equalsPeriod= stRDF+ "equalsPeriod";
 

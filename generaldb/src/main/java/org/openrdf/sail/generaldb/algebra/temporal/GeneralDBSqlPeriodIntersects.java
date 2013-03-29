@@ -9,15 +9,16 @@
  */
 package org.openrdf.sail.generaldb.algebra.temporal;
 
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class GeneralDBSqlStarts extends GeneralDBSqlTemporal{
+public class GeneralDBSqlPeriodIntersects  extends GeneralDBSqlTemporal{
 
-	public GeneralDBSqlStarts(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public GeneralDBSqlPeriodIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
 	}
 
@@ -26,8 +27,8 @@ public class GeneralDBSqlStarts extends GeneralDBSqlTemporal{
 	 */
 	@Override
 	public String getOperator() {
-		
-		return null;
+
+		return "&&";
 	}
 
 	/* (non-Javadoc)
@@ -35,8 +36,8 @@ public class GeneralDBSqlStarts extends GeneralDBSqlTemporal{
 	 */
 	@Override
 	public String getPostgresFunction() {
-		// TODO Auto-generated method stub
-		return "startsAllen";
+
+		return "intersects";
 	}
 
 }

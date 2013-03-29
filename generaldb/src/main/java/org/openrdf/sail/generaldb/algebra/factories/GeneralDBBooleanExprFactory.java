@@ -67,7 +67,7 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.finishesFunc;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.periodOverlapsFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodOverlapsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.startsFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBFalseValue;
@@ -1133,7 +1133,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return periodContainedBy(leftArg, rightArg);
 		}
-		else if(function instanceof periodOverlapsFunc)
+		else if(function instanceof PeriodOverlapsFunc)
 		{
 			return periodOverlaps(leftArg, rightArg);
 		}

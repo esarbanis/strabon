@@ -107,6 +107,7 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersects;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart;
@@ -2346,6 +2347,14 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	 */
 	@Override
 	protected void append(GeneralDBSqlPeriodEnd expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlPeriodIntersects expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub

@@ -13,12 +13,12 @@ package org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  *
  */
-public class PeriodOverlapsFunc extends TemporalRelationFunc {
+public class PeriodIntersectsFunc extends TemporalRelationFunc {
 	    
 	@Override
 	public String getURI(){
 	
-		return TemporalConstants.periodOverlaps;
+		return TemporalConstants.periodIntersects;
 	}
 
 	

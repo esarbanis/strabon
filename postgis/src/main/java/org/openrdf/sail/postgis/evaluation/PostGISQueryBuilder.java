@@ -1079,6 +1079,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
+	protected void append(GeneralDBSqlPeriodIntersects expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
+			}
+
+	@Override
 	protected void append(GeneralDBSqlAfterPeriod expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
@@ -1693,7 +1700,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 
 			}
-			
+		
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
 					func.equals("@")|| func.equals("<<")|| func.equals(">>")|| func.equals("&<")|| func.equals("&>")|| func.equals("&&"))
 			{

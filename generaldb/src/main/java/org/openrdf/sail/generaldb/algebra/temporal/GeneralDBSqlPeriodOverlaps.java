@@ -28,7 +28,7 @@ public class GeneralDBSqlPeriodOverlaps  extends GeneralDBSqlTemporal{
 	@Override
 	public String getOperator() {
 
-		return "&&";
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class GeneralDBSqlPeriodOverlaps  extends GeneralDBSqlTemporal{
 	@Override
 	public String getPostgresFunction() {
 
-		return "overlaps";
+		return "overlapsAllen";
 	}
 
 }

@@ -103,6 +103,7 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersects;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart;
@@ -417,6 +418,9 @@ public class GeneralDBExprSupport {
 	}
 	public static GeneralDBSqlExpr periodOverlaps(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlPeriodOverlaps(left, right);
+	}
+	public static GeneralDBSqlExpr periodIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlPeriodIntersects(left, right);
 	}
 	public static GeneralDBSqlExpr meets(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlMeets(left, right);

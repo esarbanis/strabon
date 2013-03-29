@@ -125,6 +125,7 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersection;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodIntersects;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodMinus;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodOverlaps;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodStart;
@@ -627,8 +628,8 @@ public abstract class GeneralDBQueryBuilder {
 		else if(expr instanceof GeneralDBSqlPeriodOverlaps){
 			append((GeneralDBSqlPeriodOverlaps)expr, filter);
 		}
-		else if(expr instanceof GeneralDBSqlPeriodOverlaps){
-			append((GeneralDBSqlPeriodOverlaps)expr, filter);
+		else if(expr instanceof GeneralDBSqlPeriodIntersects){
+			append((GeneralDBSqlPeriodIntersects)expr, filter);
 		}
 		else if(expr instanceof GeneralDBSqlMeets){
 			append((GeneralDBSqlMeets)expr, filter);
@@ -1392,6 +1393,10 @@ protected abstract void append(GeneralDBSqlPeriodEnd expr,
 		throws UnsupportedRdbmsOperatorException;
 
 protected abstract void append(GeneralDBSqlPeriodOverlaps expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlPeriodIntersects expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
 
