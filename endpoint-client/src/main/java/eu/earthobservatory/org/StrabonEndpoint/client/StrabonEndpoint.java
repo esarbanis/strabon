@@ -33,7 +33,7 @@ import org.openrdf.rio.RDFFormat;
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
-public class StrabonEndpoint extends SpatialEndpointImpl {
+public class StrabonEndpoint extends SpatialEndpoint {
 
 	public StrabonEndpoint(String host, int port) {
 		super(host, port);
@@ -144,6 +144,11 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 
 	@Override
 	public EndpointResult construct(String sparqlConstruct) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public EndpointResult ask(String sparqlAsk) {
 		throw new UnsupportedOperationException();
 	}
 	
