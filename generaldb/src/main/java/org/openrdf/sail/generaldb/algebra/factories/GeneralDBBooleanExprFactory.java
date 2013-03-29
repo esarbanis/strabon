@@ -64,6 +64,7 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.OverrightPeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodIntersectsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.finishesFunc;
@@ -1136,6 +1137,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function instanceof PeriodOverlapsFunc)
 		{
 			return periodOverlaps(leftArg, rightArg);
+		}
+		else if(function instanceof PeriodIntersectsFunc)
+		{
+			return periodIntersects(leftArg, rightArg);
 		}
 		else if(function instanceof MeetsFunc)
 		{
