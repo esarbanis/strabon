@@ -37,7 +37,7 @@ public class GeneralDBSqlPeriodIntersects  extends GeneralDBSqlTemporal{
 	@Override
 	public String getPostgresFunction() {
 
-		return "intersects";
+		return "overlaps";
 	}
 
 }
