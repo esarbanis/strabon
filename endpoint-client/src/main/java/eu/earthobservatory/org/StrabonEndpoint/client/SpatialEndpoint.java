@@ -20,46 +20,11 @@ import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
  */
 public abstract class SpatialEndpoint extends HTTPClient implements Endpoint<stSPARQLQueryResultFormat> {
 	
-	
 	public SpatialEndpoint(String host, int port) {
 		super(host, port);
 	}
 	
 	public SpatialEndpoint(String host, int port, String endpointName) {
 		super(host, port, endpointName);
-	}
-		
-	public String getHost() {
-		return host;
-	}
-	
-	public int getPort() {
-		return port;
-	}
-	
-	public void setUser(String user) {
-		this.user = user;
-	}
-	
-	public void setPassword(String pass) {
-		this.password = pass;
-	}
-	
-	public String getUser() {
-		return user;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
-	/**
-	 * Returns a URL (actually a {@link String}) for establishing connections
-	 * to an endpoint based on the information given to the constructor. 
-	 * 
-	 * @return
-	 */
-	protected String getConnectionURL() {
-		return "http://" + host + ":" + port + "/" + endpointName; 
 	}
 }
