@@ -14,9 +14,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 
 /**

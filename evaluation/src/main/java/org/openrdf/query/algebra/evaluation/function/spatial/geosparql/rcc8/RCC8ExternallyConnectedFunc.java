@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.rcc8;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 

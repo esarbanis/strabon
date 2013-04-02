@@ -135,6 +135,7 @@
 		<module>endpoint</module>
 		<module>endpoint-client</module>
 		<module>endpoint-exec</module>
+		<module>constants</module>
 	</modules>
 
 	<properties>
@@ -235,6 +236,12 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>strabon-endpoint</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>eu.earthobservatory</groupId>
+				<artifactId>spatial-temporal-constants</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 

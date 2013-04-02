@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.egenhofer;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 
 public class EgenhoferEqualsFunc extends GeoSparqlRelation {

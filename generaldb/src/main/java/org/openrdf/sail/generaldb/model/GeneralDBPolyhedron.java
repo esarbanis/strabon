@@ -3,11 +3,12 @@ package org.openrdf.sail.generaldb.model;
 import java.io.IOException;
 
 import org.openrdf.model.URI;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 import com.vividsolutions.jts.io.ParseException;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 

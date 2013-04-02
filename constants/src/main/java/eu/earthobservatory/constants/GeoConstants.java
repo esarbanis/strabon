@@ -7,13 +7,11 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package org.openrdf.query.algebra.evaluation.function.spatial;
+package eu.earthobservatory.constants;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.vividsolutions.jts.io.gml2.GMLReader;
 
 /**
  * This class is a placeholder for various constants around geometries. These

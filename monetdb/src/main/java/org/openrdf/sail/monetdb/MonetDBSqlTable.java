@@ -7,8 +7,9 @@ package org.openrdf.sail.monetdb;
 
 import java.sql.SQLException;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 

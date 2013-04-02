@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlNonTopologicalConstruct;
+
+import eu.earthobservatory.constants.GeoConstants;
  
 /**
  * 

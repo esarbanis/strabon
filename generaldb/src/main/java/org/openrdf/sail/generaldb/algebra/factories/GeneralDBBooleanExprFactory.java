@@ -113,7 +113,6 @@ import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
@@ -136,6 +135,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Boolean SQL expression factory. This factory can convert a number of core

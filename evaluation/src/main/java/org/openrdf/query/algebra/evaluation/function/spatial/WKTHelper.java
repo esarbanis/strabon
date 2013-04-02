@@ -12,6 +12,8 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 
 /**
  * 

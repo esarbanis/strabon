@@ -52,7 +52,6 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
@@ -71,6 +70,8 @@ import org.openrdf.query.algebra.evaluation.util.ValueComparator;
 import org.openrdf.query.impl.EmptyBindingSet;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 

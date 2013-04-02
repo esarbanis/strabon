@@ -15,7 +15,6 @@ import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -25,6 +24,8 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
