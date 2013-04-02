@@ -146,6 +146,8 @@ public class CapabilitiesBean extends HttpServlet {
 			}
 		}
 		
+		out.println();
+		
 		// print supported spatial extension functions for GeoSPARQL
 		if (caps.getGeoSPARQLSpatialExtensionFunctions() != null) {
 			out.println("GeoSPARQL Extension Functions");

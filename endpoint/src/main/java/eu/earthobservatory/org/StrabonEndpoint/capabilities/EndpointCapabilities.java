@@ -9,9 +9,14 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -23,9 +28,34 @@ import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
  */
 public class EndpointCapabilities implements Capabilities {
 
+	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.EndpointCapabilities.class);
+	
+	private static final String VERSION_PROPERTIES_FILE = "/version.properties";
+	private static final Properties PROPERTIES = new Properties();
+
+	private static String VERSION;
+	
+	// load the properties file to get the version
+	static {
+		InputStream vin = Capabilities.class.getResourceAsStream(VERSION_PROPERTIES_FILE);
+		if (vin != null) {
+			try {
+				PROPERTIES.load(vin);
+				vin.close();
+				
+			} catch (IOException e) {
+				logger.error("[StrabonEndpoint.EndpointCapabilities] Error during reading of {} file.", VERSION_PROPERTIES_FILE, e);
+			}
+		} else {
+			logger.warn("[StrabonEndpoint.EndpointCapabilities] Could not read version file.");
+		}
+		
+		VERSION = PROPERTIES.getProperty("version");
+	}
+	
 	@Override
 	public String getVersion() {
-		return "3.2.9-SNAPSHOT";
+		return VERSION;
 	}
 	
 	@Override
