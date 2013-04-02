@@ -190,7 +190,7 @@ public class StrabonPolyhedron implements Value {
 		this.geometry = new StrabonPolyhedron(geo, algorithm, MAX_POINTS).geometry;
 	}
 
-	@SuppressWarnings("unused")
+	// unused
 	public StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
 		if (geo.isEmpty()) {
 			this.geometry = geo;
@@ -843,6 +843,7 @@ public class StrabonPolyhedron implements Value {
 		return this.geometry.getNumPoints();
 	}
 
+	@SuppressWarnings("unused")
 	private static String FindGeoType(Geometry geo) {
 		return 
 				Point.class.isInstance(geo) ? "Point" :
