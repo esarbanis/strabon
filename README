@@ -358,6 +358,10 @@ Known Issues
 
    	$ mvn clean package -Dshade.skip
 
+ * When using MonetDB as a backend, the following source code of MonetDB must be 
+   used:
+	https://hg.strabon.di.uoa.gr/MonetDB/   
+
 
 License
 =======
