@@ -214,6 +214,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -227,8 +228,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			leftArg = label(left);
 		}
 
-
-
 		if((function instanceof DistanceFunc))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -240,11 +239,13 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			{
 				rightArg = label(right);
 			}
+			
+			thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
 		if(function instanceof SpatialMetricFunc)
 		{
-			return spatialMetricPicker(function, leftArg, rightArg);
+			return spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 		}
 		else //if(functionCall instanceof SpatialPropertyFunc)
 		{
@@ -380,6 +381,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -393,8 +395,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			leftArg = label(left);
 		}
 
-
-
 		if(!(function instanceof AreaFunc))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -406,10 +406,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			{
 				rightArg = label(right);
 			}
+
+			thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialMetricPicker(function, leftArg, rightArg);
-
+		return spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 	}
 
 	GeneralDBSqlExpr spatialPropertyFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
@@ -524,11 +525,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	/***/
 	
 	//TODO more to be added here probably
-	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.distance))
 		{
-			return geoDistance(leftArg, rightArg);
+			return geoDistance(leftArg, rightArg, thirdArg);
 		}
 		else if(function.getURI().equals(GeoConstants.area))
 		{

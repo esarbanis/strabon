@@ -423,12 +423,10 @@ public class GeneralDBExprSupport {
 		return new GeneralDBSqlGeoArea(expr);
 	}
 	
-	public static GeneralDBSqlExpr geoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-
-		return new GeneralDBSqlGeoDistance(left, right);
+	public static GeneralDBSqlExpr geoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) {
+		return new GeneralDBSqlGeoDistance(left, right,third);
 	}
 	
-
 	//XXX Spatial Property Functions
 	public static GeneralDBSqlExpr dimension(GeneralDBSqlExpr expr) {
 

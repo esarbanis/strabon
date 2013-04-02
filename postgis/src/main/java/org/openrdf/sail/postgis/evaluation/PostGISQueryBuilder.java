@@ -58,6 +58,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
@@ -339,6 +340,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr) throws UnsupportedRdbmsOperatorException
 	{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
+				&&!(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
 				&&!(expr instanceof GeneralDBSqlSpatialProperty))
@@ -356,6 +358,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		else if(expr instanceof UnaryGeneralDBOperator)
 		{
 			dispatchUnarySqlOperator((UnaryGeneralDBOperator) expr, query.select);
+		}
+		else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
+		{
+			dispatchTripleSqlOperator((GeneralDBSqlSpatialMetricTriple) expr, query.select);
 		}
 		//SRID support must be explicitly added!
 
@@ -756,11 +762,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	
 	//Spatial Metric Functions
 	@Override
-	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
-			}
+	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
+		appendDistance(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
+	}
 
 	@Override
 	protected void append(GeneralDBSqlGeoArea expr, GeneralDBSqlExprBuilder filter)
@@ -1279,8 +1284,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.appendComma();
 			filter.append(sridExpr);
 		}
-
-			}
+	}
 
 	/** Addition for datetime metric functions
 	 * 
@@ -1405,7 +1409,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		String sridExpr = null;
 
 		filter.openBracket();
-
+		
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 
@@ -1480,7 +1484,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Union: filter.appendFunction("ST_Union"); break;
 			case ST_SymDifference: filter.appendFunction("ST_SymDifference"); break;
 			case ST_Buffer: filter.appendFunction("ST_Buffer"); break;
-			case ST_Distance: filter.appendFunction("ST_Distance"); break;
 			
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
 			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
@@ -1490,9 +1493,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Within: filter.appendFunction("ST_Within"); break;
 			case ST_Contains: filter.appendFunction("ST_Contains"); break;
 			case ST_Overlaps: filter.appendFunction("ST_Overlaps"); break;
-			
 			}
-			
+
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
@@ -1516,7 +1518,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 			filter.appendComma();
-
 
 			if(expr.getRightArg() instanceof GeneralDBStringValue)
 			{
@@ -1570,7 +1571,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
 			}
 
-
 			filter.closeBracket();
 			//SRID Support
 			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
@@ -1589,8 +1589,172 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.appendComma();
 			filter.append(sridExpr);
 		}
+	}
 
+	//Distance function
+	protected void appendDistance(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func) throws UnsupportedRdbmsOperatorException
+	{
+		String units = null;
+		
+		filter.openBracket();
+
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+		boolean check3 = expr.getThirdArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
+
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getRightArg(), filter);
+		}
+		else if(check3)
+		{
+			this.append((GeneralDBSqlNull)expr.getThirdArg(), filter);
+
+		}
+		else
+		{						
+			filter.appendFunction("ST_Distance");
+
+			filter.openBracket();
+	
+			if (expr.getThirdArg() instanceof GeneralDBStringValue)
+			{			
+				String unparsedUnits = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
+
+				units = unparsedUnits.substring(unparsedUnits.lastIndexOf('/')+1);
+				if(units.equals("metre") || units.equals("meter"))
+				{					
+					filter.appendFunction("GEOGRAPHY");
+					filter.openBracket();
+					filter.appendFunction("ST_TRANSFORM");
+					filter.openBracket();
+				}
+				else if(units.equals("degree"))
+				{
+					filter.appendFunction("ST_TRANSFORM");
+					filter.openBracket();
+				}	
+			}	
+			
+			if(expr.getLeftArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getLeftArg(),filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+			}
+
+			if(units.equals("metre") || units.equals("meter"))
+			{					
+				filter.appendComma();
+				filter.append("4326");
+				filter.closeBracket(); //close st_transform
+				filter.closeBracket(); //close geography
+				
+				filter.appendComma();
+
+				filter.appendFunction("GEOGRAPHY");
+				filter.openBracket();
+				filter.appendFunction("ST_TRANSFORM");
+				filter.openBracket();				
+			}
+			else if(units.equals("degree"))
+			{
+				filter.appendComma();
+				filter.append("4326");
+				filter.closeBracket(); //close st_transform
+				
+				filter.appendComma();
+				
+				filter.appendFunction("ST_TRANSFORM");
+				filter.openBracket();
+			}	
+			else
+			{
+				filter.appendComma();
+			}	
+			
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);
+			}						
+			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+			{
+				filter.keepSRID_part1();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part2();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part3();
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				appendCastToDouble(filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
+
+			if(units.equals("metre") || units.equals("meter"))
+			{
+				filter.appendComma();
+				filter.append("4326");
+				filter.closeBracket();
+				filter.closeBracket();
+			}
+			else if(units.equals("degree"))
+			{
+				filter.appendComma();
+				filter.append("4326");
+				filter.closeBracket();
+			}	
+
+			filter.closeBracket();
+		}
+		filter.closeBracket();
+	}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
 	protected void appendGeneralDBSpatialFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)

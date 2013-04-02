@@ -551,9 +551,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 * FIXME spatials
 	 */
 	@Override
-	public void meet(FunctionCall functionCall)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
+	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
 
 		if(function instanceof SpatialConstructFunc)
@@ -672,6 +671,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			//TODO
 			GeneralDBSqlExpr leftArg = null;
 			GeneralDBSqlExpr rightArg = null;
+			GeneralDBSqlExpr thirdArg = null;
 
 			ValueExpr left = functionCall.getArgs().get(0);
 
@@ -684,7 +684,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				leftArg = label(left);
 			}
 
-			//These two functions only have one argument!!
+			//Area function has only one argument!!
 			if(!(function instanceof AreaFunc))
 			{
 				ValueExpr right = functionCall.getArgs().get(1);
@@ -697,16 +697,16 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				{
 					rightArg = label(right);
 				}
+				thirdArg = uri(functionCall.getArgs().get(2));
 			}
 
-			result = spatialMetricPicker(function, leftArg, rightArg);
+			result = spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 		}
 		else //default case
 		{
 			meetNode(functionCall);
 		}
-
-			}
+	}
 
 	/**
 	 * Addition for datetime metric functions
@@ -890,6 +890,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -903,8 +904,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			leftArg = label(left);
 		}
 
-
-
 		if(!(function instanceof AreaFunc))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -916,9 +915,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			{
 				rightArg = label(right);
 			}
+			thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialMetricPicker(function, leftArg, rightArg);
+		return spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 
 	}
 
@@ -1218,11 +1218,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	/***/
 	
 	//TODO more to be added here probably
-	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.distance))
 		{
-			return geoDistance(leftArg, rightArg);
+			return geoDistance(leftArg, rightArg, thirdArg);
 		}
 		else if(function.getURI().equals(GeoConstants.area))
 		{
