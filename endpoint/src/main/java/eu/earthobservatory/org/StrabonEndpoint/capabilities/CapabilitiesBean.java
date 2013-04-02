@@ -124,13 +124,15 @@ public class CapabilitiesBean extends HttpServlet {
 		
 		RequestCapabilities reCap = caps.getQueryCapabilities();
 		
-		for (Parameter param : reCap.getParametersObject().getParameters()) {
-			out.println("Supports parameter  : " + param.getName());
-			
-			if (param.getAcceptedValues().size() > 0) {
-				out.println("    Accepted values : ");
-				for (String acceptedValue : param.getAcceptedValues()) {
-					out.println("\t\t      " + acceptedValue);
+		if (reCap.getParametersObject() != null) {
+			for (Parameter param : reCap.getParametersObject().getParameters()) {
+				out.println("Supports parameter  : " + param.getName());
+				
+				if (param.getAcceptedValues().size() > 0) {
+					out.println("    Accepted values : ");
+					for (String acceptedValue : param.getAcceptedValues()) {
+						out.println("\t\t      " + acceptedValue);
+					}
 				}
 			}
 		}

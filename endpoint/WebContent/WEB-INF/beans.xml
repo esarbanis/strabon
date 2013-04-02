@@ -19,7 +19,7 @@
 		<!-- true : AutoDiscoveryCapabilities -->
 		<!-- false: EndpointCapabilities -->
 		<constructor-arg type="boolean">
-            <value>true</value>
+            <value>false</value>
         </constructor-arg>
 	</bean>
 	
