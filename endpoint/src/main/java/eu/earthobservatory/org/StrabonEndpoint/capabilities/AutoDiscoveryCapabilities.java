@@ -10,6 +10,7 @@
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -244,5 +245,21 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 	
 	private String getConnectionURL() {
 		return "http://" + host + ":" + port + "/" + appName;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#getstSPARQLSpatialExtensionFunctions()
+	 */
+	@Override
+	public List<String> getstSPARQLSpatialExtensionFunctions() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#getGeoSPARQLSpatialExtensionFunctions()
+	 */
+	@Override
+	public List<String> getGeoSPARQLSpatialExtensionFunctions() {
+		return null;
 	}
 }

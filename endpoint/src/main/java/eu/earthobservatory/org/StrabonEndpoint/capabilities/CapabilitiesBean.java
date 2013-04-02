@@ -134,6 +134,24 @@ public class CapabilitiesBean extends HttpServlet {
 				}
 			}
 		}
+		
+		// print supported spatial extension functions for stSPARQL
+		if (caps.getstSPARQLSpatialExtensionFunctions() != null) {
+			out.println("stSPARQL Extension Functions");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String extFunc : caps.getstSPARQLSpatialExtensionFunctions()) {
+				out.println(extFunc);
+			}
+		}
+		
+		// print supported spatial extension functions for GeoSPARQL
+		if (caps.getGeoSPARQLSpatialExtensionFunctions() != null) {
+			out.println("GeoSPARQL Extension Functions");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String extFunc : caps.getGeoSPARQLSpatialExtensionFunctions()) {
+				out.println(extFunc);
+			}
+		}
 	}
 	
 	private String getYesNo(boolean val) {

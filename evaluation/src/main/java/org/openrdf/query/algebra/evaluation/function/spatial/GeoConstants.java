@@ -9,6 +9,12 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.vividsolutions.jts.io.gml2.GMLReader;
+
 /**
  * This class is a placeholder for various constants around geometries. These
  * constants range from URIs of namespaces, functions, representations, etc.,
@@ -142,9 +148,6 @@ public class GeoConstants {
 	 * The URI for the datatype gmlLiteral
 	 */
 	public static final String GMLLITERAL				=  GEO + "gmlLiteral";
-	
-	
-	
 	
 	/**																		*
 	 *  						Extended functions 							*
@@ -286,16 +289,102 @@ public class GeoConstants {
 	public static final String diffDateTime = "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";
 	/** End of addition **/
 
-
 	/**
 	 * RCC-8 relations for the RDFi framework
 	 */
 	public static final String rdfiDC						= rdfi + "DC";
 	public static final String rdfiEC						= rdfi + "EC";
 	public static final String rdfiPO						= rdfi + "PO";
-	public static final String rdfiNTPP						= rdfi + "NTPP";
+	public static final String rdfiNTPP					= rdfi + "NTPP";
 	public static final String rdfiNTPPi					= rdfi + "NTPPi";
-	public static final String rdfiTPP						= rdfi + "TPP";
-	public static final String rdfiTPPi						= rdfi + "TPPi";
+	public static final String rdfiTPP					= rdfi + "TPP";
+	public static final String rdfiTPPi					= rdfi + "TPPi";
 	public static final String rdfiEQ						= rdfi + "EQ";
+	
+	/**
+	 * List of stSPARQL spatial extension functions 
+	 */
+	public static final List<String> stSPARQLSpatialExtFunc = new ArrayList<String>();
+	
+	/**
+	 * List of stSPARQL temporal extension functions
+	 */
+	//public static final List<String> stSPARQLTemporalExtFunc = new ArrayList<String>();
+	
+	/**
+	 * List of GeoSPARQL extension functions
+	 */
+	public static final List<String> stGeoSPARQLExtFunc = new ArrayList<String>();
+	
+	// declare spatial and temporal extension functions
+	static {
+		Class<GeoConstants> geoConstants = GeoConstants.class;	
+		
+		stSPARQLSpatialExtFunc.add(equals);	
+		stSPARQLSpatialExtFunc.add(disjoint);
+		stSPARQLSpatialExtFunc.add(intersects);
+		stSPARQLSpatialExtFunc.add(touches);	
+		stSPARQLSpatialExtFunc.add(within);	
+		stSPARQLSpatialExtFunc.add(contains);	
+		stSPARQLSpatialExtFunc.add(overlaps);	
+		stSPARQLSpatialExtFunc.add(crosses);
+
+		stSPARQLSpatialExtFunc.add(relate);
+			     
+		stSPARQLSpatialExtFunc.add(mbbIntersects);
+		stSPARQLSpatialExtFunc.add(mbbContains); 	
+		stSPARQLSpatialExtFunc.add(mbbEquals);	
+		stSPARQLSpatialExtFunc.add(mbbWithin);
+			     
+		stSPARQLSpatialExtFunc.add(left);	
+		stSPARQLSpatialExtFunc.add(right);	
+		stSPARQLSpatialExtFunc.add(above);	
+		stSPARQLSpatialExtFunc.add(below);	
+			     
+		stSPARQLSpatialExtFunc.add(union);	
+		stSPARQLSpatialExtFunc.add(buffer);	
+		stSPARQLSpatialExtFunc.add(envelope);	
+		stSPARQLSpatialExtFunc.add(convexHull);	
+		stSPARQLSpatialExtFunc.add(boundary);
+		stSPARQLSpatialExtFunc.add(intersection);
+		stSPARQLSpatialExtFunc.add(difference);
+		stSPARQLSpatialExtFunc.add(symDifference);
+		stSPARQLSpatialExtFunc.add(transform);
+			     
+		stSPARQLSpatialExtFunc.add(distance);
+		stSPARQLSpatialExtFunc.add(area);	
+			     
+		stSPARQLSpatialExtFunc.add(dimension);
+		stSPARQLSpatialExtFunc.add(geometryType);
+		stSPARQLSpatialExtFunc.add(asText);	
+		stSPARQLSpatialExtFunc.add(asGML);	
+		stSPARQLSpatialExtFunc.add(srid);
+		stSPARQLSpatialExtFunc.add(isEmpty);
+		stSPARQLSpatialExtFunc.add(isSimple); 	
+			     
+		stSPARQLSpatialExtFunc.add(extent);
+		
+		
+		try {
+			Field[] field = geoConstants.getDeclaredFields();
+		
+			for (int i = 0; i < field.length; i++) {
+				// stSPARQL
+				
+				// GeoSPARQL
+				if (field[i].getName().startsWith("geoSparql") ||
+						field[i].getName().startsWith("sf") ||
+						field[i].getName().startsWith("eh") ||
+						field[i].getName().startsWith("rcc")) {
+					stGeoSPARQLExtFunc.add((String) field[i].get(null));
+				}
+			}
+		} catch (SecurityException e) {
+			// suppress exception; it should not reach here
+		} catch (IllegalArgumentException e) {
+			// suppress exception; it should not reach here 
+		} catch (IllegalAccessException e) {
+			// suppress exception; it should not reach here
+		}
+	}
 }
