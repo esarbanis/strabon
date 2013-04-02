@@ -20,6 +20,6 @@ public class EqualsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.equals;
+		return GeoConstants.stSPARQLequals;
 	}
 }

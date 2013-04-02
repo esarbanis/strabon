@@ -20,6 +20,6 @@ public class EnvelopeFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.envelope;
+		return GeoConstants.stSPARQLenvelope;
 	}
 }

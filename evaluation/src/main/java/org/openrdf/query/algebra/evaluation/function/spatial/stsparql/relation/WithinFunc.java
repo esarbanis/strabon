@@ -20,6 +20,6 @@ public class WithinFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.within;
+		return GeoConstants.stSPARQLwithin;
 	}
 }

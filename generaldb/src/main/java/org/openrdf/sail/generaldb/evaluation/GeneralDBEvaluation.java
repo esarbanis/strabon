@@ -487,12 +487,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
 	{
 		StrabonPolyhedron leftArg = ((GeneralDBPolyhedron) left).getPolyhedron();
-		if(function.getURI().equals(GeoConstants.union))
+		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.buffer))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
 			if(right instanceof LiteralImpl)
 			{
@@ -506,7 +506,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(GeoConstants.transform))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
 			if(right instanceof URIImpl)
 			{
@@ -522,29 +522,29 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(GeoConstants.envelope))
+		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
 			return StrabonPolyhedron.envelope(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.convexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
 			return StrabonPolyhedron.convexHull(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.boundary))
+		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
 			return StrabonPolyhedron.boundary(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.intersection))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.difference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
-		else if(function.getURI().equals(GeoConstants.symDifference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.symDifference(leftArg, rightArg);		

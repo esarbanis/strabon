@@ -20,6 +20,6 @@ public class ExtentFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.extent;
+		return GeoConstants.stSPARQLextent;
 	}
 }

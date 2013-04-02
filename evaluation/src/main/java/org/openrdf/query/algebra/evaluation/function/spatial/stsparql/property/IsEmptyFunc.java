@@ -21,6 +21,6 @@ public class IsEmptyFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.isEmpty;
+		return GeoConstants.stSPARQLisEmpty;
 	}
 }

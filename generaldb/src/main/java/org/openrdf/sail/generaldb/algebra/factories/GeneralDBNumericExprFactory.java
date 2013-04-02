@@ -325,12 +325,12 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.buffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = this.createNumericExpr(right);
 				}
-				else if(function.getURI().equals(GeoConstants.transform))
+				else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 				{
 					//Another special case -> Second argument of this function is a URI
 					rightArg = uri(right);
@@ -436,39 +436,39 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
-		if(function.getURI().equals(GeoConstants.union))
+		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
 			return geoUnion(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.buffer))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
 			return geoBuffer(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.transform))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
 			return geoTransform(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.envelope))
+		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
 			return geoEnvelope(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.convexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
 			return geoConvexHull(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.boundary))
+		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
 			return geoBoundary(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.intersection))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
 			return geoIntersection(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.difference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
 			return geoDifference(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.symDifference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
 			return geoSymDifference(leftArg, rightArg);
 		}
@@ -527,11 +527,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
-		if(function.getURI().equals(GeoConstants.distance))
+		if(function.getURI().equals(GeoConstants.stSPARQLdistance))
 		{
 			return geoDistance(leftArg, rightArg, thirdArg);
 		}
-		else if(function.getURI().equals(GeoConstants.area))
+		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
 		}
@@ -543,27 +543,27 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	GeneralDBSqlExpr spatialPropertyPicker(Function function,GeneralDBSqlExpr arg)
 	{
-		if(function.getURI().equals(GeoConstants.dimension))
+		if(function.getURI().equals(GeoConstants.stSPARQLdimension))
 		{
 			return dimension(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.geometryType))
+		else if(function.getURI().equals(GeoConstants.stSPARQLgeometryType))
 		{
 			return geometryType(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.asText))
+		else if(function.getURI().equals(GeoConstants.stSPARQLasText))
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.srid))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
 		{
 			return srid(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isEmpty))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisEmpty))
 		{
 			return isEmpty(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isSimple))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisSimple))
 		{
 			return isSimple(arg);
 		}

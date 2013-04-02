@@ -19,7 +19,7 @@ public class RelateFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.relate;
+		return GeoConstants.stSPARQLrelate;
 	}
 
 //	public Literal evaluate(ValueFactory valueFactory, Value... args)

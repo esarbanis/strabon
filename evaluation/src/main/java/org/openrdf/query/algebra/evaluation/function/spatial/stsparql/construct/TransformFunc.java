@@ -20,6 +20,6 @@ public class TransformFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.transform;
+		return GeoConstants.stSPARQLtransform;
 	}
 }

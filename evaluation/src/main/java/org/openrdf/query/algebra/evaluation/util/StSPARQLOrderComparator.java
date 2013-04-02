@@ -55,7 +55,7 @@ public class StSPARQLOrderComparator implements Comparator<BindingSet> {
 				if(element.getExpr() instanceof FunctionCall)
 				{
 					FunctionCall fc = (FunctionCall) element.getExpr();
-					if(fc.getURI().equals(GeoConstants.envelope) && fc.getArgs().size()==2)
+					if(fc.getURI().equals(GeoConstants.stSPARQLenvelope) && fc.getArgs().size()==2)
 					{
 						mbbFlag = true;
 						FunctionCall expr = (FunctionCall) element.getExpr();

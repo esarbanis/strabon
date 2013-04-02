@@ -20,6 +20,6 @@ public class ConvexHullFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.convexHull;
+		return GeoConstants.stSPARQLconvexHull;
 	}
 }

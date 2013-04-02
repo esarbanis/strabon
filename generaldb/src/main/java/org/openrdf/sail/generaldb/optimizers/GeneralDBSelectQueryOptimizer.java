@@ -1280,7 +1280,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							String originalName = copy.getName();
 							//((Var) expr).setName(originalName+"?spatial");
 
-							FunctionCall fc = new FunctionCall(GeoConstants.envelope,copy);
+							FunctionCall fc = new FunctionCall(GeoConstants.stSPARQLenvelope,copy);
 							//XXX volatile - using an extra arg to 'hang' the name I need
 							fc.addArg(new Var("-mbb-"+originalName));
 							ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+originalName);
@@ -1315,7 +1315,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				}
 				else //Function call met
 				{
-					FunctionCall fc = new FunctionCall(GeoConstants.envelope,expr);
+					FunctionCall fc = new FunctionCall(GeoConstants.stSPARQLenvelope,expr);
 
 					fc.addArg(new Var("-mbb-"+(++mbbCounter)));
 					ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+(mbbCounter));

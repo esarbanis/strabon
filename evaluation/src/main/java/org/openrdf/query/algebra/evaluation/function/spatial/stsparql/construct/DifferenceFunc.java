@@ -20,6 +20,6 @@ public class DifferenceFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.difference;
+		return GeoConstants.stSPARQLdifference;
 	}
 }

@@ -21,6 +21,6 @@ public class AreaFunc extends SpatialMetricFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.area;
+		return GeoConstants.stSPARQLarea;
 	}
 }

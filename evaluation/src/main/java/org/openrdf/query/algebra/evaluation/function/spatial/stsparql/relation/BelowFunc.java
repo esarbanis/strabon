@@ -20,6 +20,6 @@ public class BelowFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.below;
+		return GeoConstants.stSPARQLbelow;
 	}
 }

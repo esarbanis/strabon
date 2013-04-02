@@ -20,7 +20,7 @@ public class IntersectsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.intersects;
+		return GeoConstants.stSPARQLintersects;
 		}
 
 }

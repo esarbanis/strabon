@@ -20,6 +20,6 @@ public class UnionFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.union;
+		return GeoConstants.stSPARQLunion;
 	}
 }

@@ -20,6 +20,6 @@ public class TouchesFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.touches;
+		return GeoConstants.stSPARQLtouches;
 	}
 }

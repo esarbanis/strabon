@@ -20,7 +20,7 @@ public class MbbContainsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.mbbContains;
+		return GeoConstants.stSPARQLmbbContains;
 	}
 
 }

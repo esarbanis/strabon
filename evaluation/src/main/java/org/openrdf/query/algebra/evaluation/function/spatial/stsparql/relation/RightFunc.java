@@ -20,6 +20,6 @@ public class RightFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.right;
+		return GeoConstants.stSPARQLright;
 	}
 }

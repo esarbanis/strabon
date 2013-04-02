@@ -21,6 +21,6 @@ public class DistanceFunc extends SpatialMetricFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.distance;
+		return GeoConstants.stSPARQLdistance;
 	}
 }

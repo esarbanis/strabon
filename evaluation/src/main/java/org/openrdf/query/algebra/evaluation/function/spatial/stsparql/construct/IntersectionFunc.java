@@ -20,6 +20,6 @@ public class IntersectionFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.intersection;
+		return GeoConstants.stSPARQLintersection;
 	}
 }

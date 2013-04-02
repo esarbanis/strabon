@@ -154,56 +154,56 @@ public class GeoConstants {
 	 *  							stSPARQL								*
 	 * 																		*/
 	// Spatial Relationships
-	public static final String equals 			= stRDF + "equals";
-	public static final String disjoint 		= stRDF + "disjoint";
-	public static final String intersects 		= stRDF + "intersects";
-	public static final String touches 			= stRDF + "touches";
-	public static final String within 			= stRDF + "within";
-	public static final String contains 		= stRDF + "contains";
-	public static final String overlaps 		= stRDF + "overlaps";
-	public static final String crosses 			= stRDF + "crosses";
+	public static final String stSPARQLequals 		= stRDF + "equals";
+	public static final String stSPARQLdisjoint 		= stRDF + "disjoint";
+	public static final String stSPARQLintersects 	= stRDF + "intersects";
+	public static final String stSPARQLtouches 		= stRDF + "touches";
+	public static final String stSPARQLwithin 		= stRDF + "within";
+	public static final String stSPARQLcontains 		= stRDF + "contains";
+	public static final String stSPARQLoverlaps 		= stRDF + "overlaps";
+	public static final String stSPARQLcrosses 		= stRDF + "crosses";
 	
 	// The generic relate function
-	public static final String relate 			= stRDF + "relate";
+	public static final String stSPARQLrelate			= stRDF + "relate";
 	
 	// Topological Relationships utilizing mbb
-	public static final String mbbIntersects	= stRDF + "mbbIntersects";
-	public static final String mbbContains 		= stRDF + "mbbContains";
-	public static final String mbbEquals 		= stRDF + "mbbEquals";
-	public static final String mbbWithin 		= stRDF + "mbbWithin";
+	public static final String stSPARQLmbbIntersects	= stRDF + "mbbIntersects";
+	public static final String stSPARQLmbbContains 	= stRDF + "mbbContains";
+	public static final String stSPARQLmbbEquals 		= stRDF + "mbbEquals";
+	public static final String stSPARQLmbbWithin 		= stRDF + "mbbWithin";
 	
 	// Directional functions
-	public static final String left 			= stRDF + "left";
-	public static final String right			= stRDF + "right";
-	public static final String above 			= stRDF + "above";
-	public static final String below			= stRDF + "below";
+	public static final String stSPARQLleft 			= stRDF + "left";
+	public static final String stSPARQLright			= stRDF + "right";
+	public static final String stSPARQLabove 			= stRDF + "above";
+	public static final String stSPARQLbelow			= stRDF + "below";
 
 	// Spatial Constructs
-	public static final String union 			= stRDF + "union";
-	public static final String buffer 			= stRDF + "buffer";
-	public static final String envelope 		= stRDF + "envelope";
-	public static final String convexHull		= stRDF + "convexHull";
-	public static final String boundary 		= stRDF + "boundary";
-	public static final String intersection 	= stRDF + "intersection";
-	public static final String difference 		= stRDF + "difference";
-	public static final String symDifference	= stRDF + "symDifference";
-	public static final String transform 		= stRDF + "transform";
+	public static final String stSPARQLunion 			= stRDF + "union";
+	public static final String stSPARQLbuffer 		= stRDF + "buffer";
+	public static final String stSPARQLenvelope 		= stRDF + "envelope";
+	public static final String stSPARQLconvexHull		= stRDF + "convexHull";
+	public static final String stSPARQLboundary 		= stRDF + "boundary";
+	public static final String stSPARQLintersection 	= stRDF + "intersection";
+	public static final String stSPARQLdifference 	= stRDF + "difference";
+	public static final String stSPARQLsymDifference	= stRDF + "symDifference";
+	public static final String stSPARQLtransform 		= stRDF + "transform";
 	
 	// Spatial Metric Functions
-	public static final String distance 		= stRDF + "distance";
-	public static final String area 			= stRDF + "area";
+	public static final String stSPARQLdistance 		= stRDF + "distance";
+	public static final String stSPARQLarea 			= stRDF + "area";
 
 	// Spatial Properties
-	public static final String dimension 		= stRDF + "dimension";
-	public static final String geometryType 	= stRDF + "geometryType";
-	public static final String asText 			= stRDF + "asText";
-	public static final String asGML 			= stRDF + "asGML";
-	public static final String srid 			= stRDF + "srid";
-	public static final String isEmpty 			= stRDF + "isEmpty";
-	public static final String isSimple 		= stRDF + "isSimple";
+	public static final String stSPARQLdimension 		= stRDF + "dimension";
+	public static final String stSPARQLgeometryType 	= stRDF + "geometryType";
+	public static final String stSPARQLasText 		= stRDF + "asText";
+	public static final String stSPARQLasGML 			= stRDF + "asGML";
+	public static final String stSPARQLsrid 			= stRDF + "srid";
+	public static final String stSPARQLisEmpty 		= stRDF + "isEmpty";
+	public static final String stSPARQLisSimple 		= stRDF + "isSimple";
 
 	// Spatial Aggregate Functions
-	public static final String extent 			= stRDF + "extent";
+	public static final String stSPARQLextent 		= stRDF + "extent";
 	
 	/**
 	 * WGS 84 latitude-longitude (EPSG:4326)
@@ -238,47 +238,47 @@ public class GeoConstants {
 	 * 																		*/	
 	// Non-topological
 	public static final String geoSparqlDistance 				= GEOF + "distance"; //3 arguments
-	public static final String geoSparqlBuffer 					= GEOF + "buffer"; //3 arguments
-	public static final String geoSparqlConvexHull 				= GEOF + "convexHull";
+	public static final String geoSparqlBuffer 				= GEOF + "buffer"; //3 arguments
+	public static final String geoSparqlConvexHull 			= GEOF + "convexHull";
 	public static final String geoSparqlIntersection 			= GEOF + "intersection";
-	public static final String geoSparqlUnion 					= GEOF + "union";
-	public static final String geoSparqlDifference 				= GEOF + "difference";
+	public static final String geoSparqlUnion 				= GEOF + "union";
+	public static final String geoSparqlDifference 			= GEOF + "difference";
 	public static final String geoSparqlSymmetricDifference 	= GEOF + "symmetricDifference";
 	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
 	public static final String geoSparqlBoundary 				= GEOF + "boundary";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
 	public static final String sfEquals 						= GEOF + "sfEquals";
-	public static final String sfDisjoint 						= GEOF + "sfDisjoint";
+	public static final String sfDisjoint 					= GEOF + "sfDisjoint";
 	public static final String sfIntersects 					= GEOF + "sfIntersects";
 	public static final String sfTouches 						= GEOF + "sfTouches";
 	public static final String sfCrosses 						= GEOF + "sfCrosses";
 	public static final String sfWithin 						= GEOF + "sfWithin";
-	public static final String sfContains 						= GEOF + "sfContains";
-	public static final String sfOverlaps 						= GEOF + "sfOverlaps";
+	public static final String sfContains 					= GEOF + "sfContains";
+	public static final String sfOverlaps 					= GEOF + "sfOverlaps";
 
 	// Egenhofer - 8 functions - all with 2 arguments + boolean
 	public static final String ehEquals 						= GEOF + "ehEquals";
-	public static final String ehDisjoint 						= GEOF + "ehDisjoint";
-	public static final String ehMeet 							= GEOF + "ehMeet";
+	public static final String ehDisjoint 					= GEOF + "ehDisjoint";
+	public static final String ehMeet 						= GEOF + "ehMeet";
 	public static final String ehOverlap 						= GEOF + "ehOverlap";
 	public static final String ehCovers 						= GEOF + "ehCovers";
-	public static final String ehCoveredBy 						= GEOF + "ehCoveredBy";
+	public static final String ehCoveredBy 					= GEOF + "ehCoveredBy";
 	public static final String ehInside 						= GEOF + "ehInside";
-	public static final String ehContains 						= GEOF + "ehContains";
+	public static final String ehContains 					= GEOF + "ehContains";
 
 	// RCC8 - 8 functions - all with 2 arguments + boolean
-	public static final String rccEquals 						 = GEOF + "rcc8eq";
-	public static final String rccDisconnected 					 = GEOF + "rcc8dc";
-	public static final String rccExternallyConnected 			 = GEOF + "rcc8ec";
-	public static final String rccPartiallyOverlapping 			 = GEOF + "rcc8po";
-	public static final String rccTangentialProperPartInverse 	 = GEOF + "rcc8tppi";
-	public static final String rccTangentialProperPart 			 = GEOF + "rcc8tpp";
-	public static final String rccNonTangentialProperPart 		 = GEOF + "rcc8ntpp";
-	public static final String rccNonTangentialProperPartInverse = GEOF + "rcc8ntppi";
+	public static final String rccEquals 						 		= GEOF + "rcc8eq";
+	public static final String rccDisconnected 				 		= GEOF + "rcc8dc";
+	public static final String rccExternallyConnected 		 		= GEOF + "rcc8ec";
+	public static final String rccPartiallyOverlapping 		 		= GEOF + "rcc8po";
+	public static final String rccTangentialProperPartInverse			= GEOF + "rcc8tppi";
+	public static final String rccTangentialProperPart 		 		= GEOF + "rcc8tpp";
+	public static final String rccNonTangentialProperPart 		 	= GEOF + "rcc8ntpp";
+	public static final String rccNonTangentialProperPartInverse 		= GEOF + "rcc8ntppi";
 	
 	// The generic relate function
-	public static final String geoSparqlRelate 					 = GEOF + "relate";
+	public static final String geoSparqlRelate 					 	= GEOF + "relate";
 
 	/**
 	 * Addition for datetime metric functions
@@ -304,7 +304,7 @@ public class GeoConstants {
 	/**
 	 * List of stSPARQL spatial extension functions 
 	 */
-	public static final List<String> stSPARQLSpatialExtFunc = new ArrayList<String>();
+	public static final List<String> STSPARQLSpatialExtFunc = new ArrayList<String>();
 	
 	/**
 	 * List of stSPARQL temporal extension functions
@@ -314,69 +314,25 @@ public class GeoConstants {
 	/**
 	 * List of GeoSPARQL extension functions
 	 */
-	public static final List<String> stGeoSPARQLExtFunc = new ArrayList<String>();
+	public static final List<String> GEOSPARQLExtFunc = new ArrayList<String>();
 	
 	// declare spatial and temporal extension functions
 	static {
 		Class<GeoConstants> geoConstants = GeoConstants.class;	
-		
-		stSPARQLSpatialExtFunc.add(equals);	
-		stSPARQLSpatialExtFunc.add(disjoint);
-		stSPARQLSpatialExtFunc.add(intersects);
-		stSPARQLSpatialExtFunc.add(touches);	
-		stSPARQLSpatialExtFunc.add(within);	
-		stSPARQLSpatialExtFunc.add(contains);	
-		stSPARQLSpatialExtFunc.add(overlaps);	
-		stSPARQLSpatialExtFunc.add(crosses);
-
-		stSPARQLSpatialExtFunc.add(relate);
-			     
-		stSPARQLSpatialExtFunc.add(mbbIntersects);
-		stSPARQLSpatialExtFunc.add(mbbContains); 	
-		stSPARQLSpatialExtFunc.add(mbbEquals);	
-		stSPARQLSpatialExtFunc.add(mbbWithin);
-			     
-		stSPARQLSpatialExtFunc.add(left);	
-		stSPARQLSpatialExtFunc.add(right);	
-		stSPARQLSpatialExtFunc.add(above);	
-		stSPARQLSpatialExtFunc.add(below);	
-			     
-		stSPARQLSpatialExtFunc.add(union);	
-		stSPARQLSpatialExtFunc.add(buffer);	
-		stSPARQLSpatialExtFunc.add(envelope);	
-		stSPARQLSpatialExtFunc.add(convexHull);	
-		stSPARQLSpatialExtFunc.add(boundary);
-		stSPARQLSpatialExtFunc.add(intersection);
-		stSPARQLSpatialExtFunc.add(difference);
-		stSPARQLSpatialExtFunc.add(symDifference);
-		stSPARQLSpatialExtFunc.add(transform);
-			     
-		stSPARQLSpatialExtFunc.add(distance);
-		stSPARQLSpatialExtFunc.add(area);	
-			     
-		stSPARQLSpatialExtFunc.add(dimension);
-		stSPARQLSpatialExtFunc.add(geometryType);
-		stSPARQLSpatialExtFunc.add(asText);	
-		stSPARQLSpatialExtFunc.add(asGML);	
-		stSPARQLSpatialExtFunc.add(srid);
-		stSPARQLSpatialExtFunc.add(isEmpty);
-		stSPARQLSpatialExtFunc.add(isSimple); 	
-			     
-		stSPARQLSpatialExtFunc.add(extent);
-		
 		
 		try {
 			Field[] field = geoConstants.getDeclaredFields();
 		
 			for (int i = 0; i < field.length; i++) {
 				// stSPARQL
-				
-				// GeoSPARQL
-				if (field[i].getName().startsWith("geoSparql") ||
+				if (field[i].getName().startsWith("stSPARQL")) {
+					STSPARQLSpatialExtFunc.add((String) field[i].get(null));
+					
+				} else if (field[i].getName().startsWith("geoSparql") || 
 						field[i].getName().startsWith("sf") ||
 						field[i].getName().startsWith("eh") ||
-						field[i].getName().startsWith("rcc")) {
-					stGeoSPARQLExtFunc.add((String) field[i].get(null));
+						field[i].getName().startsWith("rcc")) { // GeoSPARQL
+					GEOSPARQLExtFunc.add((String) field[i].get(null));
 				}
 			}
 		} catch (SecurityException e) {

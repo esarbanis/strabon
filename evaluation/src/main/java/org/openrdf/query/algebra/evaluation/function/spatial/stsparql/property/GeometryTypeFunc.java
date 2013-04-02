@@ -21,6 +21,6 @@ public class GeometryTypeFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.geometryType;
+		return GeoConstants.stSPARQLgeometryType;
 	}
 }

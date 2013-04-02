@@ -20,6 +20,6 @@ public class LeftFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.left;
+		return GeoConstants.stSPARQLleft;
 	}
 }

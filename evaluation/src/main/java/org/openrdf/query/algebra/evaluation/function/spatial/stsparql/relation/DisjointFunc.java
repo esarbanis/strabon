@@ -20,6 +20,6 @@ public class DisjointFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.disjoint;
+		return GeoConstants.stSPARQLdisjoint;
 	}
 }

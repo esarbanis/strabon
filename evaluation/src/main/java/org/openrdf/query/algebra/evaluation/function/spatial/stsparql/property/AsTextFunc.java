@@ -21,6 +21,6 @@ public class AsTextFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.asText;
+		return GeoConstants.stSPARQLasText;
 	}
 }

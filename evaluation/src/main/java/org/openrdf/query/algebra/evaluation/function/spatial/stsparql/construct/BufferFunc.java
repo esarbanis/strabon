@@ -19,6 +19,6 @@ public class BufferFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.buffer;
+		return GeoConstants.stSPARQLbuffer;
 	}
 }

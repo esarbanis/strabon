@@ -20,6 +20,6 @@ public class BoundaryFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.boundary;
+		return GeoConstants.stSPARQLboundary;
 	}
 }

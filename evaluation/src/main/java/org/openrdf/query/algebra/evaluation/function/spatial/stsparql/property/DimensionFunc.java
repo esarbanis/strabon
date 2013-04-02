@@ -21,6 +21,6 @@ public class DimensionFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.dimension;
+		return GeoConstants.stSPARQLdimension;
 	}
 }

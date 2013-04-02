@@ -98,7 +98,7 @@ public class EndpointCapabilities implements Capabilities {
 	 */
 	@Override
 	public List<String> getstSPARQLSpatialExtensionFunctions() {
-		return GeoConstants.stSPARQLSpatialExtFunc;
+		return GeoConstants.STSPARQLSpatialExtFunc;
 	}
 
 	/* (non-Javadoc)
@@ -106,6 +106,6 @@ public class EndpointCapabilities implements Capabilities {
 	 */
 	@Override
 	public List<String> getGeoSPARQLSpatialExtensionFunctions() {
-		return GeoConstants.stGeoSPARQLExtFunc;
+		return GeoConstants.GEOSPARQLExtFunc;
 	}
 }

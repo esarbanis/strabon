@@ -20,7 +20,7 @@ public class MbbIntersectsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.mbbIntersects;
+		return GeoConstants.stSPARQLmbbIntersects;
 	}
 
 }

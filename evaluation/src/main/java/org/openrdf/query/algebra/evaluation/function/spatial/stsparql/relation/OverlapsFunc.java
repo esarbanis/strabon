@@ -20,6 +20,6 @@ public class OverlapsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.overlaps;
+		return GeoConstants.stSPARQLoverlaps;
 	}
 }

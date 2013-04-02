@@ -20,6 +20,6 @@ public class AboveFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.above;
+		return GeoConstants.stSPARQLabove;
 	}
 }

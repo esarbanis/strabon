@@ -667,12 +667,12 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				}
 				else
 				{
-					if(function.getURI().equals(GeoConstants.buffer))
+					if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 					{
 						//Be it a Var or a Value Constant, 'numeric' is the way to go
 						rightArg = numeric(right);
 					}
-					else if(function.getURI().equals(GeoConstants.transform))
+					else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 					{
 						//Another special case -> Second argument of this function is a URI
 						rightArg = uri(right);
@@ -904,12 +904,12 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.buffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = numeric(right);
 				}
-				else if(function.getURI().equals(GeoConstants.transform))
+				else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 				{
 					//Another special case -> Second argument of this function is a URI
 					rightArg = uri(right);
@@ -1026,73 +1026,73 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			GeneralDBSqlExpr thirdArg)
 	{
 		//XXX stSPARQL		
-		if(function.getURI().equals(GeoConstants.equals))
+		if(function.getURI().equals(GeoConstants.stSPARQLequals))
 		{
 			return equalsGeo(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.disjoint))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdisjoint))
 		{
 			return disjoint(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.intersects))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersects))
 		{
 			return intersects(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.touches))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtouches))
 		{
 			return touches(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.crosses))
+		else if(function.getURI().equals(GeoConstants.stSPARQLcrosses))
 		{
 			return crosses(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.within))
+		else if(function.getURI().equals(GeoConstants.stSPARQLwithin))
 		{
 			return within(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.contains))
+		else if(function.getURI().equals(GeoConstants.stSPARQLcontains))
 		{
 			return contains(leftArg,rightArg);
 		}		
-		else if(function.getURI().equals(GeoConstants.overlaps))
+		else if(function.getURI().equals(GeoConstants.stSPARQLoverlaps))
 		{
 			return overlaps(leftArg,rightArg);
 		}		
-		else if(function.getURI().equals(GeoConstants.relate))
+		else if(function.getURI().equals(GeoConstants.stSPARQLrelate))
 		{
 			return relate(leftArg,rightArg,thirdArg);
 		}
 		// directional
-		else if(function.getURI().equals(GeoConstants.left))
+		else if(function.getURI().equals(GeoConstants.stSPARQLleft))
 		{
 			return left(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.right))
+		else if(function.getURI().equals(GeoConstants.stSPARQLright))
 		{
 			return right(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.above))
+		else if(function.getURI().equals(GeoConstants.stSPARQLabove))
 		{
 			return above(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.below))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbelow))
 		{
 			return below(leftArg,rightArg);
 		}
 		// mbb
-		else if(function.getURI().equals(GeoConstants.mbbIntersects))
+		else if(function.getURI().equals(GeoConstants.stSPARQLmbbIntersects))
 		{
 			return mbbIntersects(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.mbbWithin))
+		else if(function.getURI().equals(GeoConstants.stSPARQLmbbWithin))
 		{
 			return mbbWithin(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.mbbContains))
+		else if(function.getURI().equals(GeoConstants.stSPARQLmbbContains))
 		{
 			return mbbContains(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.mbbEquals))
+		else if(function.getURI().equals(GeoConstants.stSPARQLmbbEquals))
 		{
 			return mbbEqualsGeo(leftArg,rightArg);
 		}
@@ -1207,39 +1207,39 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
-		if(function.getURI().equals(GeoConstants.union))
+		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
 			return geoUnion(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.buffer))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
 			return geoBuffer(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.transform))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
 			return geoTransform(leftArg,rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.envelope))
+		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
 			return geoEnvelope(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.convexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
 			return geoConvexHull(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.boundary))
+		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
 			return geoBoundary(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.intersection))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
 			return geoIntersection(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.difference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
 			return geoDifference(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.symDifference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
 			return geoSymDifference(leftArg, rightArg);
 		}
@@ -1300,11 +1300,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
-		if(function.getURI().equals(GeoConstants.distance))
+		if(function.getURI().equals(GeoConstants.stSPARQLdistance))
 		{
 			return geoDistance(leftArg, rightArg, thirdArg);
 		}
-		else if(function.getURI().equals(GeoConstants.area))
+		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
 		}
@@ -1316,31 +1316,31 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	GeneralDBSqlExpr spatialPropertyPicker(Function function,GeneralDBSqlExpr arg)
 	{
-		if(function.getURI().equals(GeoConstants.dimension))
+		if(function.getURI().equals(GeoConstants.stSPARQLdimension))
 		{
 			return dimension(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.geometryType))
+		else if(function.getURI().equals(GeoConstants.stSPARQLgeometryType))
 		{
 			return geometryType(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.asText))
+		else if(function.getURI().equals(GeoConstants.stSPARQLasText))
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.srid))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
 		{
 			return srid(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isEmpty))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisEmpty))
 		{
 			return isEmpty(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isSimple))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisSimple))
 		{
 			return isSimple(arg);
 
-		} else if (function.getURI().equals(GeoConstants.asGML)) {
+		} else if (function.getURI().equals(GeoConstants.stSPARQLasGML)) {
 			return asGML(arg);
 		}
 

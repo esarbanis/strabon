@@ -21,6 +21,6 @@ public class AsGMLFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.asGML;
+		return GeoConstants.stSPARQLasGML;
 	}
 }

@@ -20,6 +20,6 @@ public class SymDifferenceFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.symDifference;
+		return GeoConstants.stSPARQLsymDifference;
 	}
 }

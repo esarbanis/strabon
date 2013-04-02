@@ -21,6 +21,6 @@ public class IsSimpleFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.isSimple;
+		return GeoConstants.stSPARQLisSimple;
 	}
 }

@@ -20,6 +20,6 @@ public class CrossesFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.crosses;
+		return GeoConstants.stSPARQLcrosses;
 	}
 }
