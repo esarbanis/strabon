@@ -2,6 +2,9 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Created new module with name 'constants` and artifactId
+	'spatial-temporal-constants` and moved GeoConstants.java there.
+
 	* Strabon endpoint now publishes the URIs of the supported extension
 	functions for stSPARQL and GeoSPARQL. One should access them by
 	hitting the link http://localhost:8080/endpoint/Capabilities.
