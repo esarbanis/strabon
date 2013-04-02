@@ -2,6 +2,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Strabon endpoint now publishes the URIs of the supported extension
+	functions for stSPARQL and GeoSPARQL. One should access them by
+	hitting the link http://localhost:8080/endpoint/Capabilities.
+
 	* Support for parsing EPSG URIs in geometry literals with datatype
 	geo:wktLiteral.
 	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
