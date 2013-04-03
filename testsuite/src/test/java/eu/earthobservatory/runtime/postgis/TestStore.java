@@ -9,6 +9,7 @@
  */
 package eu.earthobservatory.runtime.postgis;
 
+import static org.junit.Assert.assertTrue;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,25 +44,25 @@ public class TestStore{
 	@Test
 	public void test() throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(queryFile)));
+		BufferedReader queryReader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(queryFile)));
+		BufferedReader resultsReader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(resultsFile)));
 		String query="";
 		
-		while (reader.ready()) 
+		while (queryReader.ready()) 
 		{
-			query+=reader.readLine()+"\n";
+			query+=queryReader.readLine()+"\n";
 		}
 
 		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		ArrayList<String> queryResults = new ArrayList<String>();
 		
 		Iterator<String> iterator = bindings.iterator();
-		while(iterator.hasNext())
+		while(iterator.hasNext() && resultsReader.ready())
 		{
 			String binding = iterator.next();
-			System.out.println(binding);
+			//System.out.println(binding);
 			binding=binding.replaceAll("[[A-Z][a-z][0-9]]*=", "?=");
-			queryResults.add(binding);
-			System.out.println(binding);
+			assertTrue(resultsReader.readLine().equals(binding));
+			//System.out.println(binding);
 		}
 
 	}
