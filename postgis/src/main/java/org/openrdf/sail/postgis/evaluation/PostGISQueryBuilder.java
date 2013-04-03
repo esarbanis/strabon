@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDateTimeColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
@@ -102,6 +103,8 @@ import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlJoinBuilder;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlQueryBuilder;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
@@ -926,8 +929,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			else
 			{
-				//4326 by default - Software House additions
-				filter.append("4326");
+				// set default SRID ({@link GeoConstants#defaultSRID})
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 			}
 		}
 
@@ -966,7 +969,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			e.printStackTrace();
 		}
 
-		filter.append(" ST_GeomFromText('"+poly.toWKT() +"',4326)");
+		filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
 
 		return raw;
 	}
@@ -1268,8 +1271,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getRightArg() instanceof GeneralDBStringValue)
 			{
 				String unparsedSRID = ((GeneralDBStringValue)expr.getRightArg()).getValue();
-				//				int srid = Integer.parseInt(unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1));
-				sridExpr = unparsedSRID.substring(unparsedSRID.lastIndexOf('/')+1);
+				// TODO Check for other kinds of URIs (e.g., not only for EPSG)
+				sridExpr = String.valueOf(WKTHelper.getSRID(unparsedSRID));
 				filter.append(sridExpr);
 				filter.closeBracket();
 			}
@@ -1666,7 +1669,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			if(units.equals("metre") || units.equals("meter"))
 			{					
 				filter.appendComma();
-				filter.append("4326");
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket(); //close st_transform
 				filter.closeBracket(); //close geography
 				
@@ -1680,7 +1683,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(units.equals("degree"))
 			{
 				filter.appendComma();
-				filter.append("4326");
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket(); //close st_transform
 				
 				filter.appendComma();
@@ -1740,14 +1743,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			if(units.equals("metre") || units.equals("meter"))
 			{
 				filter.appendComma();
-				filter.append("4326");
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket();
 				filter.closeBracket();
 			}
 			else if(units.equals("degree"))
 			{
 				filter.appendComma();
-				filter.append("4326");
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket();
 			}	
 
