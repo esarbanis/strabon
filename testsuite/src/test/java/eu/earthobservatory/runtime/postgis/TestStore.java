@@ -9,17 +9,17 @@
  */
 package eu.earthobservatory.runtime.postgis;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
-import eu.earthobservatory.runtime.generaldb.Strabon;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResultHandlerException;
+import eu.earthobservatory.runtime.postgis.Strabon;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -29,18 +29,41 @@ import eu.earthobservatory.runtime.generaldb.Strabon;
 public class TestStore{
 	
 	private static Strabon strabon;
-
+	
+	private static final String datasetFile = "/TestStore.nt";
+	private static final String queryFile = "/TestStore.rq";
+	private static final String resultsFile = "/TestStore.sr";
 
 	@BeforeClass
 	public static void beforeClass() throws Exception
 	{
-		strabon = TemplateTests.beforeClass();
+		strabon = TemplateTests.beforeClass(datasetFile);
 	}
 	
 	@Test
-	public void test() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public void test() throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException
 	{
-		strabon.storeInRepo("/"+this.getClass().getSimpleName()+".nt", "NTRIPLES");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(queryFile)));
+		String query="";
+		
+		while (reader.ready()) 
+		{
+			query+=reader.readLine()+"\n";
+		}
+
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
+		ArrayList<String> queryResults = new ArrayList<String>();
+		
+		Iterator<String> iterator = bindings.iterator();
+		while(iterator.hasNext())
+		{
+			String binding = iterator.next();
+			System.out.println(binding);
+			binding=binding.replaceAll("[[A-Z][a-z][0-9]]*=", "?=");
+			queryResults.add(binding);
+			System.out.println(binding);
+		}
+
 	}
 	
 	@AfterClass

@@ -1,0 +1,8 @@
+[?=http://example.org/item1;?="POINT(1 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>;?=http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry]
+[?=http://example.org/item1;?="1"^^<http://www.w3.org/2001/XMLSchema#int>;?=http://example.org/id]
+[?=http://example.org/item1;?="10"^^<http://www.w3.org/2001/XMLSchema#int>;?=http://example.org/value]
+[?=http://example.org/item2;?="POINT(2 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>;?=http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry]
+[?=http://example.org/item2;?="20"^^<http://www.w3.org/2001/XMLSchema#int>;?=http://example.org/value]
+[?=http://example.org/item2;?="2"^^<http://www.w3.org/2001/XMLSchema#int>;?=http://example.org/id]
+[?=http://example.org/item3;?="POINT(3 0)"^^<http://strdf.di.uoa.gr/ontology#WKT>;?=http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry]
+[?=http://example.org/item3;?="3"^^<http://www.w3.org/2001/XMLSchema#int>;?=http://example.org/id]

@@ -3,39 +3,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
 package eu.earthobservatory.runtime.postgis;
 
-import java.io.IOException;
+import static org.junit.Assert.assertNull;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Properties;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-
-import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
-import eu.earthobservatory.runtime.generaldb.Strabon;
-
-import static org.junit.Assert.assertNull;
+import eu.earthobservatory.runtime.postgis.Strabon;
 
 /**
- * A set of simple tests on SPARQL query functionality 
+ * A template class with useful methods for the tests.  
  * 
- * @author George Garbis <ggarbis@di.uoa.gr>
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class TemplateTests {
@@ -50,8 +37,7 @@ public class TemplateTests {
 	public static Connection conn = null;
 	public static String databaseName = null;
 	
-	@BeforeClass
-	public static Strabon beforeClass() throws Exception
+	public static Strabon beforeClass(String datasetFile) throws Exception
 	{
 		String url="";
 		ArrayList<String> databases=new ArrayList<String>();
@@ -100,11 +86,15 @@ public class TemplateTests {
 		
 	    Strabon strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, username, password, port, serverName, true);
 
+	    if(datasetFile.endsWith(".nt"))
+	    	strabon.storeInRepo(datasetFile, "NTRIPLES");
+	    else if(datasetFile.endsWith(".nq"))
+	    	strabon.storeInRepo(datasetFile, "NQUADS");
+	    
 		return strabon;
 	}
 	
-	
-	@AfterClass
+
 	public static void afterClass(Strabon strabon) throws SQLException
 	{
 		strabon.close();
@@ -120,54 +110,4 @@ public class TemplateTests {
 		pst.close();
 		conn.close();
 	}
-	
-	
-	// Clean database
-//	Statement stmt = conn.createStatement();
-//	ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
-//					"table_schema='public' AND table_name <> 'spatial_ref_sys' " +
-//					"AND table_name <> 'geometry_columns' AND table_name <> 'geography_columns' " +
-//					"AND table_name <> 'raster_columns' AND table_name <> 'raster_overviews' " +
-//					"AND table_name <> 'locked'"
-//				);
-//	while (results.next()) {
-//		String table_name = results.getString("table_name");
-//		Statement stmt2 = conn.createStatement();
-//		stmt2.executeUpdate("DROP TABLE \""+table_name+"\"");
-//		stmt2.close();
-//	}
-//	stmt.close();
-	
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@Before
-//	public void before()
-//		throws Exception
-//	{
-//		
-//	}
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@After
-//	public void after()
-//		throws Exception
-//	{
-//		// Clean database
-//		Statement stmt = conn.createStatement();
-//		ResultSet results = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE " +
-//						"table_schema='public' and table_name <> 'spatial_ref_sys' " +
-//						"and table_name <> 'geometry_columns' and " +
-//						"table_name <> 'geography_columns' and table_name <> 'locked'");
-//		while (results.next()) {
-//			String table_name = results.getString("table_name");
-//			Statement stmt2 = conn.createStatement();
-//			stmt2.executeUpdate("DROP TABLE \""+table_name+"\"");
-//			stmt2.close();
-//		}
-//			
-//		stmt.close();
-//	}
 }
