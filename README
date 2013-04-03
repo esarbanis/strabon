@@ -175,7 +175,7 @@ max_connections              = 10
 ## 64 GB of RAM
 # contact us to find out!
 
-3. Aply all changes by executing
+3. Apply all changes by executing
 
 $ sudo sysctl -p
 $ sudo /etc/init.d/postgresql restart
