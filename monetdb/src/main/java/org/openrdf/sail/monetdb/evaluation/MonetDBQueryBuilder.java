@@ -102,6 +102,8 @@ import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlQueryBuilder;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
  * 
@@ -918,7 +920,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			else
 			{
 				//4326 by default - Software House additions
-				filter.append("4326");
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
 			}
 		}
 
@@ -957,7 +959,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			e.printStackTrace();
 		}
 
-		filter.append(" GeomFromText('"+poly.toWKT() +"',4326)");
+		filter.append(" GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
 
 		return raw;
 	}
@@ -1512,7 +1514,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				if(units.equals("metre") || units.equals("meter"))
 				{					
 					filter.appendComma();
-					filter.append("4326");
+					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket(); //close st_transform
 					filter.closeBracket(); //close geography
 					
@@ -1526,7 +1528,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				else if(units.equals("degree"))
 				{
 					filter.appendComma();
-					filter.append("4326");
+					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket(); //close st_transform
 					
 					filter.appendComma();
@@ -1595,14 +1597,14 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				if(units.equals("metre") || units.equals("meter"))
 				{
 					filter.appendComma();
-					filter.append("4326");
+					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket();
 					filter.closeBracket();
 				}
 				else if(units.equals("degree"))
 				{
 					filter.appendComma();
-					filter.append("4326");
+					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket();
 				}
 
