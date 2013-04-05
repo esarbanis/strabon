@@ -47,16 +47,16 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.C
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CrossesFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.DisjointFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.EqualsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.WithinFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.LeftFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchesFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.WithinFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
@@ -115,7 +115,7 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
-	public Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);;
 
 	protected GeneralDBQueryBuilderFactory factory;
 
@@ -143,11 +143,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	private HashMap<String, Integer> boolPropertiesIndexesAndNames = new HashMap<String, Integer>();
 	//	private HashMap<String, Integer> stringPropertiesIndexesAndNames = new HashMap<String, Integer>();
 
-	public GeneralDBEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
-			IdSequence ids)
+	public GeneralDBEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset, IdSequence ids)
 	{
 		super(new GeneralDBTripleSource(triples), dataset);
-		this.logger = LoggerFactory.getLogger(GeneralDBEvaluation.class);
 		this.factory = factory;
 		this.triples = triples;
 		this.vf = triples.getValueFactory();
@@ -155,9 +153,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	}
 
 	@Override
-	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr,
-			BindingSet bindings)
-	throws QueryEvaluationException
+	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr, BindingSet bindings) throws QueryEvaluationException
 	{
 		if (expr instanceof GeneralDBSelectQuery)
 			return evaluate((GeneralDBSelectQuery)expr, bindings);
@@ -171,8 +167,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	}
 	
 	@Override
-	public Value evaluate(ValueExpr expr, BindingSet bindings)
-	throws ValueExprEvaluationException, QueryEvaluationException
+	public Value evaluate(ValueExpr expr, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
 		if (expr instanceof Var) {
 			return evaluate((Var)expr, bindings);
@@ -249,6 +244,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// get the function corresponding to the function call
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
+		
+		if (function == null) {
+			logger.warn("[Strabon.evaluation(FunctionCall)] Extension function <{}> is not supported.", fc.getURI());
+			return null;
+		}
 		
 		// get the first argument of the function call
 		ValueExpr left = fc.getArgs().get(0);
@@ -479,7 +479,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				return function.evaluate(tripleSource.getValueFactory(), argValues);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Strabon.evaluate(FunctionCall)] Error during evaluation of extension function.", e);
 			return null;
 		}
 
