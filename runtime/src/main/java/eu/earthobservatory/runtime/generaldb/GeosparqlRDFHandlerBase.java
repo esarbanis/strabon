@@ -15,10 +15,9 @@ import java.util.List;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.ntriples.NTriplesParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.constants.GeoConstants;
 import eu.earthobservatory.vocabulary.SimpleFeatures;
@@ -33,6 +32,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	//private static final Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.GeosparqlRDFHandlerBase.class);
 	
 	private static String TYPE = RDF.TYPE.stringValue();
+	private static String SUBCLASS = RDFS.SUBCLASSOF.stringValue();
 	
 	public static String SpatialObject 			= GeoConstants.GEO + "SpatialObject";
 	public static String Feature 				= GeoConstants.GEO + "Feature";
@@ -40,26 +40,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	public static String hasGeometry 			= GeoConstants.GEO + "hasGeometry";
 	public static String hasDefaultGeometry		= GeoConstants.GEO + "hasDefaultGeometry";
 	
-	public static String dimension				= GeoConstants.GEO + "dimension";
-	public static String coordinateDimension	= GeoConstants.GEO + "coordinateDimension";
-	public static String spatialDimension		= GeoConstants.GEO + "spatialDimension";
-	public static String isEmpty				= GeoConstants.GEO + "isEmpty";
-	public static String isSimple				= GeoConstants.GEO + "isSimple";
-	
-	public static String hasSerialization		= GeoConstants.GEO + "hasSerialization";
-	public static String asWKT					= GeoConstants.GEO + "asWKT";
-	public static String asGML					= GeoConstants.GEO + "asGML";
-	
 	public static List <String> GM_Objects = Arrays.asList("GM_Complex", "GM_Agreggate", "GM_Primitive", "GM_Composite", "GM_MultiPrimitive",
 			"GM_Point", "GM_OrientablePrimitive","GM_OrientableCurve","GM_OrientableSurface", "GM_Curve","GM_Surface","GM_Solid",
 			 "GM_CompositeCurve", "GM_CompositeSurface", "GM_CompositeSolid", "GM_Multipoint", "GM_MultiCurve", "GM_MultiSurface", "GM_MultiSolid");
-	
-	public static String WKTLiteral	= GeoConstants.WKTLITERAL;
-	public static String GMLLiteral	= GeoConstants.GMLLITERAL;
-	
-	public static List <String> rcc8 = Arrays.asList(GeoConstants.GEO+"rcc8eq",GeoConstants.GEO+"rcc8dc",GeoConstants.GEO+"rcc8ec",GeoConstants.GEO+"rcc8po",
-			GeoConstants.GEO+"rcc8tppi", GeoConstants.GEO+"rcc8tpp",GeoConstants.GEO+ "rcc8ntpp", GeoConstants.GEO+"rcc8ntpp");
-	
+
 	private StringBuffer triples = new StringBuffer(1024);
 	
 	/** 
@@ -74,6 +58,11 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	public int getNumberOfTriples() {
 		return numTriples;
+	}
+	
+	@Override
+	public void startRDF() {
+		insertSimpleFeaturesClassHierarchy();
 	}
 	
 	@Override
@@ -311,10 +300,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		 * from
 		 * 		subj {any spatial property defined in Req. 9, 14, and 18} obj
 		 */
-		} else if ( spatialDimension.equals(pred)    || dimension.equals(pred)  		||
-					coordinateDimension.equals(pred) || isEmpty.equals(pred) 			||
-					isSimple.equals(pred) 		     || hasSerialization.equals(pred)   ||
-					asWKT.equals(pred) 				 || asGML.equals(pred)) {
+		} else if ( GeoConstants.GEOspatialDimension.equals(pred)    || GeoConstants.GEOdimension.equals(pred)  		||
+					GeoConstants.GEOcoordinateDimension.equals(pred) || GeoConstants.GEOisEmpty.equals(pred) 			||
+					GeoConstants.GEOisSimple.equals(pred) 		     || GeoConstants.GEOhasSerialization.equals(pred)   ||
+					GeoConstants.GEOasWKT.equals(pred)	 || GeoConstants.GEOasGML.equals(pred)) {
 			
 			writeTriple(subj, TYPE, Geometry);
 			writeTriple(subj, TYPE, SpatialObject);
@@ -328,6 +317,58 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		numTriples++;
 	}
 
+	protected void insertSimpleFeaturesClassHierarchy() {
+		// first level 
+		writeTriple(SimpleFeatures.Point, SUBCLASS, SimpleFeatures.Geometry);
+		writeTriple(SimpleFeatures.Curve, SUBCLASS, SimpleFeatures.Geometry);
+		writeTriple(SimpleFeatures.Surface, SUBCLASS, SimpleFeatures.Geometry);
+		writeTriple(SimpleFeatures.GeometryCollection, SUBCLASS, SimpleFeatures.Geometry);
+		
+		// second level
+		writeTriple(SimpleFeatures.LineString, SUBCLASS, SimpleFeatures.Curve);
+		writeTriple(SimpleFeatures.LineString, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.Polygon, SUBCLASS, SimpleFeatures.Surface);
+		writeTriple(SimpleFeatures.Polygon, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.PolyhedralSurface, SUBCLASS, SimpleFeatures.Surface);
+		writeTriple(SimpleFeatures.PolyhedralSurface, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.MultiSurface, SUBCLASS, SimpleFeatures.GeometryCollection);
+		writeTriple(SimpleFeatures.MultiSurface, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.MultiCurve, SUBCLASS, SimpleFeatures.GeometryCollection);
+		writeTriple(SimpleFeatures.MultiCurve, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.MultiPoint, SUBCLASS, SimpleFeatures.GeometryCollection);
+		writeTriple(SimpleFeatures.MultiPoint, SUBCLASS, SimpleFeatures.Geometry);
+		
+		// third level
+		writeTriple(SimpleFeatures.Line, SUBCLASS, SimpleFeatures.LineString);
+		writeTriple(SimpleFeatures.Line, SUBCLASS, SimpleFeatures.Curve);
+		writeTriple(SimpleFeatures.Line, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.LinearRing, SUBCLASS, SimpleFeatures.Polygon);
+		writeTriple(SimpleFeatures.LinearRing, SUBCLASS, SimpleFeatures.Surface);
+		writeTriple(SimpleFeatures.LinearRing, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.Triangle, SUBCLASS, SimpleFeatures.Polygon);
+		writeTriple(SimpleFeatures.Triangle, SUBCLASS, SimpleFeatures.Surface);
+		writeTriple(SimpleFeatures.Triangle, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.TIN, SUBCLASS, SimpleFeatures.PolyhedralSurface);
+		writeTriple(SimpleFeatures.TIN, SUBCLASS, SimpleFeatures.Surface);
+		writeTriple(SimpleFeatures.TIN, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.MultiPolygon, SUBCLASS, SimpleFeatures.MultiSurface);
+		writeTriple(SimpleFeatures.MultiPolygon, SUBCLASS, SimpleFeatures.GeometryCollection);
+		writeTriple(SimpleFeatures.MultiPolygon, SUBCLASS, SimpleFeatures.Geometry);
+		
+		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.MultiSurface);
+		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.GeometryCollection);
+		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.Geometry);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		NTriplesParser parser = new NTriplesParser();
 		parser.setVerifyData(true);

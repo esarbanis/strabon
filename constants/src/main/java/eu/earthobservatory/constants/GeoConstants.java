@@ -106,16 +106,17 @@ public class GeoConstants {
 	/**
 	 * The URIs for GeoSPARQL properties
 	 */
-/*	public static final String hasGeometry_OGC				=  GEO + "hasGeometry";
-	public static final String defaultGeometry_OGC			=  GEO + "defaultGeometry";
-	public static final String dimension_OGC				=  GEO + "dimension";
-	public static final String coordinateDimension_OGC		=  GEO + "coordinateDimension";
-	public static final String spatialDimension_OGC		    =  GEO + "spatialDimension";
-	public static final String isEmpty_OGC					=  GEO + "isEmpty";
-	public static final String isSimple_OGC					=  GEO + "isSimple";
-	public static final String asWKT_OGC					=  GEO + "asWKT";
-	public static final String asGML_OGC					=  GEO + "asGML";
-*/
+	public static final String GEOhasGeometry			=  GEO + "hasGeometry";
+	public static final String GEOdefaultGeometry		=  GEO + "defaultGeometry";
+	public static final String GEOdimension				=  GEO + "dimension";
+	public static final String GEOcoordinateDimension	=  GEO + "coordinateDimension";
+	public static final String GEOspatialDimension	    =  GEO + "spatialDimension";
+	public static final String GEOisEmpty				=  GEO + "isEmpty";
+	public static final String GEOisSimple				=  GEO + "isSimple";
+	public static final String GEOhasSerialization		=  GEO + "hasSerialization";
+	public static final String GEOasWKT					=  GEO + "asWKT";
+	public static final String GEOasGML					=  GEO + "asGML";
+
 	
 	
 	/**																		*
