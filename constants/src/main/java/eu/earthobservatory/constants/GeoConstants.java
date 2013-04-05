@@ -244,7 +244,7 @@ public class GeoConstants {
 	public static final String geoSparqlIntersection 			= GEOF + "intersection";
 	public static final String geoSparqlUnion 				= GEOF + "union";
 	public static final String geoSparqlDifference 			= GEOF + "difference";
-	public static final String geoSparqlSymmetricDifference 	= GEOF + "symmetricDifference";
+	public static final String geoSparqlSymmetricDifference 	= GEOF + "symDifference";
 	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
 	public static final String geoSparqlBoundary 				= GEOF + "boundary";
 
