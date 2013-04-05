@@ -2,6 +2,17 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Fixed a bug where a non-implemented extension function would make
+	Strabon throw a NULL pointer exception. Now we get away with it
+	through a warning.
+
+	* Strabon endpoint now publishes the URIs of the supported units of
+	measure for use in strdf:distance and geof:distance functions of
+	stSPARQL and GeoSPARQL, respectively. The URIs are those defined by
+	OGC Units of Measure 1.0 specification which may be found at
+	http://www.opengis.net/def/uom/OGC/1.0/. Strabon endpoint publishes
+	the URIs at http://localhost:8080/endpoint/Capabilities.
+
 	* Created new module with name 'constants` and artifactId
 	'spatial-temporal-constants` and moved GeoConstants.java there.
 
