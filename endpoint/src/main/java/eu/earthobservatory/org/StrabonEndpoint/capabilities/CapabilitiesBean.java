@@ -156,6 +156,17 @@ public class CapabilitiesBean extends HttpServlet {
 				out.println(extFunc);
 			}
 		}
+		
+		out.println();
+		
+		// print supported units of measure
+		if (caps.getUnitsOfMeasure() != null) {
+			out.println("Supported Units of Measure (OGC)");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String uom : caps.getUnitsOfMeasure()) {
+				out.println(uom);
+			}
+		}
 	}
 	
 	private String getYesNo(boolean val) {

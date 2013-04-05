@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.OGCConstants;
 
 
 /**
@@ -138,5 +139,10 @@ public class EndpointCapabilities implements Capabilities {
 	@Override
 	public List<String> getGeoSPARQLSpatialExtensionFunctions() {
 		return GeoConstants.GEOSPARQLExtFunc;
+	}
+
+	@Override
+	public List<String> getUnitsOfMeasure() {
+		return OGCConstants.supportedUnitsOfMeasure;
 	}
 }

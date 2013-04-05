@@ -262,4 +262,12 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 	public List<String> getGeoSPARQLSpatialExtensionFunctions() {
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#getUnitsOfMeasure()
+	 */
+	@Override
+	public List<String> getUnitsOfMeasure() {
+		return null;
+	}
 }
