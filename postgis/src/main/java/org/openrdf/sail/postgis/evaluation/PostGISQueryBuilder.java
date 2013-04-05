@@ -105,6 +105,7 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.OGCConstants;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
@@ -1628,10 +1629,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			if (expr.getThirdArg() instanceof GeneralDBStringValue)
 			{			
 				String unparsedUnits = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
-
+				if(!OGCConstants.supportedUnitsOfMeasure.contains(unparsedUnits))
+				{
+					throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
+				}	
 				units = unparsedUnits.substring(unparsedUnits.lastIndexOf('/')+1);
 				if(units.equals("metre") || units.equals("meter"))
-				{					
+				{							
+					//if(!unparsedUnits.equals(OGCConstants.OGCmetre));
 					filter.appendFunction("GEOGRAPHY");
 					filter.openBracket();
 					filter.appendFunction("ST_TRANSFORM");
@@ -1665,9 +1670,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
-
+						
 			if(units.equals("metre") || units.equals("meter"))
-			{					
+			{				
 				filter.appendComma();
 				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket(); //close st_transform
