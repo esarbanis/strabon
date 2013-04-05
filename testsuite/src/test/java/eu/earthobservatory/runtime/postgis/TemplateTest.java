@@ -37,13 +37,15 @@ import eu.earthobservatory.runtime.postgis.Strabon;
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class TemplateTest
-{	
+{
+	public static final String dbPropertiesFile="/databases.properties";
+	
 	public static String databaseTemplateName = null;
 	public static String defaultUser = null;
 	public static String serverName = null;
 	public static String username = null;
 	public static String password = null;
-	public static Integer port = null;
+	public static String port = null;
 	
 	public static Connection conn = null;
 	public static String databaseName = null;
@@ -58,16 +60,39 @@ public class TemplateTest
 		
 		//Read properties
 		Properties properties = new Properties();
-		InputStream propertiesStream =  TemplateTest.class.getResourceAsStream("/databases.properties");
+		InputStream propertiesStream =  TemplateTest.class.getResourceAsStream(dbPropertiesFile);
 		properties.load(propertiesStream);
 
-		databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
-		defaultUser = properties.getProperty("postgis.defaultUser");
-		serverName = properties.getProperty("postgis.serverName");
-		username = properties.getProperty("postgis.username");
-		password = properties.getProperty("postgis.password");
-		port = Integer.parseInt(properties.getProperty("postgis.port"));
+		if((databaseTemplateName = System.getProperty("postgis.databaseTemplateName"))==null)
+		{
+			databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
+		}
 
+		if((defaultUser = System.getProperty("postgis.defaultUser"))==null)
+		{
+			defaultUser = properties.getProperty("postgis.defaultUser");
+		}
+		
+		if((serverName = System.getProperty("postgis.serverName"))==null)
+		{
+			serverName = properties.getProperty("postgis.serverName");
+		}
+		
+		if((username = System.getProperty("postgis.username"))==null)
+		{
+			username = properties.getProperty("postgis.username");
+		}
+		
+		if((password = System.getProperty("postgis.password"))==null)
+		{
+			password = properties.getProperty("postgis.password");
+		}
+
+		if((port = System.getProperty("postgis.port"))==null)
+		{
+			port = properties.getProperty("postgis.port");
+		}
+		
 		//Connect to server and create the temp database
 		url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
 		conn = DriverManager.getConnection(url, username, password);
@@ -96,7 +121,7 @@ public class TemplateTest
 		url = "jdbc:postgresql://"+serverName+":"+port+"/"+databaseName;
 		conn = DriverManager.getConnection(url, username, password);
 		
-	    strabon = new Strabon(databaseName, username, password, port, serverName, true);
+	    strabon = new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
 	}
 	
 	public static void storeDataset(String datasetFile) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
