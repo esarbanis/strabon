@@ -119,6 +119,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	public static final String SRID_FIELD = "srid";
 	public static final String ST_TRANSFORM = "ST_Transform";
 	public static final String ST_ASBINARY = "ST_AsBinary";
+	public static final String GEOGRAPHY = "Geography";
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -1627,24 +1628,26 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.openBracket();
 	
 			if (expr.getThirdArg() instanceof GeneralDBStringValue)
-			{			
-				String unparsedUnits = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
-				if(!OGCConstants.supportedUnitsOfMeasure.contains(unparsedUnits))
+			{	
+				
+				units = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
+				
+				if(!OGCConstants.supportedUnitsOfMeasure.contains(units))
 				{
 					throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
 				}	
-				units = unparsedUnits.substring(unparsedUnits.lastIndexOf('/')+1);
-				if(units.equals("metre") || units.equals("meter"))
+				
+				if(units.equals(OGCConstants.OGCmetre))
 				{							
 					//if(!unparsedUnits.equals(OGCConstants.OGCmetre));
-					filter.appendFunction("GEOGRAPHY");
+					filter.appendFunction(GEOGRAPHY);
 					filter.openBracket();
-					filter.appendFunction("ST_TRANSFORM");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}
-				else if(units.equals("degree"))
+				else if(units.equals(OGCConstants.OGCdegree))
 				{
-					filter.appendFunction("ST_TRANSFORM");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}	
 			}	
@@ -1671,7 +1674,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 			}
 						
-			if(units.equals("metre") || units.equals("meter"))
+			if(units.equals(OGCConstants.OGCmetre))
 			{				
 				filter.appendComma();
 				filter.append(String.valueOf(GeoConstants.defaultSRID));
@@ -1680,12 +1683,12 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				
 				filter.appendComma();
 
-				filter.appendFunction("GEOGRAPHY");
+				filter.appendFunction(GEOGRAPHY);
 				filter.openBracket();
-				filter.appendFunction("ST_TRANSFORM");
+				filter.appendFunction(ST_TRANSFORM);
 				filter.openBracket();				
 			}
-			else if(units.equals("degree"))
+			else if(units.equals(OGCConstants.OGCdegree))
 			{
 				filter.appendComma();
 				filter.append(String.valueOf(GeoConstants.defaultSRID));
@@ -1693,7 +1696,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				
 				filter.appendComma();
 				
-				filter.appendFunction("ST_TRANSFORM");
+				filter.appendFunction(ST_TRANSFORM);
 				filter.openBracket();
 			}	
 			else
@@ -1745,14 +1748,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
 			}
 
-			if(units.equals("metre") || units.equals("meter"))
+			if(units.equals(OGCConstants.OGCmetre))
 			{
 				filter.appendComma();
 				filter.append(String.valueOf(GeoConstants.defaultSRID));
 				filter.closeBracket();
 				filter.closeBracket();
 			}
-			else if(units.equals("degree"))
+			else if(units.equals(OGCConstants.OGCdegree))
 			{
 				filter.appendComma();
 				filter.append(String.valueOf(GeoConstants.defaultSRID));
