@@ -216,8 +216,22 @@ followed in order to use Strabon using Eclipse:
    project, download any dependencies and build the project. 
 
 
-	Storing stRDF graphs and evaluating stSPARQL queries
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tester Guide
+~~~~~~~~~~~~
+Assuming again that you are familiar with Maven and Junit these are the steps
+you need to follow to test the functionality of Strabon:
+
+* Using Eclipse
+
+	If you want to create a new test:
+
+	1. Import Strabon into Eclipse as explained in the Developer Guide.
+	2. Go to project strabon-testsuite.
+	3. Create a Test class in the appropriate package.
+
+
+Storing stRDF graphs and evaluating stSPARQL queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can see some examples in the classes
 eu.earthobservatory.runtime.postgis.StoreOp and
 eu.earthobservatory.runtime.postgis.QueryOp.

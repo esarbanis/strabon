@@ -32,23 +32,23 @@ import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.postgis.Strabon;
 
 /**
- * A template class with useful methods for the tests.
+ * A class with useful methods for the tests.
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-public class TemplateTest
+public class Utils
 {
-	public static final String dbPropertiesFile="/databases.properties";
+	private static final String dbPropertiesFile="/databases.properties";
 	
-	public static String databaseTemplateName = null;
-	public static String defaultUser = null;
-	public static String serverName = null;
-	public static String username = null;
-	public static String password = null;
-	public static String port = null;
+	private static String databaseTemplateName = null;
+	private static String defaultUser = null;
+	private static String serverName = null;
+	private static String username = null;
+	private static String password = null;
+	private static String port = null;
 	
-	public static Connection conn = null;
-	public static String databaseName = null;
+	private static Connection conn = null;
+	private static String databaseName = null;
 	
 	private static Strabon strabon = null;
 	
@@ -60,7 +60,7 @@ public class TemplateTest
 		
 		//Read properties
 		Properties properties = new Properties();
-		InputStream propertiesStream =  TemplateTest.class.getResourceAsStream(dbPropertiesFile);
+		InputStream propertiesStream =  Utils.class.getResourceAsStream(dbPropertiesFile);
 		properties.load(propertiesStream);
 
 		if((databaseTemplateName = System.getProperty("postgis.databaseTemplateName"))==null)
@@ -134,8 +134,8 @@ public class TemplateTest
 	
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException
 	{
-		BufferedReader queryReader = new BufferedReader(new InputStreamReader(TemplateTest.class.getResourceAsStream(queryFile)));
-		BufferedReader resultsReader = new BufferedReader(new InputStreamReader(TemplateTest.class.getResourceAsStream(resultsFile)));
+		BufferedReader queryReader = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(queryFile)));
+		BufferedReader resultsReader = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(resultsFile)));
 		String query="";
 		ArrayList<String> actualResults = new ArrayList<String>();
 		ArrayList<String> expectedResults = new ArrayList<String>();

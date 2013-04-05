@@ -9,8 +9,8 @@
  */
 package eu.earthobservatory.runtime.postgis;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,28 +18,28 @@ import org.junit.Test;
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
-public class TestStore
+public class StoreTest
 {	
-	private static final String datasetFile = "/TestStore.nt";
-	private static final String queryFile = "/TestStore.rq";
-	private static final String resultsFile = "/TestStore.sr";
+	private final String datasetFile="/"+this.getClass().getSimpleName()+".nt";
+	private final String queryFile="/"+this.getClass().getSimpleName()+".rq";
+	private final String resultsFile="/"+this.getClass().getSimpleName()+".sr";
 
-	@BeforeClass
-	public static void beforeClass() throws Exception
+	@Before
+	public void before() throws Exception
 	{
-		TemplateTest.createdb();
-		TemplateTest.storeDataset(datasetFile);
+		Utils.createdb();
+		Utils.storeDataset(datasetFile);
 	}
 	
 	@Test
 	public void test() throws Exception
 	{
-		TemplateTest.testQuery(queryFile, resultsFile);
+		Utils.testQuery(queryFile, resultsFile);
 	}
 	
-	@AfterClass
-	public static void afterClass() throws Exception
+	@After
+	public void after() throws Exception
 	{
-		TemplateTest.dropdb();
+		Utils.dropdb();
 	}
 }
