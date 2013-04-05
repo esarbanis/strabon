@@ -125,6 +125,7 @@ public class GeoConstants {
 	 * The URI for the datatype SemiLinearPointSet
 	 * (linear constraint-based representation of geometries)
 	 */
+	@Deprecated
 	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
 	
 	
