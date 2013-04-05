@@ -20,6 +20,7 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.ntriples.NTriplesParser;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.vocabulary.GeoSPARQL;
 import eu.earthobservatory.vocabulary.SimpleFeatures;
 
 /**
@@ -33,12 +34,6 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	private static String TYPE = RDF.TYPE.stringValue();
 	private static String SUBCLASS = RDFS.SUBCLASSOF.stringValue();
-	
-	public static String SpatialObject 			= GeoConstants.GEO + "SpatialObject";
-	public static String Feature 				= GeoConstants.GEO + "Feature";
-	public static String Geometry				= GeoConstants.GEO + "Geometry";
-	public static String hasGeometry 			= GeoConstants.GEO + "hasGeometry";
-	public static String hasDefaultGeometry		= GeoConstants.GEO + "hasDefaultGeometry";
 	
 	public static List <String> GM_Objects = Arrays.asList("GM_Complex", "GM_Agreggate", "GM_Primitive", "GM_Composite", "GM_MultiPrimitive",
 			"GM_Point", "GM_OrientablePrimitive","GM_OrientableCurve","GM_OrientableSurface", "GM_Curve","GM_Surface","GM_Solid",
@@ -82,8 +77,8 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 			pred.startsWith(GeoConstants.GEO+"eh") || 
 			pred.startsWith(GeoConstants.GEO+"rcc8"))
 		{
-			writeTriple(subj, TYPE, SpatialObject);
-			writeTriple(obj, TYPE, SpatialObject);
+			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+			writeTriple(obj, TYPE, GeoSPARQL.SpatialObject);
 		}
 		/* Infer 
 		 * 		subj rdf:type geo:SpatialObject
@@ -92,9 +87,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		 * or
 		 * 		subj rdf:type geo:Geometry 
 		 */
-		else if(pred.equals(TYPE) && (obj.equals(Feature) || obj.equals(Geometry)))
+		else if(pred.equals(TYPE) && (obj.equals(GeoSPARQL.Feature) || obj.equals(GeoSPARQL.Geometry)))
 		{
-			writeTriple(subj, TYPE, SpatialObject);
+			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 		} 
 		/*
 		 * Infer
@@ -107,13 +102,13 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		 * or
 		 * 		sub geo:hasDefaultGeometry obj
 		 */
-		else if(pred.equals(hasGeometry) || pred.equals(hasDefaultGeometry))
+		else if(pred.equals(GeoSPARQL.hasGeometry) || pred.equals(GeoSPARQL.hasDefaultGeometry))
 		{
-			writeTriple(subj, TYPE, Feature);
-			writeTriple(subj, TYPE, SpatialObject);
+			writeTriple(subj, TYPE, GeoSPARQL.Feature);
+			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 			
-			writeTriple(obj, TYPE, Feature);
-			writeTriple(obj, TYPE, SpatialObject);
+			writeTriple(obj, TYPE, GeoSPARQL.Feature);
+			writeTriple(obj, TYPE, GeoSPARQL.SpatialObject);
 		}
 		else if (pred.equals(TYPE)) {
 			// GML class hierarchy
@@ -305,8 +300,8 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 					GeoConstants.GEOisSimple.equals(pred) 		     || GeoConstants.GEOhasSerialization.equals(pred)   ||
 					GeoConstants.GEOasWKT.equals(pred)	 || GeoConstants.GEOasGML.equals(pred)) {
 			
-			writeTriple(subj, TYPE, Geometry);
-			writeTriple(subj, TYPE, SpatialObject);
+			writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 		}
 	}
 

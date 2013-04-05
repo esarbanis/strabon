@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.earthobservatory.vocabulary.GeoSPARQL;
 import eu.earthobservatory.vocabulary.SimpleFeatures;
 
 /**
@@ -48,12 +49,12 @@ public class GeoConstants {
 	/**
 	 * The namespace for GeoSPARQL ontology
 	 */
-	public static final String GEO						= "http://www.opengis.net/ont/geosparql#";
+	public static final String GEO						= GeoSPARQL.GEO;
 	
 	/**
 	 * The namespace for geometry functions declared by GeoSPARQL
 	 */
-	public static final String GEOF						= "http://www.opengis.net/def/function/geosparql/";
+	public static final String GEOF						= GeoSPARQL.GEOF;
 	
 	/**
 	 * The namespace for the ontology of simple features
@@ -106,8 +107,8 @@ public class GeoConstants {
 	/**
 	 * The URIs for GeoSPARQL properties
 	 */
-	public static final String GEOhasGeometry			=  GEO + "hasGeometry";
-	public static final String GEOdefaultGeometry		=  GEO + "defaultGeometry";
+	public static final String GEOhasGeometry			=  GeoSPARQL.hasGeometry;
+	public static final String GEOdefaultGeometry		=  GeoSPARQL.hasDefaultGeometry;
 	public static final String GEOdimension				=  GEO + "dimension";
 	public static final String GEOcoordinateDimension	=  GEO + "coordinateDimension";
 	public static final String GEOspatialDimension	    =  GEO + "spatialDimension";
