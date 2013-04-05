@@ -493,6 +493,7 @@ public abstract class GeneralDBTripleRepository {
 	
 	/**
 	 * @author Manos Karpathiotatis <mk@di.uoa.gr>
+	 * 
 	 * @throws RdbmsException
 	 */
 	public void clearGeoValues() throws RdbmsException
