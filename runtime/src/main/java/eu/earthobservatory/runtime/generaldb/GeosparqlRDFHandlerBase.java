@@ -10,8 +10,6 @@
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.List;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.RDF;
@@ -34,10 +32,6 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	private static String TYPE = RDF.TYPE.stringValue();
 	private static String SUBCLASS = RDFS.SUBCLASSOF.stringValue();
-	
-	public static List <String> GM_Objects = Arrays.asList("GM_Complex", "GM_Agreggate", "GM_Primitive", "GM_Composite", "GM_MultiPrimitive",
-			"GM_Point", "GM_OrientablePrimitive","GM_OrientableCurve","GM_OrientableSurface", "GM_Curve","GM_Surface","GM_Solid",
-			 "GM_CompositeCurve", "GM_CompositeSurface", "GM_CompositeSolid", "GM_Multipoint", "GM_MultiCurve", "GM_MultiSurface", "GM_MultiSolid");
 
 	private StringBuffer triples = new StringBuffer(1024);
 	
