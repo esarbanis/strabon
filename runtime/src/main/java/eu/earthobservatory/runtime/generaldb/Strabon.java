@@ -334,7 +334,6 @@ public abstract class Strabon {
 			uriContext = f.createURI(context);
 		}
 
-
 		if(format.equalsIgnoreCase("N3")) {
 			realFormat =  RDFFormat.N3;
 			
@@ -394,7 +393,7 @@ public abstract class Strabon {
 
 		logger.info("[Strabon.storeURL] Inferred {} triples.", handler.getNumberOfTriples());
 		if (handler.getNumberOfTriples() > 0) {
-			logger.info("[Strabon.storeURL] Triples inferred: {}", handler.getTriples());
+			logger.debug("[Strabon.storeURL] Triples inferred: {}", handler.getTriples());
 		}
 		
 		StringReader georeader = new StringReader(handler.getTriples().toString());
@@ -402,14 +401,15 @@ public abstract class Strabon {
 
 		if (context == null) {
 			con1.add(url, baseURI, format);
+			con1.add(georeader, baseURI, RDFFormat.NTRIPLES);
 			
 		} else {
 			con1.add(url, baseURI, format, context);
-			
+			con1.add(georeader, baseURI, RDFFormat.NTRIPLES, context);	
 		}
 		
-		con1.add(georeader, "", RDFFormat.NTRIPLES);
 		georeader.close();
+
 		logger.info("[Strabon.storeURL] Storing was successful.");
 	}
 
