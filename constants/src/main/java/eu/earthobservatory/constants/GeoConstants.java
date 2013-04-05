@@ -13,6 +13,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.earthobservatory.vocabulary.SimpleFeatures;
+
 /**
  * This class is a placeholder for various constants around geometries. These
  * constants range from URIs of namespaces, functions, representations, etc.,
@@ -56,7 +58,7 @@ public class GeoConstants {
 	/**
 	 * The namespace for the ontology of simple features
 	 */
-	public static final String SF						= "http://www.opengis.net/ont/sf#";
+	public static final String SF						= SimpleFeatures.NAMESPACE;
 	
 	/**
 	 * 
