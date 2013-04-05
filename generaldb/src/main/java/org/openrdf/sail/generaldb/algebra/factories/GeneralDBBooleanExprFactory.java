@@ -135,6 +135,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.constants.GeoConstants;
 
@@ -147,6 +149,8 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {
 
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.algebra.factories.GeneralDBBooleanExprFactory.class);
+	
 	private static final double HR14 = 14 * 60 * 60 * 1000;
 
 	protected GeneralDBSqlExpr result;
@@ -260,7 +264,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			/***/
 			else //spatial property
 			{
-				System.out.println("SPATIAL PROPERTY!!!");
+				//System.out.println("SPATIAL PROPERTY!!!");
 				rightSql = spatialPropertyFunction((FunctionCall) right, function);
 				rightIsSpatial = true;
 			}
@@ -274,10 +278,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				rightSql = numeric(right);
 			}
 		}
-
-		/**
-		 * 
-		 */
 
 		switch (op) {
 		case EQ:
@@ -376,38 +376,33 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 	@Override
-	public void meet(IsBNode node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(IsBNode node) throws UnsupportedRdbmsOperatorException
+	{
 		result = isNotNull(sql.createBNodeExpr(node.getArg()));
-			}
+	}
 
 	@Override
-	public void meet(IsLiteral node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(IsLiteral node) throws UnsupportedRdbmsOperatorException
+	{
 		result = isNotNull(sql.createLabelExpr(node.getArg()));
-			}
+	}
 
 	@Override
-	public void meet(IsResource node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(IsResource node) throws UnsupportedRdbmsOperatorException
+	{
 		GeneralDBSqlExpr isBNode = isNotNull(sql.createBNodeExpr(node.getArg()));
 		result = or(isBNode, isNotNull(sql.createUriExpr(node.getArg())));
-			}
+	}
 
 	@Override
-	public void meet(IsURI node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(IsURI node) throws UnsupportedRdbmsOperatorException
+	{
 		result = isNotNull(sql.createUriExpr(node.getArg()));
-			}
+	}
 
 	@Override
-	public void meet(LangMatches node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(LangMatches node) throws UnsupportedRdbmsOperatorException
+	{
 		ValueExpr left = node.getLeftArg();
 		ValueExpr right = node.getRightArg();
 		GeneralDBSqlCase sqlCase = new GeneralDBSqlCase();
@@ -415,39 +410,36 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		GeneralDBSqlExpr pattern = concat(lowercase(label(right)), str("%"));
 		sqlCase.when(new GeneralDBTrueValue(), like(label(left), pattern));
 		result = sqlCase;
-			}
+	}
 
 	@Override
-	public void meet(Not node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(Not node) throws UnsupportedRdbmsOperatorException
+	{
 		result = not(bool(node.getArg()));
-			}
+	}
 
 	@Override
-	public void meet(Or node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(Or node) throws UnsupportedRdbmsOperatorException
+	{
 		result = or(bool(node.getLeftArg()), bool(node.getRightArg()));
-			}
+	}
 
 	@Override
-	public void meet(Regex node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(Regex node) throws UnsupportedRdbmsOperatorException
+	{
 		result = regex(label(node.getArg()), label(node.getPatternArg()), label(node.getFlagsArg()));
-			}
+	}
 
 	@Override
-	public void meet(SameTerm node)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(SameTerm node) throws UnsupportedRdbmsOperatorException
+	{
 		ValueExpr left = node.getLeftArg();
 		ValueExpr right = node.getRightArg();
 		boolean leftIsVar = left instanceof Var;
 		boolean rightIsVar = right instanceof Var;
 		boolean leftIsConst = left instanceof ValueConstant;
 		boolean rightIsConst = right instanceof ValueConstant;
+		
 		if (leftIsVar && rightIsVar) {
 			result = eq(new GeneralDBRefIdColumn((Var)left), new GeneralDBRefIdColumn((Var)right));
 		}
@@ -464,132 +456,116 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			GeneralDBSqlExpr literals = and(langs, and(datatype, labels));
 			result = and(bnodes, and(uris, literals));
 		}
-			}
+	}
 
 	@Override
-	public void meet(ValueConstant vc)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(ValueConstant vc) throws UnsupportedRdbmsOperatorException
+	{
 		result = valueOf(vc.getValue());
-			}
+	}
 
 	@Override
-	public void meet(Var var)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public void meet(Var var) throws UnsupportedRdbmsOperatorException
+	{
 		if (var.getValue() == null) {
 			result = effectiveBooleanValue(var);
 		}
 		else {
 			result = valueOf(var.getValue());
 		}
-			}
+	}
 
 	public void setSqlExprFactory(GeneralDBSqlExprFactory sql) {
 		this.sql = sql;
 	}
 
-	protected GeneralDBSqlExpr bNode(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr bNode(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createBNodeExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr bool(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr bool(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createBooleanExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr label(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr label(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createLabelExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr lang(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr lang(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createLanguageExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr hash(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr hash(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createHashExpr(arg);
-			}
+	}
 
 	@Override
-	protected void meetNode(QueryModelNode arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void meetNode(QueryModelNode arg) throws UnsupportedRdbmsOperatorException
+	{
 		if (arg instanceof ValueExpr) {
 			result = effectiveBooleanValue((ValueExpr)arg);
 		}
 		else {
 			throw unsupported(arg);
 		}
-			}
+	}
 
-	protected GeneralDBSqlExpr numeric(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr numeric(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createNumericExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr time(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr time(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createTimeExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr type(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr type(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createDatatypeExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr uri(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr uri(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createUriExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr zoned(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr zoned(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return sql.createZonedExpr(arg);
-			}
+	}
 
-	private GeneralDBSqlExpr effectiveBooleanValue(ValueExpr v)
-			throws UnsupportedRdbmsOperatorException
-			{
+	private GeneralDBSqlExpr effectiveBooleanValue(ValueExpr v) throws UnsupportedRdbmsOperatorException
+	{
 		String bool = XMLSchema.BOOLEAN.stringValue();
 		GeneralDBSqlCase sqlCase = new GeneralDBSqlCase();
 		sqlCase.when(eq(type(v), str(bool)), eq(label(v), str("true")));
 		sqlCase.when(simple(type(v)), not(eq(label(v), str(""))));
 		sqlCase.when(isNotNull(numeric(v)), not(eq(numeric(v), num(0))));
 		return sqlCase;
-			}
+	}
 
-	private GeneralDBSqlExpr equal(ValueExpr left, ValueExpr right)
-			throws UnsupportedRdbmsOperatorException
-			{
+	private GeneralDBSqlExpr equal(ValueExpr left, ValueExpr right) throws UnsupportedRdbmsOperatorException
+	{
 		GeneralDBSqlExpr bnodes = eq(bNode(left), bNode(right));
 		GeneralDBSqlExpr uris = eq(uri(left), uri(right));
 		GeneralDBSqlCase scase = new GeneralDBSqlCase();
 		scase.when(or(isNotNull(bNode(left)), isNotNull(bNode(right))), bnodes);
 		scase.when(or(isNotNull(uri(left)), isNotNull(uri(right))), uris);
 		return literalEqual(left, right, scase);
-			}
+	}
 
 	private boolean isTerm(ValueExpr node) {
 		return node instanceof Var || node instanceof ValueConstant;
 	}
 
-	private GeneralDBSqlExpr literalEqual(ValueExpr left, ValueExpr right, GeneralDBSqlCase scase)
-			throws UnsupportedRdbmsOperatorException
-			{
+	private GeneralDBSqlExpr literalEqual(ValueExpr left, ValueExpr right, GeneralDBSqlCase scase) throws UnsupportedRdbmsOperatorException
+	{
 		GeneralDBSqlExpr labels = eq(label(left), label(right));
 		GeneralDBSqlExpr langs = and(eqIfNotNull(lang(left), lang(right)), labels.clone());
 		GeneralDBSqlExpr numeric = eq(numeric(left), numeric(right));
@@ -605,18 +581,17 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		scase.when(comparable, time);
 		scase.when(and(eq(type(left), type(right)), labels.clone()), new GeneralDBTrueValue());
 		return scase;
-			}
+	}
 
-	private GeneralDBSqlExpr termsEqual(ValueExpr left, ValueExpr right)
-			throws UnsupportedRdbmsOperatorException
-			{
+	private GeneralDBSqlExpr termsEqual(ValueExpr left, ValueExpr right) throws UnsupportedRdbmsOperatorException
+	{
 		GeneralDBSqlExpr bnodes = eqIfNotNull(bNode(left), bNode(right));
 		GeneralDBSqlExpr uris = eqIfNotNull(uri(left), uri(right));
 		GeneralDBSqlCase scase = new GeneralDBSqlCase();
 		scase.when(or(isNotNull(bNode(left)), isNotNull(bNode(right))), bnodes);
 		scase.when(or(isNotNull(uri(left)), isNotNull(uri(right))), uris);
 		return literalEqual(left, right, scase);
-			}
+	}
 
 	private GeneralDBSqlExpr valueOf(Value value) {
 		if (value instanceof Literal) {
@@ -629,7 +604,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 	/**
-	 * FIXME spatials
+	 * Spatials
 	 */
 	@Override
 	public void meet(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
@@ -749,7 +724,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function instanceof SpatialMetricFunc) 
 			//Argument # depending on the function selected
 		{
-			//TODO
 			GeneralDBSqlExpr leftArg = null;
 			GeneralDBSqlExpr rightArg = null;
 			GeneralDBSqlExpr thirdArg = null;
@@ -804,8 +778,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		return null;
 	}
-
-	/***/
 	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
@@ -834,7 +806,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		ValueExpr left = functionCall.getArgs().get(0);
 		ValueExpr right = functionCall.getArgs().get(1);
-
 
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
@@ -965,8 +936,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
-	/***/
-	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -1201,7 +1170,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return relate(leftArg,rightArg,thirdArg);
 		}
-		//Should never reach this place
+		
+		logger.error("[Strabon.spatialRelationshipPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
 	}
 
@@ -1275,7 +1245,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return geoBoundary(leftArg);
 		}
 
-		//Should never reach this place
+		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
 	}
 
@@ -1284,7 +1254,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
 	 */
-	
 	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
 		if(function.getURI().equals(GeoConstants.diffDateTime))
@@ -1292,11 +1261,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return diffDateTime(leftArg, rightArg);
 		}
 
-		//Should never reach this place
+		logger.error("[Strabon.dateTimeMetricPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
 	}
-	
-	/***/
 	
 	//TODO more to be added here probably
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
@@ -1311,11 +1278,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		//GeoSPARQL's distance must be added at this place
 
-		//Should never reach this place
+		logger.error("[Strabon.spatialMetricPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
 	}
 
-	GeneralDBSqlExpr spatialPropertyPicker(Function function,GeneralDBSqlExpr arg)
+	GeneralDBSqlExpr spatialPropertyPicker(Function function, GeneralDBSqlExpr arg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLdimension))
 		{
@@ -1329,7 +1296,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid) ||
+				function.getURI().equals(GeoConstants.geoSparqlGetSRID))
 		{
 			return srid(arg);
 		}
@@ -1345,7 +1313,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return asGML(arg);
 		}
 
-		//Should never reach this place
+		logger.error("[Strabon.GeneralDBBooleanExprFactory] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
+		
 		return null;
 	}
 

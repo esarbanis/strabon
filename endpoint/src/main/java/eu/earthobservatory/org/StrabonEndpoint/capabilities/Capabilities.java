@@ -108,6 +108,15 @@ public interface Capabilities {
 	public List<String> getGeoSPARQLSpatialExtensionFunctions();
 	
 	/**
+	 * Return a list of URIs corresponding to the units of measure
+	 * that can be used in an extension function requiring such an
+	 * argument.
+	 * 
+	 * @return
+	 */
+	public List<String> getUnitsOfMeasure();
+	
+	/**
 	 * Returns a {@link RequestCapabilities} instance containing
 	 * the details for how one can query the Query service of the
 	 * endpoint.

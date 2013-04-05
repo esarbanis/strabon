@@ -10,42 +10,52 @@
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.StringReader;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 import org.openrdf.model.Statement;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.ntriples.NTriplesParser;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
-	public static String geonamespace = "http://www.opengis.net/ont/geosparql#";
-	public static String gml="http://www.opengis.net/def/geometryType/OGC-GML/3.2/";
-	public static String sf="http://www.opengis.net/def/geometryType/OGC-SF/1.0/";
-	public static String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-	public static String SpatialObject= geonamespace + "SpatialObject";
-	public static String Feature = geonamespace + "Feature";
-	public static String Geometry= geonamespace + "Geometry";
-	public static String hasGeometry = geonamespace + "hasGeometry";
-	public static String defaultGeometry = geonamespace + "defaultGeometry";
-	public static String dimension=   geonamespace + "dimension";
-	public static String coordinateDimension=   geonamespace + "coordinateDimension";
-	public static String spatialdimension=   geonamespace + "spatialdimension";
-	public static String isEmpty=   geonamespace + "isEmpty";
-	public static String isSimple=   geonamespace + "isSimple";
-	public static String is3D=   geonamespace + "is3D";
-	public static String asWKT=   geonamespace + "asWKT";
-	public static String asGML=   geonamespace + "asGML";
+	public static String GEO 		= GeoConstants.GEO;
+	public static String GML 		= GeoConstants.GML_OGC;
+	public static String SF	 		= GeoConstants.SF;
+	public static String RDF_TYPE 	= "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+	
+	public static String SpatialObject 			= GEO + "SpatialObject";
+	public static String Feature 				= GEO + "Feature";
+	public static String Geometry				= GEO + "Geometry";
+	public static String hasGeometry 			= GEO + "hasGeometry";
+	public static String hasDefaultGeometry		= GEO + "hasDefaultGeometry";
+	
+	public static String dimension				= GEO + "dimension";
+	public static String coordinateDimension	= GEO + "coordinateDimension";
+	public static String spatialdimension		= GEO + "spatialDimension";
+	public static String isEmpty				= GEO + "isEmpty";
+	public static String isSimple				= GEO + "isSimple";
+	
+	public static String hasSerialization		= GEO + "hasSerialization";
+	public static String asWKT					= GEO + "asWKT";
+	public static String asGML					= GEO + "asGML";
+	
 	public static List <String> ogc_sf= Arrays.asList("Geometry", "Point", "Curve", "Surface", "GeometryCollection", "LineString", "Polygon", "MultiSurface", "MultiCurve",
 			            "MultiPoint", "Line", "LinearRing", "MultiPolygon","MultiLineString");
+	
 	public static List <String> GM_Objects= Arrays.asList("GM_Complex", "GM_Agreggate", "GM_Primitive", "GM_Composite", "GM_MultiPrimitive",
 			"GM_Point", "GM_OrientablePrimitive","GM_OrientableCurve","GM_OrientableSurface", "GM_Curve","GM_Surface","GM_Solid",
 			 "GM_CompositeCurve", "GM_CompositeSurface", "GM_CompositeSolid", "GM_Multipoint", "GM_MultiCurve", "GM_MultiSurface", "GM_MultiSolid");
-	public static List <String> geometryDomainList = Arrays.asList(dimension, coordinateDimension, spatialdimension,isEmpty, isSimple, is3D,asWKT, asGML);
-	public static String WKTLiteral=   geonamespace + "WKTLiteral";
-	public static String GMLLiteral=   geonamespace + "GMLLiteral";
-	public static List <String> rcc8 = Arrays.asList(geonamespace+"rcc8eq",geonamespace+"rcc8dc",geonamespace+"rcc8ec",geonamespace+"rcc8po",
-			geonamespace+"rcc8tppi", geonamespace+"rcc8tpp",geonamespace+ "rcc8ntpp", geonamespace+"rcc8ntpp");
+	
+	public static List <String> geometryDomainList = Arrays.asList(dimension, coordinateDimension, spatialdimension,isEmpty, isSimple, asWKT, asGML);
+	
+	public static String WKTLiteral	= GeoConstants.WKTLITERAL;
+	public static String GMLLiteral	= GeoConstants.GMLLITERAL;
+	
+	public static List <String> rcc8 = Arrays.asList(GEO+"rcc8eq",GEO+"rcc8dc",GEO+"rcc8ec",GEO+"rcc8po",
+			GEO+"rcc8tppi", GEO+"rcc8tpp",GEO+ "rcc8ntpp", GEO+"rcc8ntpp");
 	
 	//loose check: tha elegxw an arxizei apo eh- i apo sf- i apo rcc8- (den einai ola tou rcc8)
 	
@@ -59,7 +69,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	public StringBuffer getTriples()
 	{
 		return triples;
-	};
+	}
 	
 	public List <String> getrcc8()
 	{
@@ -71,237 +81,241 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		return geometryDomainList;
 	}
 	
-	public void startRDF() { triples.append("\n");}; 
+	@Override
+	public void startRDF() { 
+		triples.append("\n");
+	}
 
-	public void endRDF() {};
-	
 	public int getNumberOfTriples() {
 		return ntriples;
 	}
 	
+	@Override
 	public void handleStatement(Statement st)
 	{
 		String subject = st.getSubject().toString();
 		String predicate = st.getPredicate().toString();
 		String object = st.getObject().toString();
 		
-		if(predicate.startsWith("http://www.opengis.net/ont/geosparql#sf")||predicate.startsWith(geonamespace+"eh")|| 
+		if(predicate.startsWith("http://www.opengis.net/ont/geosparql#sf")||predicate.startsWith(GEO+"eh")|| 
 				rcc8.contains(predicate))
 		{
-			String triple = "<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n" +
-					"<"+object+ "> <"+ type +"> <"+ SpatialObject+ "> .\n" ;
+			String triple = "<"+subject+ "> <"+ RDF_TYPE +"> <"+ SpatialObject+ "> .\n" +
+					"<"+object+ "> <"+ RDF_TYPE +"> <"+ SpatialObject+ "> .\n" ;
 			triples.append(triple);
 			ntriples++;
 		}
-		if(predicate.equals(type)&&(object.equals(Feature) || object.equals(Geometry) ))
+		if(predicate.equals(RDF_TYPE)&&(object.equals(Feature) || object.equals(Geometry) ))
 		{
-			String triple = "<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n";
+			String triple = "<"+subject+ "> <"+ RDF_TYPE +"> <"+ SpatialObject+ "> .\n";
 			triples.append(triple);
 			ntriples++;
 		}
+		
 		if(predicate.equals(hasGeometry))
 		{
-			String triple = "<"+subject+ "> <"+ type +"> <"+ Feature+ "> .\n" +
-					"<"+object+ "> <"+ type +"> <"+ Geometry+ "> .\n" +
-					"<"+	subject+ "> <"+ type +"> <"+ SpatialObject + "> .\n" +
-					"<"+	object+ "> <"+ type +"> <"+ SpatialObject + "> .\n";
+			String triple = "<"+subject+ "> <"+ RDF_TYPE +"> <"+ Feature+ "> .\n" +
+					"<"+object+ "> <"+ RDF_TYPE +"> <"+ Geometry+ "> .\n" +
+					"<"+	subject+ "> <"+ RDF_TYPE +"> <"+ SpatialObject + "> .\n" +
+					"<"+	object+ "> <"+ RDF_TYPE +"> <"+ SpatialObject + "> .\n";
 			triples.append(triple);
 			ntriples++;
 		}
-		if(predicate.equals(defaultGeometry))
+		else if(predicate.equals(hasDefaultGeometry))
 		{
-			String triple = "<"+subject+ "> <"+ type +"> <"+ Feature+ "> .\n" +
-					"<"+object+ "> <"+ type +"> <"+ Geometry+ "> .\n" +
-					"<"+	subject+ "> <"+ type +"> <"+ SpatialObject + "> .\n"+
-			"<"+	subject+ "> <"+ hasGeometry +"> <"+ object + "> .\n";
+			String triple = "<"+subject+ "> <"+ RDF_TYPE +"> <"+ Feature+ "> .\n" +
+					"<"+object+ "> <"+ RDF_TYPE +"> <"+ Geometry+ "> .\n" +
+					"<"+	subject+ "> <"+ RDF_TYPE +"> <"+ SpatialObject + "> .\n" +
+					"<"+	object+ "> <"+ RDF_TYPE +"> <"+ SpatialObject + "> .\n";
 			triples.append(triple);
 			ntriples++;
 		}
+		
 		if(geometryDomainList.contains(predicate))
 		{
-			String triple = "<"+subject+ "> <"+ type +"> <"+ Geometry+ "> .\n" +
-					"<"+subject+ "> <"+ type +"> <"+ SpatialObject+ "> .\n";
+			String triple = "<"+subject+ "> <"+ RDF_TYPE +"> <"+ Geometry+ "> .\n" +
+					"<"+subject+ "> <"+ RDF_TYPE +"> <"+ SpatialObject+ "> .\n";
 			triples.append(triple);
 			ntriples++;
 		}
-		if (predicate.equals(type)) {
-			if (object.equals(gml + "GM_Complex")
-					|| object.equals(gml + "GM_Aggregate")
-					|| object.equals(gml + "GM_Primitive")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+		if (predicate.equals(RDF_TYPE)) {
+			if (object.equals(GML + "GM_Complex")
+					|| object.equals(GML + "GM_Aggregate")
+					|| object.equals(GML + "GM_Primitive")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(gml + "GM_Composite")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
-						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + gml + "GM_Object" + "> .\n";
+			if (object.equals(GML + "GM_Composite")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
+						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + GML + "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_MultiPrimitive")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_MultiPrimitive")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Aggregate" + "> .\n" + "<" + subject + "> <"
-						+ type + "> <" + gml + "GM_Object" + "> .\n";
+						+ RDF_TYPE + "> <" + GML + "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_Point")
-					|| object.equals(gml + "GM_OrientablePrimitive")
-					|| object.equals(gml + "GM_Solid")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_Point")
+					|| object.equals(GML + "GM_OrientablePrimitive")
+					|| object.equals(GML + "GM_Solid")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Primitive" + "> .\n" + "<" + subject + "> <"
-						+ type + "> <" + gml + "GM_Object" + "> .\n";
+						+ RDF_TYPE + "> <" + GML + "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_OrientableCurve")
-					|| object.equals(gml + "GM_OrientableSurface")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_OrientableCurve")
+					|| object.equals(GML + "GM_OrientableSurface")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_OrientablePrimitive" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml
+						+ "> <" + RDF_TYPE + "> <" + GML + "GM_Primitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_Curve")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_Curve")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Aggregate" + "> .\n"
-						+ "<" + subject + "> <" + type +"> <" + gml + "GM_OrientableCurve" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml + "GM_OrientablePrimitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml+ "GM_Object" + "> .\n";
+						+ "<" + subject + "> <" + RDF_TYPE +"> <" + GML + "GM_OrientableCurve" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML + "GM_OrientablePrimitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Primitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML+ "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_Surface")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml+ "GM_Aggregate" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml + "GM_OrientableSurface" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml + "GM_OrientablePrimitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_Surface")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML+ "GM_Aggregate" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML + "GM_OrientableSurface" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML + "GM_OrientablePrimitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Primitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_CompositeCurve")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_CompositeCurve")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Aggregate" + "> .\n" + "<" + subject + "> <"
-						+ type + "> <" + gml + "GM_OrientableCurve" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml
+						+ RDF_TYPE + "> <" + GML + "GM_OrientableCurve" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_OrientablePrimitive" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml
-						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + gml + "GM_Composite" + "> .\n" + "<"
-						+ subject + "> <" + type + "> <" + gml + "GM_Object"
+						+ "> <" + RDF_TYPE + "> <" + GML + "GM_Primitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML
+						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + GML + "GM_Composite" + "> .\n" + "<"
+						+ subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_CompositeSurface")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_CompositeSurface")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_OrientableSurface" + "> .\n" +
 
-						"<" + subject + "> <" + type + "> <" + gml
+						"<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_OrientablePrimitive" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + gml + "GM_Primitive" + "> .\n"
-						+ "<" + subject + "> <" + type + "> <" + gml
-						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + gml + "GM_Composite" + "> .\n" + "<"
-						+ subject + "> <" + type + "> <" + gml + "GM_Object"
+						+ "> <" + RDF_TYPE + "> <" + GML + "GM_Primitive" + "> .\n"
+						+ "<" + subject + "> <" + RDF_TYPE + "> <" + GML
+						+ "GM_Complex" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + GML + "GM_Composite" + "> .\n" + "<"
+						+ subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_CompositeSolid")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
-						+ "GM_Solid" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + gml + "GM_Primitive" + "> .\n" + "<"
-						+ subject + "> <" + type + "> <" + gml + "GM_Complex"
-						+ "> .\n" + "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_CompositeSolid")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
+						+ "GM_Solid" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + GML + "GM_Primitive" + "> .\n" + "<"
+						+ subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Complex"
+						+ "> .\n" + "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_Composite" + "> .\n" + "<" + subject + "> <"
-						+ type + "> <" + gml + "GM_Object" + "> .\n";
+						+ RDF_TYPE + "> <" + GML + "GM_Object" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(gml + "GM_MultiPoint")
-					|| object.equals(gml + "GM_MultiCurve")
-					|| object.equals(gml + "GM_MultiSurface")
-					|| object.equals(gml + "GM_MultiSolid")) {
-				String triple = "<" + subject + "> <" + type + "> <" + gml
+			if (object.equals(GML + "GM_MultiPoint")
+					|| object.equals(GML + "GM_MultiCurve")
+					|| object.equals(GML + "GM_MultiSurface")
+					|| object.equals(GML + "GM_MultiSolid")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + GML
 						+ "GM_MultiPrimitive" + "> .\n" + "<" + subject + "> <"
-						+ type + "> <" + gml + "GM_Aggregate" + "> .\n" + "<"
-						+ subject + "> <" + type + "> <" + gml + "GM_Object"
+						+ RDF_TYPE + "> <" + GML + "GM_Aggregate" + "> .\n" + "<"
+						+ subject + "> <" + RDF_TYPE + "> <" + GML + "GM_Object"
 						+ "> .\n";
 				triples.append(triple);
 				ntriples++;
 
 			}
-			if (object.equals(sf + "Point") || object.equals(sf + "Curve")
-					|| object.equals(sf + "Surface")
-					|| object.equals(sf + "GeometryCollection")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
+			if (object.equals(SF + "Point") || object.equals(SF + "Curve")
+					|| object.equals(SF + "Surface")
+					|| object.equals(SF + "GeometryCollection")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
 						+ "Geometry" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "LineString")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "Curve" + "> .\n";
+			if (object.equals(SF + "LineString")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "Curve" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "Line") || object.equals(sf + "LinearRing")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "Curve" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + sf + "LineString" + "> .\n";
+			if (object.equals(SF + "Line") || object.equals(SF + "LinearRing")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "Curve" + "> .\n" + "<" + subject
+						+ "> <" + RDF_TYPE + "> <" + SF + "LineString" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "Polygon")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "Surface" + "> .\n";
+			if (object.equals(SF + "Polygon")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "Surface" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "MultiSurface")
-					|| object.equals(sf + "MultiCurve")
-					|| object.equals(sf + "MultiPoint")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "GeometryCollection" + "> .\n";
+			if (object.equals(SF + "MultiSurface")
+					|| object.equals(SF + "MultiCurve")
+					|| object.equals(SF + "MultiPoint")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "GeometryCollection" + "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "MultiPolygon")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "MultiSurface" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + sf + "GeometryCollection"
+			if (object.equals(SF + "MultiPolygon")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "MultiSurface" + "> .\n" + "<" + subject
+						+ "> <" + RDF_TYPE + "> <" + SF + "GeometryCollection"
 						+ "> .\n";
 				triples.append(triple);
 				ntriples++;
 			}
-			if (object.equals(sf + "MultiLineString")) {
-				String triple = "<" + subject + "> <" + type + "> <" + sf
-						+ "Geometry" + "> .\n" + "<" + subject + "> <" + type
-						+ "> <" + sf + "MultiCurve" + "> .\n" + "<" + subject
-						+ "> <" + type + "> <" + sf + "GeometryCollection"
+			if (object.equals(SF + "MultiLineString")) {
+				String triple = "<" + subject + "> <" + RDF_TYPE + "> <" + SF
+						+ "Geometry" + "> .\n" + "<" + subject + "> <" + RDF_TYPE
+						+ "> <" + SF + "MultiCurve" + "> .\n" + "<" + subject
+						+ "> <" + RDF_TYPE + "> <" + SF + "GeometryCollection"
 						+ "> .\n";
 				triples.append(triple);
 				ntriples++;
@@ -314,14 +328,15 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		NTriplesParser parser = new NTriplesParser();
 		parser.setVerifyData(true);
 
-		String text = 
+		/*String text = 
 				"<http://example.org/rcc8Obj1> <http://www.opengis.net/ont/geosparql#rcc8eq> <http://example.org/rcc8Obj2> . " +
 				"<http://example.org/simpleGeometry1> <http://www.opengis.net/ont/geosparql#isEmpty> _:nai . \n"+
 		"<http://example.org/ForestArea1> <http://www.opengis.net/ont/geosparql#defaultGeometry> _:b2 . \n"+
 		"<http://example.org/SpatialObject1> <http://www.opengis.net/ont/geosparql#ehIntersects> <http://example.org/SpatialObject2> . \n";
+		*/
         
-		String gmltext= "<http://example.org/GM_MultiSolid> <"+type+"> <"+gml+"GM_Object> .\n"; 
-		String sftext= "<http://example.org/Line> <"+type+"> <"+sf+"Geometry> .\n"; 
+		String gmltext= "<http://example.org/GM_MultiSolid> <"+RDF_TYPE+"> <"+GML+"GM_Object> .\n"; 
+		//String sftext= "<http://example.org/Line> <"+type+"> <"+sf+"Geometry> .\n"; 
 		
 		StringReader reader = new StringReader(gmltext);
 

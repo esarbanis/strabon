@@ -22,6 +22,6 @@ public class SridFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.stSPARQLsrid.toString(); //changed this-constant
+		return GeoConstants.stSPARQLsrid; //changed this-constant
 	}
 }

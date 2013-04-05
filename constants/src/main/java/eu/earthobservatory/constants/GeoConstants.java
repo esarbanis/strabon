@@ -71,6 +71,8 @@ public class GeoConstants {
 	 * GML should be only "http://www.opengis.net/gml" and nothing else. In every other case,
 	 * an exception is thrown by the GML parser.
 	 * 
+	 * UPDATE: The most recent value for the GML namespace by OGC is 
+	 * "http://www.opengis.net/ont/gml#".
 	 * 
 	 * @see {@link org.openrdf.query.algebra.evaluation.util.JTSWrapper.GMLReader}, {@link GMLReader}
 	 */
@@ -123,6 +125,7 @@ public class GeoConstants {
 	 * The URI for the datatype SemiLinearPointSet
 	 * (linear constraint-based representation of geometries)
 	 */
+	@Deprecated
 	public static final String stRDFSemiLinearPointset	= stRDF + "SemiLinearPointSet";
 	
 	
@@ -241,9 +244,10 @@ public class GeoConstants {
 	public static final String geoSparqlIntersection 			= GEOF + "intersection";
 	public static final String geoSparqlUnion 				= GEOF + "union";
 	public static final String geoSparqlDifference 			= GEOF + "difference";
-	public static final String geoSparqlSymmetricDifference 	= GEOF + "symmetricDifference";
+	public static final String geoSparqlSymmetricDifference 	= GEOF + "symDifference";
 	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
 	public static final String geoSparqlBoundary 				= GEOF + "boundary";
+	public static final String geoSparqlGetSRID				= GEOF + "getSRID";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
 	public static final String sfEquals 						= GEOF + "sfEquals";
