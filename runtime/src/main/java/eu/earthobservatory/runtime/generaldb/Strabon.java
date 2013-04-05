@@ -401,11 +401,11 @@ public abstract class Strabon {
 
 		if (context == null) {
 			con1.add(url, baseURI, format);
-			con1.add(georeader, baseURI, RDFFormat.NTRIPLES);
+			con1.add(georeader, "", RDFFormat.NTRIPLES);
 			
 		} else {
 			con1.add(url, baseURI, format, context);
-			con1.add(georeader, baseURI, RDFFormat.NTRIPLES, context);	
+			con1.add(georeader, "", RDFFormat.NTRIPLES, context);	
 		}
 		
 		georeader.close();
