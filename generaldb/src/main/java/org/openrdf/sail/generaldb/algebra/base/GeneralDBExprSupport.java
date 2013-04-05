@@ -91,9 +91,11 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+
 /**
  * Support method to create SQL expressions.
  * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author James Leigh
  * 
  */
@@ -269,12 +271,6 @@ public class GeneralDBExprSupport {
 		// no constructor
 	}
 
-	/**
-	 * my addition
-	 * FIXME  
-	 * 
-	 */
-
 	//XXX Spatial Relationship Functions - all 9 of them - stSPARQL++	
 	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEqualsSpatial(left, right);
@@ -419,7 +415,6 @@ public class GeneralDBExprSupport {
 	
 	//XXX Spatial Metric Functions
 	public static GeneralDBSqlExpr geoArea(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoArea(expr);
 	}
 	
@@ -429,17 +424,14 @@ public class GeneralDBExprSupport {
 	
 	//XXX Spatial Property Functions
 	public static GeneralDBSqlExpr dimension(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoDimension(expr);
 	}
 
 	public static GeneralDBSqlExpr geometryType(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoGeometryType(expr);
 	}
 	
 	public static GeneralDBSqlExpr asText(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoAsText(expr);
 	}
 	
@@ -448,23 +440,19 @@ public class GeneralDBExprSupport {
 	}
 
 	public static GeneralDBSqlExpr srid(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoSrid(expr);
 	}
 	
 	public static GeneralDBSqlExpr isEmpty(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoIsEmpty(expr);
 	}
 
 	public static GeneralDBSqlExpr isSimple(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoIsSimple(expr);
 	}
 	
 
-
-	//XXX GeoSPARQL - Spatial Relations
+	// GeoSPARQL - Spatial Relations
 	//Simple Features
 	public static GeneralDBSqlExpr sfContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlSF_Contains(left, right);
@@ -563,10 +551,4 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr ehOverlap(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEgenhofer_Overlap(left, right);
 	}
-
-
-	/**
-	 * end of my addition
-	 */
-
 }

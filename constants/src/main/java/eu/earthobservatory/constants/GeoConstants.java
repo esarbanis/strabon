@@ -247,6 +247,7 @@ public class GeoConstants {
 	public static final String geoSparqlSymmetricDifference 	= GEOF + "symDifference";
 	public static final String geoSparqlEnvelope 				= GEOF + "envelope";
 	public static final String geoSparqlBoundary 				= GEOF + "boundary";
+	public static final String geoSparqlGetSRID				= GEOF + "getSRID";
 
 	// Simple Features - 8 functions - all with 2 arguments + boolean
 	public static final String sfEquals 						= GEOF + "sfEquals";
