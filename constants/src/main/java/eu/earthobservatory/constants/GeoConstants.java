@@ -71,6 +71,8 @@ public class GeoConstants {
 	 * GML should be only "http://www.opengis.net/gml" and nothing else. In every other case,
 	 * an exception is thrown by the GML parser.
 	 * 
+	 * UPDATE: The most recent value for the GML namespace by OGC is 
+	 * "http://www.opengis.net/ont/gml#".
 	 * 
 	 * @see {@link org.openrdf.query.algebra.evaluation.util.JTSWrapper.GMLReader}, {@link GMLReader}
 	 */
