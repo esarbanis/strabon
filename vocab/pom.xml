@@ -8,10 +8,10 @@
 		<version>3.2.9-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>spatial-temporal-constants</artifactId>
+	<artifactId>strabon-vocabulary</artifactId>
 
-	<name>Strabon: Spatial and Temporal Constants</name>
-	<description>Spatial and Temporal Constants for Strabon</description>
+	<name>Strabon: Spatial and Temporal Vocabulary</name>
+	<description>Spatial and Temporal Vocabulary for Strabon</description>
 	<packaging>jar</packaging>
 
 	<build>

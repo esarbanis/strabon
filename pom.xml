@@ -136,7 +136,7 @@
 		<module>endpoint-client</module>
 		<module>endpoint-exec</module>
 		<module>testsuite</module>
-		<module>constants</module>
+		<module>vocab</module>
 	</modules>
 
 	<properties>
@@ -242,7 +242,7 @@
 
 			<dependency>
 				<groupId>eu.earthobservatory</groupId>
-				<artifactId>spatial-temporal-constants</artifactId>
+				<artifactId>strabon-vocabulary</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 

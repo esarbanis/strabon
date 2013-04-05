@@ -13,8 +13,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	http://www.opengis.net/def/uom/OGC/1.0/. Strabon endpoint publishes
 	the URIs at http://localhost:8080/endpoint/Capabilities.
 
-	* Created new module with name 'constants` and artifactId
-	'spatial-temporal-constants` and moved GeoConstants.java there.
+	* Created new module with name 'vocab` and artifactId
+	'strabon-vocabulary` and moved GeoConstants.java there. Other
+	vocabularies have been added as well, such as Simple Features, and
+	GeoSPARQL.
 
 	* Strabon endpoint now publishes the URIs of the supported extension
 	functions for stSPARQL and GeoSPARQL. One should access them by
