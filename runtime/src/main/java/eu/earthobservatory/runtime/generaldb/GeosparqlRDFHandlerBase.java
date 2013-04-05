@@ -57,6 +57,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	@Override
 	public void startRDF() {
+		insertGeoSPARQLClassHierarchy();
 		insertSimpleFeaturesClassHierarchy();
 	}
 	
@@ -312,7 +313,28 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		numTriples++;
 	}
 
+	/**
+	 * Materializes the RDF class hierarchy of Simple Features
+	 */
 	protected void insertSimpleFeaturesClassHierarchy() {
+		writeTriple(SimpleFeatures.Geometry, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Point, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Curve, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Surface, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.GeometryCollection, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.LineString, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Polygon, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.PolyhedralSurface, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.MultiSurface, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.MultiCurve, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.MultiPoint, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Line, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.LinearRing, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Triangle, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.TIN, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.MultiPolygon, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.MultiLineString, TYPE, RDFS.CLASS.stringValue());
+		
 		// first level 
 		writeTriple(SimpleFeatures.Point, SUBCLASS, SimpleFeatures.Geometry);
 		writeTriple(SimpleFeatures.Curve, SUBCLASS, SimpleFeatures.Geometry);
@@ -362,6 +384,20 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.MultiSurface);
 		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.GeometryCollection);
 		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, SimpleFeatures.Geometry);
+	}
+	
+	/**
+	 * Materializes the RDF class hierarchy of GeoSPARQL
+	 */
+	protected void insertGeoSPARQLClassHierarchy() {
+		writeTriple(GeoSPARQL.SpatialObject, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(GeoSPARQL.Feature, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(GeoSPARQL.Geometry, TYPE, RDFS.CLASS.stringValue());
+		
+		
+		writeTriple(GeoSPARQL.Feature, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(GeoSPARQL.Geometry, SUBCLASS, GeoSPARQL.SpatialObject);
+		
 	}
 	
 	public static void main(String[] args) throws Exception {
