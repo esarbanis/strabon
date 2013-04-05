@@ -82,49 +82,6 @@ public class GeoConstants {
 	public static final String GML_OGC					= "http://www.opengis.net/gml";
 	
 	
-	
-	
-	/**																		*
-	 *  						URIs										*
-	 * 																		*/
-	
-	/**																*
-	 *  GeoSPARQL	Version 1.0.1	Document#  11-052r4 			*
-	 *	http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip	*/
-
-	/** The following GeoSPARQL classes and properties are       
-	 *  commented out because they are not currently used.			
- 	 */
-	
-	/**
-	 * The URIs for GeoSPARQL classes
-	 */
-/*	public static final String SpatialObject			=  GEO + "SpatialObject";
-	public static final String Geometry				    =  GEO + "Geometry";
-	public static final String Feauture					=  GEO + "Feature";
-*/	
-		
-	/**
-	 * The URIs for GeoSPARQL properties
-	 */
-	public static final String GEOhasGeometry			=  GeoSPARQL.hasGeometry;
-	public static final String GEOdefaultGeometry		=  GeoSPARQL.hasDefaultGeometry;
-	public static final String GEOdimension				=  GEO + "dimension";
-	public static final String GEOcoordinateDimension	=  GEO + "coordinateDimension";
-	public static final String GEOspatialDimension	    =  GEO + "spatialDimension";
-	public static final String GEOisEmpty				=  GEO + "isEmpty";
-	public static final String GEOisSimple				=  GEO + "isSimple";
-	public static final String GEOhasSerialization		=  GEO + "hasSerialization";
-	public static final String GEOasWKT					=  GEO + "asWKT";
-	public static final String GEOasGML					=  GEO + "asGML";
-
-	
-	
-	/**																		*
-	 *  						URIs for datatypes							*
-	 * 																		*/
-	
-	
 	/**
 	 * The URI for the datatype SemiLinearPointSet
 	 * (linear constraint-based representation of geometries)

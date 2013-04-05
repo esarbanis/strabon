@@ -30,8 +30,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	//private static final Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.GeosparqlRDFHandlerBase.class);
 	
-	private static String TYPE = RDF.TYPE.stringValue();
-	private static String SUBCLASS = RDFS.SUBCLASSOF.stringValue();
+	private static String TYPE 		= RDF.TYPE.stringValue();
+	private static String CLASS 	= RDFS.CLASS.stringValue();
+	private static String SUBCLASS 	= RDFS.SUBCLASSOF.stringValue();
 
 	private StringBuffer triples = new StringBuffer(1024);
 	
@@ -68,9 +69,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		 * from
 		 * 		subj {any topological property from the Topology Vocabulary Extension} obj
 		 */
-		if( pred.startsWith(GeoConstants.GEO+"sf") ||
-			pred.startsWith(GeoConstants.GEO+"eh") || 
-			pred.startsWith(GeoConstants.GEO+"rcc8"))
+		if( pred.startsWith(GeoSPARQL.GEO+"sf") ||
+			pred.startsWith(GeoSPARQL.GEO+"eh") || 
+			pred.startsWith(GeoSPARQL.GEO+"rcc8"))
 		{
 			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 			writeTriple(obj, TYPE, GeoSPARQL.SpatialObject);
@@ -290,10 +291,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		 * from
 		 * 		subj {any spatial property defined in Req. 9, 14, and 18} obj
 		 */
-		} else if ( GeoConstants.GEOspatialDimension.equals(pred)    || GeoConstants.GEOdimension.equals(pred)  		||
-					GeoConstants.GEOcoordinateDimension.equals(pred) || GeoConstants.GEOisEmpty.equals(pred) 			||
-					GeoConstants.GEOisSimple.equals(pred) 		     || GeoConstants.GEOhasSerialization.equals(pred)   ||
-					GeoConstants.GEOasWKT.equals(pred)	 || GeoConstants.GEOasGML.equals(pred)) {
+		} else if ( GeoSPARQL.spatialDimension.equals(pred)    || GeoSPARQL.dimension.equals(pred)  		||
+					GeoSPARQL.coordinateDimension.equals(pred) || GeoSPARQL.isEmpty.equals(pred) 			||
+					GeoSPARQL.isSimple.equals(pred) 		   || GeoSPARQL.hasSerialization.equals(pred)   ||
+					GeoSPARQL.asWKT.equals(pred)	 		   || GeoSPARQL.asGML.equals(pred)) {
 			
 			writeTriple(subj, TYPE, GeoSPARQL.Geometry);
 			writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
@@ -311,23 +312,23 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	 * Materializes the RDF class hierarchy of Simple Features
 	 */
 	protected void insertSimpleFeaturesClassHierarchy() {
-		writeTriple(SimpleFeatures.Geometry, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Point, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Curve, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Surface, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.GeometryCollection, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.LineString, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Polygon, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.PolyhedralSurface, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.MultiSurface, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.MultiCurve, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.MultiPoint, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Line, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.LinearRing, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.Triangle, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.TIN, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.MultiPolygon, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(SimpleFeatures.MultiLineString, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(SimpleFeatures.Geometry, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Point, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Curve, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Surface, TYPE, CLASS);
+		writeTriple(SimpleFeatures.GeometryCollection, TYPE, CLASS);
+		writeTriple(SimpleFeatures.LineString, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Polygon, TYPE, CLASS);
+		writeTriple(SimpleFeatures.PolyhedralSurface, TYPE, CLASS);
+		writeTriple(SimpleFeatures.MultiSurface, TYPE, CLASS);
+		writeTriple(SimpleFeatures.MultiCurve, TYPE, CLASS);
+		writeTriple(SimpleFeatures.MultiPoint, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Line, TYPE, CLASS);
+		writeTriple(SimpleFeatures.LinearRing, TYPE, CLASS);
+		writeTriple(SimpleFeatures.Triangle, TYPE, CLASS);
+		writeTriple(SimpleFeatures.TIN, TYPE, CLASS);
+		writeTriple(SimpleFeatures.MultiPolygon, TYPE, CLASS);
+		writeTriple(SimpleFeatures.MultiLineString, TYPE, CLASS);
 		
 		// first level 
 		writeTriple(SimpleFeatures.Point, SUBCLASS, SimpleFeatures.Geometry);
@@ -384,9 +385,9 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	 * Materializes the RDF class hierarchy of GeoSPARQL
 	 */
 	protected void insertGeoSPARQLClassHierarchy() {
-		writeTriple(GeoSPARQL.SpatialObject, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(GeoSPARQL.Feature, TYPE, RDFS.CLASS.stringValue());
-		writeTriple(GeoSPARQL.Geometry, TYPE, RDFS.CLASS.stringValue());
+		writeTriple(GeoSPARQL.SpatialObject, TYPE, CLASS);
+		writeTriple(GeoSPARQL.Feature, TYPE, CLASS);
+		writeTriple(GeoSPARQL.Geometry, TYPE, CLASS);
 		
 		
 		writeTriple(GeoSPARQL.Feature, SUBCLASS, GeoSPARQL.SpatialObject);
