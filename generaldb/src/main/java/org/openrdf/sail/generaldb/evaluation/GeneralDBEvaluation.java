@@ -684,7 +684,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 		}
 
-		List<GeneralDBSelectProjection> projForOrderBy = new ArrayList<GeneralDBSelectProjection>();
+		//List<GeneralDBSelectProjection> projForOrderBy = new ArrayList<GeneralDBSelectProjection>();
 
 		int index = 0;
 		for (GeneralDBSelectProjection proj : qb.getSqlSelectVar()) {
@@ -798,7 +798,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 */
 	private void locateColumnVars(GeneralDBSqlExpr expr, Collection<GeneralDBColumnVar> allKnown)
 	{
-		ArrayList<GeneralDBColumnVar> allVars = new ArrayList<GeneralDBColumnVar>();
+		//ArrayList<GeneralDBColumnVar> allVars = new ArrayList<GeneralDBColumnVar>();
 		if(expr instanceof GeneralDBSqlSpatialProperty) //1 arg
 		{
 
@@ -910,7 +910,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBURIColumn)//Used for 2nd argument of Transform
 		{
-			boolean found = false;
 			String name = ((GeneralDBURIColumn) expr).getVarName();
 
 			for(GeneralDBColumnVar reference: allKnown)
@@ -919,7 +918,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					GeneralDBSqlExpr exprCopy = new GeneralDBURIColumn(reference);
 					expr.replaceWith(exprCopy);
-					found = true;
 				}
 			}
 
