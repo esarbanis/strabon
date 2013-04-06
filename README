@@ -33,6 +33,17 @@ we recently provided support for the Core, Geometry and Geometry Topology
 extension of GeoSPARQL. 
 
 
+Conformance to GeoSPARQL
+========================
+Strabon implements the `Core', the `Topology Vocabulary Extension', the
+`Geometry Extension', the `Geometry Topology Extension', and the `RDFS Entailment
+Extension' except for Req. 25
+(http://www.opengis.net/spec/geosparql/1.0/req/rdfs-entailment-extension/bgp-rdfs-ent).
+
+With respect to GML, Strabon supports the GML Profile corresponding to Simple
+Features.
+
+
 Strabon Homepage
 ================
 The homepage of Strabon is at http://www.strabon.di.uoa.gr/.
