@@ -312,6 +312,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	 * Materializes the RDF class hierarchy of Simple Features
 	 */
 	protected void insertSimpleFeaturesClassHierarchy() {
+		// insert rdf:type rdfs:Class
 		writeTriple(SimpleFeatures.Geometry, TYPE, CLASS);
 		writeTriple(SimpleFeatures.Point, TYPE, CLASS);
 		writeTriple(SimpleFeatures.Curve, TYPE, CLASS);
@@ -329,6 +330,44 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		writeTriple(SimpleFeatures.TIN, TYPE, CLASS);
 		writeTriple(SimpleFeatures.MultiPolygon, TYPE, CLASS);
 		writeTriple(SimpleFeatures.MultiLineString, TYPE, CLASS);
+		
+		// insert rdfs:subClassOf geo:Geometry
+		writeTriple(SimpleFeatures.Geometry, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Point, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Curve, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Surface, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.GeometryCollection, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.LineString, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Polygon, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.PolyhedralSurface, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.MultiSurface, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.MultiCurve, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.MultiPoint, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Line, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.LinearRing, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.Triangle, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.TIN, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.MultiPolygon, SUBCLASS, GeoSPARQL.Geometry);
+		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, GeoSPARQL.Geometry);
+		
+		// insert rdfs:subClassOf geo:SpatialObject
+		writeTriple(SimpleFeatures.Geometry, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Point, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Curve, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Surface, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.GeometryCollection, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.LineString, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Polygon, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.PolyhedralSurface, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.MultiSurface, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.MultiCurve, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.MultiPoint, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Line, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.LinearRing, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.Triangle, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.TIN, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.MultiPolygon, SUBCLASS, GeoSPARQL.SpatialObject);
+		writeTriple(SimpleFeatures.MultiLineString, SUBCLASS, GeoSPARQL.SpatialObject);
 		
 		// first level 
 		writeTriple(SimpleFeatures.Point, SUBCLASS, SimpleFeatures.Geometry);
