@@ -33,7 +33,7 @@ public abstract class HTTPClient {
 	/**
 	 * The name of the endpoint.
 	 * 
-	 * This is useful for {@link StrabonEndpoint} instances that are usually
+	 * This is useful for {@link SPARQLEndpoint} instances that are usually
 	 * deployed in a tomcat container as web applications.
 	 */
 	protected String endpointName;
