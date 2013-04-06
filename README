@@ -41,7 +41,7 @@ Extension' except for Req. 25
 (http://www.opengis.net/spec/geosparql/1.0/req/rdfs-entailment-extension/bgp-rdfs-ent).
 
 With respect to GML, Strabon supports the GML Profile corresponding to Simple
-Features.
+Features, that is, GML Simple Features Profile 2.0. 
 
 
 Strabon Homepage
