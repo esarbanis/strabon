@@ -241,14 +241,23 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 				SimpleFeatures.GeometryCollection.equals(obj)) {// first level
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
 				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+				
 			} else if (SimpleFeatures.LineString.equals(obj)) { // second level
 				writeTriple(subj, TYPE, SimpleFeatures.Curve);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
+				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 				
 			} else if (SimpleFeatures.Polygon.equals(obj) || 
 					   SimpleFeatures.PolyhedralSurface.equals(obj)) { // second level
 				writeTriple(subj, TYPE, SimpleFeatures.Surface);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
+				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 				
 			} else if (SimpleFeatures.MultiSurface.equals(obj) ||
 					SimpleFeatures.MultiCurve.equals(obj) ||
@@ -256,31 +265,49 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 				writeTriple(subj, TYPE, SimpleFeatures.GeometryCollection);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
 				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+				
 			} else if ( SimpleFeatures.Line.equals(obj) || 
 						SimpleFeatures.LinearRing.equals(obj)) { // third level
 				writeTriple(subj, TYPE, SimpleFeatures.LineString);
 				writeTriple(subj, TYPE, SimpleFeatures.Curve);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
 				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+				
 			} else if (SimpleFeatures.Triangle.equals(obj)) { // third level
 				writeTriple(subj, TYPE, SimpleFeatures.Polygon);
 				writeTriple(subj, TYPE, SimpleFeatures.Surface);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
+				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 				
 			} else if (SimpleFeatures.TIN.equals(obj)) { // third level
 				writeTriple(subj, TYPE, SimpleFeatures.PolyhedralSurface);
 				writeTriple(subj, TYPE, SimpleFeatures.Surface);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
 				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+				
 			} else if (SimpleFeatures.MultiPolygon.equals(obj)) { // third level
 				writeTriple(subj, TYPE, SimpleFeatures.MultiSurface);
 				writeTriple(subj, TYPE, SimpleFeatures.GeometryCollection);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
 				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
+				
 			} else if (SimpleFeatures.MultiLineString.equals(obj)) {// third level
 				writeTriple(subj, TYPE, SimpleFeatures.MultiCurve);
 				writeTriple(subj, TYPE, SimpleFeatures.GeometryCollection);
 				writeTriple(subj, TYPE, SimpleFeatures.Geometry);
+				
+				writeTriple(subj, TYPE, GeoSPARQL.Geometry);
+				writeTriple(subj, TYPE, GeoSPARQL.SpatialObject);
 				
 			}
 		/* Spatial properties
