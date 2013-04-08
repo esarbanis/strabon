@@ -128,7 +128,8 @@ public abstract class Strabon {
 		System.setProperty("org.geotools.referencing.forceXY", "true");
 		
 		//our repository
-		repo1 = new SailRepository(db_store);
+		//repo1 = new SailRepository(db_store);
+		repo1 = new GeneralDBSailRepository(db_store);
 
 		try {
 			repo1.initialize();
