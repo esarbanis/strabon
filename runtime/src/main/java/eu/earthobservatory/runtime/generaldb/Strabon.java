@@ -128,7 +128,6 @@ public abstract class Strabon {
 		System.setProperty("org.geotools.referencing.forceXY", "true");
 		
 		//our repository
-		//repo1 = new SailRepository(db_store);
 		repo = new GeneralDBSailRepository(db_store);
 
 		try {
@@ -387,7 +386,7 @@ public abstract class Strabon {
 
 		RDFParser parser = Rio.createParser(format);
 
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(con);
 
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");
@@ -429,7 +428,7 @@ public abstract class Strabon {
 
 		RDFParser parser = Rio.createParser(format);
 
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(con);
 
 		parser.setRDFHandler(handler);
 		parser.parse(reader, "");

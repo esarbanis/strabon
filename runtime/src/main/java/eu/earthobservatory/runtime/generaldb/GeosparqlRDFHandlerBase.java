@@ -14,6 +14,8 @@ import java.io.StringReader;
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.util.RDFInserter;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.ntriples.NTriplesParser;
 
@@ -26,10 +28,14 @@ import eu.earthobservatory.vocabulary.SimpleFeatures;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  */
-public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
+public class GeosparqlRDFHandlerBase extends RDFInserter {
 	
 	//private static final Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.GeosparqlRDFHandlerBase.class);
 	
+	public GeosparqlRDFHandlerBase(RepositoryConnection con) {
+		super(con);
+	}
+
 	private static final boolean ENABLE_INFERENCE = false;
 	
 	private static String TYPE 		= RDF.TYPE.stringValue();
@@ -485,7 +491,7 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		
 		StringReader reader = new StringReader(gmltext);
 
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase();
+		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(null);
 
 		handler.startRDF();
 		parser.setRDFHandler(handler);
