@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,7 +180,7 @@ public class BrowseBean extends HttpServlet {
 		String format = request.getParameter("format");
 		
 		// get stSPARQLQueryResultFormat from given format name
-		stSPARQLQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
+		TupleQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
 
 		if (query == null || format == null || queryResultFormat == null) {
 			dispatcher = request.getRequestDispatcher("browse.jsp");

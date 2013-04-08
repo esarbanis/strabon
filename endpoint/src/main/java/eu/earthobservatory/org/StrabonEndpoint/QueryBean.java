@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,7 +222,7 @@ public class QueryBean extends HttpServlet {
 			String maxLimit = request.getParameter("maxLimit");
 			
 			// get stSPARQLQueryResultFormat from given format name
-			stSPARQLQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
+			TupleQueryResultFormat queryResultFormat = stSPARQLQueryResultFormat.valueOf(format);
 			
 			if (query == null || format == null || queryResultFormat == null) {
 				dispatcher = request.getRequestDispatcher("query.jsp");

@@ -98,16 +98,16 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	}
 	
 	/**
-	 * Gets the stSPARQLQueryResultFormat given its name.
+	 * Gets the TupleQueryResultFormat given its name. It may be an
+	 * stSPARQLQueryResultFormat.
 	 * 
 	 * @param formatName
 	 * @return
 	 */
-	public static stSPARQLQueryResultFormat valueOf(String formatName) {
+	public static TupleQueryResultFormat valueOf(String formatName) {
 		for (TupleQueryResultFormat format : values()) {
-			if (format instanceof stSPARQLQueryResultFormat && 
-					format.getName().equalsIgnoreCase(formatName)) {
-				return (stSPARQLQueryResultFormat) format;
+			if (format.getName().equalsIgnoreCase(formatName)) {
+				return format;
 			}
 		}
 		

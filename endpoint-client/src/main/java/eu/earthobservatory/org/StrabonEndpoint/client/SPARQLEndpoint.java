@@ -215,7 +215,7 @@ public class SPARQLEndpoint extends HTTPClient{
 		SPARQLEndpoint endpoint = new SPARQLEndpoint(host, port, appName);
 		
 		try {
-			EndpointResult result = endpoint.query(query, stSPARQLQueryResultFormat.valueOf(format));
+			EndpointResult result = endpoint.query(query, (stSPARQLQueryResultFormat) stSPARQLQueryResultFormat.valueOf(format));
 			
 			System.out.println("Status code: " + result.getStatusCode());
 			System.out.println("Status text: " + result.getStatusText());
