@@ -30,6 +30,8 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	//private static final Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.GeosparqlRDFHandlerBase.class);
 	
+	private static final boolean ENABLE_INFERENCE = false;
+	
 	private static String TYPE 		= RDF.TYPE.stringValue();
 	private static String CLASS 	= RDFS.CLASS.stringValue();
 	private static String SUBCLASS 	= RDFS.SUBCLASSOF.stringValue();
@@ -52,8 +54,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 	
 	@Override
 	public void startRDF() {
-		insertGeoSPARQLClassHierarchy();
-		insertSimpleFeaturesClassHierarchy();
+		if (ENABLE_INFERENCE) {
+			insertGeoSPARQLClassHierarchy();
+			insertSimpleFeaturesClassHierarchy();
+		}
 	}
 	
 	@Override
@@ -63,6 +67,10 @@ public class GeosparqlRDFHandlerBase extends RDFHandlerBase {
 		String pred = st.getPredicate().toString();
 		String obj = st.getObject().toString();
 		
+		if (!ENABLE_INFERENCE) {
+			return ;
+		}
+			
 		/* Infer
 		 * 		subj rdf:type geo:SpatialObject
 		 * 		obj  rdf:type geo:SpatialObject
