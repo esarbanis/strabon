@@ -9,27 +9,21 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.openrdf.model.URI;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.query.BindingSet;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.evaluation.QueryBindingSet;
+import org.openrdf.query.resultio.QueryResultIO;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
+import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * SpatialEndpoint is a SPARQLEndpoint which can store and 
@@ -49,7 +43,7 @@ public class SpatialEndpoint extends SPARQLEndpoint {
 		super(host, port, endpointName);
 	}
 	
-	public EndpointResult queryForKML(String sparqlQuery) throws IOException, TupleQueryResultHandlerException{
+	public EndpointResult queryForKML(String sparqlQuery) throws IOException, QueryResultParseException, TupleQueryResultHandlerException, UnsupportedQueryResultFormatException, QueryEvaluationException{
 		
 		EndpointResult xmlResult = query(sparqlQuery, stSPARQLQueryResultFormat.XML);
 		
@@ -59,88 +53,23 @@ public class SpatialEndpoint extends SPARQLEndpoint {
 		
 		String xml = xmlResult.getResponse();
 		
-		Vector<BindingSet> bindingSets = xmlToBindingSet(xml);
+		InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));  
+		TupleQueryResult results = QueryResultIO.parse(inputStream, TupleQueryResultFormat.SPARQL);
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		stSPARQLResultsKMLWriter kmlWriter = new stSPARQLResultsKMLWriter(outputStream);
 			
 		kmlWriter.startQueryResult(new Vector<String>());
 					
-		for(int i=0; i<bindingSets.size(); i++){
+		while(results.hasNext()){
 		
-				kmlWriter.handleSolution(bindingSets.get(i));
-		}
+				kmlWriter.handleSolution(results.next());
+		}	
 					
 		kmlWriter.endQueryResult();
-		
-		
+			
 		EndpointResult kmlResult = new EndpointResult(xmlResult.getStatusCode(), xmlResult.getStatusText(), outputStream.toString());
 		return kmlResult;
 	}
-	
-	
-private Vector<BindingSet> xmlToBindingSet(String xml){
-		
-		Vector<BindingSet> bindingSetList = new Vector<BindingSet>();
-		
-		try { 
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new InputSource(new StringReader(xml)));
-			
-			doc.getDocumentElement().normalize();
-			 		 
-			Node resultsNode = doc.getElementsByTagName("results").item(0);
-			Element resultsElement = (Element) resultsNode;
-			NodeList resultsList = resultsElement.getElementsByTagName("result");
-		 		 
-			for (int i = 0; i < resultsList.getLength(); i++) {
-		 				
-				Node resultItem = resultsList.item(i); 
-				Element resultElement = (Element) resultItem;
-				NodeList bindingNamesList = resultElement.getElementsByTagName("binding");
-					
-				QueryBindingSet bindingSet = new QueryBindingSet();
-				ValueFactoryImpl valueFactImpl = new ValueFactoryImpl();
-				
-				for (int j=0; j<bindingNamesList.getLength(); j++){
-					
-					Node bindingNameItem = bindingNamesList.item(j);
-					Element bindingNameElement = (Element) bindingNameItem;
-					
-					String bindingName = bindingNameElement.getAttribute("name");
-					Node child = bindingNameItem.getFirstChild();
-					Element childElement = (Element) child;
-					String childName = child.getNodeName();
-					
-					if(childName.equals("uri")){
-						URI uri = valueFactImpl.createURI(bindingNameElement.getElementsByTagName("uri").item(0).getTextContent());
-						bindingSet.addBinding(bindingName, uri);
-					}
-					else if (childName.equals("literal")){
-						URI datatype = valueFactImpl.createURI(childElement.getAttribute("datatype"));
-						String value = bindingNameElement.getElementsByTagName("literal").item(0).getTextContent();
-						LiteralImpl literal= new LiteralImpl(value, datatype);
-						bindingSet.addBinding(bindingName, literal);
-						
-					}
-					else{
-						System.out.println("Parse error: Unkown xml");
-						return null;
-					}
-									
-				}
-				
-				bindingSetList.add(bindingSet);
-				
-			}
-			
-			
-		}
-	    catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-		
-		return bindingSetList;
-	}
+
 }

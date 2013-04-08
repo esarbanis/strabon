@@ -14,7 +14,10 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 
 /**
  * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
@@ -36,7 +39,7 @@ public class TestSpatialEndpoint {
 				"SELECT ?k ?g WHERE {\n" +
 				" ?k ex:geometry ?g\n" +
 				"}" +
-				"\nLIMIT 1";
+				"\nLIMIT 2";
 	}
 	
 	/**
@@ -46,25 +49,33 @@ public class TestSpatialEndpoint {
 	@Test
 	public void testQuery() {
 			try {
-				EndpointResult response = endpoint.queryForKML(query);
+					EndpointResult response;
 				
-				System.out.println("KML format:");
-				System.out.println(response.getResponse());
-				
-				if (response.getStatusCode() != 200) {
-					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
+					response = endpoint.queryForKML(query); 
 					
-				}
+					System.out.println("KML format:");
+					System.out.println(response.getResponse());
+					
+					if (response.getStatusCode() != 200) {
+						System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
+						
+					}
+					
+					assertTrue(response.getStatusCode() == 200);	
 				
-				assertTrue(response.getStatusCode() == 200);
-			
+				}catch (QueryResultParseException e) {
+					e.printStackTrace();
+				} catch (UnsupportedQueryResultFormatException e) {
+					e.printStackTrace();
 				}
 				catch (TupleQueryResultHandlerException e) {
 					e.printStackTrace();
 				}
 				catch (IOException e) {
-				e.printStackTrace();
-			}
+					e.printStackTrace();
+				} catch (QueryEvaluationException e) {
+					e.printStackTrace();
+				}
 			
 	}
 }
