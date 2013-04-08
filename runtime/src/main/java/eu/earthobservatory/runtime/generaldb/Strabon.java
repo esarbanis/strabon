@@ -59,7 +59,7 @@ public abstract class Strabon {
 	public static final String FORMAT_KMZ		= "KMZ";
 	public static final String FORMAT_GEOJSON	= "GeoJSON";
 	public static final String FORMAT_EXP		= "EXP";
-	public static final String FORMAT_HTML	= "HTML";
+	public static final String FORMAT_HTML		= "HTML";
 	
 	public static final String NEWLINE		= "\n";
 	
@@ -73,8 +73,8 @@ public abstract class Strabon {
 	protected String serverName;
 	
 	protected SailBase db_store;
-	private SailRepository repo1;
-	private SailRepositoryConnection con1 = null;
+	private SailRepository repo;
+	private SailRepositoryConnection con = null;
 
 	public Strabon(String databaseName, String user, String password, int port, String serverName, boolean checkForLockTable) throws Exception {
 		this.databaseName = databaseName;
@@ -129,17 +129,17 @@ public abstract class Strabon {
 		
 		//our repository
 		//repo1 = new SailRepository(db_store);
-		repo1 = new GeneralDBSailRepository(db_store);
+		repo = new GeneralDBSailRepository(db_store);
 
 		try {
-			repo1.initialize();
+			repo.initialize();
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.init] initialize", e);
 		}
 
 		try {
-			con1 = repo1.getConnection();
+			con = repo.getConnection();
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.init] getConnection", e);
@@ -157,11 +157,11 @@ public abstract class Strabon {
 			throws SQLException, ClassNotFoundException;
 
 	public SailRepositoryConnection getSailRepoConnection() {
-		return con1;
+		return con;
 	}
 
 	public void setCon1(SailRepositoryConnection con1) {
-		this.con1 = con1;
+		this.con = con1;
 	}
 
 	/**
@@ -171,15 +171,15 @@ public abstract class Strabon {
 		logger.info("[Strabon.close] Closing connection...");
 
 		try {
-			con1.commit();
+			con.commit();
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.close]", e);
 			
 		} finally {
 			try {
-				con1.close();
-				repo1.shutDown();
+				con.close();
+				repo.shutDown();
 				
 				// delete the lock as well
 				checkAndDeleteLock(databaseName, user, password, port, serverName);
@@ -331,7 +331,7 @@ public abstract class Strabon {
 			uriContext  = null;
 			
 		} else {
-			ValueFactory f = repo1.getValueFactory();
+			ValueFactory f = repo.getValueFactory();
 			uriContext = f.createURI(context);
 		}
 
@@ -401,12 +401,12 @@ public abstract class Strabon {
 		handler.endRDF();
 
 		if (context == null) {
-			con1.add(url, baseURI, format);
-			con1.add(georeader, "", RDFFormat.NTRIPLES);
+			con.add(url, baseURI, format);
+			con.add(georeader, "", RDFFormat.NTRIPLES);
 			
 		} else {
-			con1.add(url, baseURI, format, context);
-			con1.add(georeader, "", RDFFormat.NTRIPLES, context);	
+			con.add(url, baseURI, format, context);
+			con.add(georeader, "", RDFFormat.NTRIPLES, context);	
 		}
 		
 		georeader.close();
@@ -442,16 +442,16 @@ public abstract class Strabon {
 		handler.endRDF();
 
 		if (context == null) {
-			con1.add(reader, baseURI, format);
+			con.add(reader, baseURI, format);
 			reader.close();
 			
 		} else {
-			con1.add(reader, baseURI, format, context);
+			con.add(reader, baseURI, format, context);
 			reader.close();
 			
 		}
 		
-		con1.add(georeader, "", RDFFormat.NTRIPLES);
+		con.add(georeader, "", RDFFormat.NTRIPLES);
 		georeader.close();
 		logger.info("[Strabon.storeString] Storing was successful.");
 	}
