@@ -9,7 +9,6 @@
  */
 package eu.earthobservatory.runtime.generaldb;
 
-import java.io.StringReader;
 import java.util.Hashtable;
 
 import org.openrdf.model.Resource;
@@ -24,15 +23,19 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.util.RDFInserter;
 import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.ntriples.NTriplesParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.earthobservatory.constants.GeoConstants;
 import eu.earthobservatory.vocabulary.GeoSPARQL;
 import eu.earthobservatory.vocabulary.SimpleFeatures;
 
 /**
+ * This is the implementation of the RDFS Entailment Extension for
+ * GeoSPARQL. All requirements of this extension are implemented
+ * except for Requirement 25 identified by the URI 
+ * <a>http://www.opengis.net/spec/geosparql/1.0/req/rdfs-entailment-extension/bgp-rdfs-ent</a>.
+ * 
+ * With respect to GML class hierarchy, the GML Simple Features Profile 2.0 is only supported. 
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
@@ -43,14 +46,15 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 	
 	private static final boolean ENABLE_INFERENCE = false;
 	
-	private static String TYPE = RDF.TYPE.stringValue();
-
-	private Hashtable<String, URI> uriMap;
-
-	/** 
-	 * The number of triples that the "triples" object above contains.
+	/**
+	 * Keeps a String to URI mapping for the URIs of Simple Features and GML
 	 */
-	private int numTriples = 0;
+	private Hashtable<String, URI> uriMap;
+	
+	/** 
+	 * The number of triples that we inferred
+	 */
+	private int numInfTriples = 0;
 	
 	public GeosparqlRDFHandlerBase(RepositoryConnection con) {
 		super(con);
@@ -60,23 +64,6 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 		if (logger.isDebugEnabled()) {
 			logger.debug("[Strabon.GeoSPARQLEntailment] RDFS Entailment Extension of GeoSPARQL started.");
 		}
-	}
-	
-	/**
-	 * Inserts the given URI in the hashtable of URIs
-	 * and retrieves the instance of class URI.
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	private URI getURI(String uri) {
-		URI ret = null;
-		if ((ret = uriMap.get(uri)) == null) {
-			ret = new URIImpl(uri);
-			uriMap.put(uri, ret);
-		}
-		
-		return ret;
 	}
 	
 	@Override
@@ -90,7 +77,7 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 	@Override
 	public void endRDF() throws RDFHandlerException {
 		if (ENABLE_INFERENCE) {
-			logger.info("[Strabon.GeoSPARQLEntailment] Inferred {} triples.", numTriples);
+			logger.info("[Strabon.GeoSPARQLEntailment] Inferred {} triples.", numInfTriples);
 		}
 	}
 	
@@ -115,7 +102,7 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 		}
 		
 		super.handleStatement(stmt);
-		numTriples++;
+		numInfTriples++;
 	}
 	
 	@Override
@@ -154,7 +141,7 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 		 * or
 		 * 		subj rdf:type geo:Geometry 
 		 */
-		else if(pred.equals(TYPE) && (obj.equals(GeoSPARQL.Feature) || obj.equals(GeoSPARQL.Geometry))) {
+		else if(pred.equals(RDF.TYPE.stringValue()) && (obj.equals(GeoSPARQL.Feature) || obj.equals(GeoSPARQL.Geometry))) {
 			handleInferredStatement(st.getSubject(), RDF.TYPE, getURI(GeoSPARQL.SpatialObject), st.getContext());
 		} 
 		/*
@@ -178,7 +165,7 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 				handleInferredStatement((Resource) st.getObject(), RDF.TYPE, getURI(GeoSPARQL.SpatialObject), st.getContext());
 			}
 		}
-		else if (pred.equals(TYPE)) {
+		else if (pred.equals(RDF.TYPE.stringValue())) {
 /* THE FOLLOWING CORRESPONDS TO GML AND NEEDS REWRITING TO FIT THAT OF SIMPLE FEATURES */			
 //			// GML class hierarchy
 //			if (obj.equals(GeoConstants.GML_OGC + "GM_Complex")
@@ -505,33 +492,20 @@ public class GeosparqlRDFHandlerBase extends RDFInserter {
 		handleInferredStatement(getURI(GeoSPARQL.Geometry), RDFS.SUBCLASSOF, getURI(GeoSPARQL.SpatialObject), null);
 	}
 
-	public static void main(String[] args) throws Exception {
-		NTriplesParser parser = new NTriplesParser();
-		parser.setVerifyData(true);
-
-		/*String text = 
-				"<http://example.org/rcc8Obj1> <http://www.opengis.net/ont/geosparql#rcc8eq> <http://example.org/rcc8Obj2> . " +
-				"<http://example.org/simpleGeometry1> <http://www.opengis.net/ont/geosparql#isEmpty> _:nai . \n"+
-		"<http://example.org/ForestArea1> <http://www.opengis.net/ont/geosparql#defaultGeometry> _:b2 . \n"+
-		"<http://example.org/SpatialObject1> <http://www.opengis.net/ont/geosparql#ehIntersects> <http://example.org/SpatialObject2> . \n";
-		*/
-        
-		String gmltext= "<http://example.org/GM_MultiSolid> <"+TYPE+"> <"+GeoConstants.GML_OGC+"GM_Object> .\n"; 
-		//String sftext= "<http://example.org/Line> <"+type+"> <"+sf+"Geometry> .\n"; 
+	/**
+	 * Inserts the given URI in the hashtable of URIs
+	 * and retrieves the instance of class URI.
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	private URI getURI(String uri) {
+		URI ret = null;
+		if ((ret = uriMap.get(uri)) == null) {
+			ret = new URIImpl(uri);
+			uriMap.put(uri, ret);
+		}
 		
-		StringReader reader = new StringReader(gmltext);
-
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(null);
-
-		handler.startRDF();
-		parser.setRDFHandler(handler);
-		parser.parse(reader, "");
-		handler.endRDF();
-
-		reader.close();	
-
-		System.out.println("Original triples: " + gmltext);
-		//System.out.println("Geometry domain list: " + handler.getgeometryDomainList());
-		//System.out.println("New triples: " + handler.getTriples());
+		return ret;
 	}
 }
