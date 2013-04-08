@@ -11,8 +11,6 @@ package eu.earthobservatory.runtime.generaldb;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -39,8 +37,6 @@ import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.Rio;
 import org.openrdf.sail.helpers.SailBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -381,77 +377,39 @@ public abstract class Strabon {
 		logger.info("[Strabon.storeURL] Base URI : {}", ((baseURI == null) ? "null" : baseURI));
 		logger.info("[Strabon.storeURL] Format   : {}", ((format == null) ? "null" : format));
 
-		InputStream in = (InputStream) url.openStream();
-		InputStreamReader reader = new InputStreamReader(in);
-
-		RDFParser parser = Rio.createParser(format);
-
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(con);
-
-		parser.setRDFHandler(handler);
-		parser.parse(reader, "");
-
-		logger.info("[Strabon.storeURL] Inferred {} triples.", handler.getNumberOfTriples());
-		if (handler.getNumberOfTriples() > 0) {
-			logger.debug("[Strabon.storeURL] Triples inferred: {}", handler.getTriples());
-		}
-		
-		StringReader georeader = new StringReader(handler.getTriples().toString());
-		handler.endRDF();
-
 		if (context == null) {
 			con.add(url, baseURI, format);
-			con.add(georeader, "", RDFFormat.NTRIPLES);
 			
 		} else {
 			con.add(url, baseURI, format, context);
-			con.add(georeader, "", RDFFormat.NTRIPLES, context);	
 		}
 		
-		georeader.close();
-
 		logger.info("[Strabon.storeURL] Storing was successful.");
 	}
 
 	private void storeString(String text, String baseURI, URI context, RDFFormat format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException
 	{
-		if (baseURI == null)
+		if (baseURI == null) {
 			baseURI = "";
+		}
 
 		logger.info("[Strabon.storeString] Storing triples.");
 		logger.info("[Strabon.storeString] Text     : " + text);
-		logger.info("[Strabon.storeString] Base URI : " + ((baseURI == null) ? "null" : baseURI));
+		logger.info("[Strabon.storeString] Base URI : " + baseURI);
 		logger.info("[Strabon.storeString] Context  : " + ((context == null) ? "null" : context));
 		logger.info("[Strabon.storeString] Format   : " + ((format == null) ? "null" : format.toString()));
 
 		StringReader reader = new StringReader(text);
 
-		RDFParser parser = Rio.createParser(format);
-
-		GeosparqlRDFHandlerBase handler = new GeosparqlRDFHandlerBase(con);
-
-		parser.setRDFHandler(handler);
-		parser.parse(reader, "");
-
-		logger.info("[Strabon.storeString] Inferred " + handler.getNumberOfTriples() + " triples.");
-		if (handler.getNumberOfTriples() > 0) {
-			logger.info("[Strabon.storeString] Triples inferred:"+ handler.getTriples().toString());
-		}
-		StringReader georeader = new StringReader(handler.getTriples().toString());
-		handler.endRDF();
-
 		if (context == null) {
 			con.add(reader, baseURI, format);
-			reader.close();
 			
 		} else {
 			con.add(reader, baseURI, format, context);
-			reader.close();
 			
 		}
+		reader.close();
 		
-		con.add(georeader, "", RDFFormat.NTRIPLES);
-		georeader.close();
 		logger.info("[Strabon.storeString] Storing was successful.");
 	}
 
