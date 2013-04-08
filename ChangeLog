@@ -2,6 +2,11 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Added support of all SPARQL result types provided by Sesame (json,
+	xml, csv, tsv, binary). To get the respective writer, just prepend the
+	string "SPARQL/", e.g., "SPARQL/JSON". This is to ensure that we
+	support all SPARQL result formats of the SPARQL Protocol.
+
 	* Fixed a bug where a non-implemented extension function would make
 	Strabon throw a NULL pointer exception. Now we get away with it
 	through a warning.
