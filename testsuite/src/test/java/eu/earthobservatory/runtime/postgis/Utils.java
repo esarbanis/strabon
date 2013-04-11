@@ -152,7 +152,7 @@ public class Utils
 		}
 		
 		//Check if the actual result set is the same as the expected one
-		assertEquals("Actual result set is not the same as the expected one.", expectedResults.size(), actualResults.size());
+		assertEquals("Result set is not the expected one.", expectedResults.size(), actualResults.size());
 		Iterator<String> expectedResultsIterator = expectedResults.iterator();
 		Iterator<String> actualResultsIterator = actualResults.iterator();
 		
@@ -163,7 +163,7 @@ public class Utils
 			
 			//Replace all the names of the variables with "?"
 			aResults = aResults.replaceAll("[[A-Z][a-z][0-9]]*=", "?=");
-			assertEquals("Actual result set is not the same as the expected one.", aResults, eResults);
+			assertEquals("Result set is not the expected one.", eResults, aResults);
 		}
 	}
 	
