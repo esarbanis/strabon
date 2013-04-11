@@ -10,10 +10,18 @@
 package eu.earthobservatory.runtime.postgis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,15 +29,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
+import org.apache.commons.io.FileUtils;
+import org.openrdf.model.Value;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.QueryResultIO;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
+import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.utils.Format;
 
 /**
  * A class with useful methods for the tests.
@@ -132,39 +150,51 @@ public class Utils
 	    	strabon.storeInRepo(datasetFile, "NQUADS");
 	}
 	
-	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException
+	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
-		BufferedReader queryReader = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(queryFile)));
-		BufferedReader resultsReader = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(resultsFile)));
-		String query="";
-		ArrayList<String> actualResults = new ArrayList<String>();
-		ArrayList<String> expectedResults = new ArrayList<String>();
+		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
+		String query = FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
-		while (queryReader.ready())
+		//Pose the query
+		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);
+
+		//Check if the results of the query are the expected
+		TupleQueryResult expectedResults = QueryResultIO.parse(Utils.class.getResourceAsStream(resultsFile), TupleQueryResultFormat.SPARQL);
+		TupleQueryResult actualResults = QueryResultIO.parse((new ByteArrayInputStream(resultsStream.toByteArray())), TupleQueryResultFormat.SPARQL);
+
+		List<String> eBindingNames = expectedResults.getBindingNames();
+		List<String> aBindingNames = actualResults.getBindingNames();
+		assertTrue("Results are not the expected.", aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));
+		
+		
+		//Sort expected and actual results' bindings by binding name
+		List<String> eBindingList = new ArrayList<String>();
+		List<String> aBindingList = new ArrayList<String>();
+
+		while(expectedResults.hasNext() && actualResults.hasNext())
 		{
-			query+=queryReader.readLine()+"\n";
-		}
-		actualResults = (ArrayList<String>) strabon.query(query,strabon.getSailRepoConnection());
-		
-		while (resultsReader.ready())
-		{
-			expectedResults.add(resultsReader.readLine());
-		}
-		
-		//Check if the actual result set is the same as the expected one
-		assertEquals("Result set is not the expected one.", expectedResults.size(), actualResults.size());
-		Iterator<String> expectedResultsIterator = expectedResults.iterator();
-		Iterator<String> actualResultsIterator = actualResults.iterator();
-		
-		while(expectedResultsIterator.hasNext() && actualResultsIterator.hasNext())
-		{
-			String eResults = expectedResultsIterator.next();
-			String aResults = actualResultsIterator.next();	
+			BindingSet eBinding = expectedResults.next();
+			BindingSet aBinding = actualResults.next();
 			
-			//Replace all the names of the variables with "?"
-			aResults = aResults.replaceAll("[[A-Z][a-z][0-9]]*=", "?=");
-			assertEquals("Result set is not the expected one.", eResults, aResults);
+			String eBindingValues="";
+			String aBindingValues="";
+			for(String bindingName : eBindingNames)
+			{
+				eBindingValues+=eBinding.getValue(bindingName).stringValue();
+				aBindingValues+=aBinding.getValue(bindingName).stringValue();
+			}
+			
+			eBindingList.add(eBindingValues);
+			aBindingList.add(aBindingValues);
 		}
+		
+		assertFalse("Results are not the expected.", expectedResults.hasNext() || actualResults.hasNext());
+		
+
+		
+		actualResults.close();
+		expectedResults.close();
+
 	}
 	
 	public static void dropdb() throws SQLException
