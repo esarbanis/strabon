@@ -42,7 +42,7 @@ public abstract class TemplateTest
 		
 		this.datasetFile="/"+testname+"/"+testname+".nt";
 		this.queryFile="/"+testname+"/"+testname+".rq";
-		this.resultsFile="/"+testname+"/"+testname+".sr";
+		this.resultsFile="/"+testname+"/"+testname+".srx";
 	}
 
 	@Before
