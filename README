@@ -54,6 +54,85 @@ Demo
 You can find a demo of the system Strabon at http://test.strabon.di.uoa.gr/NOA/.
 
 
+How to build and run Strabon from command line
+==============================================
+Assuming you have already downloaded Strabon and you are in the top-level
+directory of Strabon, issue the following command to build it from command line:
+
+	$ mvn package
+
+The above command runs automatically the JUnit tests. To skip them pass option
+`-DskipTests=true' to the above command. The complete command is the following:
+
+	$ mvn -DskipTests=true package
+
+In case of an error during building of Strabon and assuming that the error does
+not come from the JUnit tests, please have a look at the `Known Issues' section
+below. If none of the known issues of that section applies, please contact the
+developers through the Strabon mailing-list or submit a corresponding bug
+(see `Bugs' section below).
+
+After you have successfully built Strabon, you have access to the following
+components:
+
+  * Strabon Endpoint
+
+    This is a SPARQL endpoint for Strabon. It is distributed as a war file so
+    you may deploy it in a Tomcat container. You may find the war file under
+    directory `endpoint/target'.
+
+  * Strabon Endpoint (standalone)
+
+    This is a SPARQL endpoint for Strabon like the above one, but it differs
+    only in that it does not require the user to have already set up a Tomcat
+    container. The standalone Strabon Endpoint may be run by issuing the
+    following command:
+
+    	$ java -jar endpoint-exec/target/strabon-endpoint-executable-${version}.jar
+
+    After issuing the above command, you may access the Strabon Endpoint at
+    the following URL: <http://localhost:8080/>.
+
+    Please see the page at <http://hg.strabon.di.uoa.gr/Strabon/rev/674f8f91162b>
+    to find out other options that you may pass to the Tomcat container that
+    will run by the above command.
+
+    SPECIAL NOTE: if you need to configure the connection details to the
+    underlying database, you may do so in two ways:
+      1. By modifying file `endpoint/WebContent/WEB-INF/connection.properties'
+         before building Strabon and executing the above command.
+      2. After executing the above command, by visiting the following page by a
+         browser: <http://localhost:8080/ChangeConnection>
+
+  * Strabon Endpoint Client
+
+    This is a Java client for interacting with Strabon Endpoint or any other
+    SPARQL endpoint. It is packaged as a jar file and may be found under
+    directory `endpoint-client/target/' with name
+    `strabon-endpoint-client-${version}.jar'. This jar contains any dependencies
+    to other code, so may copy and paste it to your project and start playing
+    with the code immediately.
+
+  * Strabon script
+
+    The `strabon' script is located under the `scripts/' directory and it is the
+    main command-line tool for interacting with Strabon. You may use it to store
+    RDF data with geospatial information or query/update it using one of
+    stSPARQL or GeoSPARQL query languages.
+
+  * Endpoint script
+
+    The `endpoint' script is located under the `scripts' directory and it is the
+    main command-line tool for interacting with a `Strabon Endpoint'. You may
+    use it to do any operation you would like to do with the `strabon' script
+    above, but in contrast to the `strabon' script you need to have access to a
+    Strabon endpoint. Of course, the `Strabon Endpoint Client' component above
+    can be used as well as a command-line tool. At the time of writing, the
+    `Strabon Endpoint Client' component supports only querying of RDF data with
+    geospatial information.
+
+
+
 Getting Started
 ===============
 To get started  with Strabon please have a look at the tutorial for the stRDF
