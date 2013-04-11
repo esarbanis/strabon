@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -190,7 +191,11 @@ public class Utils
 		
 		assertFalse("Results are not the expected.", expectedResults.hasNext() || actualResults.hasNext());
 		
+		//Sort bindings alphabetically
+		Collections.sort(eBindingList);
+		Collections.sort(aBindingList);
 
+		//add here iterator and check the lists with assertEquals
 		
 		actualResults.close();
 		expectedResults.close();
