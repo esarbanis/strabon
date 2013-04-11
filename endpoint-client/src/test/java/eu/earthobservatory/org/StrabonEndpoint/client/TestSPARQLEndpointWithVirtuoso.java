@@ -35,14 +35,14 @@ public class TestSPARQLEndpointWithVirtuoso {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8890, "sparql");
+		endpoint = new SPARQLEndpoint("dbpedia.org", 8890, "sparql");
 		
 		// set query
-		query = "PREFIX ex: <http://example.org/> \n" +
-				"SELECT ?k ?g WHERE {\n" +
-				" ex:pol1 ?k ?g\n" +
+		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+				"SELECT ?x ?y WHERE {\n" +
+				" ?x rdf:type ?y\n" +
 				"}" +
-				"\nLIMIT 1";
+				"\nLIMIT 10";
 		
 		// initialized formats
 		for (TupleQueryResultFormat format : stSPARQLQueryResultFormat.values()) {
@@ -61,7 +61,7 @@ public class TestSPARQLEndpointWithVirtuoso {
 			try {
 				EndpointResult response = endpoint.query(query, stSPARQLQueryResultFormat.XML);
 				
-				System.out.println(response.getResponse());
+				//System.out.println(response.getResponse());
 				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());

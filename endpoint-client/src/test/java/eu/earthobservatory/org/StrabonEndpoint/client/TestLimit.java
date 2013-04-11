@@ -23,7 +23,7 @@
 // */
 //public class TestLimit {
 //
-//	private StrabonEndpoint endpoint; 
+//	private SPARQLEndpoint endpoint; 
 //	private String [] testQueries;
 //	private stSPARQLQueryResultFormat format;			
 //	
@@ -31,7 +31,7 @@
 //	public void init() {
 //		
 //		// initialize endpoint		
-//		endpoint = new StrabonEndpoint("localhost", 8080, "strabon-endpoint");		
+//		endpoint = new SPARQLEndpoint("localhost", 8080, "strabon-endpoint/Query");		
 //		testQueries = new String[6];
 //		
 //		 // set queries

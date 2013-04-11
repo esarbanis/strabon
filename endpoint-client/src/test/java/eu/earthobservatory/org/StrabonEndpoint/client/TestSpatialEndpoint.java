@@ -32,14 +32,15 @@ public class TestSpatialEndpoint {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SpatialEndpoint("luna.di.uoa.gr", 8890, "sparql");
+		endpoint = new SpatialEndpoint("geo.linkedopendata.gr", 9090, "corine-endpoint/Query");
 		
 		// set query
-		query = "PREFIX ex: <http://example.org/> \n" +
-				"SELECT ?k ?g WHERE {\n" +
-				" ?k ex:geometry ?g\n" +
-				"}" +
-				"\nLIMIT 2";
+		query = "PREFIX corine: <http://geo.linkedopendata.gr/corine/ontology#> \n"+
+				"SELECT ?geometry \n" +
+				 "WHERE {\n " + 
+				 "  ?area corine:hasLandUse corine:burntAreas . \n" +
+				 "  ?area corine:hasGeometry ?geometry .  } \n" +
+				 "LIMIT 2" ;              
 	}
 	
 	/**
@@ -53,8 +54,8 @@ public class TestSpatialEndpoint {
 				
 					response = endpoint.queryForKML(query); 
 					
-					System.out.println("KML format:");
-					System.out.println(response.getResponse());
+					//System.out.println("KML format:");
+					//System.out.println(response.getResponse());
 					
 					if (response.getStatusCode() != 200) {
 						System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
