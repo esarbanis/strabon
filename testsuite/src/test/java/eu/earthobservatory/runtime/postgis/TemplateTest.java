@@ -38,9 +38,11 @@ public abstract class TemplateTest
 
 	public TemplateTest()
 	{
-		this.datasetFile="/"+this.getClass().getSimpleName()+".nt";
-		this.queryFile="/"+this.getClass().getSimpleName()+".rq";
-		this.resultsFile="/"+this.getClass().getSimpleName()+".sr";
+		String testname=this.getClass().getSimpleName();
+		
+		this.datasetFile="/"+testname+"/"+testname+".nt";
+		this.queryFile="/"+testname+"/"+testname+".rq";
+		this.resultsFile="/"+testname+"/"+testname+".sr";
 	}
 
 	@Before
