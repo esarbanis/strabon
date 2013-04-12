@@ -10,18 +10,14 @@
 package eu.earthobservatory.runtime.postgis;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
-import java.io.BufferedReader;
+import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import org.apache.commons.io.FileUtils;
-import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -47,7 +42,6 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
-import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 
 /**
@@ -165,10 +159,9 @@ public class Utils
 
 		List<String> eBindingNames = expectedResults.getBindingNames();
 		List<String> aBindingNames = actualResults.getBindingNames();
-		assertTrue("Results are not the expected.", aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));
+		assertTrue("Results are not the expected.", aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
 		
-		
-		//Sort expected and actual results' bindings by binding name
+		//Sort each binding's values
 		List<String> eBindingList = new ArrayList<String>();
 		List<String> aBindingList = new ArrayList<String>();
 
@@ -194,12 +187,18 @@ public class Utils
 		//Sort bindings alphabetically
 		Collections.sort(eBindingList);
 		Collections.sort(aBindingList);
+		
+		//Check bindings one by one
+		Iterator<String> eBindingListIterator = eBindingList.iterator();
+		Iterator<String> aBindingListIterator = aBindingList.iterator();
 
-		//add here iterator and check the lists with assertEquals
+		while(eBindingListIterator.hasNext() && aBindingListIterator.hasNext())
+		{
+			assertEquals("Results are not the expected.", eBindingListIterator.next(), aBindingListIterator.next());
+		}
 		
 		actualResults.close();
 		expectedResults.close();
-
 	}
 	
 	public static void dropdb() throws SQLException
