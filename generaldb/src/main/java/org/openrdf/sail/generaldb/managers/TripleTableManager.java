@@ -31,8 +31,8 @@ import org.openrdf.sail.generaldb.schema.ValueTableFactory;
 /**
  * Manages and delegates to the collection of {@link TripleTable}.
  * 
- * @author James Leigh
- * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class TripleTableManager {
 
@@ -466,7 +466,6 @@ public class TripleTableManager {
 	}
 	
 	/**
-	 * my addition
 	 * @return the hashmanager of the tripletablemanager
 	 */
 	public HashManager getHashManager()
@@ -483,21 +482,24 @@ public class TripleTableManager {
 	 * creation of the table was making MonetDB to release all prepared statements
 	 * that have already been created but not executed.
 	 * 
+	 * @see {@link TransTableManager#getTable(Number)}
+	 * 
 	 * FIXME: Should it throw those exceptions? 
 	 */
 	public void flushManagers() {
-		try {
-			bnodes.flush();
-			uris.flush();
-			literals.flush();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (conn instanceof nl.cwi.monetdb.jdbc.MonetConnection) {
+		//if (! (conn instanceof org.postgresql.jdbc4.Jdbc4Connection)) {
+			try {
+				bnodes.flush();
+				uris.flush();
+				literals.flush();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		
 	}
 }

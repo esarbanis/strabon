@@ -244,7 +244,12 @@ public class TransTableManager {
 		synchronized (tables) {
 			TransactionTable table = tables.get(pred);
 			if (table == null) {
-				//triples.flushManagers();// charnik's addition (see flushManagers() method for details)
+				/**
+				 * @author charnik
+				 * @see method {@link TripleTableManager#flushManagers()} for details
+				 */
+				triples.flushManagers();
+				
 				TripleTable predicate = triples.getPredicateTable(pred);
 				Number key = pred;
 				if (predicate.isPredColumnPresent()) {
