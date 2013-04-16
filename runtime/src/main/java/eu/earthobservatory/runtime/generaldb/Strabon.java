@@ -7,6 +7,8 @@
  * 
  * http://www.strabon.di.uoa.gr/
  * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 package eu.earthobservatory.runtime.generaldb;
