@@ -204,6 +204,8 @@ public class NQuadsParser extends ModifiedNTriplesParser {
     {
     	String strdf = TemporalConstants.PERIOD;
     	String period = "http://strdf.di.uoa.gr/ontology#period";
+    	Date end = null;
+    	
     	validTimeLiteral=sb;
     	int i2=0; 
     	
@@ -260,7 +262,9 @@ public class NQuadsParser extends ModifiedNTriplesParser {
      	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
      	Date start = format.parse(startDate);
      	//System.out.println("start date:"+startDate.toString());
-     	Date end = format.parse(endDate);
+     	
+     	if(!endDate.contains(TemporalConstants.UNTIL_CHANGED))
+     		 end = format.parse(endDate);
      	//System.out.println("End date:"+ endDate.toString());
         String uri = strdf+"/"+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID(); 
         Resource cont = createURI(uri);

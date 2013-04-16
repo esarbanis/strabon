@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,7 +194,7 @@ public class LiteralTable {
 		//TODO the label should be validated as a period before reaching this point. Not sure yet on which level this should be done
 //		System.out.println("LABEL: "+label);
 //		System.out.println("NUMBER: "+id.toString());
-		String postgresPeriodLabel = label.replace("T"," ");
+		String postgresPeriodLabel = label.replace("T"," ").replace(TemporalConstants.UNTIL_CHANGED, TemporalConstants.UNTIL_CHANGED_VALUE);
 		temporalTable.insert(id, postgresPeriodLabel);
 	}
 	
