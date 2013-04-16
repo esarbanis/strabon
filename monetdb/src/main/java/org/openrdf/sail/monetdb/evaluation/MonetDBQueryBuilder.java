@@ -103,6 +103,7 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.OGCConstants;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
@@ -111,7 +112,10 @@ import eu.earthobservatory.constants.GeoConstants;
  * 
  */
 public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
-
+	
+	public static final String ST_TRANSFORM = "ST_Transform";	
+	public static final String GEOGRAPHY = "Geography";
+	
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -1451,6 +1455,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
 			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
 			boolean check3 = expr.getThirdArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+			
 			if(check1)
 			{
 				this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
@@ -1472,19 +1477,22 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				
 				if (expr.getThirdArg() instanceof GeneralDBStringValue)
 				{			
-					String unparsedUnits = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
-
-					units = unparsedUnits.substring(unparsedUnits.lastIndexOf('/')+1);
-					if(units.equals("metre") || units.equals("meter"))
-					{					
-						filter.appendFunction("GEOGRAPHY");
-						filter.openBracket();
-						filter.appendFunction("ST_TRANSFORM");
-						filter.openBracket();
-					}	
-					else if(units.equals("degree"))
+					units = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
+					if(!OGCConstants.supportedUnitsOfMeasure.contains(units))
 					{
-						filter.appendFunction("ST_TRANSFORM");
+						throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
+					}	
+
+					if(units.equals(OGCConstants.OGCmetre))
+					{
+						filter.appendFunction(GEOGRAPHY);
+						filter.openBracket();
+						filter.appendFunction(ST_TRANSFORM);
+						filter.openBracket();
+					}
+					else if(units.equals(OGCConstants.OGCdegree))
+					{
+						filter.appendFunction(ST_TRANSFORM);
 						filter.openBracket();
 					}	
 				}	
@@ -1511,8 +1519,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 				}
 				
-				if(units.equals("metre") || units.equals("meter"))
-				{					
+				if(units.equals(OGCConstants.OGCmetre))
+				{				
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket(); //close st_transform
@@ -1520,12 +1528,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					
 					filter.appendComma();
 
-					filter.appendFunction("GEOGRAPHY");
+					filter.appendFunction(GEOGRAPHY);
 					filter.openBracket();
-					filter.appendFunction("ST_TRANSFORM");
-					filter.openBracket();				
+					filter.appendFunction(ST_TRANSFORM);
+					filter.openBracket();
 				}
-				else if(units.equals("degree"))
+				else if(units.equals(OGCConstants.OGCdegree))
 				{
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
@@ -1533,13 +1541,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					
 					filter.appendComma();
 					
-					filter.appendFunction("ST_TRANSFORM");
+					filter.appendFunction(ST_TRANSFORM);
 					filter.openBracket();
 				}	
 				else
 				{
 					filter.appendComma();
-				}																
+				}															
 				
 				if(expr.getRightArg() instanceof GeneralDBStringValue)
 				{
@@ -1594,14 +1602,14 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
 				}
 
-				if(units.equals("metre") || units.equals("meter"))
+				if(units.equals(OGCConstants.OGCmetre))
 				{
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket();
 					filter.closeBracket();
 				}
-				else if(units.equals("degree"))
+				else if(units.equals(OGCConstants.OGCdegree))
 				{
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
