@@ -1709,20 +1709,20 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 						throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
 					}	
 	
-					if(units.equals(OGCConstants.OGCmetre))
+					if((expr.getRightArg() instanceof GeneralDBDoubleValue) && (((GeneralDBDoubleValue)expr.getRightArg()).getValue().equals(0.0)))
 					{
-						filter.appendFunction(GEOMETRY);
-						filter.openBracket();
-						filter.appendFunction("Buffer");			
-						filter.openBracket();
-						filter.appendFunction(GEOGRAPHY);
+						filter.appendFunction("ST_Buffer");
 						filter.openBracket();
 						filter.appendFunction(ST_TRANSFORM);
-						filter.openBracket();
+						filter.openBracket();		
 					}
-					else if(units.equals(OGCConstants.OGCdegree))
-					{
-						filter.appendFunction("Buffer");			
+					else
+					{	
+						filter.appendFunction(GEOMETRY);
+						filter.openBracket();
+						filter.appendFunction("ST_Buffer");
+						filter.openBracket();
+						filter.appendFunction(GEOGRAPHY);
 						filter.openBracket();
 						filter.appendFunction(ST_TRANSFORM);
 						filter.openBracket();
@@ -1757,11 +1757,21 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 				if(units.equals(OGCConstants.OGCmetre))
 				{
-					filter.appendComma();
-					filter.append(String.valueOf(GeoConstants.defaultSRID));
-					filter.closeBracket(); //close st_transform
-					filter.closeBracket(); //close geography
-					filter.appendComma();
+					if((expr.getRightArg() instanceof GeneralDBDoubleValue) && (((GeneralDBDoubleValue)expr.getRightArg()).getValue().equals(0.0)))
+					{
+						filter.appendComma();
+						filter.append(String.valueOf(GeoConstants.defaultSRID));
+						filter.closeBracket(); //close st_transform
+						filter.appendComma();
+					}	
+					else
+					{	
+						filter.appendComma();
+						filter.append(String.valueOf(GeoConstants.defaultSRID));
+						filter.closeBracket(); //close st_transform
+						filter.closeBracket(); //close geography
+						filter.appendComma();
+					}
 				}
 				else if(units.equals(OGCConstants.OGCdegree))
 				{
@@ -1833,7 +1843,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				}
 				///
 			}
-			if(units.equals(OGCConstants.OGCmetre))
+			if(units.equals(OGCConstants.OGCmetre) && !((expr.getRightArg() instanceof GeneralDBDoubleValue) && (((GeneralDBDoubleValue)expr.getRightArg()).getValue().equals(0.0))))
 				filter.closeBracket(); //close Geometry
 			filter.closeBracket();
 			//Used to explicitly include SRID
