@@ -5,13 +5,12 @@
  */
 package org.openrdf.sail.generaldb.algebra;
 
-  
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
+import org.openrdf.sail.generaldb.algebra.base.TripleGeneralDBOperator;
 
-public class GeneralDBSqlGeoBuffer extends GeneralDBSqlSpatialConstructTriple {
-
-	public GeneralDBSqlGeoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third)
+public class GeneralDBSqlSpatialConstructTriple extends TripleGeneralDBOperator {
+	public GeneralDBSqlSpatialConstructTriple(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) 
 	{
 		super(left, right, third);
 	}

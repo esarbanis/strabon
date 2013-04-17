@@ -50,6 +50,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
@@ -297,6 +298,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -309,8 +311,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			leftArg = label(left);
 		}
-
-
 
 		if(!(function instanceof EnvelopeFunc) 
 				&& !(function instanceof ConvexHullFunc) 
@@ -342,14 +342,12 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 					//thus the special treatment
 					rightArg = label(right);
 				}
-
-
-
-
 			}
+			if(function instanceof BufferFunc)
+				thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialConstructPicker(function, leftArg, rightArg);
+		return spatialConstructPicker(function, leftArg, rightArg, thirdArg);
 
 	}
 
@@ -435,7 +433,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 
-	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
@@ -443,7 +441,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
-			return geoBuffer(leftArg,rightArg);
+			return geoBuffer(leftArg,rightArg, thirdArg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{

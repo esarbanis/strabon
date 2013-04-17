@@ -349,9 +349,9 @@ public class GeneralDBExprSupport {
 		return new GeneralDBSqlGeoUnion(left, right);
 	}
 
-	public static GeneralDBSqlExpr geoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public static GeneralDBSqlExpr geoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) {
 
-		return new GeneralDBSqlGeoBuffer(left, right);
+		return new GeneralDBSqlGeoBuffer(left, right, third);
 	}
 	
 	public static GeneralDBSqlExpr geoTransform(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {

@@ -56,8 +56,10 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
@@ -115,6 +117,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	
 	public static final String ST_TRANSFORM = "ST_Transform";	
 	public static final String GEOGRAPHY = "Geography";
+	public static final String GEOMETRY = "Geometry";
 	
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
@@ -697,11 +700,10 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
-		appendMonetDBSpatialFunctionBinary(expr, filter, SpatialFunctionsMonetDB.ST_Buffer);
-			}
+	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
+		appendMonetDBBuffer(expr, filter, SpatialFunctionsMonetDB.ST_Buffer);
+	}
 
 	//XXX Different Behavior
 	@Override
@@ -1329,8 +1331,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Difference: filter.appendFunction("Difference"); break;
 			case ST_Intersection: filter.appendFunction("Intersection"); break;
 			case ST_Union: filter.appendFunction("\"Union\""); break;
-			case ST_SymDifference: filter.appendFunction("SymDifference"); break;
-			case ST_Buffer: filter.appendFunction("Buffer"); break;			
+			case ST_SymDifference: filter.appendFunction("SymDifference"); break;			
 			case ST_Touches: filter.appendFunction("Touches"); break;
 			case ST_Disjoint: filter.appendFunction("Disjoint"); break;
 			case ST_Crosses: filter.appendFunction("Crosses"); break;
@@ -1444,37 +1445,262 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.appendComma();
 			filter.append(sridExpr);
 		}
-			}
+	}
 	
-		protected void appendMonetDBDistance(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func) throws UnsupportedRdbmsOperatorException
-		{
-			String units = null;
+	protected void appendMonetDBDistance(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func) throws UnsupportedRdbmsOperatorException
+	{
+		String units = null;
 
+		filter.openBracket();
+		
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		boolean check3 = expr.getThirdArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		else if(check3)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		
+		else
+		{								
+			filter.appendFunction("Distance");
+			
 			filter.openBracket();
 			
-			boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
-			boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
-			boolean check3 = expr.getThirdArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+			if (expr.getThirdArg() instanceof GeneralDBStringValue)
+			{			
+				units = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
+				if(!OGCConstants.supportedUnitsOfMeasure.contains(units))
+				{
+					throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
+				}	
+
+				if(units.equals(OGCConstants.OGCmetre))
+				{
+					filter.appendFunction(GEOGRAPHY);
+					filter.openBracket();
+					filter.appendFunction(ST_TRANSFORM);
+					filter.openBracket();
+				}
+				else if(units.equals(OGCConstants.OGCdegree))
+				{
+					filter.appendFunction(ST_TRANSFORM);
+					filter.openBracket();
+				}	
+			}	
 			
-			if(check1)
+			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
-				this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+				appendWKT(expr.getLeftArg(),filter);
 			}
-			else if(check2)
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
-				this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+				appendConstructFunction(expr.getLeftArg(), filter);
 			}
-			else if(check3)
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
 			{
-				this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+				appendConstructFunction(expr.getLeftArg(), filter);
 			}
-			
+			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
+			}
 			else
-			{								
-				filter.appendFunction("Distance");
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+			}
+			
+			if(units.equals(OGCConstants.OGCmetre))
+			{				
+				filter.appendComma();
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				filter.closeBracket(); //close st_transform
+				filter.closeBracket(); //close geography
 				
+				filter.appendComma();
+
+				filter.appendFunction(GEOGRAPHY);
 				filter.openBracket();
+				filter.appendFunction(ST_TRANSFORM);
+				filter.openBracket();
+			}
+			else if(units.equals(OGCConstants.OGCdegree))
+			{
+				filter.appendComma();
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				filter.closeBracket(); //close st_transform
 				
+				filter.appendComma();
+				
+				filter.appendFunction(ST_TRANSFORM);
+				filter.openBracket();
+			}	
+			else
+			{
+				filter.appendComma();
+			}															
+			
+			if(expr.getRightArg() instanceof GeneralDBStringValue)
+			{
+				appendWKT(expr.getRightArg(),filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter);					 
+			}
+			else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+			{
+				append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+			{
+				append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
+			{
+				filter.keepSRID_part1();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part2();
+				append(((GeneralDBURIColumn)expr.getRightArg()), filter);
+				filter.keepSRID_part3();
+			}
+			//case met in buffer when in select -> buffer(?spatial,?thematic)
+			else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
+			{
+				appendWithCastDouble(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+				//					appendCastToDouble(filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else
+			{
+				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+			}
+
+			if(units.equals(OGCConstants.OGCmetre))
+			{
+				filter.appendComma();
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				filter.closeBracket();
+				filter.closeBracket();
+			}
+			else if(units.equals(OGCConstants.OGCdegree))
+			{
+				filter.appendComma();
+				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				filter.closeBracket();
+			}
+
+			filter.closeBracket();
+		}
+
+		filter.closeBracket();
+	}
+	
+	protected void appendMonetDBBuffer(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func) throws UnsupportedRdbmsOperatorException
+	{
+		boolean sridNeeded = true;
+		//XXX Incorporating SRID
+		String sridExpr = null;
+		String units = null;
+
+		filter.openBracket();
+		
+		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		boolean check3 = expr.getThirdArg().getClass().getCanonicalName().equals("org.openrdf.sail.monetdb.algebra.MonetDBSqlNull");
+		
+		if(check1)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		else if(check2)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		else if(check3)
+		{
+			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
+		}
+		
+		else
+		{	
+			GeneralDBSqlExpr tmp = expr;
+			if(tmp instanceof GeneralDBSqlSpatialConstructBinary && tmp.getParentNode() == null)
+			{
+				while(true)
+				{
+					GeneralDBSqlExpr child;
+
+					if(tmp instanceof BinaryGeneralDBOperator)
+					{
+						child = ((BinaryGeneralDBOperator) tmp).getLeftArg();
+					}
+					else //(tmp instanceof UnaryGeneralDBOperator)
+					{
+						child = ((UnaryGeneralDBOperator) tmp).getArg();
+					}
+
+					tmp = child;
+					if(tmp instanceof GeneralDBLabelColumn)
+					{
+						//Reached the innermost left var -> need to capture its SRID
+						String alias;
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+							//Predicates used in triple patterns non-existent in db
+							alias="NULL";
+						}
+						else
+						{
+							//Reached the innermost left var -> need to capture its SRID
+							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
+							alias=alias+".srid";
+						}
+						sridExpr = alias;
+						break;
+					}
+					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					{
+						sridNeeded  = false;
+						break;
+					}
+				}
+				if(sridNeeded)
+				{
+					filter.appendFunction("Transform");
+					filter.openBracket();
+				}								
+									
 				if (expr.getThirdArg() instanceof GeneralDBStringValue)
 				{			
 					units = ((GeneralDBStringValue)expr.getThirdArg()).getValue();
@@ -1482,9 +1708,13 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						throw new UnsupportedRdbmsOperatorException("No such unit of measure exists");
 					}	
-
+	
 					if(units.equals(OGCConstants.OGCmetre))
 					{
+						filter.appendFunction(GEOMETRY);
+						filter.openBracket();
+						filter.appendFunction("Buffer");			
+						filter.openBracket();
 						filter.appendFunction(GEOGRAPHY);
 						filter.openBracket();
 						filter.appendFunction(ST_TRANSFORM);
@@ -1492,6 +1722,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					}
 					else if(units.equals(OGCConstants.OGCdegree))
 					{
+						filter.appendFunction("Buffer");			
+						filter.openBracket();
 						filter.appendFunction(ST_TRANSFORM);
 						filter.openBracket();
 					}	
@@ -1509,46 +1741,36 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				{
 					appendConstructFunction(expr.getLeftArg(), filter);
 				}
+				else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+				{
+					appendConstructFunction(expr.getLeftArg(), filter);
+				}
 				else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
 				{
 					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter); 
+					appendMBB(onlyLabel,filter);
 				}
 				else
 				{
 					appendMBB((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
 				}
-				
+
 				if(units.equals(OGCConstants.OGCmetre))
-				{				
+				{
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket(); //close st_transform
 					filter.closeBracket(); //close geography
-					
 					filter.appendComma();
-
-					filter.appendFunction(GEOGRAPHY);
-					filter.openBracket();
-					filter.appendFunction(ST_TRANSFORM);
-					filter.openBracket();
 				}
 				else if(units.equals(OGCConstants.OGCdegree))
 				{
 					filter.appendComma();
 					filter.append(String.valueOf(GeoConstants.defaultSRID));
 					filter.closeBracket(); //close st_transform
-					
 					filter.appendComma();
-					
-					filter.appendFunction(ST_TRANSFORM);
-					filter.openBracket();
-				}	
-				else
-				{
-					filter.appendComma();
-				}															
-				
+				}
+
 				if(expr.getRightArg() instanceof GeneralDBStringValue)
 				{
 					appendWKT(expr.getRightArg(),filter);
@@ -1561,33 +1783,28 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				{
 					appendConstructFunction(expr.getRightArg(), filter);
 				}
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+				{
+					appendMetricFunction(expr.getRightArg(), filter);
+				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 				{
 					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter);					 
+					appendMBB(onlyLabel,filter);
 				}
-				else if(expr.getRightArg() instanceof GeneralDBDoubleValue) //case met in buffer!
+				else if(expr.getRightArg() instanceof GeneralDBDoubleValue)
 				{
 					append(((GeneralDBDoubleValue)expr.getRightArg()), filter);
 				}
-				else if(expr.getRightArg() instanceof GeneralDBNumericColumn) //case met in buffer!
+				else if(expr.getRightArg() instanceof GeneralDBNumericColumn)
 				{
 					append(((GeneralDBNumericColumn)expr.getRightArg()), filter);
-				}
-				else if(expr.getRightArg() instanceof GeneralDBURIColumn) //case met in transform!
-				{
-					filter.keepSRID_part1();
-					append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-					filter.keepSRID_part2();
-					append(((GeneralDBURIColumn)expr.getRightArg()), filter);
-					filter.keepSRID_part3();
 				}
 				//case met in buffer when in select -> buffer(?spatial,?thematic)
 				else if(expr.getRightArg() instanceof GeneralDBLabelColumn && !((GeneralDBLabelColumn)expr.getRightArg()).isSpatial())
 				{
-					appendWithCastDouble(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-					//					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
-					//					appendCastToDouble(filter);
+					append(((GeneralDBLabelColumn)expr.getRightArg()),filter);
+					appendCastToDouble(filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricBinary)
 				{
@@ -1597,30 +1814,36 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 				{
 					appendMetricFunction(expr.getRightArg(), filter);
 				}
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+				{
+					appendMetricFunction(expr.getRightArg(), filter);
+				}
 				else
 				{
 					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
 				}
 
-				if(units.equals(OGCConstants.OGCmetre))
-				{
-					filter.appendComma();
-					filter.append(String.valueOf(GeoConstants.defaultSRID));
-					filter.closeBracket();
-					filter.closeBracket();
-				}
-				else if(units.equals(OGCConstants.OGCdegree))
-				{
-					filter.appendComma();
-					filter.append(String.valueOf(GeoConstants.defaultSRID));
-					filter.closeBracket();
-				}
-
 				filter.closeBracket();
+				//SRID Support
+				if(expr instanceof GeneralDBSqlSpatialConstructTriple && expr.getParentNode() == null)
+				{
+					filter.appendComma();
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
+				///
 			}
-
+			if(units.equals(OGCConstants.OGCmetre))
+				filter.closeBracket(); //close Geometry
 			filter.closeBracket();
-		}
+			//Used to explicitly include SRID
+			if(expr instanceof GeneralDBSqlSpatialConstructTriple && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				filter.append(sridExpr);
+			}
+		}	
+	}	
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1) 
 	protected void appendMonetDBSpatialFunctionUnary(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsMonetDB func)
