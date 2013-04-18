@@ -7,7 +7,9 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.testsuite.bugs;
+
+import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
