@@ -840,7 +840,6 @@
 	</mailingLists>
 
 	<repositories>
-		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -852,7 +851,6 @@
 			<name>Strabon - maven repository</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/testing</url>
 		</repository>
-		-->
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -875,6 +873,7 @@
 			<name>Strabon - maven repository - snapshots</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
 		</repository>
+		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -897,6 +896,7 @@
 			<name>Aduna Open Source - Maven snapshots</name>
 			<url>http://repo.aduna-software.org/maven2/snapshots</url>
 		</repository>
+		-->
 		<repository>
 			<snapshots>
 				<enabled>true</enabled>
