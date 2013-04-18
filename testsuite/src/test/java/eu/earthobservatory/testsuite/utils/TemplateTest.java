@@ -7,11 +7,12 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.testsuite.utils;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * A template test. It: 
@@ -39,10 +40,11 @@ public abstract class TemplateTest
 	public TemplateTest()
 	{
 		String testname=this.getClass().getSimpleName();
+		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
 		
-		this.datasetFile="/"+testname+"/"+testname+".nt";
-		this.queryFile="/"+testname+"/"+testname+".rq";
-		this.resultsFile="/"+testname+"/"+testname+".srx";
+		this.datasetFile="/"+testpackage+"/"+testname+"/"+testname+".nt";
+		this.queryFile="/"+testpackage+"/"+testname+"/"+testname+".rq";
+		this.resultsFile="/"+testpackage+"/"+testname+"/"+testname+".srx";
 	}
 
 	@Before
