@@ -9,6 +9,10 @@
  */
 package eu.earthobservatory.testsuite.utils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +31,10 @@ import org.junit.Test;
 public abstract class TemplateTest
 {	
 	private String datasetFile;
-	private String queryFile;
-	private String resultsFile;
+	private ArrayList<String> queryFile;
+	private ArrayList<String> resultsFile;
 
-	public TemplateTest(String datasetFile, String queryFile, String resultsFile)
+	public TemplateTest(String datasetFile, ArrayList<String> queryFile, ArrayList<String> resultsFile)
 	{
 		this.datasetFile = datasetFile;
 		this.queryFile = queryFile;
@@ -39,12 +43,27 @@ public abstract class TemplateTest
 
 	public TemplateTest()
 	{
+		queryFile=new ArrayList<String>();
+		resultsFile=new ArrayList<String>();
+		
 		String testname=this.getClass().getSimpleName();
 		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
+		File testfolder = new File(this.getClass().getResource("/"+testpackage+"/"+testname+"/").getPath());
 		
-		this.datasetFile="/"+testpackage+"/"+testname+"/"+testname+".nt";
-		this.queryFile="/"+testpackage+"/"+testname+"/"+testname+".rq";
-		this.resultsFile="/"+testpackage+"/"+testname+"/"+testname+".srx";
+		String[] files = testfolder.list();
+		
+		for(String file : files)
+		{
+			if(file.endsWith(".nt") || file.endsWith(".nq"))
+			{
+				this.datasetFile="/"+testpackage+"/"+testname+"/"+file;
+			}
+			else if(file.endsWith(".rq"))
+			{
+				this.queryFile.add("/"+testpackage+"/"+testname+"/"+file);
+				this.resultsFile.add("/"+testpackage+"/"+testname+"/"+file.substring(0, file.length()-3)+".srx");
+			}
+		}
 	}
 
 	@Before
@@ -57,7 +76,13 @@ public abstract class TemplateTest
 	@Test
 	public void test() throws Exception
 	{
-		Utils.testQuery(queryFile, resultsFile);
+		Iterator<String> queryFileIterator = this.queryFile.iterator();
+		Iterator<String> resultsFileIterator = this.resultsFile.iterator();
+		
+		while(queryFileIterator.hasNext() && resultsFileIterator.hasNext())
+		{
+			Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next());
+		}
 	}
 	
 	@After
