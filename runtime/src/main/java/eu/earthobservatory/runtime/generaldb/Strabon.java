@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -508,6 +510,9 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			String line;
+			InputStream in = (InputStream) url.openStream();
+			InputStreamReader reader = new InputStreamReader(in);
+			
 			StringBuilder batch=new StringBuilder();
 			int counter=0;
 			BufferedReader br = new BufferedReader(reader);
@@ -586,7 +591,7 @@ public abstract class Strabon {
 		if(format.equals(RDFFormat.NQUADS))
 		{
 			ByteArrayInputStream in = new ByteArrayInputStream(text.getBytes());
-			NQuadsTranslator translator = new NQuadsTranslator(con1);
+			NQuadsTranslator translator = new NQuadsTranslator(con);
 						 
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
@@ -595,7 +600,7 @@ public abstract class Strabon {
 				if(st.getContext() == null)
 				{ //this statement of the NQUAD graph is a triple- (null context)
 
-					con1.add(st.getSubject(), st.getPredicate(), st.getObject());
+					con.add(st.getSubject(), st.getPredicate(), st.getObject());
 
 				}
 				else //this statement of the NQUAD graph is a quad
@@ -610,7 +615,7 @@ public abstract class Strabon {
 					 }	 
 					try {
 						Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
-						con1.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
+						con.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
 					} catch (ParseException e) {
 						logger.error(this.getClass().toString()+": error when constructing the new context");
 						e.printStackTrace();

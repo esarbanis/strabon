@@ -898,8 +898,8 @@
             <name>Strabon - maven repository - sesame artifacts (temporary)</name>
             <url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame/</url>
         </repository>
-		<!--
-		<repository>
+		 <!-- 
+		 <repository>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -910,7 +910,6 @@
 			<name>Strabon - maven repository - sesame artifacts (temporary)</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame</url>
 		</repository>
-		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -933,7 +932,7 @@
 			<name>Aduna Open Source - Maven snapshots</name>
 			<url>http://repo.aduna-software.org/maven2/snapshots</url>
 		</repository>
-		-->
+		 -->
 		<repository>
 			<snapshots>
 				<enabled>true</enabled>

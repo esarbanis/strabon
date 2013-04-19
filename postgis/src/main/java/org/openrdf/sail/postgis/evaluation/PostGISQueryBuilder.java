@@ -286,7 +286,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				filter.openBracket();
 				System.out.println("267");
 				//
-				String alias = getLabelAlias(var.getRdbmsVar());
+				 alias = getLabelAlias(var.getRdbmsVar());
 
 				filter.column(alias, STRDFGEO_FIELD);
 				//XXX SRID
@@ -1863,7 +1863,8 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 
 
 			}
-	
+	protected void appendGeneralDBSpatialFunctionBinary(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
+			throws UnsupportedRdbmsOperatorException
 	{
 		//In the case where no variable is present in the expression! e.g ConvexHull("POLYGON((.....))")
 		boolean sridNeeded = true;
