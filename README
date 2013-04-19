@@ -25,7 +25,7 @@ been designed for representing and querying geospatial data that changes over
 time (e.g., the growth of a city over the years due to new developments). 
 
 Currently, only the geospatial features of stSPARQL have been implemented fully.
-The temporal features are the subject of current work.
+The temporal features have been implemented under the "temporals" branch of the repository.
 
 Given the very close relationship between stSPARQL and GeoSPARQL which is a 
 recent OGC standard for an extension of SPARQL for querying geospatial metadata,
@@ -364,7 +364,7 @@ Strabon by reading our tutorial under the Getting Started section and/or the
 publications given on this page. 
 
 The current versions of stRDF and stSPARQL which are based on OGC standards are
-presented in the following document:
+presented in the following documents:
   * K. Kyzirakos, M. Karpathiotakis, and M. Koubarakis. Strabon: A Semantic 
     Geospatial DBMS. In Internatioanl Semantic Web Conference (ISWC'12). Boston,
     USA, November 11-15, 2012.
@@ -374,6 +374,13 @@ presented in the following document:
     Stavros Vassos. A data model and query language for an extension of RDF with
     time and space. Deliverable D2.1, European ICT project TELEIOS, 2011.
     [pdf: http://strabon.di.uoa.gr/files/deliv2-1-re-revised.pdf]
+    
+The temporal features of stRDF and stSPARQL are presented in the following
+document:
+  * K. Bereta, P. Smeros and M. Koubarakis. Representing and Querying the
+    Valid Time of Triples for Linked Geospatial Data. In the 10th Extended
+    Semantic Web Conference (ESWC 2013). Montpellier, France. May 26-30, 2013.
+    [pdf: http://www.strabon.di.uoa.gr/files/eswc2013.pdf]
 
 The initial versions of stRDF and stSPARQL that are based on constraint
 databases are presented in the following publications:
@@ -495,7 +502,7 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-Copyright (C) 2010, 2011, 2012, Pyravlos Team
+Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
 
 http://www.strabon.di.uoa.gr/
 
@@ -509,7 +516,7 @@ How to apply the license
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (C) 2010, 2011, 2012, Pyravlos Team
+# Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
 #
 # http://www.strabon.di.uoa.gr/
 #
@@ -520,7 +527,7 @@ How to apply the license
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -530,7 +537,7 @@ How to apply the license
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. 
    -
-   - Copyright (C) 2010, 2011, 2012, Pyravlos Team
+   - Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
    -
    - http://www.strabon.di.uoa.gr/
 -->
