@@ -318,19 +318,19 @@ you need to follow to test the functionality of Strabon:
 	1. Import Strabon into Eclipse as explained in the Developer Guide.
 	2. Go to strabon-testsuite project.
 	3. Create a new folder (Recommended folder name: <test's name>) and place inside the following files:
-		3.1. An ntriples or nquads file with the test dataset (Recommended file name: <test's name>[.nt, .nq]).
-		3.2. A file with the sparql test query (Recommended file name: <test's name>.rq).
-		3.3. A file with the expected test results in xml format (Recommended file name: <test's name>.srx).
+		3.1. An ntriples or nquads file with the test dataset (with .nt or .nq extension).
+		3.2. Pairs of files with sparql test queries and expected test results in xml format.
+			 Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
 	4. Create a test class that extends TemplateTest class.
 	5. If you have followed the recommendations the test is ready. If you have different names for your
-	files, insert them explicitly in the constructor of TemplateTest class.
+	files, insert them explicitly in the constructor of TemplateTest class (super class).
 	
 	If you want to run a test:
 	
 	1. Right-click on the test class.
 	2. Select "Run as JUnit Test".
 	3. Database properties are retrieved from database.properties file. If you want, you can change a property
-	on the fly with an environment variable.
+	"on the fly" with an environment variable.
 
 	
 * Command Line
