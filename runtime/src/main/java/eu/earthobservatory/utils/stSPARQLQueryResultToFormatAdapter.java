@@ -11,6 +11,8 @@ package eu.earthobservatory.utils;
 
 import java.io.OutputStream;
 
+import org.openrdf.query.resultio.QueryResultIO;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.TupleQueryResultWriterFactory;
 import org.openrdf.query.resultio.sparqlgeojson.stSPARQLResultsGeoJSONWriterFactory;
@@ -70,6 +72,30 @@ public class stSPARQLQueryResultToFormatAdapter {
 			
 			case TSV:
 				writer = tsv.getWriter(out);
+				break;
+
+			case SESAME_XML:
+				writer = QueryResultIO.createWriter(TupleQueryResultFormat.SPARQL, out);
+				break;
+			
+			case SESAME_BINARY:
+				writer = QueryResultIO.createWriter(TupleQueryResultFormat.BINARY, out);
+				break;
+				
+			case SESAME_JSON:
+				writer = QueryResultIO.createWriter(TupleQueryResultFormat.JSON, out);
+				break;
+			
+			case SESAME_CSV:
+				writer = QueryResultIO.createWriter(TupleQueryResultFormat.CSV, out);
+				break;
+				
+			case SESAME_TSV:
+				writer = QueryResultIO.createWriter(TupleQueryResultFormat.TSV, out);
+				break;
+				
+			default:
+				// return NULL
 		}
 		
 		return writer;

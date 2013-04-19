@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 
@@ -20,7 +21,7 @@ public class MbbIntersectsFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.mbbIntersects;
+		return GeoConstants.stSPARQLmbbIntersects;
 	}
 
 }

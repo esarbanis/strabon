@@ -736,9 +736,6 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoUnion) {
 			append((GeneralDBSqlGeoUnion)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlGeoBuffer) {
-			append((GeneralDBSqlGeoBuffer)expr, filter);
-		}
 		else if (expr instanceof GeneralDBSqlGeoTransform) {
 			append((GeneralDBSqlGeoTransform)expr, filter);
 		}
@@ -750,10 +747,6 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if (expr instanceof GeneralDBSqlGeoSymDifference) {
 			append((GeneralDBSqlGeoSymDifference)expr, filter);
-		}
-		//Metrics
-		else if (expr instanceof GeneralDBSqlGeoDistance) {
-			append((GeneralDBSqlGeoDistance)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlDiffDateTime) {
 			append((GeneralDBSqlDiffDateTime)expr, filter);
@@ -767,22 +760,27 @@ public abstract class GeneralDBQueryBuilder {
 	}
 
 	
+	protected void dispatchTripleSqlOperator(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 
 	
 
-	protected void dispatchTripleSqlOperator(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	{
 		if (expr instanceof GeneralDBSqlRelate) {
 			append((GeneralDBSqlRelate)expr, filter);
+		}
+		//Metrics
+		else if (expr instanceof GeneralDBSqlGeoDistance) {
+			append((GeneralDBSqlGeoDistance)expr, filter);
+		}
+		//Construct
+		else if (expr instanceof GeneralDBSqlGeoBuffer) {
+			append((GeneralDBSqlGeoBuffer)expr, filter);
 		}
 		else
 		{
 			throw unsupported(expr);
 		}
-			}
-
-
+	}
 
 	protected void dispatchOther(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -1263,9 +1261,8 @@ public abstract class GeneralDBQueryBuilder {
 
 	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter);
 
-	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) 
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if(constr instanceof GeneralDBSqlGeoUnion)
 		{
 			append((GeneralDBSqlGeoUnion)constr, filter);
@@ -1323,12 +1320,10 @@ public abstract class GeneralDBQueryBuilder {
 			append((GeneralDBSqlPeriodEnd)constr, filter);
 		}
 		
+	}
 
-			}
-
-	protected void appendMetricFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) 
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendMetricFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if(constr instanceof GeneralDBSqlGeoDistance)
 		{
 			append((GeneralDBSqlGeoDistance)constr, filter);
@@ -1337,9 +1332,7 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlGeoArea)constr, filter);
 		}
-
-
-			}
+	}
 
 	/** Addition for datetime metric functions
 	 * 

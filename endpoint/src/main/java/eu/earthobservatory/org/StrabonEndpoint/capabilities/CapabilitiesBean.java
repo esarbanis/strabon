@@ -124,14 +124,47 @@ public class CapabilitiesBean extends HttpServlet {
 		
 		RequestCapabilities reCap = caps.getQueryCapabilities();
 		
-		for (Parameter param : reCap.getParametersObject().getParameters()) {
-			out.println("Supports parameter  : " + param.getName());
-			
-			if (param.getAcceptedValues().size() > 0) {
-				out.println("    Accepted values : ");
-				for (String acceptedValue : param.getAcceptedValues()) {
-					out.println("\t\t      " + acceptedValue);
+		if (reCap.getParametersObject() != null) {
+			for (Parameter param : reCap.getParametersObject().getParameters()) {
+				out.println("Supports parameter  : " + param.getName());
+				
+				if (param.getAcceptedValues().size() > 0) {
+					out.println("    Accepted values : ");
+					for (String acceptedValue : param.getAcceptedValues()) {
+						out.println("\t\t      " + acceptedValue);
+					}
 				}
+			}
+		}
+		
+		// print supported spatial extension functions for stSPARQL
+		if (caps.getstSPARQLSpatialExtensionFunctions() != null) {
+			out.println("stSPARQL Extension Functions");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String extFunc : caps.getstSPARQLSpatialExtensionFunctions()) {
+				out.println(extFunc);
+			}
+		}
+		
+		out.println();
+		
+		// print supported spatial extension functions for GeoSPARQL
+		if (caps.getGeoSPARQLSpatialExtensionFunctions() != null) {
+			out.println("GeoSPARQL Extension Functions");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String extFunc : caps.getGeoSPARQLSpatialExtensionFunctions()) {
+				out.println(extFunc);
+			}
+		}
+		
+		out.println();
+		
+		// print supported units of measure
+		if (caps.getUnitsOfMeasure() != null) {
+			out.println("Supported Units of Measure (OGC)");
+			out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(String uom : caps.getUnitsOfMeasure()) {
+				out.println(uom);
 			}
 		}
 	}

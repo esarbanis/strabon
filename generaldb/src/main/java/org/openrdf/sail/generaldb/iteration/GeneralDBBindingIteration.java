@@ -34,6 +34,8 @@ import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 

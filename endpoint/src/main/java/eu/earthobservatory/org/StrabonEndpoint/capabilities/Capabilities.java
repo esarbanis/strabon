@@ -9,6 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import java.util.List;
+
 
 /**
  * Interface that exposes the capabilities of a Strabon Endpoint.
@@ -85,6 +87,34 @@ public interface Capabilities {
 	 * @return
 	 */
 	public boolean supportsConnectionModification();
+	
+	/**
+	 * Return a list of URIs corresponding to the spatial extension
+	 * functions that stSPARQL supports.
+	 * 
+	 * @return
+	 */
+	public List<String> getstSPARQLSpatialExtensionFunctions();
+	
+	// TODO
+	//public List<String> getstSPARQLTemporalExtensionFunctions();
+	
+	/**
+	 * Return a list of URIs corresponding to the spatial extension
+	 * functions that GeoSPARQL supports.
+	 * 
+	 * @return
+	 */
+	public List<String> getGeoSPARQLSpatialExtensionFunctions();
+	
+	/**
+	 * Return a list of URIs corresponding to the units of measure
+	 * that can be used in an extension function requiring such an
+	 * argument.
+	 * 
+	 * @return
+	 */
+	public List<String> getUnitsOfMeasure();
 	
 	/**
 	 * Returns a {@link RequestCapabilities} instance containing

@@ -65,7 +65,7 @@ public class Common {
 	/**
 	 * Keeps the registered and available stSPARQL Query Results Formats.
 	 */
-	public static final List<stSPARQLQueryResultFormat> registeredQueryResultsFormats = new ArrayList<stSPARQLQueryResultFormat>();
+	public static final List<TupleQueryResultFormat> registeredQueryResultsFormats = new ArrayList<TupleQueryResultFormat>();
 	
 	/**
 	 * Keeps the name of the registered and available stSPARQL Query Results Formats.
@@ -76,10 +76,10 @@ public class Common {
 	// initialize registered and available stSPARQL query results formats
 	static {
 		for (TupleQueryResultFormat format : stSPARQLQueryResultFormat.values()) {
-			if (format instanceof stSPARQLQueryResultFormat) {
-				registeredQueryResultsFormats.add((stSPARQLQueryResultFormat) format);
+			//if (format instanceof stSPARQLQueryResultFormat) {
+				registeredQueryResultsFormats.add(format);
 				registeredQueryResultsFormatNames.add(format.getName());
-			}
+			//}
 		}
 	}
 	

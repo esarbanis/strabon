@@ -3,36 +3,73 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Copyright (C) 2012, Pyravlos Team
+ * Copyright (C) 2012, 2013, Pyravlos Team
  *
  * http://www.strabon.di.uoa.gr/
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.util.Vector;
 
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.QueryResultIO;
+import org.openrdf.query.resultio.QueryResultParseException;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
+import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
-import org.openrdf.rio.RDFFormat;
+import org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter;
 
 /**
- * Every SPARQL endpoint that supports storing and querying of
- * spatial RDF data should implement the {@link SpatialEndpoint}
- * interface. 
+ * SpatialEndpoint is a SPARQLEndpoint which can store and 
+ * query for spatial data. It also supports KML format for 
+ * this kind of data.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  */
-public interface SpatialEndpoint {
+public class SpatialEndpoint extends SPARQLEndpoint {
+	
+	public SpatialEndpoint(String host, int port) {
+		super(host, port);
+	}
+	
+	public SpatialEndpoint(String host, int port, String endpointName) {
+		super(host, port, endpointName);
+	}
+	
+	public EndpointResult queryForKML(String sparqlQuery) throws IOException, QueryResultParseException, TupleQueryResultHandlerException, UnsupportedQueryResultFormatException, QueryEvaluationException{
+		
+		EndpointResult xmlResult = query(sparqlQuery, stSPARQLQueryResultFormat.XML);
+		
+		if (xmlResult.getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : " + xmlResult.getStatusCode() + " " + xmlResult.getStatusText());
+		}
+		
+		String xml = xmlResult.getResponse();
+		
+		InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));  
+		TupleQueryResult results = QueryResultIO.parse(inputStream, TupleQueryResultFormat.SPARQL);
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		stSPARQLResultsKMLWriter kmlWriter = new stSPARQLResultsKMLWriter(outputStream);
+			
+		kmlWriter.startQueryResult(new Vector<String>());
+					
+		while(results.hasNext()){
+		
+				kmlWriter.handleSolution(results.next());
+		}	
+					
+		kmlWriter.endQueryResult();
+			
+		EndpointResult kmlResult = new EndpointResult(xmlResult.getStatusCode(), xmlResult.getStatusText(), outputStream.toString());
+		return kmlResult;
+	}
 
-	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException;
-	
-	public boolean store(String data, RDFFormat format);
-	
-	public boolean store(URL data, RDFFormat format);
-	
-	public boolean update(String sparqlUpdate);
-	
-	public EndpointResult describe(String sparqlDescribe);
-	
-	public EndpointResult construct(String sparqlConstruct);
 }

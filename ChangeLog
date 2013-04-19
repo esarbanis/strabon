@@ -2,6 +2,31 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Added support of all SPARQL result types provided by Sesame (json,
+	xml, csv, tsv, binary). To get the respective writer, just prepend the
+	string "SPARQL/", e.g., "SPARQL/JSON". This is to ensure that we
+	support all SPARQL result formats of the SPARQL Protocol.
+
+	* Fixed a bug where a non-implemented extension function would make
+	Strabon throw a NULL pointer exception. Now we get away with it
+	through a warning.
+
+	* Strabon endpoint now publishes the URIs of the supported units of
+	measure for use in strdf:distance and geof:distance functions of
+	stSPARQL and GeoSPARQL, respectively. The URIs are those defined by
+	OGC Units of Measure 1.0 specification which may be found at
+	http://www.opengis.net/def/uom/OGC/1.0/. Strabon endpoint publishes
+	the URIs at http://localhost:8080/endpoint/Capabilities.
+
+	* Created new module with name 'vocab` and artifactId
+	'strabon-vocabulary` and moved GeoConstants.java there. Other
+	vocabularies have been added as well, such as Simple Features, and
+	GeoSPARQL.
+
+	* Strabon endpoint now publishes the URIs of the supported extension
+	functions for stSPARQL and GeoSPARQL. One should access them by
+	hitting the link http://localhost:8080/endpoint/Capabilities.
+
 	* Support for parsing EPSG URIs in geometry literals with datatype
 	geo:wktLiteral.
 	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)

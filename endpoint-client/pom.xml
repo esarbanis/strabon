@@ -37,6 +37,12 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>
+				sesame-queryresultio-spatial-sparqlkml
+			</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
@@ -19,7 +20,7 @@ public class RelateFunc extends SpatialRelationshipFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.relate;
+		return GeoConstants.stSPARQLrelate;
 	}
 
 //	public Literal evaluate(ValueFactory valueFactory, Value... args)

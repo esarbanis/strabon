@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
  
 /**
  * A spatial function returning the SRID of a geometry.
@@ -21,6 +22,6 @@ public class SridFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.srid.toString(); //changed this-constant
+		return GeoConstants.stSPARQLsrid; //changed this-constant
 	}
 }

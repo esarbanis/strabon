@@ -21,9 +21,10 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.EvaluationStrategy;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
@@ -55,7 +56,7 @@ public class StSPARQLOrderComparator implements Comparator<BindingSet> {
 				if(element.getExpr() instanceof FunctionCall)
 				{
 					FunctionCall fc = (FunctionCall) element.getExpr();
-					if(fc.getURI().equals(GeoConstants.envelope) && fc.getArgs().size()==2)
+					if(fc.getURI().equals(GeoConstants.stSPARQLenvelope) && fc.getArgs().size()==2)
 					{
 						mbbFlag = true;
 						FunctionCall expr = (FunctionCall) element.getExpr();

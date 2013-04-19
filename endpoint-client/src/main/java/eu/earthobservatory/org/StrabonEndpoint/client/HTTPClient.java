@@ -18,7 +18,7 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
-public abstract class SpatialEndpointImpl implements SpatialEndpoint {
+public abstract class HTTPClient {
 
 	/**
 	 * The host on which the endpoint is located.
@@ -33,7 +33,7 @@ public abstract class SpatialEndpointImpl implements SpatialEndpoint {
 	/**
 	 * The name of the endpoint.
 	 * 
-	 * This is useful for {@link StrabonEndpoint} instances that are usually
+	 * This is useful for {@link SPARQLEndpoint} instances that are usually
 	 * deployed in a tomcat container as web applications.
 	 */
 	protected String endpointName;
@@ -59,11 +59,11 @@ public abstract class SpatialEndpointImpl implements SpatialEndpoint {
 	 */
 	protected HttpClient hc;
 	
-	public SpatialEndpointImpl(String host, int port) {
+	public HTTPClient(String host, int port) {
 		this(host, port, "/");
 	}
 	
-	public SpatialEndpointImpl(String host, int port, String endpointName) {
+	public HTTPClient(String host, int port, String endpointName) {
 		this.host = host;
 		this.port = port;
 		

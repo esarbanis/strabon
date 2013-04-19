@@ -15,6 +15,12 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>eu.earthobservatory</groupId>
+			<artifactId>strabon-vocabulary</artifactId>
+		</dependency>
+			
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryalgebra-evaluation</artifactId>

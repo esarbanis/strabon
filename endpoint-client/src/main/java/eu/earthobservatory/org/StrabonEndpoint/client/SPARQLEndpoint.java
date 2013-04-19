@@ -24,31 +24,43 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
  * This class is the implementation of a java client for accessing
- * StrabonEndpoint instances.
+ * SPARQLEndpoint instances.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Kallirroi Dogani <kallirroi@di.uoa.gr.
  */
-public class StrabonEndpoint extends SpatialEndpointImpl {
+public class SPARQLEndpoint extends HTTPClient{
 
-	public StrabonEndpoint(String host, int port) {
+	public SPARQLEndpoint(String host, int port) {
 		super(host, port);
 	}
 	
-	public StrabonEndpoint(String host, int port, String endpointName) {
+	public SPARQLEndpoint(String host, int port, String endpointName) {
 		super(host, port, endpointName);
 	}
 
-	@Override
+	
+	/**
+	 * Executes a SPARQL query on the Endpoint and get the results
+	 * in the format specified by stSPARQLQueryResultFormat, which is
+	 * an instance of class (or a subclass) {@link TupleQueryResultFormat}.   
+	 * 
+	 * @param sparqlQuery
+	 * @param format
+	 * @return
+	 * @throws IOException
+	 */
 	public EndpointResult query(String sparqlQuery, stSPARQLQueryResultFormat format) throws IOException {
 		assert(format != null);
 		
 		// create a post method to execute
-		HttpPost method = new HttpPost(getConnectionURL() + "/Query");
+		HttpPost method = new HttpPost(getConnectionURL());
 		
 		// set the query parameter
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -111,7 +123,7 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 				}
 			}
 			 
-			return new StrabonEndpointResult(statusCode, response.getStatusLine().getReasonPhrase(), responseBody);
+			return new EndpointResult(statusCode, response.getStatusLine().getReasonPhrase(), responseBody);
 
 		} catch (IOException e) {
 			throw e;
@@ -122,30 +134,59 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 		}
 	}
 
-	@Override
-	public boolean store(String data, RDFFormat format) {
-		return false;
+	/**
+	 * Stores the RDF <code>data</code> which are in the RDF format
+	 * <code>format</code> in the named graph specified by the URL
+	 * <code>namedGraph</code>.
+	 * 
+	 * @param data 
+	 * @param format
+	 * @param namedGraph
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
+	
+	public boolean store(String data, RDFFormat format, URL namedGraph) {
+		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public boolean store(URL data, RDFFormat format) {
-		return false;
+	/**
+	 * Stores the RDF data located at <code>data</code> which are in the
+	 * RDF format <code>format</code> in the named graph specified by the
+	 * URL <code>namedGraph</code>.
+	 * 
+	 * @param data
+	 * @param format
+	 * @param namedGraph
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
+
+	public boolean store(URL data, RDFFormat format, URL namedGraph) {
+		throw new UnsupportedOperationException();
 	}
 
-	@Override
+	/**
+	 * Executes the SPARQL Update query specified in <code>sparqlUpdate</code>.
+	 * 
+	 * @param sparqlUpdate
+	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 */
+
 	public boolean update(String sparqlUpdate) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public EndpointResult describe(String sparqlDescribe) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public EndpointResult construct(String sparqlConstruct) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
+	
+	public EndpointResult ask(String sparqlAsk) {
+		throw new UnsupportedOperationException();
+	}
+	
 	
 	public static void main(String args[]) {
 		if (args.length < 4) {
@@ -171,10 +212,10 @@ public class StrabonEndpoint extends SpatialEndpointImpl {
 			format = "XML";
 		}
 		
-		StrabonEndpoint endpoint = new StrabonEndpoint(host, port, appName);
+		SPARQLEndpoint endpoint = new SPARQLEndpoint(host, port, appName);
 		
 		try {
-			EndpointResult result = endpoint.query(query, stSPARQLQueryResultFormat.valueOf(format));
+			EndpointResult result = endpoint.query(query, (stSPARQLQueryResultFormat) stSPARQLQueryResultFormat.valueOf(format));
 			
 			System.out.println("Status code: " + result.getStatusCode());
 			System.out.println("Status text: " + result.getStatusText());

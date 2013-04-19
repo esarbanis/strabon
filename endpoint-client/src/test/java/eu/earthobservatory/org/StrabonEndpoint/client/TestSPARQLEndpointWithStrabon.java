@@ -23,23 +23,29 @@ import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
-public class TestStrabonEndpoint {
+public class TestSPARQLEndpointWithStrabon {
 
-	private StrabonEndpoint endpoint; 
+	private SPARQLEndpoint endpoint; 
 	private String query;
 	private Vector<stSPARQLQueryResultFormat> formats = new Vector<stSPARQLQueryResultFormat>();
 	
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new StrabonEndpoint("test.strabon.di.uoa.gr", 80, "DLR");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 9090, "gag-endpoint/Query");
 		
 		// set query
-		query = "PREFIX teleios:<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>\n" +
-				"SELECT ?s ?g WHERE {\n" +
-				"	?s teleios:hasGeometry ?g\n" +
-				"}" +
-				"\nLIMIT 1";
+		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+				"PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/> " +
+
+				"SELECT ?geometry " +
+				"WHERE {" +
+
+  				"	?m rdf:type gag:Δήμος . " +
+  				"	?m rdfs:label \"ΔΗΜΟΣ ΑΘΗΝΑΙΩΝ\" . " +
+  				"	?m gag:έχει_γεωμετρία ?geometry. " +
+				" } "  ;
 		
 		// initialized formats
 		for (TupleQueryResultFormat format : stSPARQLQueryResultFormat.values()) {
@@ -51,7 +57,7 @@ public class TestStrabonEndpoint {
 	}
 	
 	/**
-	 * Test method for {@link eu.earthobservatory.org.StrabonEndpoint.client.StrabonEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
+	 * Test method for {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
 	 */
 	@Test
 	public void testQuery() {
@@ -74,12 +80,12 @@ public class TestStrabonEndpoint {
 	}
 	
 	/**
-	 * Test method for testing that method {@link eu.earthobservatory.org.StrabonEndpoint.client.StrabonEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
+	 * Test method for testing that method {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
 	 * returns an IOException when it should do so.
 	 */
 	@Test(expected= IOException.class)
 	public void testIOException() throws Exception {
-		StrabonEndpoint ep = new StrabonEndpoint("blabla.dgr", 80, "bla");
+		SPARQLEndpoint ep = new SPARQLEndpoint("blabla.dgr", 80, "bla");
 		ep.query(query, formats.get(0));
 	}
 }

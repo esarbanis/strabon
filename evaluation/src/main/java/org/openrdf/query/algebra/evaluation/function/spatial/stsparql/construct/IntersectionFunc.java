@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 
@@ -20,6 +21,6 @@ public class IntersectionFunc extends SpatialConstructFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.intersection;
+		return GeoConstants.stSPARQLintersection;
 	}
 }

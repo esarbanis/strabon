@@ -15,11 +15,12 @@ import java.util.GregorianCalendar;
 
 import org.openrdf.model.URI;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.

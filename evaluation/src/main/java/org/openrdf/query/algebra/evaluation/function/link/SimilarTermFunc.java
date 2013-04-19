@@ -13,7 +13,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 

@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
  
 /**
  * A spatial function for testing whether a geometry is simple.
@@ -21,6 +22,6 @@ public class IsSimpleFunc extends SpatialPropertyFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.isSimple;
+		return GeoConstants.stSPARQLisSimple;
 	}
 }

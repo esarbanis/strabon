@@ -62,6 +62,31 @@ public enum Format {
 	TSV("TSV"),
 	
 	/**
+	 * Sesame's JSON format 
+	 */
+	SESAME_JSON("SPARQL/JSON"), 
+	
+	/**
+	 * Sesame's XML format
+	 */
+	SESAME_XML("SPARQL/XML"),
+	
+	/**
+	 * Sesame's Binary format
+	 */
+	SESAME_BINARY("BINARY"),
+	
+	/**
+	 * Sesame's CSV format
+	 */
+	SESAME_CSV("SPARQL/CSV"),
+	
+	/**
+	 * Sesame's TSV format
+	 */
+	SESAME_TSV("SPARQL/TSV"),
+	
+	/**
 	 * Invalid format.
 	 */
 	INVALID("INVALID");

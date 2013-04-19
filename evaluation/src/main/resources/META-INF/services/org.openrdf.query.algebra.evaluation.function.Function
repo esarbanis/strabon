@@ -33,8 +33,8 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.SymDiff
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc
-org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc
+org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.DimensionFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.GeometryTypeFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsTextFunc
@@ -53,6 +53,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.G
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlIntersectionFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlSymmetricDifferenceFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlUnionFunc
+org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelateFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.egenhofer.EgenhoferContainsFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.egenhofer.EgenhoferCoveredByFunc

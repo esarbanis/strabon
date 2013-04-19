@@ -13,23 +13,27 @@ package eu.earthobservatory.org.StrabonEndpoint.client;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
-public interface EndpointResult {
+public class EndpointResult {
 
-	/**
-	 * Returns the HTTP status code as returned by the endpoint.
-	 * @return
-	 */
-	public int getStatusCode();
+	private int statusCode;
+	private String statusText;
+	private String response;
 	
-	/**
-	 * Returns the status text corresponding to the status code.
-	 * @return
-	 */
-	public String getStatusText();
+	public EndpointResult(int statusCode, String statusLine, String response) {
+		this.statusCode = statusCode;
+		this.statusText = statusLine;
+		this.response = response;
+	}
 	
-	/**
-	 * Returns the response of the endpoint.
-	 * @return
-	 */
-	public String getResponse();
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getStatusText() {
+		return statusText;
+	}
+
+	public String getResponse() {
+		return response;
+	}
 }

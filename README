@@ -33,6 +33,17 @@ we recently provided support for the Core, Geometry and Geometry Topology
 extension of GeoSPARQL. 
 
 
+Conformance to GeoSPARQL
+========================
+Strabon implements the `Core', the `Topology Vocabulary Extension', the
+`Geometry Extension', the `Geometry Topology Extension', and the `RDFS Entailment
+Extension' except for Req. 25
+(http://www.opengis.net/spec/geosparql/1.0/req/rdfs-entailment-extension/bgp-rdfs-ent).
+
+With respect to GML, Strabon supports the GML Profile corresponding to Simple
+Features, that is, GML Simple Features Profile 2.0. 
+
+
 Strabon Homepage
 ================
 The homepage of Strabon is at http://www.strabon.di.uoa.gr/.
@@ -41,6 +52,84 @@ The homepage of Strabon is at http://www.strabon.di.uoa.gr/.
 Demo
 ====
 You can find a demo of the system Strabon at http://test.strabon.di.uoa.gr/NOA/.
+
+
+How to build and run Strabon from command line
+==============================================
+Assuming you have already downloaded Strabon and you are in the top-level
+directory of Strabon, issue the following command to build it from command line:
+
+	$ mvn package
+
+The above command runs automatically the JUnit tests. To skip them pass option
+`-DskipTests=true' to the above command. The complete command is the following:
+
+	$ mvn -DskipTests=true package
+
+In case of an error during building of Strabon and assuming that the error does
+not come from the JUnit tests, please have a look at the `Known Issues' section
+below. If none of the known issues of that section applies, please contact the
+developers through the Strabon mailing-list or submit a corresponding bug
+(see `Bugs' section below).
+
+After you have successfully built Strabon, you have access to the following
+components:
+
+  * Strabon Endpoint
+
+    This is a SPARQL endpoint for Strabon. It is distributed as a war file so
+    you may deploy it in a Tomcat container. You may find the war file under
+    directory `endpoint/target'.
+
+  * Strabon Endpoint (standalone)
+
+    This is a SPARQL endpoint for Strabon like the above one, but it differs
+    only in that it does not require the user to have already set up a Tomcat
+    container. The standalone Strabon Endpoint may be run by issuing the
+    following command:
+
+    	$ java -jar endpoint-exec/target/strabon-endpoint-executable-${version}.jar
+
+    After issuing the above command, you may access the Strabon Endpoint at
+    the following URL: <http://localhost:8080/>.
+
+    Please see the page at <http://hg.strabon.di.uoa.gr/Strabon/rev/674f8f91162b>
+    to find out other options that you may pass to the Tomcat container that
+    will run by the above command.
+
+    SPECIAL NOTE: if you need to configure the connection details to the
+    underlying database, you may do so in two ways:
+      1. By modifying file `endpoint/WebContent/WEB-INF/connection.properties'
+         before building Strabon and executing the above command.
+      2. After executing the above command, by visiting the following page by a
+         browser: <http://localhost:8080/ChangeConnection>
+
+  * Strabon Endpoint Client
+
+    This is a Java client for interacting with Strabon Endpoint or any other
+    SPARQL endpoint. It is packaged as a jar file and may be found under
+    directory `endpoint-client/target/' with name
+    `strabon-endpoint-client-${version}.jar'. This jar contains any dependencies
+    to other code, so may copy and paste it to your project and start playing
+    with the code immediately.
+
+  * Strabon script
+
+    The `strabon' script is located under the `scripts/' directory and it is the
+    main command-line tool for interacting with Strabon. You may use it to store
+    RDF data with geospatial information or query/update it using one of
+    stSPARQL or GeoSPARQL query languages.
+
+  * Endpoint script
+
+    The `endpoint' script is located under the `scripts' directory and it is the
+    main command-line tool for interacting with a `Strabon Endpoint'. You may
+    use it to do any operation you would like to do with the `strabon' script
+    above, but in contrast to the `strabon' script you need to have access to a
+    Strabon endpoint. Of course, the `Strabon Endpoint Client' component above
+    can be used as well as a command-line tool. At the time of writing, the
+    `Strabon Endpoint Client' component supports only querying of RDF data with
+    geospatial information.
 
 
 Getting Started
@@ -89,6 +178,107 @@ followed in order to use Strabon using Eclipse:
 You can see some examples in the classes gr.uoa.di.strabon.example.PostgisExample
 and gr.uoa.di.strabon.example.PostgisExample2.
 
+	Tuning PostgreSQL
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The default settings of Postgres are rather conservative. As a result, parameter 
+tuning is neccessary for speeding up Postgres, therefore Strabon. If you are 
+using Strabon to compare its performance against your implementation of 
+stSPARQL/GeoSPARQL, you are *strongly* encouraged to contact us using the Strabon
+Users mailing list for assistance on tuning Postgres.
+
+You can follow the instructions below for tuning a Postgres server running on an 
+Ubuntu machine that is dedicated to PostgreSQL and Strabon.
+
+1. Append the following text at the end of postgresql.conf. 
+*Uncomment* the appropriate lines.
+
+### RAM
+## 4 GB of RAM
+#shared_buffers       =  3GB
+#effective_cache_size =  3GB
+#maintenance_work_mem =  1GB
+#work_mem             =  2GB
+## 8 GB of RAM
+#shared_buffers       =  5GB
+#effective_cache_size =  6GB
+#maintenance_work_mem =  2GB
+#work_mem             =  5GB
+## 16 GB of RAM
+#shared_buffers       = 10GB
+#effective_cache_size = 14GB
+#maintenance_work_mem =  4GB
+#work_mem             = 10GB
+## 24 GB of RAM
+#shared_buffers       = 16GB 
+#effective_cache_size = 22GB 
+#maintenance_work_mem =  6GB 
+#work_mem             = 15GB
+## 48 GB of RAM
+#shared_buffers       = 32GB
+#effective_cache_size = 46GB
+#maintenance_work_mem =  8GB
+#work_mem             = 30GB
+## 64 GB of RAM
+# contact us to find out!
+### HD
+## RAID with ordinary 7.200 disks
+#random_page_cost = 3.5 #3.0-3.5
+## High-End NAS/SAN
+#random_page_cost = 2 #1.5-2.5
+## Amazon EBS/Heroku
+#random_page_cost = 1.3 #1.1-2.0
+## SSD array
+#random_page_cost = 2.0 #1.5-2.5
+### Misc
+default_statistics_target    = 10000 
+constraint_exclusion         = on 
+checkpoint_completion_target = 0.9 
+wal_buffers                  = 32MB 
+checkpoint_segments          = 64 
+### Connections
+max_connections              = 10
+
+2. Append the following lines at the end of /etc/sysctl.conf
+*Uncomment* the appropriate lines.
+
+## 4 GB of RAM
+#kernel.shmmax = 3758096384
+#kernel.shmall = 3758096384
+#kernel.shmmni = 4096
+## 8 GB of RAM
+#kernel.shmmax = 5905580032
+#kernel.shmall = 5905580032
+#kernel.shmmni = 4096
+## 16 GB of RAM
+#kernel.shmmax = 11274289152
+#kernel.shmall = 11274289152
+#kernel.shmmni = 4096
+## 24 GB of RAM
+#kernel.shmmax = 17716740096
+#kernel.shmall = 17716740096
+#kernel.shmmni = 4096
+## 48 GB of RAM
+#kernel.shmmax = 35433480192
+#kernel.shmall = 35433480192
+#kernel.shmmni = 4224
+## 64 GB of RAM
+# contact us to find out!
+
+3. Apply all changes by executing
+
+$ sudo sysctl -p
+$ sudo /etc/init.d/postgresql restart
+
+4. Prepare for the next run by issuing the command 
+
+$ sudo -u postgres psql -c 'VACUUM ANALYZE;' db
+
+or 
+
+$ psql -c 'VACUUM ANALYZE;' db
+
+where db is the name of the Postgres database that Strabon will use.
+
 
 Developer Guide
 ~~~~~~~~~~~~~~~
@@ -115,8 +305,45 @@ followed in order to use Strabon using Eclipse:
    project, download any dependencies and build the project. 
 
 
-	Storing stRDF graphs and evaluating stSPARQL queries
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tester Guide
+~~~~~~~~~~~~
+Assuming again that you are familiar with Maven and Junit these are the steps
+you need to follow to test the functionality of Strabon:
+
+
+* Using Eclipse
+
+	If you want to create a new test:
+
+	1. Import Strabon into Eclipse as explained in the Developer Guide.
+	2. Go to strabon-testsuite project.
+	3. Create a new folder (Recommended folder name: <test's name>) and place inside the following files:
+		3.1. An ntriples or nquads file with the test dataset (with .nt or .nq extension).
+		3.2. Pairs of files with sparql test queries and expected test results in xml format.
+			 Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
+	4. Create a test class that extends TemplateTest class.
+	5. If you have followed the recommendations the test is ready. If you have different names for your
+	files, insert them explicitly in the constructor of TemplateTest class (super class).
+	
+	If you want to run a test:
+	
+	1. Right-click on the test class.
+	2. Select "Run as JUnit Test".
+	3. Database properties are retrieved from database.properties file. If you want, you can change a property
+	"on the fly" with an environment variable.
+
+	
+* Command Line
+	
+	If you want to run all the tests:
+	
+	1. Go to Strabon directory (root directory of all the subprojects).
+	2. Run "mvn test".
+	3. Optionally you can pass an environment variable with "-DvariableName=variableValue".
+
+
+Storing stRDF graphs and evaluating stSPARQL queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can see some examples in the classes
 eu.earthobservatory.runtime.postgis.StoreOp and
 eu.earthobservatory.runtime.postgis.QueryOp.
@@ -216,10 +443,17 @@ The system Strabon has been developed by the following members of our team:
 
 Mailing-list
 ============
-Currently, there is only a developers mailing-list, Strabon-devel, for support
-and other questions concerning Strabon. To subscribe to the mailing-list, please
-visit page http://cgi.di.uoa.gr/~mailman/listinfo/strabon-devel. To post e-mails
-to Strabon-devel mailing-list, write to Strabon-devel@di.uoa.gr.
+Currently, we maintain the following mailing lists:
+
+* Strabon-users, is used as a communication channel for Strabon users.
+To subscribe to the mailing-list, please visit page 
+http://cgi.di.uoa.gr/~mailman/listinfo/strabon-users. To post e-mails
+to Strabon-users mailing-list, write to strabon-users@di.uoa.gr.
+
+* Strabon-devel, is used as a communication channel with the developers
+of Strabon. To subscribe to the mailing-list, please visit page 
+http://cgi.di.uoa.gr/~mailman/listinfo/strabon-devel. To post e-mails
+to Strabon-devel mailing-list, write to strabon-devel@di.uoa.gr.
 
 
 Bugs
@@ -249,6 +483,10 @@ Known Issues
    execute the following command:
 
    	$ mvn clean package -Dshade.skip
+
+ * When using MonetDB as a backend, the following source code of MonetDB must be 
+   used:
+	https://hg.strabon.di.uoa.gr/MonetDB/   
 
 
 License

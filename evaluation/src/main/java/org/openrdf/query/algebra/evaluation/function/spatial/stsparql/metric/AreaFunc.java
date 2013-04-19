@@ -9,8 +9,9 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
+
+import eu.earthobservatory.constants.GeoConstants;
  
 /**
  * A spatial function computing the area of a geometry.
@@ -21,6 +22,6 @@ public class AreaFunc extends SpatialMetricFunc {
 
 	@Override
 	public String getURI() {
-		return GeoConstants.area;
+		return GeoConstants.stSPARQLarea;
 	}
 }

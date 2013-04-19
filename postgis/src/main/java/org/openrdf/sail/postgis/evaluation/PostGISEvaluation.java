@@ -29,6 +29,7 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.openrdf.sail.generaldb.schema.IdSequence;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -40,12 +41,11 @@ import org.slf4j.LoggerFactory;
  */
 public class PostGISEvaluation extends GeneralDBEvaluation {
 
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.postgis.evaluation.PostGISEvaluation.class);
 
-	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
-			IdSequence ids)
+	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset, IdSequence ids)
 	{
 		super(factory, triples, dataset, ids);
-		logger = LoggerFactory.getLogger(PostGISEvaluation.class);
 		this.factory = factory;
 	}
 
@@ -70,7 +70,7 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 				result.setBindings(bindings);
 				result.setValueFactory(vf);
 				result.setIdSequence(ids);
-				//XXX addition
+				// addition
 				result.setGeoNames(this.geoNames);
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
 				//XXX addition- constant
