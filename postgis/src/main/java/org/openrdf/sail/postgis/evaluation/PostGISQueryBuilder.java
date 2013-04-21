@@ -2367,6 +2367,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);				
+			}	
 			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
