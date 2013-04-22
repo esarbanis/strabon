@@ -2159,6 +2159,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendConstructFunction(expr.getArg(), filter);
 			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
 			else if(expr.getArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
@@ -2235,6 +2239,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
 			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
@@ -2263,6 +2271,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 			{
@@ -2393,6 +2405,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);				
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 			{
@@ -2827,8 +2843,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		else
 		{	
 			filter.appendFunction("ST_Relate");
-
-
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
@@ -2839,6 +2853,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
 			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
@@ -2868,6 +2886,11 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					appendConstructFunction(expr.getRightArg(), filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+				{
+					appendConstructFunction(expr.getRightArg(), filter);
+				}
+				
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
 				{
 					appendConstructFunction(expr.getRightArg(), filter);
 				}
