@@ -1218,8 +1218,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoSymDifference(leftArg, rightArg);
 		}
-		//XXX GeoSPARQL - Non topological - except distance
-		//TODO Must add buffer after deciding how to implement it
+		//XXX GeoSPARQL - Non topological - except distance		
 		else if(function.getURI().equals(GeoConstants.geoSparqlConvexHull))
 		{
 			return geoConvexHull(leftArg);
@@ -1280,11 +1279,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoDistance(leftArg, rightArg, thirdArg);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlDistance))
+		{
+			return geoDistance(leftArg, rightArg, thirdArg);
+		}	
 		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
-		}
-		//GeoSPARQL's distance must be added at this place
+		}		
 
 		logger.error("[Strabon.spatialMetricPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
