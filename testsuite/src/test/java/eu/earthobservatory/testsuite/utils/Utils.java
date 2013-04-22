@@ -55,7 +55,6 @@ public class Utils
 	private static final String dbPropertiesFile=File.separator+"databases.properties";
 	
 	private static String databaseTemplateName = null;
-	private static String defaultUser = null;
 	private static String serverName = null;
 	private static String username = null;
 	private static String password = null;
@@ -81,11 +80,6 @@ public class Utils
 		{
 			databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
 		}
-
-		if((defaultUser = System.getProperty("postgis.defaultUser"))==null)
-		{
-			defaultUser = properties.getProperty("postgis.defaultUser");
-		}
 		
 		if((serverName = System.getProperty("postgis.serverName"))==null)
 		{
@@ -108,7 +102,7 @@ public class Utils
 		}
 		
 		//Connect to server and create the temp database
-		url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
         pst = conn.prepareStatement("SELECT * FROM pg_catalog.pg_database");
@@ -208,7 +202,7 @@ public class Utils
 		
 		//Drop the temp database
 		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		String url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
 		PreparedStatement pst = conn.prepareStatement("DROP DATABASE "+databaseName);
