@@ -521,7 +521,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlSF_Contains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Contains);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Contains);
 			}
 
 	@Override
@@ -537,21 +537,21 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlSF_Disjoint expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Disjoint);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Disjoint);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Equals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Equals);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Equals);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Intersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Intersects);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Intersects);
 			}
 
 	@Override
@@ -567,14 +567,14 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlSF_Touches expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Touches);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Touches);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Within expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Within);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Within);
 			}
 
 	//Egenhofer

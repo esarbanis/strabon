@@ -59,9 +59,9 @@ public class TestSPARQLEndpointWithVirtuoso {
 	@Test
 	public void testQuery() {
 			try {
-				EndpointResult response = endpoint.query(query, stSPARQLQueryResultFormat.XML);
+				EndpointResult response = endpoint.query(query, stSPARQLQueryResultFormat.TSV);
 				
-				//System.out.println(response.getResponse());
+			//	System.out.println(response.getResponse());
 				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
