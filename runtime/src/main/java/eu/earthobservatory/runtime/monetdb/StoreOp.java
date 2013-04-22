@@ -35,6 +35,7 @@ public class StoreOp {
 		String src = args[5];
 		String format = "NTRIPLES";
 		String graph = null;
+		Boolean inference = false;
 		
 		for (int i = 6; i < args.length; i += 2) {
 			if (args[i].equals("-f")) {
@@ -54,12 +55,21 @@ public class StoreOp {
 					
 				} else {
 					graph = args[i+1];
+				}			
+			} else if (args[i].equals("-i")) {
+				if (i + 1 >= args.length) {
+					System.err.println("Option \"-i\" requires an argument.");
+					help();
+					System.exit(1);
+					
+				} else {
+					inference = Boolean.valueOf(args[i+1]);
 				}
 				
 			} else {
-				System.err.println("Unknown argument \"" + args[i] + "\".");
-				help();
-				System.exit(1);
+					System.err.println("Unknown argument \"" + args[i] + "\".");
+					help();
+					System.exit(1);
 			}
 		}
 
@@ -67,10 +77,10 @@ public class StoreOp {
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, false);
 			if (graph == null) {
-				strabon.storeInRepo(src, format);
+				strabon.storeInRepo(src, format, inference);
 				
 			} else {
-				strabon.storeInRepo(src, null, graph, format);
+				strabon.storeInRepo(src, null, graph, format, inference);
 			}
 		
 		} catch (Exception e) {
@@ -84,15 +94,16 @@ public class StoreOp {
 	}
 	
 	private static void help() {
-		System.err.println("Usage: eu.earthobservatory.runtime.monetdb.StoreOp <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <FILE> [-f <FORMAT>] [-g <NAMED_GRAPH>]");
+		System.err.println("Usage: eu.earthobservatory.runtime.monetdb.StoreOp <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <FILE> [-f <FORMAT>] [-g <NAMED_GRAPH>] [-i <INFERENCE>]");
 		System.err.println("       where <HOST>       		 is the postgis database host to connect to");
 		System.err.println("             <PORT>       		 is the port to connect to on the database host");		
-		System.err.println("             <DATABASE>   		 is the spatially enabled postgis database that Strabon will use as a backend, ");
-		System.err.println("             <USERNAME>   		 is the username to use when connecting to the database ");
+		System.err.println("             <DATABASE>   		 is the spatially enabled postgis database that Strabon will use as a backend");
+		System.err.println("             <USERNAME>   		 is the username to use when connecting to the database");
 		System.err.println("             <PASSWORD>   		 is the password to use when connecting to the database");
 		System.err.println("             <FILE>       		 is the file to be stored");
 		System.err.println("             [-f <FORMAT>] 		 is the format of the file (default: NTRIPLES)");
 		System.err.println("             [-g <NAMED_GRAPH>]  is the URI of the named graph to store the input file (default: default graph)");
+		System.err.println("             [-i <INFERENCE>] 	 is true when inference is enabled (default: false)");
 	}
 
 }

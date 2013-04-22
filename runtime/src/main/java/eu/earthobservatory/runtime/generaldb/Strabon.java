@@ -307,15 +307,17 @@ public abstract class Strabon {
 		}
 	}
 
-	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
-		storeInRepo(src, null, null, format);
+		storeInRepo(src, null, null, format, inference);
 	}
 
-	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String baseURI, String context, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		RDFFormat realFormat = null;
 
+		GeosparqlRDFHandlerBase.ENABLE_INFERENCE=inference;
+		
 		if ((baseURI != null) && (baseURI.equals(""))) {
 			baseURI = null;
 		}

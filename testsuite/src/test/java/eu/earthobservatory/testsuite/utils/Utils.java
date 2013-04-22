@@ -141,9 +141,9 @@ public class Utils
 	public static void storeDataset(String datasetFile) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 	    if(datasetFile.endsWith(".nt"))
-	    	strabon.storeInRepo(datasetFile, "NTRIPLES");
+	    	strabon.storeInRepo(datasetFile, "NTRIPLES", false);
 	    else if(datasetFile.endsWith(".nq"))
-	    	strabon.storeInRepo(datasetFile, "NQUADS");
+	    	strabon.storeInRepo(datasetFile, "NQUADS", false);
 	}
 	
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
