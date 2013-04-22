@@ -48,9 +48,15 @@ public abstract class TemplateTest
 		
 		String testname=this.getClass().getSimpleName();
 		
-		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);		
+		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
 		File testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).getPath());
 		
+		if(!testfolder.exists())
+		{
+			System.out.println("Path string: "+File.separator+testpackage+File.separator+testname+File.separator);
+			System.out.println("Path: "+this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).getPath());
+			System.out.println("Folder to string: "+testfolder.toString());
+		}
 		String[] files = testfolder.list();
 		
 		for(String file : files)
