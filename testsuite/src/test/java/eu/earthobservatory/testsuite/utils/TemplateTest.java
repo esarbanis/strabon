@@ -10,6 +10,7 @@
 package eu.earthobservatory.testsuite.utils;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -49,14 +50,18 @@ public abstract class TemplateTest
 		String testname=this.getClass().getSimpleName();
 		
 		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
-		File testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).getPath());
+		File testfolder = null;
 		
-		if(!testfolder.exists())
+		try 
 		{
-			System.out.println("Path string: "+File.separator+testpackage+File.separator+testname+File.separator);
-			System.out.println("Path: "+this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).getPath());
-			System.out.println("Folder to string: "+testfolder.toString());
+			testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).toURI());
+		} 
+		catch (URISyntaxException e) 
+		{
+			e.printStackTrace();
+			System.exit(1);
 		}
+		
 		String[] files = testfolder.list();
 		
 		for(String file : files)
