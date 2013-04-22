@@ -119,6 +119,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelateFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
@@ -877,7 +878,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer) || function.getURI().equals(GeoConstants.geoSparqlBuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = numeric(right);
@@ -894,7 +895,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 					rightArg = label(right);
 				}
 			}
-			if(function instanceof BufferFunc)
+			if(function instanceof BufferFunc || function instanceof GeoSparqlBufferFunc)
 				thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
@@ -995,8 +996,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
-	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 
-			GeneralDBSqlExpr thirdArg)
+	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		//XXX stSPARQL		
 		if(function.getURI().equals(GeoConstants.stSPARQLequals))
@@ -1103,6 +1103,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return sfWithin(leftArg,rightArg);
 		}
+		
 		//RCC8
 		else if(function.getURI().equals(GeoConstants.rccDisconnected))
 		{
@@ -1246,6 +1247,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.geoSparqlBoundary))
 		{
 			return geoBoundary(leftArg);
+		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
+		{
+			return geoBuffer(leftArg, rightArg, thirdArg);
 		}
 
 		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());

@@ -501,6 +501,10 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoBoundary(leftArg);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
+		{
+			return geoBuffer(leftArg,rightArg, thirdArg);
+		}
 		//Should never reach this place
 		return null;
 	}
