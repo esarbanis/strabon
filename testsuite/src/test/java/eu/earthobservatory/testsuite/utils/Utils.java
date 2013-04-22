@@ -52,7 +52,7 @@ import eu.earthobservatory.utils.Format;
  */
 public class Utils
 {
-	private static final String dbPropertiesFile="/databases.properties";
+	private static final String dbPropertiesFile=File.separator+"databases.properties";
 	
 	private static String databaseTemplateName = null;
 	private static String defaultUser = null;

@@ -47,8 +47,9 @@ public abstract class TemplateTest
 		resultsFile=new ArrayList<String>();
 		
 		String testname=this.getClass().getSimpleName();
-		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
-		File testfolder = new File(this.getClass().getResource("/"+testpackage+"/"+testname+"/").getPath());
+		
+		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);		
+		File testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).getPath());
 		
 		String[] files = testfolder.list();
 		
@@ -56,12 +57,12 @@ public abstract class TemplateTest
 		{
 			if(file.endsWith(".nt") || file.endsWith(".nq"))
 			{
-				this.datasetFile="/"+testpackage+"/"+testname+"/"+file;
+				this.datasetFile=File.separator+testpackage+File.separator+testname+File.separator+file;
 			}
 			else if(file.endsWith(".rq"))
 			{
-				this.queryFile.add("/"+testpackage+"/"+testname+"/"+file);
-				this.resultsFile.add("/"+testpackage+"/"+testname+"/"+file.substring(0, file.length()-3)+".srx");
+				this.queryFile.add(File.separator+testpackage+File.separator+testname+File.separator+file);
+				this.resultsFile.add(File.separator+testpackage+File.separator+testname+File.separator+file.substring(0, file.length()-3)+".srx");
 			}
 		}
 	}
