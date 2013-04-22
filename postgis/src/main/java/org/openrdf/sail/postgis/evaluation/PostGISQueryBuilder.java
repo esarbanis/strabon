@@ -1782,6 +1782,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
 			else
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
@@ -1986,6 +1990,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendConstructFunction(expr.getRightArg(), filter);
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
 			}
@@ -2303,6 +2311,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
 			else
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
@@ -2434,6 +2446,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
@@ -2918,6 +2934,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					appendMetricFunction(expr.getRightArg(), filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+				{
+					appendMetricFunction(expr.getRightArg(), filter);
+				}
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
 				{
 					appendMetricFunction(expr.getRightArg(), filter);
 				}

@@ -12,7 +12,7 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 
 /**
  * This class represents a spatial function like the one defined in its superclass 
@@ -23,7 +23,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFun
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
-public abstract class GeoSparqlNonTopologicalMetric extends SpatialConstructFunc {
+public abstract class GeoSparqlNonTopologicalMetric extends SpatialMetricFunc {
 
 	//No need for any implementation, I will have replaced this class's presence before reaching this place
 	public Value evaluate(ValueFactory valueFactory, Value... args)
