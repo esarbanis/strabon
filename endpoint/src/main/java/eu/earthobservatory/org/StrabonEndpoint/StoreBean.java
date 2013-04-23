@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -138,6 +139,12 @@ public class StoreBean extends HttpServlet {
     			
     	// the format of the data
     	RDFFormat format = (request.getParameter(Common.PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(Common.PARAM_FORMAT)):null;
+
+      	// graph
+    	String graph = (request.getParameter(Common.PARAM_GRAPH) != null) ? request.getParameter(Common.PARAM_GRAPH):null;
+    	    	
+      	// inference
+    	Boolean inference = (request.getParameter(Common.PARAM_INFERENCE) != null) ? Boolean.valueOf(request.getParameter(Common.PARAM_INFERENCE)):false;
     	
     	if (data == null || format == null) {
     		request.setAttribute(ERROR, PARAM_ERROR);
@@ -146,7 +153,7 @@ public class StoreBean extends HttpServlet {
     		
     		// store data
     		try {
-    			strabon.store(data, format, !input);
+    			strabon.store(data, graph, format.getName(), inference, !input);
     			
     			// store was successful, return the respective message
     			request.setAttribute(INFO, STORE_OK);
@@ -189,7 +196,9 @@ public class StoreBean extends HttpServlet {
 		
 		// store data
 		try {
-			strabon.store(data, format, !input);
+			
+			//TODO!!!!!!!!!! remove comment
+			//strabon.store(data, format, !input);
 			
 			// store was successful, return the respective message
 			response.sendError(HttpServletResponse.SC_OK);

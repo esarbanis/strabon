@@ -332,16 +332,16 @@ public abstract class Strabon {
 			uriContext = f.createURI(context);
 		}
 
-		if(format.equalsIgnoreCase("N3")) {
+		if(format.equalsIgnoreCase("N3") || format.equals(RDFFormat.N3.getName())) {
 			realFormat =  RDFFormat.N3;
 			
-		} else if(format.equalsIgnoreCase("NTRIPLES")) {
+		} else if(format.equalsIgnoreCase("NTRIPLES") || format.equals(RDFFormat.NTRIPLES.getName())) {
 			realFormat =  RDFFormat.NTRIPLES;
 			
-		} else if(format.equalsIgnoreCase("RDFXML")) {
+		} else if(format.equalsIgnoreCase("RDFXML") || format.equals(RDFFormat.RDFXML.getName())) {
 			realFormat =  RDFFormat.RDFXML;
 			
-		} else if(format.equalsIgnoreCase("TURTLE")) {
+		} else if(format.equalsIgnoreCase("TURTLE") || format.equals(RDFFormat.TURTLE.getName())) {
 			realFormat =  RDFFormat.TURTLE;
 			
 		} else {

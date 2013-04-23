@@ -44,7 +44,7 @@
 
 <% if (request.getAttribute("error") != null) {%>
 		<!-- Error Message -->
-	  		<TR><TD colspan=3>
+	  		<TR><TD colspan=2>
 	  		<CENTER><P style="color: red;"><%=request.getAttribute("error") %></P></CENTER>
 	  		</TD></TR>
 		<!-- Error Message -->
@@ -52,28 +52,46 @@
 
 <%if (request.getAttribute("info") != null) { %>
 	<!-- Info Message -->
-  		<TR><TD colspan=3>
+  		<TR><TD colspan=2>
   		<CENTER><P><%=request.getAttribute("info") %></P></CENTER>
   		</TD></TR>
 	<!-- Info Message -->
 <%}%>
 	<tr>
-	<!--  direct input form -->
-		<td id="output">Direct Input:</td>
-		<td id="output">
+		<td colspan=2 id="output">
 			<div style="font-size:13px"> 
 				You must be logged in to store.
-			</div>	
-			<textarea name="data" rows="15" cols="100"></textarea></td>
-		<td rowspan=4 id="output">
-			<CENTER>RDF Format:<br/>
+			</div>
+		</td>	
+	</tr>
+	<tr>
+		<!--  direct input form -->
+		<td id="output">Graph:</td>
+		<td id="output">
+			<textarea name="graph" title="URI of the named graph to store the input" rows="1" cols="100"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td id="output">RDF Format:</td>
+		<td id="output">
 				<SELECT name="format" title="select one of the following RDF graph format types">
 				<% for (String format : Common.registeredFormats) {%>
 					<OPTION value="<%=format%>"><%=format%></OPTION>
 				<%}%>
 				</SELECT>
-			</CENTER>
 		</td>
+	</tr>
+		<tr>
+		<td id="output">Inference:</td>
+		<td id="output">
+				<input type="checkbox" title="Enable Inference" name="inference" value="true"> <br>
+		</td>
+	</tr>
+	<tr>
+		<!--  direct input form -->
+		<td id="output">Direct Input:</td>
+		<td id="output">
+			<textarea name="data" rows="15" cols="100"></textarea></td>
 	</tr>
 	<tr>
 		<td colspan=2 id="output"><br/>

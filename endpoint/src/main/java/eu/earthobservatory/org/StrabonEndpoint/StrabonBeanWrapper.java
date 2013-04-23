@@ -3,17 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import eu.earthobservatory.utils.Format;
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,18 +18,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openrdf.model.Resource;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepositoryConnection;
-import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration;
+import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.Strabon;
+import eu.earthobservatory.utils.Format;
 
 
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
@@ -242,41 +239,33 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	 * @return
 	 * @throws MalformedQueryException
 	 * @throws RepositoryException
+	 * @throws InvalidDatasetFormatFault 
+	 * @throws RDFHandlerException 
+	 * @throws RDFParseException 
 	 * @throws QueryEvaluationException
 	 * @throws TupleQueryResultHandlerException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public boolean store(String source_data, RDFFormat format, boolean url) throws Exception {
+	public boolean store(String src, String context, String format, Boolean inference, Boolean url) throws RepositoryException, RDFParseException, RDFHandlerException, IOException, InvalidDatasetFormatFault {
 		logger.info("[StrabonEndpoint] Received STORE request.");
 		
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		}
 
-		// get sail connection
-		SailRepositoryConnection conn = strabon.getSailRepoConnection();
-
-		try {
-			// store data
-			if (url) {
-				URL source = new URL(source_data);
-				if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
-					// it would be a security issue if we read from the server's filesystem
-					throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
-				} 
-				conn.add(source, "", format, new Resource[1]);
-
-			} else {
-				conn.add(new StringReader(source_data), "", format, new Resource[1]);
+		if (url) {
+			URL source = new URL(src);
+			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
+				// it would be a security issue if we read from the server's filesystem
+				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
 			}
-			
-			logger.info("[StrabonEndpoint] STORE was successful.");
-
-		} catch (Exception e) {
-			throw e;
 		}
 
+		strabon.storeInRepo(src, null, context, format, inference);
+		
+		logger.info("[StrabonEndpoint] STORE was successful.");
+		
 		return true;
 	}
 
