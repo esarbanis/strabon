@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -34,6 +34,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 /**
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *
  */
 public class StoreBean extends HttpServlet {
