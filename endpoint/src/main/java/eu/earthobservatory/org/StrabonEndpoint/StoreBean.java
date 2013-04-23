@@ -177,7 +177,13 @@ public class StoreBean extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// check whether we read from INPUT or URL
 		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
-		
+
+      	// graph
+    	String graph = (request.getParameter(Common.PARAM_GRAPH) != null) ? request.getParameter(Common.PARAM_GRAPH):null;
+    	    	
+      	// inference
+    	Boolean inference = (request.getParameter(Common.PARAM_INFERENCE) != null) ? Boolean.valueOf(request.getParameter(Common.PARAM_INFERENCE)):false;
+
     	// RDF data to store
     	String data = getData(request);
     	
@@ -197,9 +203,8 @@ public class StoreBean extends HttpServlet {
 		// store data
 		try {
 			
-			//TODO!!!!!!!!!! remove comment
-			//strabon.store(data, format, !input);
-			
+			strabon.store(data, graph, format.getName(), inference, !input);
+
 			// store was successful, return the respective message
 			response.sendError(HttpServletResponse.SC_OK);
 		} catch (Exception e) {
