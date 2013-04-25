@@ -53,6 +53,7 @@ import eu.earthobservatory.utils.Format;
 public class Utils
 {
 	private static final String dbPropertiesFile=File.separator+"databases.properties";
+	private static final String prefixesFile=File.separator+"prefixes";
 	
 	private static String databaseTemplateName = null;
 	private static String serverName = null;
@@ -143,7 +144,7 @@ public class Utils
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
-		String query = FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
+		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
 		//Pose the query
 		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);

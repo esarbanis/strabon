@@ -1,2 +1,2 @@
 SELECT ?o
-WHERE {?s <http://strdf.di.uoa.gr/ontology#hasGeometry> ?o}
+WHERE {?s strdf:hasGeometry ?o}
