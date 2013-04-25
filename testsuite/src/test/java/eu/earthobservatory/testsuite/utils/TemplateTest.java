@@ -31,15 +31,17 @@ import org.junit.Test;
  */
 public abstract class TemplateTest
 {	
-	private String datasetFile;
-	private ArrayList<String> queryFile;
-	private ArrayList<String> resultsFile;
+	protected String datasetFile;
+	protected ArrayList<String> queryFile;
+	protected ArrayList<String> resultsFile;
+	protected Boolean inference;
 
-	public TemplateTest(String datasetFile, ArrayList<String> queryFile, ArrayList<String> resultsFile)
+	public TemplateTest(String datasetFile, ArrayList<String> queryFile, ArrayList<String> resultsFile, Boolean inference)
 	{
 		this.datasetFile = datasetFile;
 		this.queryFile = queryFile;
 		this.resultsFile = resultsFile;
+		this.inference = inference;
 	}
 
 	public TemplateTest()
@@ -68,28 +70,30 @@ public abstract class TemplateTest
 		{
 			if(file.endsWith(".nt") || file.endsWith(".nq"))
 			{
-				this.datasetFile=File.separator+testpackage+File.separator+testname+File.separator+file;
+				datasetFile=File.separator+testpackage+File.separator+testname+File.separator+file;
 			}
 			else if(file.endsWith(".rq"))
 			{
-				this.queryFile.add(File.separator+testpackage+File.separator+testname+File.separator+file);
-				this.resultsFile.add(File.separator+testpackage+File.separator+testname+File.separator+file.substring(0, file.length()-3)+".srx");
+				queryFile.add(File.separator+testpackage+File.separator+testname+File.separator+file);
+				resultsFile.add(File.separator+testpackage+File.separator+testname+File.separator+file.substring(0, file.length()-3)+".srx");
 			}
 		}
+		
+		inference=false;
 	}
 
 	@Before
 	public void before() throws Exception
 	{
 		Utils.createdb();
-		Utils.storeDataset(datasetFile);
+		Utils.storeDataset(datasetFile, inference);
 	}
 	
 	@Test
 	public void test() throws Exception
 	{
-		Iterator<String> queryFileIterator = this.queryFile.iterator();
-		Iterator<String> resultsFileIterator = this.resultsFile.iterator();
+		Iterator<String> queryFileIterator = queryFile.iterator();
+		Iterator<String> resultsFileIterator = resultsFile.iterator();
 		
 		while(queryFileIterator.hasNext() && resultsFileIterator.hasNext())
 		{

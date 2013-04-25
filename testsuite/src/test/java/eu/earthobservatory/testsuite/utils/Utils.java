@@ -132,12 +132,12 @@ public class Utils
 	    strabon = new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
 	}
 	
-	public static void storeDataset(String datasetFile) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void storeDataset(String datasetFile, Boolean inference) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 	    if(datasetFile.endsWith(".nt"))
-	    	strabon.storeInRepo(datasetFile, "NTRIPLES", false);
+	    	strabon.storeInRepo(datasetFile, "NTRIPLES", inference);
 	    else if(datasetFile.endsWith(".nq"))
-	    	strabon.storeInRepo(datasetFile, "NQUADS", false);
+	    	strabon.storeInRepo(datasetFile, "NQUADS", inference);
 	}
 	
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
