@@ -608,7 +608,7 @@
 	</scm>
 
 	<repositories>
-
+		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -620,7 +620,7 @@
 			<name>Strabon - maven repository</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/testing</url>
 		</repository>
-
+		-->
 		<repository>
 			<releases>
 				<enabled>true</enabled>
