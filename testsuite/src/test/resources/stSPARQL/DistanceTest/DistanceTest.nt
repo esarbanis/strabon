@@ -1,0 +1,3 @@
+<http://example.org/id/Point/5531> <http://example.org/ontology/hasGeometry> "POINT(23.6423757 37.9521198)"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5532> <http://example.org/ontology/hasGeometry> "POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,-7 4.2))"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5533> <http://example.org/ontology/hasGeometry> "POINT(21.841968 38.045047)"^^<http://strdf.di.uoa.gr/ontology#WKT> .
