@@ -36,14 +36,7 @@ public abstract class TemplateTest
 	protected ArrayList<String> resultsFile;
 	protected Boolean inference;
 
-	public TemplateTest(String datasetFile, ArrayList<String> queryFile, ArrayList<String> resultsFile, Boolean inference)
-	{
-		this.datasetFile = datasetFile;
-		this.queryFile = queryFile;
-		this.resultsFile = resultsFile;
-		this.inference = inference;
-	}
-
+	
 	public TemplateTest()
 	{
 		queryFile=new ArrayList<String>();

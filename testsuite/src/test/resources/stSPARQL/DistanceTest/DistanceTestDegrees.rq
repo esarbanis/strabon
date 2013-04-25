@@ -1,5 +1,3 @@
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-
 select (strdf:distance(?g1, ?g2, <http://www.opengis.net/def/uom/OGC/1.0/degree>) as ?dist)
 where
 {
