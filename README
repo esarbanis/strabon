@@ -322,8 +322,9 @@ you need to follow to test the functionality of Strabon:
 		3.2. Pairs of files with sparql test queries and expected test results in xml format.
 			 Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
 	4. Create a test class that extends TemplateTest class.
-	5. If you have followed the recommendations the test is ready. If you have different names for your
-	files, insert them explicitly in the constructor of TemplateTest class (super class).
+	5. If you have followed the recommendations the test is ready. If you have different names or location for your
+	files, insert them explicitly in the constructor of the class. WARNING: All prefixes must be placed in file "prefixes" so that
+	every time a namespace changes, we have to change it just once.
 	
 	If you want to run a test:
 	
