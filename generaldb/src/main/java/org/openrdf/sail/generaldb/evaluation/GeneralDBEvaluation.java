@@ -93,6 +93,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
+import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
@@ -247,8 +248,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
 		
 		if (function == null) {
-			logger.warn("[Strabon.evaluation(FunctionCall)] Extension function <{}> is not supported.", fc.getURI());
-			return null;
+			throw new UnsupportedExtensionFunctionException("Extension function " + fc.getURI()+ " is not supported.");
 		}
 		
 		// get the first argument of the function call
