@@ -13,7 +13,7 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * GeoSPARQL Feature Class test. Something that has a geometry is a Feature. 
+ * GeoSPARQL Simple Features' spatial relations test. 
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */

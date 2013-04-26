@@ -155,7 +155,7 @@ public class Utils
 
 		List<String> eBindingNames = expectedResults.getBindingNames();
 		List<String> aBindingNames = actualResults.getBindingNames();
-		assertTrue("Results are not the expected.", aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
+		assertTrue("Results are not the expected. QueryFile: "+queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
 		
 		//Sort each binding's values
 		List<String> eBindingList = new ArrayList<String>();
@@ -178,7 +178,7 @@ public class Utils
 			aBindingList.add(aBindingValues);
 		}
 		
-		assertFalse("Results are not the expected.", expectedResults.hasNext() || actualResults.hasNext());
+		assertFalse("Results are not the expected. QueryFile: "+queryFile, expectedResults.hasNext() || actualResults.hasNext());
 		
 		//Sort bindings alphabetically
 		Collections.sort(eBindingList);
@@ -190,7 +190,7 @@ public class Utils
 
 		while(eBindingListIterator.hasNext() && aBindingListIterator.hasNext())
 		{
-			assertEquals("Results are not the expected.", eBindingListIterator.next(), aBindingListIterator.next());
+			assertEquals("Results are not the expected. QueryFile: "+queryFile, eBindingListIterator.next(), aBindingListIterator.next());
 		}
 		
 		actualResults.close();
