@@ -39,12 +39,13 @@ import eu.earthobservatory.vocabulary.SimpleFeatures;
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class GeosparqlRDFHandlerBase extends RDFInserter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.GeosparqlRDFHandlerBase.class);
 	
-	private static final boolean ENABLE_INFERENCE = false;
+	public static boolean ENABLE_INFERENCE;
 	
 	/**
 	 * Keeps a String to URI mapping for the URIs of Simple Features and GML

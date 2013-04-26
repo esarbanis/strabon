@@ -119,9 +119,11 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelateFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
@@ -615,6 +617,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			GeneralDBSqlExpr leftArg = null;
 			GeneralDBSqlExpr rightArg = null;
+			GeneralDBSqlExpr thirdArg = null;
 
 			ValueExpr left = functionCall.getArgs().get(0);
 
@@ -660,9 +663,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 						rightArg = label(right);
 					}
 				}
+				if(function instanceof BufferFunc)
+					thirdArg = uri(functionCall.getArgs().get(2));
 			}
 
-			result = spatialConstructPicker(function, leftArg, rightArg);
+			result = spatialConstructPicker(function, leftArg, rightArg, thirdArg);
 
 		}
 		else if(function instanceof SpatialRelationshipFunc)
@@ -845,9 +850,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
-
 
 		if(left instanceof FunctionCall)
 		{
@@ -857,9 +862,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			leftArg = label(left);
 		}
-
-
-
 
 		if(!(function instanceof EnvelopeFunc) 
 				&& !(function instanceof ConvexHullFunc) 
@@ -876,7 +878,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer) || function.getURI().equals(GeoConstants.geoSparqlBuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = numeric(right);
@@ -893,9 +895,11 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 					rightArg = label(right);
 				}
 			}
+			if(function instanceof BufferFunc || function instanceof GeoSparqlBufferFunc)
+				thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialConstructPicker(function, leftArg, rightArg);
+		return spatialConstructPicker(function, leftArg, rightArg, thirdArg);
 
 	}
 
@@ -992,8 +996,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
-	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 
-			GeneralDBSqlExpr thirdArg)
+	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		//XXX stSPARQL		
 		if(function.getURI().equals(GeoConstants.stSPARQLequals))
@@ -1100,6 +1103,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return sfWithin(leftArg,rightArg);
 		}
+		
 		//RCC8
 		else if(function.getURI().equals(GeoConstants.rccDisconnected))
 		{
@@ -1176,7 +1180,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 
-	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
@@ -1184,7 +1188,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
-			return geoBuffer(leftArg,rightArg);
+			return geoBuffer(leftArg, rightArg, thirdArg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
@@ -1214,8 +1218,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoSymDifference(leftArg, rightArg);
 		}
-		//XXX GeoSPARQL - Non topological - except distance
-		//TODO Must add buffer after deciding how to implement it
+		//XXX GeoSPARQL - Non topological - except distance		
 		else if(function.getURI().equals(GeoConstants.geoSparqlConvexHull))
 		{
 			return geoConvexHull(leftArg);
@@ -1243,6 +1246,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.geoSparqlBoundary))
 		{
 			return geoBoundary(leftArg);
+		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
+		{
+			return geoBuffer(leftArg, rightArg, thirdArg);
 		}
 
 		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
@@ -1272,11 +1279,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoDistance(leftArg, rightArg, thirdArg);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlDistance))
+		{
+			return geoDistance(leftArg, rightArg, thirdArg);
+		}	
 		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
-		}
-		//GeoSPARQL's distance must be added at this place
+		}		
 
 		logger.error("[Strabon.spatialMetricPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;

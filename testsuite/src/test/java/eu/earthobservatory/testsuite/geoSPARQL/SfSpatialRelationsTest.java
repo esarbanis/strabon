@@ -7,12 +7,21 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.testsuite.geoSPARQL;
+
+import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * A simple store test. It tests if the input dataset is stored and retrieved correctly.
+ * GeoSPARQL Feature Class test. Something that has a geometry is a Feature. 
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
-public class StoreTest extends TemplateTest{}
+public class SfSpatialRelationsTest extends TemplateTest
+{
+	public SfSpatialRelationsTest() 
+	{
+		super();
+		this.inference=true;
+	}
+}

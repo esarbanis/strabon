@@ -15,6 +15,7 @@
 # as well as storing RDF triples on a Strabon Endpoint.
 #
 # Author: Charalampos (Babis) Nikolaou <charnik@di.uoa.gr>
+# Author: Panayiotis Smeros <psmeros@di.uoa.gr>
 #
 
 # absolute directory name of this command
@@ -70,12 +71,15 @@ function help_update() {
 }
 
 function help_store() {
-	echo "Usage: ${CMD} store ENDPOINT FORMAT -t TRIPLES|-u TRIPLES_URL"
+	echo "Usage: ${CMD} store ENDPOINT FORMAT [-g NAMED_GRAPH] [--inference] -t TRIPLES|-u TRIPLES_URL"
 	echo
 	echo "	ENDPOINT    : the URL of Strabon Endpoint (e.g., http://localhost:8080/StrabonEndpoint/)"
 	echo "	FORMAT	    : the RDF format of the input (one of RDF/XML, N-Triples, Turtle, N3, TriX, TriG, or BinaryRDF)"
 	echo "	TRIPLES	    : the RDF triples to store"
 	echo "	TRIPLES_URL : the URL containing the RDF triples to store"
+	echo "  NAMED_GRAPH : the URI of the named graph into which the RDF files shall be stored"
+	echo "	              (defaults to the default graph)."
+	echo "	--inference : enables inference."
 }
 
 function help_describe() {
@@ -264,12 +268,14 @@ case "${1}" in
 		;;
 	store)
 		shift
-		if ! test $# -eq 4; then
+		if ! test $# -ge 4; then
 			help_store
 			exit 1
 		fi
 		URL="${1}/Store"
-		FORMAT="${2}"
+		shift
+		FORMAT="${1}"
+		shift
 		MIME_TYPE=
 		case "${FORMAT}" in
 			N-Triples)
@@ -299,16 +305,52 @@ case "${1}" in
 				exit 2
 				;;
 		esac
+				
+		GRAPH=
+		case "${1}" in
+			 -g)
+				shift
+				if [ "${1}" == "--inference" ]; then
+					help_store
+					exit 1
+				fi
+				if ! test $# -ge 3; then
+					help_store
+					exit 1
+				fi
+				GRAPH="-d graph=${1}"
+				shift
+		esac
 
-		case "${3}" in
+		INFERENCE=
+		case "${1}" in
+			 --inference)
+				shift
+				if ! test $# -ge 2; then
+					help_store
+					exit 1
+				fi
+				INFERENCE="-d inference=true"
+		esac
+		
+		case "${1}" in
 			-t)
-				TRIPLES="${4}"
-				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode data='${TRIPLES}' ${URL}"
+				shift
+				if ! test $# -eq 1; then
+					help_store
+					exit 1
+				fi
+				TRIPLES="${1}"
+				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode data='${TRIPLES}' ${GRAPH} ${INFERENCE} ${URL}"
 				;;
 			-u)
-
-				URL_TRIPLES="${4}"
-				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${URL}"
+				shift
+				if ! test $# -eq 1; then
+					help_store
+					exit 1
+				fi
+				URL_TRIPLES="${1}"
+				EXEC="curl -u endpoint:3ndpo1nt -w '\nHTTP_CODE=%{http_code}\n' -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode url='${URL_TRIPLES}' -d fromurl='' ${GRAPH} ${INFERENCE} ${URL}"
 				;;
 			 *)
 				help_store

@@ -85,6 +85,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricTriple;
@@ -816,6 +817,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			locateColumnVars(((GeneralDBSqlSpatialConstructUnary)expr).getArg(),allKnown);
 		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructTriple)
+		{
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getLeftArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getRightArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getThirdArg(),allKnown);
+		}
 		/** Addition for datetime metric functions
 		 * 
 		 * @author George Garbis <ggarbis@di.uoa.gr>
@@ -985,8 +992,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(expr instanceof GeneralDBSqlSpatialConstructBinary ||
-				expr instanceof GeneralDBSqlSpatialConstructUnary)
+		else if(expr instanceof GeneralDBSqlSpatialConstructBinary || expr instanceof GeneralDBSqlSpatialConstructUnary || expr instanceof GeneralDBSqlSpatialConstructTriple)
 		{
 			return ResultType.WKB;
 		}

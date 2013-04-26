@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -20,6 +20,7 @@ import org.openrdf.rio.RDFFormat;
  * Keeps common variables shared by beans and .jsp pages.
  *
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class Common {
 	  
@@ -36,6 +37,10 @@ public class Common {
 	public static final String PARAM_DATA 		= "data";
 	public static final String PARAM_FORMAT 	= "format";
 	public static final String PARAM_DATA_URL	= "url";
+	public static final String PARAM_INFERENCE	= "inference";
+	public static final String PARAM_GRAPH	    = "graph";
+
+
 	
 	/**
 	 * Submit buttons in store.jsp

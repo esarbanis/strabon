@@ -7,7 +7,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.runtime.postgis;
+package eu.earthobservatory.testsuite.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,6 +42,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
+import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 
 /**
@@ -51,10 +52,10 @@ import eu.earthobservatory.utils.Format;
  */
 public class Utils
 {
-	private static final String dbPropertiesFile="/databases.properties";
+	private static final String dbPropertiesFile=File.separator+"databases.properties";
+	private static final String prefixesFile=File.separator+"prefixes";
 	
 	private static String databaseTemplateName = null;
-	private static String defaultUser = null;
 	private static String serverName = null;
 	private static String username = null;
 	private static String password = null;
@@ -80,11 +81,6 @@ public class Utils
 		{
 			databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
 		}
-
-		if((defaultUser = System.getProperty("postgis.defaultUser"))==null)
-		{
-			defaultUser = properties.getProperty("postgis.defaultUser");
-		}
 		
 		if((serverName = System.getProperty("postgis.serverName"))==null)
 		{
@@ -107,7 +103,7 @@ public class Utils
 		}
 		
 		//Connect to server and create the temp database
-		url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
         pst = conn.prepareStatement("SELECT * FROM pg_catalog.pg_database");
@@ -137,18 +133,18 @@ public class Utils
 	    strabon = new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
 	}
 	
-	public static void storeDataset(String datasetFile) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void storeDataset(String datasetFile, Boolean inference) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 	    if(datasetFile.endsWith(".nt"))
-	    	strabon.storeInRepo(datasetFile, "NTRIPLES");
+	    	strabon.storeInRepo(datasetFile, "NTRIPLES", inference);
 	    else if(datasetFile.endsWith(".nq"))
-	    	strabon.storeInRepo(datasetFile, "NQUADS");
+	    	strabon.storeInRepo(datasetFile, "NQUADS", inference);
 	}
 	
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
-		String query = FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
+		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
 		//Pose the query
 		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);
@@ -207,7 +203,7 @@ public class Utils
 		
 		//Drop the temp database
 		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		String url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
 		PreparedStatement pst = conn.prepareStatement("DROP DATABASE "+databaseName);

@@ -307,15 +307,17 @@ public abstract class Strabon {
 		}
 	}
 
-	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
-		storeInRepo(src, null, null, format);
+		storeInRepo(src, null, null, format, inference);
 	}
 
-	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String baseURI, String context, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		RDFFormat realFormat = null;
 
+		GeosparqlRDFHandlerBase.ENABLE_INFERENCE=inference;
+		
 		if ((baseURI != null) && (baseURI.equals(""))) {
 			baseURI = null;
 		}
@@ -330,16 +332,16 @@ public abstract class Strabon {
 			uriContext = f.createURI(context);
 		}
 
-		if(format.equalsIgnoreCase("N3")) {
+		if(format.equalsIgnoreCase("N3") || format.equals(RDFFormat.N3.getName())) {
 			realFormat =  RDFFormat.N3;
 			
-		} else if(format.equalsIgnoreCase("NTRIPLES")) {
+		} else if(format.equalsIgnoreCase("NTRIPLES") || format.equals(RDFFormat.NTRIPLES.getName())) {
 			realFormat =  RDFFormat.NTRIPLES;
 			
-		} else if(format.equalsIgnoreCase("RDFXML")) {
+		} else if(format.equalsIgnoreCase("RDFXML") || format.equals(RDFFormat.RDFXML.getName())) {
 			realFormat =  RDFFormat.RDFXML;
 			
-		} else if(format.equalsIgnoreCase("TURTLE")) {
+		} else if(format.equalsIgnoreCase("TURTLE") || format.equals(RDFFormat.TURTLE.getName())) {
 			realFormat =  RDFFormat.TURTLE;
 			
 		} else {

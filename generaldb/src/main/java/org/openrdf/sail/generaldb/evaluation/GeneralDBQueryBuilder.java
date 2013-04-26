@@ -661,9 +661,6 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoUnion) {
 			append((GeneralDBSqlGeoUnion)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlGeoBuffer) {
-			append((GeneralDBSqlGeoBuffer)expr, filter);
-		}
 		else if (expr instanceof GeneralDBSqlGeoTransform) {
 			append((GeneralDBSqlGeoTransform)expr, filter);
 		}
@@ -695,6 +692,10 @@ public abstract class GeneralDBQueryBuilder {
 		//Metrics
 		else if (expr instanceof GeneralDBSqlGeoDistance) {
 			append((GeneralDBSqlGeoDistance)expr, filter);
+		}
+		//Construct
+		else if (expr instanceof GeneralDBSqlGeoBuffer) {
+			append((GeneralDBSqlGeoBuffer)expr, filter);
 		}
 		else
 		{
@@ -1153,9 +1154,8 @@ public abstract class GeneralDBQueryBuilder {
 
 	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter);
 
-	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) 
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if(constr instanceof GeneralDBSqlGeoUnion)
 		{
 			append((GeneralDBSqlGeoUnion)constr, filter);
@@ -1192,8 +1192,7 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlGeoSymDifference)constr, filter);
 		}
-
-			}
+	}
 
 	protected void appendMetricFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{

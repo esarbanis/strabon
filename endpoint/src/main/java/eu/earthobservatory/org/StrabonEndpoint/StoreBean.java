@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -33,6 +34,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 /**
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *
  */
 public class StoreBean extends HttpServlet {
@@ -138,6 +140,12 @@ public class StoreBean extends HttpServlet {
     			
     	// the format of the data
     	RDFFormat format = (request.getParameter(Common.PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(Common.PARAM_FORMAT)):null;
+
+      	// graph
+    	String graph = (request.getParameter(Common.PARAM_GRAPH) != null) ? request.getParameter(Common.PARAM_GRAPH):null;
+    	    	
+      	// inference
+    	Boolean inference = (request.getParameter(Common.PARAM_INFERENCE) != null) ? Boolean.valueOf(request.getParameter(Common.PARAM_INFERENCE)):false;
     	
     	if (data == null || format == null) {
     		request.setAttribute(ERROR, PARAM_ERROR);
@@ -146,7 +154,7 @@ public class StoreBean extends HttpServlet {
     		
     		// store data
     		try {
-    			strabon.store(data, format, !input);
+    			strabon.store(data, graph, format.getName(), inference, !input);
     			
     			// store was successful, return the respective message
     			request.setAttribute(INFO, STORE_OK);
@@ -170,7 +178,13 @@ public class StoreBean extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// check whether we read from INPUT or URL
 		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
-		
+
+      	// graph
+    	String graph = (request.getParameter(Common.PARAM_GRAPH) != null) ? request.getParameter(Common.PARAM_GRAPH):null;
+    	    	
+      	// inference
+    	Boolean inference = (request.getParameter(Common.PARAM_INFERENCE) != null) ? Boolean.valueOf(request.getParameter(Common.PARAM_INFERENCE)):false;
+
     	// RDF data to store
     	String data = getData(request);
     	
@@ -189,8 +203,9 @@ public class StoreBean extends HttpServlet {
 		
 		// store data
 		try {
-			strabon.store(data, format, !input);
 			
+			strabon.store(data, graph, format.getName(), inference, !input);
+
 			// store was successful, return the respective message
 			response.sendError(HttpServletResponse.SC_OK);
 		} catch (Exception e) {
