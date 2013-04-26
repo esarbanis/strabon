@@ -7,36 +7,11 @@
 	<results>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org#A</uri>
-			</binding>
-			<binding name='x'>
-				<uri>http://example.org#B</uri>
-			</binding>
-		</result>
-		<result>
-			<binding name='y'>
 				<uri>http://example.org#G</uri>
 			</binding>
 			<binding name='x'>
 				<uri>http://example.org#B</uri>
 			</binding>
 		</result>
-		<result>
-			<binding name='y'>
-				<uri>http://example.org#E</uri>
-			</binding>
-			<binding name='x'>
-				<uri>http://example.org#D</uri>
-			</binding>
-		</result>
-		<result>
-			<binding name='y'>
-				<uri>http://example.org#D</uri>
-			</binding>
-			<binding name='x'>
-				<uri>http://example.org#E</uri>
-			</binding>
-		</result>
 	</results>
 </sparql>
-

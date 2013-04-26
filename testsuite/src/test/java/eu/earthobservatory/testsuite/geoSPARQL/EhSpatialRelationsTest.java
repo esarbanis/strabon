@@ -13,7 +13,7 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * GeoSPARQL Egenhofer' spatial relations test. 
+ * GeoSPARQL Egenhofer's spatial relations test. 
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
