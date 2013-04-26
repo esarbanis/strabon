@@ -31,6 +31,14 @@
 		</result>
 		<result>
 			<binding name='y'>
+				<uri>http://example.org#A</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
 				<uri>http://example.org#B</uri>
 			</binding>
 			<binding name='x'>
@@ -51,6 +59,14 @@
 			</binding>
 			<binding name='x'>
 				<uri>http://example.org#F</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#B</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
 			</binding>
 		</result>
 		<result>
@@ -79,6 +95,14 @@
 		</result>
 		<result>
 			<binding name='y'>
+				<uri>http://example.org#D</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
 				<uri>http://example.org#E</uri>
 			</binding>
 			<binding name='x'>
@@ -103,6 +127,14 @@
 		</result>
 		<result>
 			<binding name='y'>
+				<uri>http://example.org#E</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
 				<uri>http://example.org#F</uri>
 			</binding>
 			<binding name='x'>
@@ -123,6 +155,14 @@
 			</binding>
 			<binding name='x'>
 				<uri>http://example.org#G</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#F</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
 			</binding>
 		</result>
 		<result>
@@ -147,6 +187,62 @@
 			</binding>
 			<binding name='x'>
 				<uri>http://example.org#F</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#G</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#H</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#A</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#B</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#E</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#D</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#F</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#H</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#G</uri>
 			</binding>
 		</result>
 	</results>
