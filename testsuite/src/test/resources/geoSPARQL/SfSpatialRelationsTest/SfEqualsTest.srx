@@ -7,18 +7,18 @@
 	<results>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org#F</uri>
+				<uri>http://example.org#E</uri>
 			</binding>
 			<binding name='x'>
-				<uri>http://example.org#E</uri>
+				<uri>http://example.org#D</uri>
 			</binding>
 		</result>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org#E</uri>
+				<uri>http://example.org#D</uri>
 			</binding>
 			<binding name='x'>
-				<uri>http://example.org#F</uri>
+				<uri>http://example.org#E</uri>
 			</binding>
 		</result>
 	</results>
