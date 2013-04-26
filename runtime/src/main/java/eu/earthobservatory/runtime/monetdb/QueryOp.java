@@ -11,6 +11,7 @@ package eu.earthobservatory.runtime.monetdb;
 
 import eu.earthobservatory.utils.Format;
 
+import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,9 @@ public class QueryOp {
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, forceDelete);
 			strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
+			
+		} catch (UnsupportedExtensionFunctionException e) {
+			logger.error("[Strabon.QueryOp] {}", e.getMessage());
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query.", e);
