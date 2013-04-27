@@ -2,6 +2,12 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Added extension function <http://postgis.net/ST_MakeLine> which is
+	mapped to the ST_MakeLine(geometry, geometry) extension function of
+	PostGIS. See also: <http://postgis.org/docs/ST_MakeLine.html>.
+
+	* Added PostGIS vocabulary class.
+
 	* Added support of all SPARQL result types provided by Sesame (json,
 	xml, csv, tsv, binary). To get the respective writer, just prepend the
 	string "SPARQL/", e.g., "SPARQL/JSON". This is to ensure that we
