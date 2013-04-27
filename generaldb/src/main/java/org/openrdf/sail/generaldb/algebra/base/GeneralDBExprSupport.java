@@ -414,12 +414,10 @@ public class GeneralDBExprSupport {
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
 	 */
-
 	public static GeneralDBSqlExpr diffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
 		return new GeneralDBSqlDiffDateTime(left, right);
 	}
-	
 	/***/
 	
 	//XXX Spatial Metric Functions

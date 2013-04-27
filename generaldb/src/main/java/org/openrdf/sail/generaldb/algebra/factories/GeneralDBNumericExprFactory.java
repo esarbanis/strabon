@@ -577,22 +577,19 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
-	protected GeneralDBSqlExpr label(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr label(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return labelsPeek.createLabelExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr uri(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr uri(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return urisPeek.createUriExpr(arg);
-			}
+	}
 
 	//	protected GeneralDBSqlExpr numeric(ValueExpr arg)
 	//	throws UnsupportedRdbmsOperatorException
 	//	{
 	//		return sql.createNumericExpr(arg);
 	//	}
-
 }

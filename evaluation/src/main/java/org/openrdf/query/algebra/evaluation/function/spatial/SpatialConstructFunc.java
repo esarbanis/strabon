@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -20,6 +20,7 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  * 
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct}
  *      and		{@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregage}
+ *      and     {@link org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct}
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>

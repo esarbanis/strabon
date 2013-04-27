@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.postgis.evaluation;
 
@@ -21,7 +25,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -48,9 +51,10 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
@@ -154,7 +158,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		// Spatial Constructs - Binary (PostGIS namespace)
 		ST_MakeLine,
 
-
 		//Spatial Constructs - Unary
 		ST_Envelope,
 		ST_ConvexHull,
@@ -204,8 +207,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		EH_Covers,
 		EH_CoveredBy,
 		EH_Inside,
-		EH_Contains,
-		; 
+		EH_Contains
 	}
 
 	/** Addition for datetime metric functions
@@ -231,17 +233,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	@Override
-	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		dispatch(expr.getArg(), filter);
 		filter.isNull();
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if (expr.getArg() instanceof GeneralDBSqlIsNull) {
 			GeneralDBSqlIsNull arg = (GeneralDBSqlIsNull)expr.getArg();
 			dispatch(arg.getArg(), filter);
@@ -252,7 +252,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr.getArg(), (GeneralDBSqlExprBuilder) open);
 			open.close();
 		}
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBDateTimeColumn var, GeneralDBSqlExprBuilder filter) {
@@ -741,22 +741,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersection);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Difference);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
-	throws UnsupportedRdbmsOperatorException
+	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_SymDifference);
 	}
