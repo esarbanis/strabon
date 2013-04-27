@@ -7,12 +7,12 @@ package org.openrdf.sail.generaldb.algebra.factories;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.asText;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.dimension;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.extDiffDateTime;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoArea;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.extDiffDateTime;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
@@ -25,6 +25,8 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSim
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sqlNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
+
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
@@ -64,6 +66,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.vocabulary.PostGIS;
 
 /**
  * Creates an SQL expression of a literal's numeric value.
@@ -95,15 +98,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 	public void setUrisPeek(GeneralDBURIExprFactory labelsPeek) {
-		this.urisPeek = urisPeek;
+		this.urisPeek = labelsPeek;
 	}
-	/**
-	 * 
-	 */
 
-	public GeneralDBSqlExpr createNumericExpr(ValueExpr expr)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public GeneralDBSqlExpr createNumericExpr(ValueExpr expr) throws UnsupportedRdbmsOperatorException
+	{
 		result = null;
 		if (expr == null)
 			return new GeneralDBSqlNull();
@@ -111,7 +110,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		if (result == null)
 			return new GeneralDBSqlNull();
 		return result;
-			}
+	}
 
 	@Override
 	public void meet(Datatype node) {
@@ -126,7 +125,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 
 	/**
-	 * XXX changes here to enable more complicated metric expressions
+	 * changes here to enable more complicated metric expressions
 	 */
 	@Override
 	public void meet(MathExpr node)
@@ -260,7 +259,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
 	 */
-
 	public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
@@ -271,8 +269,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		
 		return null;
 	}
-
-	
 	/***/
 	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
@@ -357,14 +353,13 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
 	 */
-	
 	GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
 
-		ValueExpr left = functionCall.getArgs().get(0);
-		ValueExpr right = functionCall.getArgs().get(1);
+		//ValueExpr left = functionCall.getArgs().get(0);
+		//ValueExpr right = functionCall.getArgs().get(1);
 
 		// TODO ti bazw edw??
 		leftArg = null;
@@ -373,7 +368,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		return dateTimeMetricPicker(function, leftArg, rightArg);
 
 	}
-		
 	/***/
 	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
@@ -471,7 +465,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoSymDifference(leftArg, rightArg);
 		}
-		//XXX GeoSPARQL - Non topological - except distance		
+		// GeoSPARQL - Non topological - except distance		
 		else if(function.getURI().equals(GeoConstants.geoSparqlConvexHull))
 		{
 			return geoConvexHull(leftArg);
@@ -504,6 +498,12 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoBuffer(leftArg,rightArg, thirdArg);
 		}
+		/** PostGIS construct functions */
+		else if(function.getURI().equals(PostGIS.ST_MAKELINE))
+		{
+			return st_MakeLine(leftArg, rightArg);
+		}
+		/** PostGIS construct functions */
 		//Should never reach this place
 		return null;
 	}
