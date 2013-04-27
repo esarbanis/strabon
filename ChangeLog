@@ -2,6 +2,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Added extension function <http://postgis.net/ST_Centroid> which is
+	mapped to the ST_Centroid(geometry) extension function of PostGIS.
+	See also: <http://postgis.org/docs/ST_Centroid.html>.
+
 	* Added extension function <http://postgis.net/ST_MakeLine> which is
 	mapped to the ST_MakeLine(geometry, geometry) extension function of
 	PostGIS. See also: <http://postgis.org/docs/ST_MakeLine.html>.
