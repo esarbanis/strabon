@@ -56,6 +56,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
@@ -116,12 +117,12 @@ import eu.earthobservatory.constants.OGCConstants;
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
-	public static final String STRDFGEO_FIELD = "strdfgeo";
-	public static final String SRID_FIELD = "srid";
-	public static final String ST_TRANSFORM = "ST_Transform";
-	public static final String ST_ASBINARY = "ST_AsBinary";
-	public static final String GEOGRAPHY = "Geography";
-	public static final String GEOMETRY = "Geometry";
+	public static final String STRDFGEO_FIELD	= "strdfgeo";
+	public static final String SRID_FIELD		= "srid";
+	public static final String ST_TRANSFORM 	= "ST_Transform";
+	public static final String ST_ASBINARY		= "ST_AsBinary";
+	public static final String GEOGRAPHY		= "Geography";
+	public static final String GEOMETRY			= "Geometry";
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -149,6 +150,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
+		
+		// Spatial Constructs - Binary (PostGIS namespace)
+		ST_MakeLine,
 
 
 		//Spatial Constructs - Unary
@@ -752,10 +756,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_SymDifference);
-			}
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_MakeLine);
+	}
 
 	/** Addition for datetime metric functions
 	 * 
@@ -808,10 +817,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlGeoAsGML expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
-			}
+	}
 
 	//	@Override
 	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
@@ -1513,6 +1522,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_Union: filter.appendFunction("ST_Union"); break;
 			case ST_SymDifference: filter.appendFunction("ST_SymDifference"); break;
 			case ST_Buffer: filter.appendFunction("ST_Buffer"); break;
+			
+			// PostGIS
+			case ST_MakeLine: filter.appendFunction("ST_MakeLine"); break;
 			
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
 			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
@@ -2962,6 +2974,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-			}
+	}
 
 }

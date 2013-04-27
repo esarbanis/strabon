@@ -55,6 +55,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
@@ -116,8 +117,8 @@ import eu.earthobservatory.constants.OGCConstants;
 public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	
 	public static final String ST_TRANSFORM = "ST_Transform";	
-	public static final String GEOGRAPHY = "Geography";
-	public static final String GEOMETRY = "Geometry";
+	public static final String GEOGRAPHY 	= "Geography";
+	public static final String GEOMETRY 	= "Geometry";
 	
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
@@ -2582,19 +2583,18 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlMbbContains expr,
-			GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-		// TODO Auto-generated method stub
-		
+	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("MbbContains is not available in MonetDB.");
 	}
 
 	@Override
-	protected void append(GeneralDBSqlMbbWithin expr,
-			GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-		// TODO Auto-generated method stub
-		
+	protected void append(GeneralDBSqlMbbWithin expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("MbbWithin is not available in MonetDB.");
+	}
+
+	@Override
+	protected void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("ST_MakeLine is not available in MonetDB.");
 	}
 
 }

@@ -63,6 +63,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
@@ -388,6 +389,14 @@ public class GeneralDBExprSupport {
 
 		return new GeneralDBSqlGeoSymDifference(left, right);
 	}
+	
+	/** PostGIS Construct functions **/
+	public static GeneralDBSqlExpr st_MakeLine(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+
+		return new GeneralDBSqlST_MakeLine(left, right);
+	}
+	/** PostGIS Construct functions **/
+	
 	
 	/** Addition for datetime metric functions
 	 * 

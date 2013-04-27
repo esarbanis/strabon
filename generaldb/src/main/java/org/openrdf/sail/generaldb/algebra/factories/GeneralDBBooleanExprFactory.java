@@ -35,6 +35,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBo
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
@@ -141,6 +142,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.vocabulary.PostGIS;
 
 /**
  * Boolean SQL expression factory. This factory can convert a number of core
@@ -1250,6 +1252,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
 		{
 			return geoBuffer(leftArg, rightArg, thirdArg);
+		}
+		else if (function.getURI().equals(PostGIS.ST_MAKELINE))
+		{
+			return st_MakeLine(leftArg, rightArg);
 		}
 
 		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
