@@ -60,6 +60,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
@@ -163,6 +164,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_ConvexHull,
 		ST_Boundary,
 
+		// Spatial Constructs - Unary (PostGIS namespace)
+		ST_Centroid,
+		
 		//Spatial Metrics - Binary
 		ST_Distance,
 
@@ -473,25 +477,22 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.right);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.above);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.below);
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBSqlMbbIntersects expr, GeneralDBSqlExprBuilder filter)
@@ -507,8 +508,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	
 	@Override
-	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
+	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.contains);
 	}
 
@@ -761,6 +761,11 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	@Override
 	protected void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_MakeLine);
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Centroid);
 	}
 
 	/** Addition for datetime metric functions
@@ -2162,7 +2167,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			case ST_SRID: filter.appendFunction("ST_SRID"); break;
 			case ST_IsEmpty: filter.appendFunction("ST_IsEmpty"); break;
 			case ST_IsSimple: filter.appendFunction("ST_IsSimple"); break;
+			case ST_Centroid: filter.appendFunction("ST_Centroid"); break;
 			}
+			
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{

@@ -24,9 +24,9 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isEmp
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSimple;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sqlNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
-
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
 
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
@@ -502,6 +502,10 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function.getURI().equals(PostGIS.ST_MAKELINE))
 		{
 			return st_MakeLine(leftArg, rightArg);
+		}
+		else if(function.getURI().equals(PostGIS.ST_CENTROID))
+		{
+			return st_Centroid(leftArg);
 		}
 		/** PostGIS construct functions */
 		//Should never reach this place

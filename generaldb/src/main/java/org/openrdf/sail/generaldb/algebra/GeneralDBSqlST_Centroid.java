@@ -7,18 +7,18 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.vocabulary;
+package org.openrdf.sail.generaldb.algebra;
+
+import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ *
  */
-public class PostGIS {
+public class GeneralDBSqlST_Centroid extends GeneralDBSqlSpatialConstructUnary {
 
-	public static final String NAMESPACE = "http://postgis.net/";
-	
-	/** Construct functions (binary) **/
-	public static final String ST_MAKELINE = NAMESPACE + "ST_MakeLine";
-	
-	/** Construct functions (unary) **/
-	public static final String ST_CENTROID = NAMESPACE + "ST_Centroid";
+	public GeneralDBSqlST_Centroid(GeneralDBSqlExpr expr) {
+		super(expr);
+	}
+
 }

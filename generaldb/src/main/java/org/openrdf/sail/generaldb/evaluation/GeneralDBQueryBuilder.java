@@ -75,6 +75,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlShift;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
@@ -1102,6 +1103,8 @@ public abstract class GeneralDBQueryBuilder {
 	/* PostGIS Construct Functions */
 	protected abstract void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
 	/* PostGIS Construct Functions */
 	
 	/** Addition for datetime metric functions
@@ -1211,6 +1214,10 @@ public abstract class GeneralDBQueryBuilder {
 		else if(constr instanceof GeneralDBSqlST_MakeLine)
 		{
 			append((GeneralDBSqlST_MakeLine)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlST_Centroid)
+		{
+			append((GeneralDBSqlST_Centroid)constr, filter);
 		}
 		/* PostGIS functions */
 	}

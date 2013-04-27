@@ -35,7 +35,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBo
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoConvexHull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDifference;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoDistance;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoEnvelope;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIntersection;
@@ -83,6 +82,8 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sfWit
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.simple;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sqlNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.str;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sub;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.touches;
@@ -123,6 +124,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
@@ -871,6 +873,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				&& !(function instanceof GeoSparqlBoundaryFunc)
 				&& !(function instanceof GeoSparqlConvexHullFunc)
 				&& !(function instanceof GeoSparqlEnvelopeFunc)
+				&& !(function instanceof Centroid)
 				&& !(function instanceof UnionFunc && functionCall.getArgs().size()==1))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -1253,10 +1256,16 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoBuffer(leftArg, rightArg, thirdArg);
 		}
+		/* PostGIS Construct functions */
 		else if (function.getURI().equals(PostGIS.ST_MAKELINE))
 		{
 			return st_MakeLine(leftArg, rightArg);
 		}
+		else if (function.getURI().equals(PostGIS.ST_CENTROID))
+		{
+			return st_Centroid(leftArg);
+		}
+		/* PostGIS Construct functions */
 
 		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;

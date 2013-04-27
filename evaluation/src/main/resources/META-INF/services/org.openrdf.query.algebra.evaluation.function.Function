@@ -83,3 +83,4 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeature
 org.openrdf.query.algebra.evaluation.function.datetime.stsparql.metric.DiffDateTime
 
 org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.MakeLine
+org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid

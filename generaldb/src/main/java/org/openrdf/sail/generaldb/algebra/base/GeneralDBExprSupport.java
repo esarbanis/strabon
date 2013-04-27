@@ -63,6 +63,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
@@ -391,9 +392,15 @@ public class GeneralDBExprSupport {
 	}
 	
 	/** PostGIS Construct functions **/
+	// Binary
 	public static GeneralDBSqlExpr st_MakeLine(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
 		return new GeneralDBSqlST_MakeLine(left, right);
+	}
+	// Unary
+	public static GeneralDBSqlExpr st_Centroid(GeneralDBSqlExpr expr) {
+
+		return new GeneralDBSqlST_Centroid(expr);
 	}
 	/** PostGIS Construct functions **/
 	
