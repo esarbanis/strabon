@@ -59,12 +59,12 @@ How to build and run Strabon from command line
 Assuming you have already downloaded Strabon and you are in the top-level
 directory of Strabon, issue the following command to build it from command line:
 
-	$ mvn package
+	$ mvn clean package
 
-The above command runs automatically the JUnit tests. To skip them pass option
-`-DskipTests=true' to the above command. The complete command is the following:
+In order to run automatically the JUnit tests, pass the option `-DskipTests=true' 
+to the above command. The complete command is the following:
 
-	$ mvn -DskipTests=true package
+	$ mvn -DskipTests=false clean package
 
 In case of an error during building of Strabon and assuming that the error does
 not come from the JUnit tests, please have a look at the `Known Issues' section
