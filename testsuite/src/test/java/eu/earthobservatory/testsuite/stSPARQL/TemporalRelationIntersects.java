@@ -17,4 +17,4 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
  * 
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  */
-public class TemporalRelations extends TemplateTest{}
+public class TemporalRelationIntersects extends TemplateTest{}
