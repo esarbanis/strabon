@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
@@ -303,6 +304,10 @@ public class QueryBean extends HttpServlet {
 									request.getServerName() + ":" + request.getServerPort() + 
 									"/" + tempDirectory + "/" + tempKMLFile);
 							
+						} catch (MalformedQueryException e) {
+							logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());
+							request.setAttribute(ERROR, e.getMessage());
+							
 						} catch (Exception e) {
 							logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
 							request.setAttribute(ERROR, e.getMessage());
@@ -325,6 +330,10 @@ public class QueryBean extends HttpServlet {
 						} else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 						}
+						
+					} catch (MalformedQueryException e) {
+						logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());
+						request.setAttribute(ERROR, e.getMessage());
 						
 					} catch (Exception e) {
 						logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
