@@ -9,11 +9,12 @@
  */
 package eu.earthobservatory.runtime.postgis;
 
-import eu.earthobservatory.utils.Format;
-
+import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.earthobservatory.utils.Format;
 
 public class QueryOp {
 
@@ -56,6 +57,9 @@ public class QueryOp {
 			strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
 			
 		} catch (UnsupportedExtensionFunctionException e) {
+			logger.error("[Strabon.QueryOp] {}", e.getMessage());
+			
+		} catch (MalformedQueryException e) {
 			logger.error("[Strabon.QueryOp] {}", e.getMessage());
 			
 		} catch (Exception e) {
