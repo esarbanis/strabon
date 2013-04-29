@@ -1,0 +1,7 @@
+select ?x ?y
+where
+{
+	?x <http://example.org/ontology/hasGeometry> ?g1 .
+	?y <http://example.org/ontology/hasGeometry> ?g2 .
+	FILTER(strdf:distance(?g1, ?g2, ogc:metre) < 5)
+}
