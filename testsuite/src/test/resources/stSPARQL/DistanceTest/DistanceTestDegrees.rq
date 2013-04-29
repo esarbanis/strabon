@@ -1,4 +1,4 @@
-select (strdf:distance(?g1, ?g2, <http://www.opengis.net/def/uom/OGC/1.0/degree>) as ?dist)
+select (strdf:distance(?g1, ?g2, ogc:degree) as ?dist)
 where
 {
 	<http://example.org/id/Point/5531> <http://example.org/ontology/hasGeometry> ?g1 .

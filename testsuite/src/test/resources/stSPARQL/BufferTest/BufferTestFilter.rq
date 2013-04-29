@@ -2,5 +2,5 @@ select ?g1
 where
 {
 	<http://example.org/id/Point/5531> <http://example.org/ontology/hasGeometry> ?g1 .
-	FILTER(strdf:within(?g1, strdf:buffer(?g1, 30, <http://www.opengis.net/def/uom/OGC/1.0/metre>)))
+	FILTER(strdf:within(?g1, strdf:buffer(?g1, 30, ogc:metre)))
 }
