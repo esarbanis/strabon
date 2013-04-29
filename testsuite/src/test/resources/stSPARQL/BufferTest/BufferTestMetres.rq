@@ -1,4 +1,4 @@
-select (strdf:buffer(?g, 0.2, <http://www.opengis.net/def/uom/OGC/1.0/metre>) as ?buf)
+select (strdf:buffer(?g, 0.2, ogc:metre) as ?buf)
 where
 {
 ?x <http://example.org/ontology/hasGeometry> ?g
