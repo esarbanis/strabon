@@ -32,6 +32,15 @@
 		{
 			handle = (String) request.getAttribute("handle");
 			
+		}
+		
+		String selFormat = "RDF/XML";
+		if (request.getParameter("format") != null) {
+			selFormat = request.getParameter("format");
+			
+		} else if (request.getAttribute("format") != null) {
+			selFormat = (String) request.getAttribute("format");
+			
 		}%>
 	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
@@ -61,7 +70,7 @@
 <td id="output"><center>Output Format:<br/>
 <SELECT name="format" title="select one of the following RDF graph format types">
 	<% for (String format : Common.registeredFormats) {%>
-		<OPTION value="<%=format%>"><%=format%></OPTION>
+		<OPTION value="<%=format%>"<%=format.equals(selFormat) ? "selected":""%>><%=format%></OPTION>
 	<%}%>
 </SELECT></center></td>
 <td colspan=2><br/>
