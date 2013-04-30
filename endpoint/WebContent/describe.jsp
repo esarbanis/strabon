@@ -21,6 +21,18 @@
 				return true;
 			}
 		</script>
+		
+		<%String handle = "";
+		if (request.getParameter("handle") != null) 
+		{
+			handle = request.getParameter("handle");
+			
+		} 
+		else if (request.getAttribute("handle") != null) 
+		{
+			handle = (String) request.getAttribute("handle");
+			
+		}%>
 	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
@@ -57,6 +69,16 @@
 	<input type="submit" title="execute DESCRIBE query" value="Describe" name="submit" style="width: 400px"/><br/>
 </center><br/></td>
 </tr>
+<tr>
+<td id="output"><center>View Result:<br/>
+	<SELECT name="handle" title="select how you would like to view the result">
+		<OPTION value="plain"<%= ("plain".equals(handle)) ? "selected":""%>>Plain</OPTION>
+		<OPTION value="download"<%= ("download".equals(handle)) ? "selected":""%>>Download</OPTION>		
+	</SELECT></center>
+	</td>
+	<td colspan=2>&nbsp;</td>	
+</tr>
+
 
 <% if (request.getAttribute("error") != null) {%>
 	<!-- Error Message -->
