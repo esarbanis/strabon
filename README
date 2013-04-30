@@ -339,7 +339,7 @@ you need to follow to test the functionality of Strabon:
 	If you want to run all the tests:
 	
 	1. Go to Strabon directory (root directory of all the subprojects).
-	2. Run "mvn test".
+	2. Run "mvn test -DskipTests=false".
 	3. Optionally you can pass an environment variable with "-DvariableName=variableValue".
 
 
