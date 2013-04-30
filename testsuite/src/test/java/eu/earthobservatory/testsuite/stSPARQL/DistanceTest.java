@@ -12,7 +12,7 @@ package eu.earthobservatory.testsuite.stSPARQL;
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
- * A test for the strdf:buffer function.
+ * A test for the strdf:distance function.
  * 
  * @author Stella Giannakopoulou <sgian@di.uoa.gr
  */
