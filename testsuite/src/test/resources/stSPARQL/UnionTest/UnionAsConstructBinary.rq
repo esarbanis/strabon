@@ -1,0 +1,7 @@
+select (strdf:union(?g1, ?g2) as ?union)
+where
+{
+	?x <http://example.org/ontology/hasGeometry> ?g1 .
+	?y <http://example.org/ontology/hasGeometry> ?g2 .
+	FILTER(?x != ?y)
+}

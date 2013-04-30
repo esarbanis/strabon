@@ -1,0 +1,8 @@
+<http://example.org/id/Point/5531> <http://example.org/ontology/hasGeometry> "POINT(23.6423757 37.9521198)"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5531> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/a> .
+<http://example.org/id/Point/5532> <http://example.org/ontology/hasGeometry> "POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,-7 4.2))"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5532> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/b> .
+<http://example.org/id/Point/5533> <http://example.org/ontology/hasGeometry> "POINT(21.841968 38.045047)"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5533> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/a> .
+<http://example.org/id/Point/5534> <http://example.org/ontology/hasGeometry> "POLYGON((34.80 19.37,41.74 19.37,41.74 29.64 ,34.80 29.64,34.80 19.37))"^^<http://strdf.di.uoa.gr/ontology#WKT> .
+<http://example.org/id/Point/5534> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/b> .

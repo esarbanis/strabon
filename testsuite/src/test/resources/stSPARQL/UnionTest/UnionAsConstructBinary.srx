@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='union'/>
+	</head>
+	<results>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POINT (23.6423757 37.9521198), POLYGON ((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOINT ((23.6423757 37.9521198), (21.841968 38.045047))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POINT (23.6423757 37.9521198), POLYGON ((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POLYGON ((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)), POINT (23.6423757 37.9521198))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POLYGON ((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)), POINT (21.841968 38.045047))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOLYGON (((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)), ((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOINT ((21.841968 38.045047), (23.6423757 37.9521198))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POINT (21.841968 38.045047), POLYGON ((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POINT (21.841968 38.045047), POLYGON ((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POLYGON ((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)), POINT (23.6423757 37.9521198))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOLYGON (((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)), ((-7 4.2, -7.1 4.2, -7.1 4.3, -7 4.2)))</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='union'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>GEOMETRYCOLLECTION (POLYGON ((34.8 19.37, 41.74 19.37, 41.74 29.64, 34.8 29.64, 34.8 19.37)), POINT (21.841968 38.045047))</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>

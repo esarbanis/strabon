@@ -1,0 +1,7 @@
+select (strdf:union(?g) as ?union)
+where
+{
+	?x <http://example.org/ontology/hasGeometry> ?g .
+	?x rdf:type <http://example.org/ontology/b> .
+}
+group by ?x
