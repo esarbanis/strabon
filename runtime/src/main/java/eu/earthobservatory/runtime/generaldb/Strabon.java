@@ -354,7 +354,18 @@ public abstract class Strabon {
 				//tokenize quadruples and convert them to triples:
 				//s p o t  --becomes--> GRAPH ?g(numOfQuadruples) {s p o}
 				//                      ?g(numOfQuadruples) strdf:hasValidTime t
+				
+				//About to use rewriting mechanism in updates too: 
+				/*example: insert data { s p o t} is translated into: 
+				 * 
+				 * insert data {graph <g> {s p o} }
+				 * 
+				 */
 				String[] token = quadruple.split("(\\s)+");
+				System.out.println("subject:"+ token[0]);
+				System.out.println("predicate"+ token[1]);
+				System.out.println("object:"+ token[2]);
+				System.out.println("graph:"+ token[3]);
 				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
 				newQueryString+=graphVariable+numOfQuadruples+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
 				
@@ -412,7 +423,11 @@ public abstract class Strabon {
 		Update update = null;
 
 		try {
-			update = con.prepareUpdate(QueryLanguage.SPARQL, updateString);
+			
+			String reWrittenUpdate = utils.updateRewriting(updateString);
+			System.out.println("REWRITTEN UPDATE= "+ reWrittenUpdate);
+			
+			update = con.prepareUpdate(QueryLanguage.SPARQL, reWrittenUpdate);
 			
 		} catch (RepositoryException e) {
 			logger.error("[Strabon.update]", e);
