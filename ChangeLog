@@ -30,6 +30,21 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	* Support for parsing EPSG URIs in geometry literals with datatype
 	geo:wktLiteral.
 	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
+	
+	*Modified the NQUADSTranslator so that the rewritten triples are 
+	immediately flushed to the database once they are created. 
+	
+	*In the N-Quads format, the fourth element is *optional*. Made proper
+	modification to the storage manager to coply to the specification 
+	described here: http://sw.deri.org/2008/07/n-quads/. Now files in
+	NQUADS format can contain quads *or* triples in order to be stored
+	successfully in Strabon.
+	
+	*Fixed bug that occurs when storing periods having "UC" as ending 
+	point. 
+	
+	*Added an initial set of tests on temporal operations in the 
+	testsuite module.
 
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
@@ -50,6 +65,18 @@ Tue Mar 26 13:28:26 2013   Pyravlos Team
 	* Updated GeoSPARQL namespaces and fixed function names to comply with
 	the GeoSPARQL specification.
 	(bug #25: http://bug.strabon.di.uoa.gr/ticket/25)
+	
+	*Added preliminary tests on temporal functions in the respective
+	"test" package of the runtime module.
+	
+	*Added option to strabon and endpoint scripts to support storing
+	files in NQUADS format.
+	
+	*When a large file in NQUADS format is going to be stored, it is 
+	partitioned and stored in parts. This happens because the translation
+	of quads to triples is a memory intensive job, so, translating and 
+	storing the file in batches increases performance.
+
 
 Wed Jan 09 18:06:41 2013   Pyravlos Team
 
@@ -74,6 +101,24 @@ Wed Jan 09 18:06:41 2013   Pyravlos Team
 
 	* Modified the names of the stSPARQL extension functions that
 	utilize the minimum bounding boxes of the involved geometries.
+	
+	*Fixed bug in the evaluation of temporal constructs. 
+	
+	*Fixed a major bug that occured when a temporal variable that also took part
+	in a temporal join was projected.
+	
+	*Renamed temporal extension functions to comply with the respective
+	functions of Allen's temporal relations. 
+	
+	*Modified the implementation of the temporal relation functions
+	"meets", "starts", "finishes", to comply with the semantics of the
+	respective functions of Allen. These functions are not supported by
+	PostgreSQL Temporal, so, in order to be evaluated in the database 
+	level,  we implemented them as PostgreSQL extension functions. 
+	ATTENTION: In order to use these functions, the respective sql script
+	that includes them should be loaded to the the temporally (and spa-
+	tially) enabled database. 
+	
 
 Tue Dec 11 19:33:45 2012   Pyravlos Team
 
@@ -86,29 +131,62 @@ Tue Dec 11 00:11:43 2012   Pyravlos Team
 
 	* Version 3.2.5 released.
 
-	* Added support for querying temporal information. This functionality
-	may be found in the `temporals' branch. 
+	* Added support for storing and querying temporal information. 
+	This functionality may be found in the `temporals' branch. 
 	
-		The datatypes <http://strdf.di.uoa.gr/ontology#period> and
+		 *The datatypes <http://strdf.di.uoa.gr/ontology#period> and
 		<http://www.w3.org/2001/XMLSchema#dateTime> are used to
-		represent periods and instants respectively.
+		represent periods and instants respectively. 
 	
-		The valid time time of triples is represented using quadtruples,
+		*The valid time time of triples is represented using quadtruples,
 		with the valid time annotation(instant or period) being the
-		fourth element of the quad. In the same way, temporal triple
-		patterns are used in queries to retrieve the valid time of
-		triples.
-		
-		Some functions have been renamed (their URIs have changed) to
-		follow the names of the respective relations of Allen's
-		interval algebra and other functions have been added. 
-		
-		The following temporal functions are supported:
-		during, periodOverlaps, equalsPeriod, nequalsPeriod, adjacent,
-		before, after, overleft, overright, meets, starts, finishes, 
-		period_intersect, period_union, preceding_period, and
-		succeeding_period.
-	
+		fourth element of the quad. Into this direction:
+			*Strabon has been extended to support the NQUADS format. The
+			respective Sesame packages (of version 2.6.9) that support
+			this format are used. 
+			
+			*NQuadTranslator class has been created. This class uses the
+			NQUADS parser which is available here: https://github.com/joshsh/sesametools/tree/develop/nquads.
+			The initial version of this parser did not include support 
+			for literals as the fourth element of the quad. We exteded
+			it to support the valid time representations described above.
+			
+			*The NQUADSTranslator translates quads into triples using the
+			named graph approach, similar to the one proposed by Tappolet
+			et al. and described in http://dl.acm.org/citation.cfm?id=1561565. 
+			
+			*The rdbms level of Strabon has been extended to (i) support
+			tha period datatype (ii) store the period values in the table
+			period_values(id, period). The period column is of the period
+			datatype, offered by the PostgreSQL Temporal extension (http://sourceforge.net/projects/pgsql-temporal/). 
+			Also, a GiST index is created on this column.
+			
+			*A rewriting mechanism that converts quad graph patterns into
+			 triple partners using the named graphs approach has been
+			 implemented as a method of the runtime.generaldb.Strabon 
+			 class. 
+			
+			*A big part of the temporal functions of stSPARQL has been
+			imlemented. These functions include:
+				*The temporal relation functions during, periodOverlaps, 
+				equalsPeriod, nequalsPeriod, adjacent, before, after, 
+				overleft, overright, meets, starts, finishes.
+				
+				*The period constructors period_intersect, period_union,
+				 preceding_period, and succeeding_period. The last two
+				 constructors are implemented using the jtemporal library.
+				 The other functions are implemented in the database,
+				 being mapped into the respective functions of PostgreSQL
+				 Temporal. A complete reference of PostgreSQL Temporal 
+				 can be found here: http://temporal.projects.pgfoundry.org/reference.html.
+				 
+				 *The temporal constants "NOW" and "UC" (Until Changed) 
+				 are supported.
+				 
+			*The vocabulary of the valid time dimension of stSPARQL can
+			be found at the TemporalConstants class of the evaluation 
+			module.
+				 		
 	* Changed behaviour of Strabon and Strabon Endpoint for connecting to
 	a spatially-enabled database. Only one instance of Strabon is allowed
 	at a time.
