@@ -41,6 +41,12 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	geo:wktLiteral.
 	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
 
+	* GeoSPARQL functions sfCrosses, sfOverlaps, ehOverlaps do not use the 
+	ST_Relate PostGIS function (bug #24: http://bug.strabon.di.uoa.gr/ticket/24)
+
+	* All Simple Features functions of GeoSPARQL do not use the ST_Relate 
+	PostGIS function
+
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
 	* Version 3.2.8 released.
