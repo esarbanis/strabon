@@ -229,6 +229,13 @@ Ubuntu machine that is dedicated to PostgreSQL and Strabon.
 #random_page_cost = 1.3 #1.1-2.0
 ## SSD array
 #random_page_cost = 2.0 #1.5-2.5
+### Planner options
+# Increase the following values in order to avoid using the GEQO planner. 
+# Small values (<8) reduce planning time but may produce inferior query plans
+# 
+geqo_threshold = 15 # keep this value larger that the following two parameters
+from_collapse_limit = 14
+join_collapse_limit = 14
 ### Misc
 default_statistics_target    = 10000 
 constraint_exclusion         = on 
