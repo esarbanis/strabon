@@ -45,6 +45,11 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	
 	*Added an initial set of tests on temporal operations in the 
 	testsuite module.
+	
+	*Completed support for temporal updates
+	
+	*Moved vocabulary related to the temporal features of Strabon to the
+	respective "vocabulary" project
 
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
