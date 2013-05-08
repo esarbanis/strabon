@@ -5,13 +5,5 @@
 		<variable name='x2'/>
 	</head>
 	<results>
-		<result>
-			<binding name='x2'>
-				<uri>http://example.org/item2</uri>
-			</binding>
-			<binding name='x1'>
-				<uri>http://example.org/item8</uri>
-			</binding>
-		</result>
 	</results>
 </sparql>
