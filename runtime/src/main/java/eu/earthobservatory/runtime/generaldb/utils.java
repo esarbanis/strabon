@@ -52,7 +52,7 @@ public class utils {
 			matcher = pattern.matcher(oldQueryString);
 			
 			Pattern updatePattern = Pattern.compile(updateREGEX, Pattern.DOTALL);
-			Matcher updateMatcher =  updatePattern.matcher(queryString);
+			Matcher updateMatcher =  updatePattern.matcher(oldQueryString);
 			
 			System.out.println("oldQuerySting "+oldQueryString);
 			while(updateMatcher.find())
@@ -128,7 +128,7 @@ public class utils {
 					i++;
 					
 				}
-			
+			}
 			if(numOfQuadruples==0)
 			{
 				newQueryString=queryString;
@@ -139,7 +139,7 @@ public class utils {
 				newQueryString+=oldQueryString.substring(startIndex);
 				logger.info("\n\nNew QueryString:\n {}\n\n", newQueryString);
 			}
-		}
+		
 		}
 		catch(Exception e)
 		{ 
