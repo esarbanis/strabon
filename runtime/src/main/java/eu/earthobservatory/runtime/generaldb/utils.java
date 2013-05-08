@@ -1,5 +1,6 @@
 package eu.earthobservatory.runtime.generaldb;
 
+import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,8 @@ public class utils {
 		String newQueryString="";
 		int numOfQuadruples=0;
 		int startIndex=0;
+		
+		Hashtable< String, String> periodsAndGraphs = new Hashtable<String, String>();
 		
 		StringBuffer whereClauses = new StringBuffer(2048);
 		NQuadsParser parser = new NQuadsParser();
@@ -107,19 +110,38 @@ public class utils {
 					i=5;
 	
 				}
-				else if(isVar(token[3]) && inWhere==false) //the fourth element is a temporal variable in an update clause
+				else
 				{
+					String tgraph=null;
 					//String addedPattern = graphVariable+numOfQuadruples+ " <http://strdf.di.uoa.gr/ontology#hasValidTime>"+ token[3];
-					newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-					i=5;
-				}
-				else if(isVar(token[3]) && inWhere==true) //temporal variable in where clause
-				{
-					newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-					newQueryString+=graphVariable+numOfQuadruples+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
-					i=3;
-				}
+					if(periodsAndGraphs.containsKey(token[3]))
+					{
+						tgraph = periodsAndGraphs.get(token[3]);
+						System.out.println("no need to make an insert to the hashTable");
+
+					}
+					else
+					{
+						tgraph = graphVariable + numOfQuadruples;
+						periodsAndGraphs.put(token[3], tgraph);
+						System.out.println("just inserted to hashTable: tvar: "+token[3]+" and tgraph: "+tgraph);
+					}
+					
+					if(inWhere == false)
+					{
+						newQueryString+="\n GRAPH "+tgraph+ "{ " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+						i=5;
 				
+					}
+					else
+					{
+				
+						newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+						newQueryString+=tgraph+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
+						i=3;
+					
+					}
+				}
 				
 				//add the rest tokens
 				while( i<token.length)
