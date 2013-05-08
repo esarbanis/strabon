@@ -75,7 +75,7 @@ public class QueryRewritingTests {
 				"FILTER(strdf:intersects(?geo1, ?geo2))."+
 				"}";
 		
-		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		String [] querySplit=utils.queryRewriting(query).split("GRAPH");		
 		assertEquals(1, querySplit.length);
 	}
 	
@@ -95,7 +95,7 @@ public class QueryRewritingTests {
 			"FILTER(strdf:intersects(?geo1,?geo2))." +
 			"   FILTER(strdf:afterPeriod(?t1,?t2))}";	
 		
-		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		String [] querySplit=utils.queryRewriting(query).split("GRAPH");		
 		assertEquals(3, querySplit.length);
 	}
 
@@ -115,7 +115,7 @@ public class QueryRewritingTests {
 			"FILTER(strdf:disjoint(?geo1,?geo2))" +
 			"FILTER(strdf:afterPeriod(?t1, ?t2)).";
 		
-		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");		
+		String [] querySplit=utils.queryRewriting(query).split("GRAPH");		
 		assertEquals(3, querySplit.length);
 	}
 	
@@ -132,7 +132,7 @@ public class QueryRewritingTests {
 			"FILTER(strdf:PeriodOverlaps(?o1, \"[2012-11-19 12:41:00+02, 2012-11-19 13:41:00.000001+02]\"^^<http://strdf.di.uoa.gr/ontology#validTime> ))" +
 			"}";
 		
-		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");
+		String [] querySplit=utils.queryRewriting(query).split("GRAPH");
 		assertEquals(2, querySplit.length);
 	}
 	
@@ -150,7 +150,7 @@ public class QueryRewritingTests {
 			"#FILTER(strdf:PeriodOverlaps(?o1, \"Now\"^^<http://strdf.di.uoa.gr/ontology#validTime> )) \n " +
 			"}";
 		
-		String [] querySplit=strabon.queryRewriting(query).split("GRAPH");
+		String [] querySplit=utils.queryRewriting(query).split("GRAPH");
 		assertEquals(2, querySplit.length);
 	}
 }

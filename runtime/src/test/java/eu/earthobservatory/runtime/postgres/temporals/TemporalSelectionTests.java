@@ -75,7 +75,7 @@ public class TemporalSelectionTests {
 				"?s ?p ?o ?t. "+
 			"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		assertEquals(8, bindings.size());
 	}
 
@@ -91,7 +91,7 @@ public class TemporalSelectionTests {
 				"?s ?p ?o. "+
 			"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		assertEquals(9, bindings.size());
 	}
 }

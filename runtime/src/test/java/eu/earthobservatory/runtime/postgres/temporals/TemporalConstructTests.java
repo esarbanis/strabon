@@ -91,7 +91,7 @@ public class TemporalConstructTests {
 				"FILTER(strdf:PeriodOverlaps(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		for(String result: bindings)
 		{
@@ -119,7 +119,7 @@ public class TemporalConstructTests {
 				"FILTER(strdf:PeriodOverlaps(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		for(String result: bindings)
 		{
@@ -145,7 +145,7 @@ public class TemporalConstructTests {
 				"FILTER(strdf:during(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		for(String result: bindings)
 		{
@@ -171,7 +171,7 @@ public class TemporalConstructTests {
 				//"FILTER(strdf:during(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		for(String result: bindings)
 		{
@@ -200,7 +200,7 @@ public class TemporalConstructTests {
 				//"FILTER(strdf:during(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		for(String result: bindings)
 		{

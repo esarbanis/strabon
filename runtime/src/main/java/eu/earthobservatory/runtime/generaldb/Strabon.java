@@ -260,7 +260,8 @@ public abstract class Strabon {
 		
 		TupleQuery tupleQuery = null;
 		try {
-			queryString = queryRewriting(queryString);
+			queryString = utils.queryRewriting(queryString);
+			//queryString = queryRewriting(queryString);
 			tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 			
 		} catch (RepositoryException e) {
@@ -308,7 +309,7 @@ public abstract class Strabon {
 		return status;
 	}
 
-	public String queryRewriting(String queryString) 
+	/*public String queryRewriting(String queryString) 
 	{
 		String newQueryString="";
 		int numOfQuadruples=0;
@@ -359,7 +360,7 @@ public abstract class Strabon {
 				String[] token = quadruple.split("(\\s)+");
 	
 				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-				newQueryString+=graphVariable+numOfQuadruples+" TemporalConstants.VALID_TIME_PROPERTY";
+				newQueryString+=graphVariable+numOfQuadruples+TemporalConstants.VALID_TIME_PROPERTY;
 				
 				//add the rest tokens
 				for( int i=3; i<token.length; i++)
@@ -409,14 +410,14 @@ public abstract class Strabon {
 		
 	}
 
-
+*/
 	public void update(String updateString, SailRepositoryConnection con) throws MalformedQueryException 
 	{
 		Update update = null;
 
 		try {
 			
-			String reWrittenUpdate = utils.updateRewriting(updateString);
+			String reWrittenUpdate = utils.queryRewriting(updateString);
 			System.out.println("REWRITTEN UPDATE= "+ reWrittenUpdate);
 			
 			update = con.prepareUpdate(QueryLanguage.SPARQL, reWrittenUpdate);

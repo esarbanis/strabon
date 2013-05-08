@@ -87,7 +87,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:after(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		/*for(String result: bindings)
 		{
@@ -139,8 +139,8 @@ public class TemporalRelationTests {
 				"FILTER(strdf:before(?t1, ?t2) && ?x2!=?x1)."+
 				"}";
 		
-		//TupleQueryResult result = (TupleQueryResult) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		//TupleQueryResult result = (TupleQueryResult) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		//System.out.println(bindings.toString());
 		
 		/*for(String result: bindings)
@@ -191,7 +191,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:overright(?t1, ?t2) && ?x1 != ?x2)."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		assertEquals(31, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
 		/*for(String result: bindings)
@@ -263,7 +263,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:overleft(?t1, ?t2) && ?x1 != ?x2)."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		assertEquals(14, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
 		/*for(String result: bindings)
@@ -301,7 +301,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:PeriodOverlaps(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 	
 		assertEquals(6, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
@@ -332,7 +332,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:PeriodIntersects(?t1, ?t2) && str(?x1) < str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 	
 		assertEquals(7, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
@@ -364,7 +364,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:during(?t1, ?t2) && ?x1 != ?x2)."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 	
 		assertEquals(8, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
@@ -396,7 +396,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:adjacent(?t1, ?t2) && str(?x1) < str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
@@ -419,7 +419,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:meets(?t1, ?t2) && ?x1 != ?x2)."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		/*for(String result: bindings)
 		{
 			System.out.println(result.toString());
@@ -444,7 +444,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:starts(?t1, ?t2) && str(?x1) != str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 
 		assertEquals(1, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
@@ -470,7 +470,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:finishes(?t1, ?t2) && str(?x1) > str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		assertEquals(1, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
@@ -496,7 +496,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:equalsPeriod(?t1, ?t2) && str(?x1) < str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		//assertEquals(3, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));
 		/*for(String result: bindings)
@@ -522,7 +522,7 @@ public class TemporalRelationTests {
 				"FILTER(strdf:nequalsPeriod(?t1, ?t2) && str(?x1) < str(?x2))."+
 				"}";
 		
-		ArrayList<String> bindings = (ArrayList<String>) strabon.query(strabon.queryRewriting(query),strabon.getSailRepoConnection());
+		ArrayList<String> bindings = (ArrayList<String>) strabon.query(utils.queryRewriting(query),strabon.getSailRepoConnection());
 		
 		assertEquals(28, bindings.size());
 		//assertTrue(-1 < bindings.indexOf(""));

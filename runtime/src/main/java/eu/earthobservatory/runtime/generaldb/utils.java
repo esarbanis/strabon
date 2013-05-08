@@ -7,9 +7,9 @@
  *
  * http://www.strabon.di.uoa.gr/
  * 
+ * 
+ *  @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
- *
- *
  */
 
 package eu.earthobservatory.runtime.generaldb;
@@ -28,7 +28,7 @@ public class utils {
 	
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
 	
-	public static String updateRewriting(String queryString) 
+	public static String queryRewriting(String queryString) 
 	{
 		String newQueryString="";
 		int numOfQuadruples=0;
@@ -55,7 +55,7 @@ public class utils {
 			Matcher matcher = pattern.matcher(queryString);
 			String oldQueryString=matcher.replaceAll("");
 			
-			String updateREGEX= "(where([\\s])*\\{(.)*\\})";
+			String updateREGEX= "((where([\\s])*\\{(.)*\\})|(WHERE([\\s])*\\{(.)*\\}))";
 	
 			//check whether the query contains quadruples	
 			String Word="((\\w)|(\\p{InGreek}))+";
