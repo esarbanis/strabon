@@ -9,7 +9,6 @@ package org.openrdf.query.resultio.sparqlkml;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -77,9 +76,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String TABLE_DESC_BEGIN 		= "<![CDATA[<TABLE border=\"1\">"+ NEWLINE;
 	private static final String TABLE_DESC_END 		= "</TABLE>]]>" + NEWLINE;
 
-	private static final String GEOMETRY_NAME 		= "Geometry";
-	private static final String MULTIGEOMETRY 		= "MultiGeometry";
-
 	/**
 	 * The underlying XML formatter.
 	 */
@@ -91,9 +87,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private int nresults;
 
 	/**
-	 * The number of geometries seen.
+	 * True if results have at least one geometry.
 	 */
-	private int ngeometries;
+	private Boolean hasGeometry;
 
 	/**
 	 * The JTS wrapper
@@ -140,7 +136,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		descHeader = new StringBuilder();
 		descData = new StringBuilder();
 		nresults = 0;
-		ngeometries = 0;
+		hasGeometry=false;
 	}
 
 	@Override
@@ -165,7 +161,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.endDocument();
 			baos.close();
 			
-			if (ngeometries < nresults) {
+			if (!hasGeometry) {
 				logger.warn("[Strabon.KMLWriter] No spatial binding found in the result. KML requires that at least one binding maps to a geometry.", nresults);
 			}
 			
@@ -177,22 +173,15 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	@Override
 	public void handleSolution(BindingSet bindingSet) throws TupleQueryResultHandlerException {
 		try {
-			int numOfGeometries = 0;
-
 			// true if there are bindings that do not correspond to geometries
 			boolean hasDesc = false;
-
-			// increase result size
-			nresults++;
-
-			// create description table and header
-			indent(descHeader, depth);
-			descHeader.append(TABLE_DESC_BEGIN);
-			indent(descHeader, depth);
 			
-			List<String> geometries = new ArrayList<String>();
 			Hashtable<String, String> extData = new Hashtable<String, String>();
 
+			// write placemark tag
+			xmlWriter.startTag(PLACEMARK_TAG);
+			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
+			
 			// parse binding set
 			for (Binding binding : bindingSet) {
 
@@ -200,13 +189,13 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				
 				// check for geometry value
 				if (XMLGSDatatypeUtil.isGeometryValue(value)) {
-					numOfGeometries++;
-					ngeometries++;
+					hasGeometry=true;
+
 					if (logger.isDebugEnabled()) {
 						logger.debug("[Strabon] Found geometry: {}", value);
 					}
 					
-					geometries.add(getGeometry(value));
+					xmlWriter.unescapedText(getKML(value));
 					
 				} else { // URI, BlankNode, or Literal other than spatial literal
 					if (logger.isDebugEnabled()) {
@@ -224,34 +213,15 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				}
 			}
 			
-			if (numOfGeometries > 1) {
-				// write each polygon in separate placemarks
-				for (String geometry : geometries) {
-					xmlWriter.startTag(PLACEMARK_TAG);
-					xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-					xmlWriter.startTag(MULTIGEOMETRY);
-					xmlWriter.unescapedText(geometry);
-					xmlWriter.endTag(MULTIGEOMETRY);
-					xmlWriter.endTag(PLACEMARK_TAG);
-				}
-			}
-			
-			// also write them in the same placemarks
-			xmlWriter.startTag(PLACEMARK_TAG);
-			xmlWriter.textElement(NAME_TAG, GEOMETRY_NAME);
-			xmlWriter.startTag(MULTIGEOMETRY);
-			
-			for (String geometry : geometries) {
-				xmlWriter.unescapedText(geometry);
-			}
-			
-			xmlWriter.endTag(MULTIGEOMETRY);
 			
 			// we have found and constructed a description for this result.
 			// Write it down.
 			if (hasDesc) {
-				// end the placeholder for the description data
-				indent(descData, depth);
+				
+				// create description table and header
+				indent(descHeader, depth);
+				descHeader.append(TABLE_DESC_BEGIN);
+				indent(descHeader, depth);
 				
 				// append to the table header the actual content from
 				// the bindings
@@ -290,14 +260,17 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// clear description string builders
 			descHeader.setLength(0);
 			descData.setLength(0);
+		
+			// increase result size
+			nresults++;
 			
 		} catch (IOException e) {
 			throw new TupleQueryResultHandlerException(e);
 		}
 	}
 
-	private String getGeometry(Value value) {
-		String geometry = "";
+	private String getKML(Value value) {
+		String kml = "";
 		
 		QName geometryType = null;
 		
@@ -366,34 +339,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				
 			} else {
 				encoder.encode(geom, geometryType, baos);
-				geometry = baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
+				kml = baos.toString().substring(38).replaceAll(" xmlns:kml=\"http://earth.google.com/kml/2.1\"", "").replaceAll("kml:", "");
 
-				/*
-				if (geometryType == KML.MultiGeometry) {
-					geometry = geometry.substring(geometry.indexOf("<MultiGeometry>") + 15,	geometry.indexOf("</MultiGeometry>"));
-				}
-				 * if(geom instanceof Point) { geometry =
-				 * geometry.substring(geometry.indexOf("<Point>"),
-				 * geometry.indexOf("</Point>") + 8); } else if(geom instanceof
-				 * Polygon) { geometry =
-				 * geometry.substring(geometry.indexOf("<Polygon>"),
-				 * geometry.indexOf("</Polygon>") + 10); } else if(geom
-				 * instanceof LineString) { geometry =
-				 * geometry.substring(geometry.indexOf("<LineString>"),
-				 * geometry.indexOf("</LineString>") + 13); } else if(geom
-				 * instanceof MultiPoint) { geometry =
-				 * geometry.substring(geometry.indexOf("<MultiPoint>"),
-				 * geometry.indexOf("</MultiPoint>") + 13); } else if(geom
-				 * instanceof MultiLineString) { geometry =
-				 * geometry.substring(geometry.indexOf("<MultiLineString>"),
-				 * geometry.indexOf("</MultiLineString>") + 18); } else if(geom
-				 * instanceof MultiPolygon) { geometry =
-				 * geometry.substring(geometry.indexOf("<MultiPolygon>"),
-				 * geometry.indexOf("</MultiPolygon>") + 15); } else if(geom
-				 * instanceof GeometryCollection) { geometry =
-				 * geometry.substring(geometry.indexOf("<GeometryCollection>"),
-				 * geometry.indexOf("</GeometryCollection>") + 21); }
-				 */
 				baos.reset();
 			}
 		} catch (ParseException e) {
@@ -406,7 +353,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			logger.error("[Strabon.KMLWriter] Exception during GML parsing: {}", e.getMessage());
 		}
 		
-		return geometry;
+		return kml;
 	}
 
 	/**
