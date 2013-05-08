@@ -1,3 +1,17 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2013, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ * 
+ *  @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ *
+ *
+ */
+
 package eu.earthobservatory.runtime.generaldb;
 
 import java.util.Hashtable;
@@ -98,9 +112,10 @@ public class utils {
 				int i=3;
 				if(!isVar(token[3]) && inWhere==false) //the forth element is a literal representation of valid time
 				{
-					String graph =  "<"+parser.createValidTimeURI(token[3]).toString()+">";
-					newQueryString+="\n GRAPH "+graph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-					i=5;
+					String tgraph =  "<"+parser.createValidTimeURI(token[3]).toString()+">";
+					newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+					newQueryString+= tgraph+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
+					i=3;
 	
 				}
 				else
