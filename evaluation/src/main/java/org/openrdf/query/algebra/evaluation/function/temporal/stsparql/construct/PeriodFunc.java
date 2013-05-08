@@ -9,7 +9,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct;
 
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 
 /**

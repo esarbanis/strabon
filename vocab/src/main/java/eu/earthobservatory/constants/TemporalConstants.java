@@ -7,7 +7,7 @@
  *
  * http://www.strabon.di.uoa.gr/
  */
-package org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation;
+package eu.earthobservatory.constants;
 
 
 import eu.earthobservatory.constants.GeoConstants;
