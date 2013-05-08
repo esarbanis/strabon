@@ -57,11 +57,9 @@ public class utils {
 			Pattern updatePattern = Pattern.compile(updateREGEX, Pattern.DOTALL);
 			Matcher updateMatcher =  updatePattern.matcher(oldQueryString);
 			
-			System.out.println("oldQuerySting "+oldQueryString);
 			while(updateMatcher.find())
 			{
 				String clause=oldQueryString.substring(updateMatcher.start(), updateMatcher.end()).trim();
-				System.out.println("Clause is: "+ clause);
 				whereClauses.append(clause);
 			}
 			
@@ -95,17 +93,12 @@ public class utils {
 				 * 
 				 */
 				String[] token = quadruple.split("(\\s)+");
-				System.out.println("subject:"+ token[0]);
-				System.out.println("predicate"+ token[1]);
-				System.out.println("object:"+ token[2]);
-				System.out.println("graph:"+ token[3]);
+	
 				
 				int i=3;
 				if(!isVar(token[3]) && inWhere==false) //the forth element is a literal representation of valid time
 				{
-					System.out.println("quad constant in where clause");
 					String graph =  "<"+parser.createValidTimeURI(token[3]).toString()+">";
-					System.out.println("The graph URI = "+ graph.toString());
 					newQueryString+="\n GRAPH "+graph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
 					i=5;
 	
@@ -117,14 +110,12 @@ public class utils {
 					if(periodsAndGraphs.containsKey(token[3]))
 					{
 						tgraph = periodsAndGraphs.get(token[3]);
-						System.out.println("no need to make an insert to the hashTable");
 
 					}
 					else
 					{
 						tgraph = graphVariable + numOfQuadruples;
 						periodsAndGraphs.put(token[3], tgraph);
-						System.out.println("just inserted to hashTable: tvar: "+token[3]+" and tgraph: "+tgraph);
 					}
 					
 					if(inWhere == false)

@@ -230,14 +230,13 @@ public class NQuadsParser extends ModifiedNTriplesParser {
         String endDate=null;
         
         int syn=0;
-        
         if (element1.contains("+"))
         {
         	syn = element1.indexOf('+');
          	if (syn<0)
          		syn = element1.indexOf('+');
         
-         	startDate = element2.substring(0,syn);
+         	startDate = element1.substring(0,syn);
         }
         else
         {
