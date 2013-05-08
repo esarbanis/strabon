@@ -22,6 +22,8 @@ import org.openrdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.earthobservatory.constants.TemporalConstants;
+
 public class utils {
 	
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
@@ -114,14 +116,14 @@ public class utils {
 				{
 					String tgraph =  "<"+parser.createValidTimeURI(token[3]).toString()+">";
 					newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-					newQueryString+= tgraph+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
+					newQueryString+= tgraph+ TemporalConstants.VALID_TIME_PROPERTY;
 					i=3;
 	
 				}
 				else
 				{
 					String tgraph=null;
-					//String addedPattern = graphVariable+numOfQuadruples+ " <http://strdf.di.uoa.gr/ontology#hasValidTime>"+ token[3];
+					//String addedPattern = graphVariable+numOfQuadruples+ " TemporalConstants.VALID_TIME_PROPERTY"+ token[3];
 					if(periodsAndGraphs.containsKey(token[3]))
 					{
 						tgraph = periodsAndGraphs.get(token[3]);
@@ -143,7 +145,7 @@ public class utils {
 					{
 				
 						newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-						newQueryString+=tgraph+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
+						newQueryString+=tgraph+ TemporalConstants.VALID_TIME_PROPERTY;
 						i=3;
 					
 					}

@@ -24,7 +24,7 @@ public class TemporalConstants extends GeoConstants {
 	
 	public static final String UNTIL_CHANGED = "UC";
 	public static final String UNTIL_CHANGED_VALUE = "9999-9-9:00:00:00";
-	
+	public static final String VALID_TIME_PROPERTY = "<http://strdf.di.uoa.gr/ontology#hasValidTime>";
 	
 	//Temporal Relationships
 	public static final String periodContains= stRDF+ "PeriodContains";

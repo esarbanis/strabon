@@ -359,7 +359,7 @@ public abstract class Strabon {
 				String[] token = quadruple.split("(\\s)+");
 	
 				newQueryString+="\n GRAPH "+graphVariable+numOfQuadruples+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-				newQueryString+=graphVariable+numOfQuadruples+" <http://strdf.di.uoa.gr/ontology#hasValidTime>";
+				newQueryString+=graphVariable+numOfQuadruples+" TemporalConstants.VALID_TIME_PROPERTY";
 				
 				//add the rest tokens
 				for( int i=3; i<token.length; i++)

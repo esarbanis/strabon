@@ -83,11 +83,10 @@ public class QuadRDFHandler extends StatementCollector {
 						 }
 					 Resource graph = parser.createValidTimeURI(validPeriod);
 					 
-					 String triple = "<"+graph.toString()+">"+  " <http://strdf.di.uoa.gr/ontology#hasValidTime> "+ validPeriod+ " .\n" ;
+					 String triple = "<"+graph.toString()+">"+  TemporalConstants.VALID_TIME_PROPERTY + validPeriod+ " .\n" ;
 				
 					 try {
-						//connection.add(new URIImpl("<"+graph.toString()+">"),new URIImpl(" <http://strdf.di.uoa.gr/ontology#hasValidTime>"), new URIImpl(validPeriod));
-					   StringReader reader = new StringReader(triple);
+						 StringReader reader = new StringReader(triple);
 						 connection.add(reader, "null", RDFFormat.NTRIPLES);
 					 } catch (RepositoryException e) {
 						// TODO Auto-generated catch block
