@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 
 import org.openrdf.model.URI;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsValue;

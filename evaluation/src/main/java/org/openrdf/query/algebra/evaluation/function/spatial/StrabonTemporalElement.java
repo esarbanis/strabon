@@ -13,7 +13,7 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 
 /**
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>

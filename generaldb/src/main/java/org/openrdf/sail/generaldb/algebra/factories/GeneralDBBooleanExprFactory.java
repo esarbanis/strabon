@@ -64,7 +64,7 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodIntersectsFunc;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.finishesFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodOverlapsFunc;

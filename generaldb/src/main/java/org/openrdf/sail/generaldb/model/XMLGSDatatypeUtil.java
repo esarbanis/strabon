@@ -19,7 +19,7 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
 import eu.earthobservatory.constants.GeoConstants;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 
 
 

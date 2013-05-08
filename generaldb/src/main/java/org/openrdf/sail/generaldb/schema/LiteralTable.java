@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
-import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
