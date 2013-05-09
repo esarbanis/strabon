@@ -603,6 +603,8 @@ public abstract class Strabon {
 						 
 			Collection<Statement> statements = translator.translate(in, baseURI);
 			Iterator iterator = statements.iterator();
+			Resource newContext = null;
+			
 			for(Statement st: statements)
 			{
 				if(st.getContext() == null)
@@ -615,19 +617,27 @@ public abstract class Strabon {
 				{
 					String cont = st.getContext().toString();
 					 String validPeriod= cont;
-					 if(!cont.contains(","))
+					 if(!cont.contains("\"")) //the fourth element is not a literal
 					 {
-						 int i = cont.indexOf('"')+1;
-						 int j = cont.lastIndexOf('"');
-						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 				 
-					 }	 
-					try {
-						Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
-						con.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
-					} catch (ParseException e) {
-						logger.error(this.getClass().toString()+": error when constructing the new context");
-						e.printStackTrace();
-					}
+						 newContext = st.getContext();
+					 }
+					 else
+					 {
+						 if(!cont.contains(","))
+						 {
+							 int i = cont.indexOf('"')+1;
+							 int j = cont.lastIndexOf('"');
+							 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 				 
+						 }	 
+						try {
+							 newContext = new NQuadsParser().createValidTimeURI(validPeriod);
+						} catch (ParseException e) {
+							logger.error(this.getClass().toString()+": error when constructing the new context");
+							e.printStackTrace();
+						}
+					 }
+						
+					 con.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
 		
 				}
 			}
