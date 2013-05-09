@@ -20,6 +20,18 @@
 				return true;
 			}
 		</script>
+		
+		<style type="text/css">
+		/*demo page css*/
+		body{ font: 90% "Trebuchet MS", sans-serif; margin: 50px;}
+		.container { height:410px; width:165px;}
+		.demoHeaders { margin-top: 1em;}
+		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+		ul#icons {margin: 0; padding: 0;}
+		ul#icons li {margin: 1px; position: relative; padding: 1px 0; cursor: pointer; float: left;  list-style: none;}
+		ul#icons span.ui-icon {float: left; margin: 0 1px;}
+		</style>
 		<title>TELEIOS: Strabon Endpoint</title>
 	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">

@@ -242,6 +242,9 @@
 								} else if (entry.isBean()) {
 									String label=entry.getLabel();
 									String bean=entry.getBean();
+									if(bean.equals("browse.jsp"))
+										continue;
+									System.out.println(bean);
 									String style = "", href = "";
 									hash = new Integer(Math.abs(label.hashCode()*bean.hashCode())).toString();
 									href = "\"" +bean + "#"+ hash+"\"";
@@ -280,37 +283,45 @@
 	<!-- Info Message -->
 <%}%>
 <tr>
-<td id="output">stSPARQL Query:</td>
-<td id="output">
-	<div style="font-size:13px"> 
-		You must be logged in to perform update queries.
-	</div>
-	<textarea name="query" title="pose your query/update here" rows="15" cols="100"><%=query%></textarea></td>
+	<td id="output" colspan=2>
+		<div style="font-size:13px"> 
+			You must be logged in to perform update queries.
+		</div>
+	</td>
 </tr>
 <tr>
-	<td id="output"><center>Output Format:<br/>
+<td id="output" style="width: 150px">stSPARQL Query:</td>
+<td id="output"><textarea name="query" title="pose your query/update here" rows="20" cols="100"><%=query%></textarea></td>
+</tr>
+<tr>
+	<td id="output">Output Format:</td>
+	<td id="output">
 		<select name="format" title="select one of the following output format types">
 		<% 
 		for (String format : Common.registeredQueryResultsFormatNames) {%>
 				<OPTION value="<%=format%>"<%=format.equals(selFormat) ? "selected":""%>><%=format%></OPTION>
 		<%}%>
-		</select></center>
+		</select>
 	</td>
-<td colspan=2><br/><center>
-<input type="submit" title="execute query" value="Query" name="submit" /><br/>
-<input type="submit" title="execute update" value="Update" name="submit" style="width: 400px"/></center><br/></td>
 </tr>
 <tr>
-	<td id="output"><center>View Result:<br/>
+	<td id="output">View Result:</td>
+	<td id="output">
 	<SELECT name="handle" title="select how you would like to view the result">
 		<OPTION value="plain"<%= ("plain".equals(handle)) ? "selected":""%>>Plain</OPTION>
 		<OPTION value="download"<%= ("download".equals(handle)) ? "selected":""%>>Download</OPTION>
 		<OPTION value="map"<%= ("map".equals(handle)) ? "selected":""%>>On a map</OPTION>
 		<OPTION value="map_local"<%= ("map_local".equals(handle)) ? "selected":""%>>On a map (localhost)</OPTION>
-	</SELECT></center>
+	</SELECT>
 	</td>
-	<td colspan=2>&nbsp;</td>
 </tr>
+
+<tr>	
+<td colspan=2 id="output"><br/><center>
+<input type="submit" title="execute query" value="Query" name="submit" style="width: 350px" />
+<input type="submit" title="execute update" value="Update" name="submit" style="width: 350px"/></center><br/></td>
+</tr>
+
 <% if (request.getAttribute("error") != null) {%>
 	<!-- Error Message -->
 	<TR>
