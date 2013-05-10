@@ -144,10 +144,59 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @param format
 	 * @param namedGraph
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 * @throws IOException 
 	 */
 	
-	public boolean store(String data, RDFFormat format, URL namedGraph) {
-		throw new UnsupportedOperationException();
+	public boolean store(String data, RDFFormat format, URL namedGraph) throws IOException {
+assert(format != null);
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the url and fromurl parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("data", data));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", format.getDefaultMIMEType());
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+		//	String responseBody = "";
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
 	}
 
 	/**

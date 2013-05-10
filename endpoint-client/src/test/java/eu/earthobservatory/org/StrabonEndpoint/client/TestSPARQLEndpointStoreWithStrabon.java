@@ -59,19 +59,38 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	}
 	
 	/**
-	 * Test method for {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
+	 * Test method for {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#store(java.net.URL, org.openrdf.rio.RDFFormat, java.net.URL)}.
 	 * @throws IOException 
 	 */
 	@Test
 	public void testStoreFromUrl() throws IOException {
 		
-				Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , null);
-				
-				if (response != true) 
-					System.err.println("Error");
-				
-				
-				assertTrue(response == true);
+			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , null);
+			
+			if (response != true) 
+				System.err.println("Error");
+			
+			
+			assertTrue(response == true);
+		
+	}
+	
+	
+	/**
+	 * Test method for {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#store(java.lang.String, org.openrdf.rio.RDFFormat, java.net.URL)}.
+	 * @throws IOException 
+	 */
+	@Test
+	public void testStore() throws IOException {
+		
+			String data = "<http://geo.linkedopendata.gr/map/id/l22> <http://geo.linkedopendata.gr/map/hasName> \"layer22\" . ";
+			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , null);
+			
+			if (response != true) 
+				System.err.println("Error");
+			
+			
+			assertTrue(response == true);
 		
 	}
 	
