@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Copyright (C) 2012, Pyravlos Team
+ * Copyright (C) 2012, 2013 Pyravlos Team
  *
  * http://www.strabon.di.uoa.gr/
  */
@@ -24,6 +24,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
@@ -160,9 +161,60 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
 	 */
 
-	public boolean store(URL data, RDFFormat format, URL namedGraph) {
-		throw new UnsupportedOperationException();
+	public boolean store(URL data, RDFFormat format, URL namedGraph) throws IOException{
+		
+		assert(format != null);
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the url and fromurl parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("url", data.toString()));
+		params.add(new BasicNameValuePair("fromurl", ""));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", format.getDefaultMIMEType());
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+		//	String responseBody = "";
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
 	}
+		
 
 	/**
 	 * Executes the SPARQL Update query specified in <code>sparqlUpdate</code>.
