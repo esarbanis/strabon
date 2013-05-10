@@ -51,6 +51,9 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	*Moved vocabulary related to the temporal features of Strabon to the
 	respective "vocabulary" project
 
+	*The evaluation of temporal joins in the database does not produce
+	cartesian products in the database
+
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
 	* Version 3.2.8 released.
