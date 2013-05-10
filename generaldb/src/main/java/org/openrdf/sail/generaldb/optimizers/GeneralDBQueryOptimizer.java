@@ -119,7 +119,7 @@ public class GeneralDBQueryOptimizer {
 		//XXX
 		new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
 		
-		new TemporalJoinOptimizer().optimize(expr, dataset, bindings, temporalJoins);
+		//new TemporalJoinOptimizer().optimize(expr, dataset, bindings, temporalJoins);
 	}
 
 	protected void rdbmsOptimizations(TupleExpr expr, Dataset dataset, BindingSet bindings) {
