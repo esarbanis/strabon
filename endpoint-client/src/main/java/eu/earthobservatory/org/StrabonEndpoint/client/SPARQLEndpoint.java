@@ -161,6 +161,15 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
 	 */
 
+
+	/*
+	 * Comment: in order to make queries to strabon endpoint we must create a SPARQLEndpoint
+	 * with endpointName ".../Query". To store data to strabon endpoint the endpointName of
+	 * SPARQLEndpoint must be something like ".../Store". This means that the same object of
+	 * SPARQLEndpoint cannot execute store and query operations for strabon endpoints.
+	 * This is wrong and must be fixed. Also, the main idea is that the SPARQLEndpoint client 
+	 * should be a general endpoint client that supports strabon, virtuoso and parliament endpoints.
+	 */
 	public boolean store(URL data, RDFFormat format, URL namedGraph) throws IOException{
 		
 		assert(format != null);
