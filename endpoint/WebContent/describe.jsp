@@ -131,7 +131,7 @@
 								} else if (entry.isBean()) {
 									String label=entry.getLabel();
 									String bean=entry.getBean();
-									if(bean.equals("browse.jsp"))
+									if(bean.equals("browse.jsp") || bean.equals("ChangeConnection"))
 										continue;
 									String style = "", href = "";
 									hash = new Integer(Math.abs(label.hashCode()*bean.hashCode())).toString();
