@@ -46,6 +46,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* All Simple Features functions of GeoSPARQL do not use the ST_Relate 
 	PostGIS function
+	
+	* Added diffTime function. This function performs the difference 
+	between two literals of xsd:time datatype and returns a literal of
+	the xsd:time datatype as well.
 
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
