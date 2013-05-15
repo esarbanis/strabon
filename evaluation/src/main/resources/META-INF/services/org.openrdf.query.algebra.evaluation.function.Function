@@ -44,6 +44,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyF
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsSimpleFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc
 org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.DateTimeDiff
+org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.DateTimeDiff
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc
@@ -81,6 +82,7 @@ org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeature
 org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf.SimpleFeatureTouchesFunc
 
 org.openrdf.query.algebra.evaluation.function.datetime.stsparql.metric.DiffDateTime
+org.openrdf.query.algebra.evaluation.function.datetime.stsparql.metric.DiffTime
 
 org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.MakeLine
 org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid
