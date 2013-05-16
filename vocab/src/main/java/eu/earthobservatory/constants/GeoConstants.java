@@ -249,6 +249,10 @@ public class GeoConstants {
 	/**
 	 * List of stSPARQL spatial extension functions 
 	 */
+	
+
+	public static final String diffTime = "http://strdf.di.uoa.gr/extensions/ontology#diffTime";
+
 	public static final List<String> STSPARQLSpatialExtFunc = new ArrayList<String>();
 	
 	/**
