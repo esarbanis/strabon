@@ -139,6 +139,14 @@ public class SPARQLEndpoint extends HTTPClient{
 		}
 	}
 
+	
+	/* Functions 'store' and 'update' do not follow the SPARQL Protocol.
+	 * This means that only Strabon Endpoint supports these operations.
+	 * In future they must be modified in order to be compatible with
+	 * Virtuso and Parliament endpoints.
+	 */
+	
+	
 	/**
 	 * Stores the RDF <code>data</code> which are in the RDF format
 	 * <code>format</code> in the named graph specified by the URL
@@ -287,10 +295,58 @@ assert(format != null);
 	 * 
 	 * @param sparqlUpdate
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 * @throws IOException 
 	 */
 
-	public boolean update(String sparqlUpdate) {
-		throw new UnsupportedOperationException();
+	public boolean update(String sparqlUpdate) throws IOException {
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the query parameter
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("query", sparqlUpdate));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", "text/xml");
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
+		
 	}
 
 	public EndpointResult describe(String sparqlDescribe) {
@@ -308,7 +364,7 @@ assert(format != null);
 	
 	public static void main(String args[]) {
 		if (args.length < 4) {
-			System.err.println("Usage: eu.earthobservatory.org.StrabonEndpoint.client.StrabonEndpoint <HOST> <PORT> <APPNAME> [<FORMAT>]");
+			System.err.println("Usage: eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint <HOST> <PORT> <APPNAME> [<FORMAT>]");
 			System.err.println("       where <HOST>       is the hostname of the Strabon Endpoint");
 			System.err.println("             <PORT>       is the port to connect to on the host");
 			System.err.println("             <APPNAME>    is the application name of Strabon Endpoint as deployed in the Tomcat container");

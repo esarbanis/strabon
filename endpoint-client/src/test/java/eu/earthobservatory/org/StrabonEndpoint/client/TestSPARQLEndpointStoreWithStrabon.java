@@ -29,8 +29,6 @@ import org.openrdf.rio.RDFFormat;
 public class TestSPARQLEndpointStoreWithStrabon {
 
 	private SPARQLEndpoint endpoint; 
-	private String query;
-	private Vector<stSPARQLQueryResultFormat> formats = new Vector<stSPARQLQueryResultFormat>();
 	private URL data;
 	
 	@Before
@@ -49,12 +47,6 @@ public class TestSPARQLEndpointStoreWithStrabon {
 		endpoint.setUser("endpoint");
 		endpoint.setPassword("3ndpo1nt");
 		
-		// initialized formats
-		for (TupleQueryResultFormat format : stSPARQLQueryResultFormat.values()) {
-				if (format instanceof stSPARQLQueryResultFormat) {
-					formats.add((stSPARQLQueryResultFormat) format);
-				}
-		}
 				
 	}
 	
@@ -94,15 +86,5 @@ public class TestSPARQLEndpointStoreWithStrabon {
 			
 			assertTrue(response == true);
 		
-	}
-	
-	/**
-	 * Test method for testing that method {@link eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint#query(java.lang.String, org.openrdf.query.resultio.stSPARQLQueryResultFormat)}.
-	 * returns an IOException when it should do so.
-	 */
-	@Test(expected= IOException.class)
-	public void testIOException() throws Exception {
-		SPARQLEndpoint ep = new SPARQLEndpoint("blabla.dgr", 80, "bla");
-		ep.query(query, formats.get(0));
 	}
 }
