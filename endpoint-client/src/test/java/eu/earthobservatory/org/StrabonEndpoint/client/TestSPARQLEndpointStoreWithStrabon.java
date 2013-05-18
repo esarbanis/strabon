@@ -36,7 +36,7 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8080, "endpoint/Store");
+		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8080, "sextant-endpoint/Store");
 		
 		// set url data
 		try {
@@ -65,7 +65,8 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	@Test
 	public void testStoreFromUrl() throws IOException {
 		
-			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , null);
+			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
+			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
 			
 			if (response != true) 
 				System.err.println("Error");
@@ -83,8 +84,9 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	@Test
 	public void testStore() throws IOException {
 		
+			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
 			String data = "<http://geo.linkedopendata.gr/map/id/l22> <http://geo.linkedopendata.gr/map/hasName> \"layer22\" . ";
-			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , null);
+			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
 			
 			if (response != true) 
 				System.err.println("Error");

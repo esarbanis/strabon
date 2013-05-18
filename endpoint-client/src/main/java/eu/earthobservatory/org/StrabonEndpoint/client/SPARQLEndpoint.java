@@ -18,11 +18,15 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.params.HostParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -156,6 +160,8 @@ assert(format != null);
 		// set the url and fromurl parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("data", data));
+		if (namedGraph!=null)
+			params.add(new BasicNameValuePair("graph", namedGraph.toString()));
 		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
 		method.setEntity(encodedEntity);
 		
@@ -230,6 +236,8 @@ assert(format != null);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("url", data.toString()));
 		params.add(new BasicNameValuePair("fromurl", ""));
+		if (namedGraph!=null)
+			params.add(new BasicNameValuePair("graph", namedGraph.toString()));
 		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
 		method.setEntity(encodedEntity);
 		
