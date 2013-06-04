@@ -15,6 +15,7 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+            
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
@@ -313,6 +314,12 @@
 			<groupId>monetdb</groupId>
 			<artifactId>jdbcclient</artifactId>
 		</dependency>
+
+<dependency>
+	<groupId>org.xerial</groupId>
+	<artifactId>sqlite-jdbc</artifactId>
+	<version>3.7.17-SNAPSHOT</version>
+</dependency>
 
 		<!-- Geotools -->
 		<dependency>
