@@ -58,6 +58,11 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-postgis</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-sail-sqlite</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>

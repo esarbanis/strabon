@@ -52,7 +52,7 @@ public class TripleTableManager {
 
 	private boolean closed;
 
-	private Connection conn;
+	protected Connection conn;
 
 	private ValueTableFactory factory;
 
@@ -423,7 +423,7 @@ public class TripleTableManager {
 		logger.debug("Closing helper thread {}", initThread.getName());
 	}
 
-	private Set<String> findPredicateTableNames()
+	protected Set<String> findPredicateTableNames()
 		throws SQLException
 	{
 		Set<String> names = findAllTables();
