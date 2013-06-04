@@ -1,10 +1,14 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2013, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package org.openrdf.sail.sqlite.evaluation;
 
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
- */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +59,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
@@ -686,10 +692,16 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Buffer);
-			}
+	throws UnsupportedRdbmsOperatorException
+	{
+		appendBuffer(expr, filter, SpatialFunctionsPostGIS.ST_Buffer);
+	}
+
+	private void appendBuffer(GeneralDBSqlGeoBuffer expr,
+			GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS stBuffer) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	//XXX Different Behavior
 	@Override
@@ -759,7 +771,8 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
+		//appendDistance(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
+		throw new UnsupportedRdbmsOperatorException("ST_Distance is not yet supported on sqlite.");
 			}
 
 	@Override
@@ -2482,5 +2495,21 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 
 		filter.closeBracket();
 			}
+
+	@Override
+	protected void append(GeneralDBSqlST_MakeLine expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlST_Centroid expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

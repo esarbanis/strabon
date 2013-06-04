@@ -708,7 +708,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	@Override
 	protected void append(GeneralDBSqlGeoBuffer expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{
-		appendBuffer(expr, filter, SpatialFunctionsPostGIS.ST_Buffer);
+		//appendBuffer(expr, filter, SpatialFunctionsPostGIS.ST_Buffer);
+		throw new UnsupportedRdbmsOperatorException("ST_Buffer is not yet supported on sqlite.");
 	}
 
 	//XXX Different Behavior
@@ -785,7 +786,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	@Override
 	protected void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{
-		appendDistance(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
+		throw new UnsupportedRdbmsOperatorException("ST_Distance is not yet supported on sqlite.");
+		//appendDistance(expr, filter, SpatialFunctionsPostGIS.ST_Distance);
 	}
 
 	@Override

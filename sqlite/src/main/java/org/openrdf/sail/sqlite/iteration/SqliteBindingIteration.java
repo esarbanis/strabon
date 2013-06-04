@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2013, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package org.openrdf.sail.sqlite.iteration;
 
 import java.sql.PreparedStatement;
@@ -5,14 +14,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Dimitris Bilidas <grad0903@di.uoa.gr>
  * 
  */
 public class SqliteBindingIteration extends GeneralDBBindingIteration {

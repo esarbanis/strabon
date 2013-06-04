@@ -2,10 +2,11 @@ package org.openrdf.sail.sqlite;
 
 import java.sql.SQLException;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts table names to lower-case and include the analyse optimisation.

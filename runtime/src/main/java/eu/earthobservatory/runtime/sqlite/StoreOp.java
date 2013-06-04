@@ -56,10 +56,10 @@ public class StoreOp {
 		try {
 			strabon = new Strabon(db, libspatial, regex, false);
 			if (graph == null) {
-				strabon.storeInRepo(src, format);
+				strabon.storeInRepo(src, format, false);
 				
 			} else {
-				strabon.storeInRepo(src, null, graph, format);
+				strabon.storeInRepo(src, null, graph, format, false);
 			}
 			
 		} catch (Exception e) {
