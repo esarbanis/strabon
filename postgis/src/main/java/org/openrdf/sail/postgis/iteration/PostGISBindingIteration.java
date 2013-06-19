@@ -67,12 +67,11 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		URI datatype = null;
 		String[] periods = temp.substring(++i, j).split(",");
 
-		SimpleDateFormat postgres = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
-		SimpleDateFormat xsd = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss");
+		SimpleDateFormat postgres = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat xsd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		Calendar now = new GregorianCalendar().getInstance();
 		Calendar cal = new GregorianCalendar();
 		try {
-			
 			String newStart = xsd.format(postgres.parse(periods[0])).toString();
 			String newEnd = xsd.format(postgres.parse(periods[1])).toString();
 			if(newStart.equalsIgnoreCase(newEnd))
