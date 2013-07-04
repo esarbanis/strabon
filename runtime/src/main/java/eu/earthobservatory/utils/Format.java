@@ -50,6 +50,11 @@ public enum Format {
 	 * Format for experiments
 	 */
 	EXP("EXP"),
+
+	/**
+	 * Tuple query object
+	 */
+	TUQU("TUPLEQUERY"),
 	
 	/**
 	 * HTML format
