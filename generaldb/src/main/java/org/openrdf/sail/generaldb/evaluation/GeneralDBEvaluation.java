@@ -121,7 +121,7 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);;
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);
 
 	protected GeneralDBQueryBuilderFactory factory;
 
