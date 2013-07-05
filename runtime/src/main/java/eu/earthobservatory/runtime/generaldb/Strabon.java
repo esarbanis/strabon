@@ -264,7 +264,9 @@ public abstract class Strabon {
 			case TUQU:
 				
 				return tupleQuery;
-//				break;			
+//				break;	
+			case CHART:
+				return tupleQuery.evaluate();
 				
 			default:
 				// get the writer for the specified format

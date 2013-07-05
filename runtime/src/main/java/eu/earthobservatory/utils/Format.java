@@ -94,7 +94,9 @@ public enum Format {
 	/**
 	 * Invalid format.
 	 */
-	INVALID("INVALID");
+	INVALID("INVALID"),
+	
+	CHART("CHART");
 	
 	/**
 	 * The string representation of this format
@@ -112,6 +114,7 @@ public enum Format {
 			// add both upper- and lower-case versions of the format 
 			stringToEnum.put(format.toString(), format);
 			stringToEnum.put(format.toString().toLowerCase(), format);
+	
 		}
 	}
 	

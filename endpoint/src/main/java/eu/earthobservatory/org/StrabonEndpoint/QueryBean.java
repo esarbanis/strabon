@@ -31,12 +31,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import eu.earthobservatory.utils.Format;
 
 /**
  * 
@@ -87,6 +90,8 @@ public class QueryBean extends HttpServlet {
 	 * The name of this web application
 	 */
 	private String appName;
+	
+	private TupleQueryResult result;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -327,7 +332,11 @@ public class QueryBean extends HttpServlet {
 						strabonWrapper.query(query, format, bos);
 						if (format.equals(Common.getHTMLFormat())) {
 							request.setAttribute(RESPONSE, bos.toString());
-						} else {
+						} 
+						else if(format.equals(Format.CHART)){
+							request.setAttribute(RESPONSE, strabonWrapper.getResult());
+						}
+						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 						}
 						

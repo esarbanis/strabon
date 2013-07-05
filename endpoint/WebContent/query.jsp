@@ -6,6 +6,7 @@
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="org.openrdf.query.TupleQueryResult"%>
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -197,6 +198,53 @@
  	<!-- jQuery end -->
  
 	<title>TELEIOS: Strabon Endpoint</title>
+	   <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      
+        <% if (request.getAttribute("response") != null) {
+        	if (request.getParameter("format").equals("CHART")) {
+        		TupleQueryResult result= request.getAttribute("response");
+        		String label1 = esult.getBindingNames().get(0).toString();
+        		String label2 = esult.getBindingNames().get(1).toString();
+        		
+        	      google.setOnLoadCallback(drawChart);
+        	}%>
+        	
+      function drawChart() {
+ 		
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        
+     
+        data.addColumn('string', <%=label1%>.);
+        data.addColumn('number', <%=label2%>);
+     
+        <%
+        while(result.hasNext()){
+        %>	data.addRow('string', <%=result.next().getValue(label1).toString()%>); 
+        	data.addRow('number', <%=Integer.parseInt(result.next().getValue(label2).toString())%>);
+        <% } %>
+        // Set chart options
+        var options = {'title':'Displaying results in chart',
+                       'width':400,
+                       'height':300};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
 

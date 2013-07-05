@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
@@ -48,6 +49,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String prefixes;
 	
 	private Strabon strabon = null;
+	
+	private TupleQueryResult result=null;
 	
 	private boolean checkForLockTable;
 	private List<StrabonBeanWrapperConfiguration> entries;
@@ -185,7 +188,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		if(answerFormatStrabon.equalsIgnoreCase(Format.CHART.toString())){
+			result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		}
+		else{
+			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		}
 		
 	}
 	
@@ -376,6 +384,16 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	public String getPrefixes() {
 		return prefixes;
 	}
+
+	public TupleQueryResult getResult() {
+		return result;
+	}
+
+	public void setResult(TupleQueryResult result) {
+		this.result = result;
+	}
+	
+	
 
 }
 
