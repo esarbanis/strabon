@@ -224,7 +224,8 @@
       
          <% if (request.getAttribute("response") != null) {
         	if (request.getParameter("format").equals("CHART")) {
-        		 result= (TupleQueryResult) request.getAttribute("response");
+        		 StrabonBeanWrapper sw = (StrabonBeanWrapper) request.getAttribute("response");
+        		 result = sw.getResult();
         		 label1 = result.getBindingNames().get(0).toString();
         		 label2 = result.getBindingNames().get(1).toString();%>
  		
