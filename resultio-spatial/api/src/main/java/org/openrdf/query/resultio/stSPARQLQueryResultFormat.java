@@ -72,6 +72,9 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	public static final stSPARQLQueryResultFormat HTML = new stSPARQLQueryResultFormat("HTML", 
 			Arrays.asList("text/html"), Charset.forName("UTF-8"), Arrays.asList("html", "htm"));
 	
+	public static final stSPARQLQueryResultFormat CHART = new stSPARQLQueryResultFormat("CHART", 
+			Arrays.asList("text/plain"), Charset.forName("UTF-8"), Arrays.asList("chart", "chart"));
+	
 	/**
 	 * The available stSPARQLQuery Result Formats
 	 */
@@ -85,6 +88,8 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 		register(GEOJSON);
 		register(TSV);
 		register(HTML);
+		register(CHART);
+
 	}
 	
 	/**

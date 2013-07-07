@@ -334,7 +334,7 @@ public class QueryBean extends HttpServlet {
 							request.setAttribute(RESPONSE, bos.toString());
 						} 
 						else if(format.equals(Format.CHART)){
-							request.setAttribute(RESPONSE, strabonWrapper.getResult());
+							request.setAttribute(RESPONSE, strabonWrapper.getResult().toString());
 						}
 						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
