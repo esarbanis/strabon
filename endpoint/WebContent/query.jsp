@@ -215,7 +215,6 @@
 
       // Set a callback to run when the Google Visualization API is loaded.
 
-   		google.setOnLoadCallback(drawChart);
    		
       // Callback that creates and populates a data table,
       // instantiates the pie chart, passes in the data and
@@ -225,12 +224,6 @@
         	
       function drawChart() {
       
-         <% if (request.getAttribute("response") != null) {
-        	if (request.getParameter("format").equals("CHART")) {
-        		 StrabonBeanWrapper sw = (StrabonBeanWrapper) request.getAttribute("response");
-        		 result = sw.getResult();
-        		 label1 = result.getBindingNames().get(0).toString();
-        		 label2 = result.getBindingNames().get(1).toString();%>
  		
         // Create the data table.
         var data = new google.visualization.DataTable();
@@ -239,14 +232,13 @@
         		 results= (List<String[]>)request.getAttribute("response");
         		arr[0] = results.get(0)[0];
         		arr[0] = results.get(0)[1];	
-        	%>
-        <%
+     
         int i=1;
         while(i <= results.size()){
         	arr =  results.get(i);
-        %>	
+       	
   
-        <% i++;} %>
+         i++;} %>
         // Set chart options
         var options = {'title':'Displaying results in chart',
                        'width':400,
@@ -407,5 +399,6 @@
 	<div id="map_canvas"></div>
 <%}%>
 <div id="divResultsEnd" style="height: 1px; width 1px"></div>
+ <div id="chart_div"></div>
 </body>
 </html>
