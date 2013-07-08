@@ -14,12 +14,15 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
@@ -50,7 +53,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	
 	private Strabon strabon = null;
 	
-	private TupleQueryResult result=null;
+	private List<String> results = new ArrayList<String>();
 	
 	private boolean checkForLockTable;
 	private List<StrabonBeanWrapperConfiguration> entries;
@@ -189,7 +192,24 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
 		if(answerFormatStrabon.equalsIgnoreCase(Format.CHART.toString())){
-			result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+			List<String> bindingNames = result.getBindingNames();
+			if(bindingNames.size() !=2 ){
+				logger.error("Strabon endpoint: to display results in chart, exactly TWO variables must be projected");
+			}
+			
+			//String arr = new String[2];
+			//arr[0] = bindingNames.get(0);
+			//arr[1] = bindingNames.get(1);
+		    //results.add(0, arr);
+			//while(result.hasNext()){
+				//BindingSet bindings = result.next();
+				//arr[0] = bindings.getValue(bindingNames.get(0)).toString();
+				//arr[1] =bindings.getValue(bindingNames.get(1)).toString();
+				//System.out.println("ARR1: "+arr[0]+" ARR2: "+arr[1]);
+				//results.add(arr);
+
+			//}
 		}
 		else{
 			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
@@ -385,12 +405,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return prefixes;
 	}
 
-	public TupleQueryResult getResult() {
-		return result;
+	public List<String> getResults() {
+		return results;
 	}
 
-	public void setResult(TupleQueryResult result) {
-		this.result = result;
+	public void setResults(List<String> result) {
+		this.results = result;
 	}
 	
 	

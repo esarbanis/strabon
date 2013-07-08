@@ -18,6 +18,8 @@ import java.net.URLDecoder;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -91,7 +93,7 @@ public class QueryBean extends HttpServlet {
 	 */
 	private String appName;
 	
-	private TupleQueryResult result;
+	private List<String[]> results = new ArrayList();
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -334,7 +336,7 @@ public class QueryBean extends HttpServlet {
 							request.setAttribute(RESPONSE, bos.toString());
 						} 
 						else if(format.equals(Format.CHART)){
-							request.setAttribute(RESPONSE, strabonWrapper.getResult());
+							request.setAttribute(RESPONSE, strabonWrapper.getResults());
 						}
 						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));

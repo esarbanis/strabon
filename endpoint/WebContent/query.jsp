@@ -5,6 +5,7 @@
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.openrdf.query.TupleQueryResult"%>
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
@@ -67,6 +68,9 @@
 	<%
 	// get the reference to StrabonBeanWrapper
 	StrabonBeanWrapper strabonWrapper;
+	//String arr = new String[2];
+	List<String[]> results = new ArrayList<String[]>();
+	String[] arr = new String[2];
 	ServletContext context;
 	context = getServletContext();
 	WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
@@ -205,6 +209,8 @@
       // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart']});
 
+      google.setOnLoadCallback(drawChart);
+
       // Set a callback to run when the Google Visualization API is loaded.
 
 
@@ -212,29 +218,25 @@
       // instantiates the pie chart, passes in the data and
       // draws it.
       
-        <% if (request.getAttribute("response") != null) {
-        	if (request.getParameter("format").equals("CHART")) {
-        		TupleQueryResult result= request.getAttribute("response");
-        		String label1 = esult.getBindingNames().get(0).toString();
-        		String label2 = esult.getBindingNames().get(1).toString();
-        		
-        	      google.setOnLoadCallback(drawChart);
-        	}%>
+     
         	
       function drawChart() {
  		
         // Create the data table.
         var data = new google.visualization.DataTable();
-        
-     
-        data.addColumn('string', <%=label1%>.);
-        data.addColumn('number', <%=label2%>);
-     
+        <% if (request.getAttribute("response") != null) {
+        	if (request.getParameter("format").equals("CHART")) {
+        		 results= (List<String[]>)request.getAttribute("response");
+        		arr[0] = results.get(0)[0];
+        		arr[0] = results.get(0)[1];	
+        	%>
         <%
-        while(result.hasNext()){
-        %>	data.addRow('string', <%=result.next().getValue(label1).toString()%>); 
-        	data.addRow('number', <%=Integer.parseInt(result.next().getValue(label2).toString())%>);
-        <% } %>
+        int i=1;
+        while(i <= results.size()){
+        	arr =  results.get(i);
+        %>	
+  
+        <% i++;} %>
         // Set chart options
         var options = {'title':'Displaying results in chart',
                        'width':400,
@@ -243,6 +245,8 @@
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
+        
+        <%}}%>
       }
     </script>
 </head>
