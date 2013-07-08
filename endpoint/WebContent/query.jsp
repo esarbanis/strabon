@@ -8,6 +8,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.openrdf.query.TupleQueryResult"%>
+<%@page import="org.openrdf.query.BindingSet"%>
 <jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -71,6 +72,7 @@
 	//String arr = new String[2];
 	List<String[]> results = new ArrayList<String[]>();
 	String[] arr = new String[2];
+	
 	ServletContext context;
 	context = getServletContext();
 	WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
@@ -213,7 +215,8 @@
 
       // Set a callback to run when the Google Visualization API is loaded.
 
-
+   		google.setOnLoadCallback(drawChart);
+   		
       // Callback that creates and populates a data table,
       // instantiates the pie chart, passes in the data and
       // draws it.
@@ -221,6 +224,13 @@
      
         	
       function drawChart() {
+      
+         <% if (request.getAttribute("response") != null) {
+        	if (request.getParameter("format").equals("CHART")) {
+        		 StrabonBeanWrapper sw = (StrabonBeanWrapper) request.getAttribute("response");
+        		 result = sw.getResult();
+        		 label1 = result.getBindingNames().get(0).toString();
+        		 label2 = result.getBindingNames().get(1).toString();%>
  		
         // Create the data table.
         var data = new google.visualization.DataTable();

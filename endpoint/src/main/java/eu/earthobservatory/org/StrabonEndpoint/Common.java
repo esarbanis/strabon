@@ -16,6 +16,8 @@ import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
+import eu.earthobservatory.utils.Format;
+
 /**
  * Keeps common variables shared by beans and .jsp pages.
  *
@@ -86,6 +88,7 @@ public class Common {
 				registeredQueryResultsFormatNames.add(format.getName());
 			//}
 		}
+		
 	}
 	
 	/**
