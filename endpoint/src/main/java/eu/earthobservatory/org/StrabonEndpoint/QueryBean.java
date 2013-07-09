@@ -93,7 +93,6 @@ public class QueryBean extends HttpServlet {
 	 */
 	private String appName;
 	
-	private List<String[]> results = new ArrayList();
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -110,6 +109,7 @@ public class QueryBean extends HttpServlet {
 
 		// the the strabon wrapper
 		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
+	
 		
 		// get the name of this web application
 		appName = context.getContextPath().replace("/", "");
@@ -332,11 +332,12 @@ public class QueryBean extends HttpServlet {
 					
 					try {
 						strabonWrapper.query(query, format, bos);
+						//System.out.println("FORMAT: "+format);
 						if (format.equals(Common.getHTMLFormat())) {
 							request.setAttribute(RESPONSE, bos.toString());
 						} 
-						else if(format.equals(Format.CHART)){
-							request.setAttribute(RESPONSE, strabonWrapper.getResults());
+						else if(format.equals(Format.CHART.toString())){
+							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
 						}
 						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));

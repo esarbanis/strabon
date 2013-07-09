@@ -70,9 +70,9 @@
 	// get the reference to StrabonBeanWrapper
 	StrabonBeanWrapper strabonWrapper;
 	//String arr = new String[2];
-	List<String[]> results = new ArrayList<String[]>();
-	String[] arr = new String[2];
-	
+	int i;
+	ArrayList<String> arr = new ArrayList<String>(2);
+	String gChartString=null;
 	ServletContext context;
 	context = getServletContext();
 	WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
@@ -220,31 +220,20 @@
       // instantiates the pie chart, passes in the data and
       // draws it.
       
-     
-        	
+    
+
       function drawChart() {
       
- 		
         // Create the data table.
         var data = new google.visualization.DataTable();
-        <% if (request.getAttribute("response") != null) {
+        <% if (request.getParameter("format")!=null && request.getAttribute("response") != null) {
         	if (request.getParameter("format").equals("CHART")) {
-        		 results= (List<String[]>)request.getAttribute("response");
-        		arr[0] = results.get(0)[0];
-        		arr[0] = results.get(0)[1];	
-     
-        int i=1;
-        while(i <= results.size()){
-        	arr =  results.get(i);
-       	
-  
-         i++;} %>
-        // Set chart options
-        var options = {'title':'Displaying results in chart',
-                       'width':400,
-                       'height':300};
+        		out.println(request.getAttribute("response"));	  
+        		 %>
+      
+        var options = {'title':'Displaying results in chart','width':400, 'height':300};
 
-        // Instantiate and draw our chart, passing in some options.
+      
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
         
@@ -387,10 +376,12 @@
 <a name="#results">&nbsp;</a>
 <div id="divResultsStart"></div>
 	<!-- Response -->
-<% if (request.getAttribute("response") != null) {
-	if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
+<% 
+if (request.getAttribute("response") != null && !request.getParameter("format").equals("CHART")) {
+	if (!Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
 		<%=request.getAttribute("response")%>
-	<%} else { %>
+	<%} else {
+		%>
 	<PRE><%=request.getAttribute("response") %></PRE>
 	<%}%>
 <%}%>

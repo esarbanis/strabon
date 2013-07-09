@@ -52,8 +52,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String prefixes;
 	
 	private Strabon strabon = null;
-	
-	private List<String> results = new ArrayList<String>();
+		
+	private String gChartString =" ";
 	
 	private boolean checkForLockTable;
 	private List<StrabonBeanWrapperConfiguration> entries;
@@ -197,20 +197,50 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			if(bindingNames.size() !=2 ){
 				logger.error("Strabon endpoint: to display results in chart, exactly TWO variables must be projected");
 			}
-			
-			//String arr = new String[2];
-			//arr[0] = bindingNames.get(0);
-			//arr[1] = bindingNames.get(1);
-		    //results.add(0, arr);
-			//while(result.hasNext()){
-				//BindingSet bindings = result.next();
-				//arr[0] = bindings.getValue(bindingNames.get(0)).toString();
-				//arr[1] =bindings.getValue(bindingNames.get(1)).toString();
-				//System.out.println("ARR1: "+arr[0]+" ARR2: "+arr[1]);
-				//results.add(arr);
+			else{
+	
+			ArrayList<String> arr = new ArrayList<String>(2);
+			arr.add(0, bindingNames.get(0));
+			arr.add(1, bindingNames.get(1));
 
-			//}
-		}
+			
+			gChartString = "data.addColumn('string',\'"+arr.get(0)+"');\n";
+			gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
+			
+			int i=1;
+			int index=0;
+			while(result.hasNext()){
+				BindingSet bindings = result.next();
+				arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
+				arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
+//.replace("<http://www.w3.org/2001/XMLSchema#integer>","")
+				if(!arr.get(0).contains("http") ){ //plain literal case- no prefixes to remove
+					gChartString += "data.addRow([\'"+arr.get(0)+"\', "+
+							arr.get(1).replace("\"", "").replace("^^","")+"]);\n";
+							i++;	
+				}
+				else{ //URI case
+					//removing prefixes so that they will not be displayed in the chart
+					if(arr.get(0).lastIndexOf('#') > arr.get(0).lastIndexOf('/')){
+						index = arr.get(0).lastIndexOf('#')+1;
+					}
+					else{
+						index = arr.get(0).lastIndexOf("/")+1;
+					}
+					
+					int endIndex= arr.get(0).length();
+					gChartString += "data.addRow([\'"+arr.get(0).subSequence(index, endIndex )+"\', "+
+					arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
+					i++;	
+				}
+				
+			}
+			 /* gChartString += "var options = {'title':'Displaying results in chart','width':400, 'height':300};";
+			  gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));";
+			  gChartString += "chart.draw(data, options);";*/
+			//System.out.println(gChartString);
+
+		}}
 		else{
 			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 		}
@@ -405,12 +435,14 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return prefixes;
 	}
 
-	public List<String> getResults() {
-		return results;
+	
+
+	public String getgChartString() {
+		return gChartString;
 	}
 
-	public void setResults(List<String> result) {
-		this.results = result;
+	public void setgChartString(String gChartString) {
+		this.gChartString = gChartString;
 	}
 	
 	
