@@ -231,7 +231,7 @@
         		out.println(request.getAttribute("response"));	  
         		 %>
       
-        var options = {'title':'Displaying results in chart','width':400, 'height':300};
+        var options = {'title':'Displaying results in chart','width':1000, 'height':1000};
 
       
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
