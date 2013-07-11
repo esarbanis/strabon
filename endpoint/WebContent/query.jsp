@@ -144,7 +144,8 @@
 				x2 + " " + y2 + ", " +
 				x2 + " " + y1 + ", " +
 				x1 + " " + y1 + ", " +
-				x1 + " " + y2 + "))\"";
+				x1 + " " + y2 + "));" +
+				"http\://www.opengis.net/def/crs/EPSG/0/4326\"^^<http\://www.opengis.net/ont/geosparql#wktLiteral>";
 			 
 			    document.getElementById('bounds').value=polygon;
 			    
