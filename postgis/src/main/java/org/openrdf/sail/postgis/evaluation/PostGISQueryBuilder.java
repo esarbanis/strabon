@@ -12,6 +12,7 @@ package org.openrdf.sail.postgis.evaluation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -986,12 +987,16 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		StrabonPolyhedron poly = null;
 		try{
-			poly = new StrabonPolyhedron(raw);
+			// have to parse it before and clean it from possible appearance of CRS
+			AbstractWKT wkt = new AbstractWKT(raw);
+			
+			poly = new StrabonPolyhedron(wkt.getWKT());
+			
+			filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(wkt.getSRID())+")");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
 
 		return raw;
 	}

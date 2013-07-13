@@ -53,6 +53,7 @@ import com.vividsolutions.jts.io.ParseException;
  * {@link StrabonPolyhedron} instance through any kind of representation and of course
  * getting a {@link StrabonPolyhedron} instance in a specific representation.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Kostis Kyzirakos <kk@di.uoa.gr>
  *
@@ -103,6 +104,10 @@ public class StrabonPolyhedron implements Value {
 	 * Creates a {@link StrabonPolyhedron} instance with a geometry given
 	 * in the representation of the argument. The representation could be
 	 * either in WKT or in GML.
+	 * 
+	 * NOTICE: whoever creates StrabonPolyhedron objects is responsible
+	 * for cleaning the representation of the geometry by removing any
+	 * stRDF/GeoSPARQL specific information, such as the SRID.
 	 * 
 	 * @param representation
 	 * @throws Exception
