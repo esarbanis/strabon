@@ -139,13 +139,13 @@
 				var x2 = southWest.lng().toFixed(2);
 				var y2 = southWest.lat().toFixed(2);
 				
-				var polygon = "\"POLYGON((" +
+				var polygon = "\"<http\://www.opengis.net/def/crs/EPSG/0/4326\> POLYGON((" +
 				x1 + " " + y2 + ", " +
 				x2 + " " + y2 + ", " +
 				x2 + " " + y1 + ", " +
 				x1 + " " + y1 + ", " +
-				x1 + " " + y2 + "));" +
-				"http\://www.opengis.net/def/crs/EPSG/0/4326\"^^<http\://www.opengis.net/ont/geosparql#wktLiteral>";
+				x1 + " " + y2 + "))\"" +
+				"^^<http\://www.opengis.net/ont/geosparql#wktLiteral>";
 			 
 			    document.getElementById('bounds').value=polygon;
 			    
