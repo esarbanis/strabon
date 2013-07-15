@@ -191,7 +191,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-		if(answerFormatStrabon.equalsIgnoreCase(Format.CHART.toString())){
+		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())){
 			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 			List<String> bindingNames = result.getBindingNames();
 			if(bindingNames.size() !=2 ){
@@ -213,33 +213,23 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				BindingSet bindings = result.next();
 				arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
 				arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
-//.replace("<http://www.w3.org/2001/XMLSchema#integer>","")
-				if(!arr.get(0).contains("http") ){ //plain literal case- no prefixes to remove
-					gChartString += "data.addRow([\'"+arr.get(0)+"\', "+
-							arr.get(1).replace("\"", "").replace("^^","")+"]);\n";
-							i++;	
-				}
-				else{ //URI case
-					//removing prefixes so that they will not be displayed in the chart
-					if(arr.get(0).lastIndexOf('#') > arr.get(0).lastIndexOf('/')){
-						index = arr.get(0).lastIndexOf('#')+1;
-					}
-					else{
-						index = arr.get(0).lastIndexOf("/")+1;
-					}
-					
-					int endIndex= arr.get(0).length();
-					gChartString += "data.addRow([\'"+arr.get(0).subSequence(index, endIndex )+"\', "+
-					arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
-					i++;	
-				}
 				
+				gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
+						arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
+						i++;	
 			}
-			 /* gChartString += "var options = {'title':'Displaying results in chart','width':400, 'height':300};";
-			  gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));";
-			  gChartString += "chart.draw(data, options);";*/
-			//System.out.println(gChartString);
+			if(answerFormatStrabon.equals(Format.PIECHART.toString())){
 
+				gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
+				gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
+			}else{
+				gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
+				gChartString += "var chart = new google.visualization.AreaChart(document.getElementById('chart_div')); \n";
+			}
+
+				System.out.println(gChartString);
+
+				
 		}}
 		else{
 			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
@@ -446,6 +436,25 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	}
 	
 	
+	public String withoutPrefix(String inputURI){
+		int index;
+	
+		if(!inputURI.contains("http") ){ //plain literal case- no prefixes to remove
+			return inputURI;
+		}
+		else{ //URI case
+			//removing prefixes so that they will not be displayed in the chart
+			if(inputURI.lastIndexOf('#') > inputURI.lastIndexOf('/')){
+				index = inputURI.lastIndexOf('#')+1;
+			}
+			else{
+				index = inputURI.lastIndexOf("/")+1;
+			}
+			
+			int endIndex= inputURI.length();
+			return  inputURI.substring(index, endIndex );
 
+	}
+	}
 }
 

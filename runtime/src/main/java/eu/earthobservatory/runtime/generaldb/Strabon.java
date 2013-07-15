@@ -265,7 +265,10 @@ public abstract class Strabon {
 				
 				return tupleQuery;
 //				break;	
-			case CHART:
+			case PIECHART:
+				return tupleQuery.evaluate();
+				
+			case AREACHART:
 				return tupleQuery.evaluate();
 				
 			default:

@@ -96,7 +96,9 @@ public enum Format {
 	 */
 	INVALID("INVALID"),
 	
-	CHART("CHART");
+	PIECHART("PIECHART"),
+	
+	AREACHART("AREACHART");
 	
 	/**
 	 * The string representation of this format

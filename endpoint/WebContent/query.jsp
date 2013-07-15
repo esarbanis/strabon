@@ -226,15 +226,12 @@
       
         // Create the data table.
         var data = new google.visualization.DataTable();
-        <% if (request.getParameter("format")!=null && request.getAttribute("response") != null) {
-        	if (request.getParameter("format").equals("CHART")) {
+        <% if (request.getAttribute("format")!=null && request.getAttribute("response") != null) {
+        	if (request.getAttribute("format").equals("CHART")) {
         		out.println(request.getAttribute("response"));	  
         		 %>
       
-        var options = {'title':'Displaying results in chart','width':1000, 'height':1000};
-
-      
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+ 
         chart.draw(data, options);
         
         <%}}%>
@@ -377,8 +374,8 @@
 <div id="divResultsStart"></div>
 	<!-- Response -->
 <% 
-if (request.getAttribute("response") != null && !request.getParameter("format").equals("CHART")) {
-	if (!Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
+if (request.getAttribute("response") != null && !request.getAttribute("format").equals("CHART")) {
+	if (!Common.getHTMLFormat().equals(request.getAttribute("format"))) {%>
 		<%=request.getAttribute("response")%>
 	<%} else {
 		%>

@@ -138,8 +138,15 @@ public class QueryBean extends HttpServlet {
 			
 			// pass the other parameters as well
 			request.setAttribute("query", request.getParameter("query"));
-			request.setAttribute("format", request.getParameter("format"));
+			if(request.getParameter("format").equalsIgnoreCase("PIECHART") || 
+					request.getParameter("format").equalsIgnoreCase("AREACHART")){
+				request.setAttribute("format", "CHART");
+			} else{
+				request.setAttribute("format", request.getParameter("format"));
+			}
 			request.setAttribute("handle", request.getParameter("handle"));
+			
+			System.out.println("SET FORMAT: "+request.getAttribute("format"));
 			
 			// forward the request
 			dispatcher.forward(request, response);
@@ -336,7 +343,13 @@ public class QueryBean extends HttpServlet {
 						if (format.equals(Common.getHTMLFormat())) {
 							request.setAttribute(RESPONSE, bos.toString());
 						} 
-						else if(format.equals(Format.CHART.toString())){
+						else if(format.equals(Format.PIECHART.toString())){
+							request.setAttribute("format","CHART");
+							System.out.println("Format set= "+ request.getAttribute("format"));
+							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
+						}
+						else if(format.equals(Format.AREACHART.toString())){
+							request.setAttribute("format","CHART");
 							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
 						}
 						else {
