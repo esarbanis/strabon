@@ -7,14 +7,14 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.testsuite.stSPARQL;
+package eu.earthobservatory.testsuite.bugs;
 
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * A simple store test. It tests if triples with WKT serialization are stored and retrieved correctly.
+ * A simple store test. It tests if triples with GML serialization are stored and retrieved correctly.
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
-public class StoreWKTTest extends TemplateTest{}
+public class StoreGMLTest extends TemplateTest{}
