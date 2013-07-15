@@ -61,7 +61,7 @@ directory of Strabon, issue the following command to build it from command line:
 
 	$ mvn clean package
 
-In order to run automatically the JUnit tests, pass the option `-DskipTests=true' 
+In order to run automatically the JUnit tests, pass the option `-DskipTests=false' 
 to the above command. The complete command is the following:
 
 	$ mvn -DskipTests=false clean package
