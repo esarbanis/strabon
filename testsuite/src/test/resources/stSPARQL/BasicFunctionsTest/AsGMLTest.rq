@@ -1,4 +1,4 @@
-select (strdf:srid(?g) as ?srid)
+select (strdf:asGML(?g) as ?gml)
 where
 {
 	ex:polygon1 ex:hasGeometry ?g.
