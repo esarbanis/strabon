@@ -345,7 +345,6 @@ public class QueryBean extends HttpServlet {
 						} 
 						else if(format.equals(Format.PIECHART.toString())){
 							request.setAttribute("format","CHART");
-							System.out.println("Format set= "+ request.getAttribute("format"));
 							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
 						}
 						else if(format.equals(Format.AREACHART.toString())){

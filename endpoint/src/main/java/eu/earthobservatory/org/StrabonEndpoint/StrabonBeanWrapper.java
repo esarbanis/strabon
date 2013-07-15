@@ -226,9 +226,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
 				gChartString += "var chart = new google.visualization.AreaChart(document.getElementById('chart_div')); \n";
 			}
-
-				System.out.println(gChartString);
-
 				
 		}}
 		else{
