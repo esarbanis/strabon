@@ -373,15 +373,14 @@
 <a name="#results">&nbsp;</a>
 <div id="divResultsStart"></div>
 	<!-- Response -->
-<% 
-if (request.getAttribute("response") != null && !request.getAttribute("format").equals("CHART")) {
-	if (!Common.getHTMLFormat().equals(request.getAttribute("format"))) {%>
+<% if(request.getAttribute("format") == null || !request.getAttribute("format").equals("CHART")){ 
+	if (request.getAttribute("response") != null) {
+		if (Common.getHTMLFormat().equals(request.getParameter("format"))) {%>
 		<%=request.getAttribute("response")%>
-	<%} else {
-		%>
+	<%} else { %>
 	<PRE><%=request.getAttribute("response") %></PRE>
 	<%}%>
-<%}%>
+<%}}%>
 	<!-- Response -->
 <% if (request.getAttribute("pathToKML") != null) { %>
 	<div id="map_canvas"></div>
