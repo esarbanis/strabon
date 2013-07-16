@@ -5,12 +5,15 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
- * 
+ *
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeneralDBSqlSpatialConstructBinary extends BinaryGeneralDBOperator {
-	public GeneralDBSqlSpatialConstructBinary(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	private String resultType;
+
+	public GeneralDBSqlSpatialConstructBinary(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
 		super(left, right);
+		this.resultType = resultType;
 	}
 
 	@Override
@@ -18,6 +21,14 @@ public class GeneralDBSqlSpatialConstructBinary extends BinaryGeneralDBOperator 
 	throws X
 	{
 		visitor.meet(this);
+	}
+
+	public String getResultType() {
+		return resultType;
+	}
+
+	public void setResultType(String resultType) {
+		this.resultType = resultType;
 	}
 }
 

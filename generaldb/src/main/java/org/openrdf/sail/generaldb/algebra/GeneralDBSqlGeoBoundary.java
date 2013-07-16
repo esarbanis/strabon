@@ -5,14 +5,14 @@
  */
 package org.openrdf.sail.generaldb.algebra;
 
-  
+
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlGeoBoundary extends GeneralDBSqlSpatialConstructUnary{
 
-	public GeneralDBSqlGeoBoundary(GeneralDBSqlExpr expr) {
-		super(expr);
+	public GeneralDBSqlGeoBoundary(GeneralDBSqlExpr expr, String resultType) {
+		super(expr, resultType);
 	}
 
 	@Override
