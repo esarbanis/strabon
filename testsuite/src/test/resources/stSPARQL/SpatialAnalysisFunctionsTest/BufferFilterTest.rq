@@ -1,4 +1,4 @@
-select (strdf:isEmpty(?g) as ?empty)
+select ?g
 where
 {
 	ex:A ex:hasGeometry ?g.
