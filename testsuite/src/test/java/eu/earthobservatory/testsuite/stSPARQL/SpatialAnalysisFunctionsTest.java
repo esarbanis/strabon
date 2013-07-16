@@ -12,9 +12,9 @@ package eu.earthobservatory.testsuite.stSPARQL;
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
- * A test for the strdf:buffer function.
+ * A test for the spatial analysis functions of stSPARQL.
  * 
- * @author Stella Giannakopoulou <sgian@di.uoa.gr
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 
-public class BufferTest extends TemplateTest {}
+public class SpatialAnalysisFunctionsTest extends TemplateTest {}

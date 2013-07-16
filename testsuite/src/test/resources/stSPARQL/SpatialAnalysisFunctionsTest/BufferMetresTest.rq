@@ -1,0 +1,5 @@
+select (strdf:isEmpty(strdf:buffer(?g, 1, ogc:metre)) as ?empty)
+where
+{
+ex:A ex:hasGeometry ?g.
+}
