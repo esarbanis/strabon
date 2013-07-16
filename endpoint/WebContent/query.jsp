@@ -123,12 +123,41 @@
 	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
+		
+		//listener for the event 'bounds_changed'
+		function addListener(map){
+			
+			google.maps.event.addListener(map, 'bounds_changed', function() {
+			    // get the new bounds
+				var bounds = map.getBounds();
+			    var northEast = bounds.getNorthEast();
+			    var southWest = bounds.getSouthWest();
+			    
+			    var x1 = northEast.lng().toFixed(2);
+				var y1 = northEast.lat().toFixed(2);
+				
+				var x2 = southWest.lng().toFixed(2);
+				var y2 = southWest.lat().toFixed(2);
+				
+				var polygon = "\"<http\://www.opengis.net/def/crs/EPSG/0/4326\> POLYGON((" +
+				x1 + " " + y2 + ", " +
+				x2 + " " + y2 + ", " +
+				x2 + " " + y1 + ", " +
+				x1 + " " + y1 + ", " +
+				x1 + " " + y2 + "))\"" +
+				"^^<http\://www.opengis.net/ont/geosparql#wktLiteral>";
+			 
+			    document.getElementById('bounds').value=polygon;
+			    
+			  });	
+		}
+	
 		function initialize() {
 			var myOptions = {
 				zoom: 11,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-			
+						
 			// get KML filename
 			var kml = '<%=request.getAttribute("pathToKML")%>';
 			
@@ -138,12 +167,14 @@
 				// center at Brahames
 				map.setCenter(new google.maps.LatLng(37.92253, 23.72275));
 			<%}%>
+		
+			addListener(map);
+
 			
 		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
 			// display using geoxml3
 			var myParser = new geoXML3.parser({map: map});
-			myParser.parse(kml);
-			
+			myParser.parse(kml);			
 		<%} else {%>
 			var ctaLayer = new google.maps.KmlLayer(kml);
 			ctaLayer.setMap(map);
@@ -153,7 +184,10 @@
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
 			}, 1500);
+			
 		<%}%>
+		
+		
 		}
 	</script>
 	<%	} else { %>
@@ -355,11 +389,20 @@
 	</td>
 </tr>
 
+<tr>
+	<td id="output">Map Bounds:</td>
+	<td id="output">
+		<textarea readonly id='bounds' rows="1" cols="100"></textarea>
+	</td>
+</tr>
+
 <tr>	
 <td colspan=2 id="output"><br/><center>
 <input type="submit" title="execute query" value="Query" name="submit" style="width: 350px" />
 <input type="submit" title="execute update" value="Update" name="submit" style="width: 350px"/></center><br/></td>
 </tr>
+
+
 
 <% if (request.getAttribute("error") != null) {%>
 	<!-- Error Message -->

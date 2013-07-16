@@ -11,10 +11,10 @@ package eu.earthobservatory.testsuite.stSPARQL;
 
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
-
 /**
- * A simple store test. It tests if triples with WKT serialization are stored and retrieved correctly.
+ * A test for the topological relations of stSPARQL.
  * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-public class StoreWKTTest extends TemplateTest{}
+
+public class TopologicalRelationsTest extends TemplateTest {}

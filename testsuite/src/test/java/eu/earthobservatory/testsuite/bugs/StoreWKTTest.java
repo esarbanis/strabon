@@ -13,8 +13,8 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * A simple store test. It tests if the input dataset is stored and retrieved correctly.
+ * A simple store test. It tests if triples with WKT serialization are stored and retrieved correctly.
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
-public class StoreTest extends TemplateTest{}
+public class StoreWKTTest extends TemplateTest{}

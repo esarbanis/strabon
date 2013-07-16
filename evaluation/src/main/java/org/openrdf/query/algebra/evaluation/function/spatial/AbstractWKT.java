@@ -81,6 +81,39 @@ public class AbstractWKT {
 	}
 	
 	/**
+	 * This constructor tries to guess the datatype of the WKT literal.
+	 * It should be used only when one does not have such information
+	 * available.
+	 * 
+	 * NOTICE: it is not guaranteed that guessing will fill-in the
+	 * datatype, but it is guaranteed that parsing will be done
+	 * correctly in any case (well, except for illegal cases).
+	 * 
+	 * @param literalValue
+	 */
+	public AbstractWKT(String literalValue) {
+		datatype = null;
+		
+		if (literalValue.indexOf(WKTHelper.STRDF_SRID_DELIM) > 0) { // strdf:WKT
+			datatype = GeoConstants.WKT;
+		
+			isstRDFWKT = true;
+			parsestRDFWKT(literalValue);
+			
+		} else { // wktLiteral or plain WKT
+			if (literalValue.charAt(0) == '<') { // starts with a URI, assume wktLiteral
+				datatype = GeoConstants.WKTLITERAL;
+				
+				isstRDFWKT = false;
+				parseWKTLITERAL(literalValue);
+				
+			} else { // cannot guess, only WKT representation was given
+				parsestRDFWKT(literalValue);	
+			}
+		}
+	}
+	
+	/**
 	 * Parses a WKT literal according to the specification of stRDF/stSPARQL.
 	 * The literal value may (not) specify the URI of a spatial reference system.
 	 * 
