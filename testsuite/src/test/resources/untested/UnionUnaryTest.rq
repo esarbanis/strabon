@@ -1,6 +1,0 @@
-select (strdf:union(?g) as ?union)
-where
-{
-?x ex:hasGeometry ?g.
-FILTER(?x=ex:A || ?x=ex:B)
-}
