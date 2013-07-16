@@ -7,26 +7,34 @@
 	<results>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org/id/Point/5531</uri>
+				<uri>http://example.org#F</uri>
 			</binding>
 			<binding name='x'>
-				<uri>http://example.org/id/Point/5531</uri>
+				<uri>http://example.org#A</uri>
 			</binding>
 		</result>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org/id/Point/5532</uri>
+				<uri>http://example.org#A</uri>
 			</binding>
 			<binding name='x'>
-				<uri>http://example.org/id/Point/5532</uri>
+				<uri>http://example.org#F</uri>
 			</binding>
 		</result>
 		<result>
 			<binding name='y'>
-				<uri>http://example.org/id/Point/5533</uri>
+				<uri>http://example.org#G</uri>
 			</binding>
 			<binding name='x'>
-				<uri>http://example.org/id/Point/5533</uri>
+				<uri>http://example.org#F</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='y'>
+				<uri>http://example.org#F</uri>
+			</binding>
+			<binding name='x'>
+				<uri>http://example.org#G</uri>
 			</binding>
 		</result>
 	</results>

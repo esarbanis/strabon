@@ -12,9 +12,9 @@ package eu.earthobservatory.testsuite.stSPARQL;
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
- * A test for the strdf:distance function.
+ * A test for the metric functions of stSPARQL.
  * 
- * @author Stella Giannakopoulou <sgian@di.uoa.gr
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 
-public class DistanceTest extends TemplateTest {}
+public class MetricFunctionsTest extends TemplateTest {}
