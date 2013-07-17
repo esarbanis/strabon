@@ -1,7 +1,0 @@
-select (strdf:distance(strdf:union(?g1, ?g2), ?g3, ogc:metre) as ?dist)
-where
-{
-	<http://example.org/id/Point/5531> <http://example.org/ontology/hasGeometry> ?g1 .
-	<http://example.org/id/Point/5532> <http://example.org/ontology/hasGeometry> ?g2 .
-        <http://example.org/id/Point/5533> <http://example.org/ontology/hasGeometry> ?g3 .
-}
