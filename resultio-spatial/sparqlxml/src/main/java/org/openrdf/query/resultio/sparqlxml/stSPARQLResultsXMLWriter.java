@@ -158,7 +158,7 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		else { // spatial literal
 			// else if (value instanceof RdbmsPolyhedron)
 			URI datatype = new URIImpl(GeoConstants.WKT);
-			Literal literal = new LiteralImpl(value.stringValue(), datatype);
+			Literal literal = new LiteralImpl(value.toString(), datatype);
 			writeLiteral(literal);
 		}
 	}
