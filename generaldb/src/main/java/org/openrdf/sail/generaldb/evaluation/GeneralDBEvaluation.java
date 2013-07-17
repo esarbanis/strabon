@@ -139,7 +139,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKT, WKTLITERAL, DOUBLE, NULL};
 
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -762,7 +762,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
 					
 					// set increaseIndex to <tt>true</tt> for geometries only (see commend below)
-					if (type == ResultType.WKB) {
+					if (type == ResultType.WKT || type == ResultType.WKTLITERAL) {
 						increaseIndex = true;
 					}
 					
@@ -996,10 +996,32 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(expr instanceof GeneralDBSqlSpatialConstructBinary || expr instanceof GeneralDBSqlSpatialConstructUnary || expr instanceof GeneralDBSqlSpatialConstructTriple)
-		{
-			return ResultType.WKB;
+		
+		else if(expr instanceof GeneralDBSqlSpatialConstructUnary)
+		{	
+			GeneralDBSqlSpatialConstructUnary exprUnary = (GeneralDBSqlSpatialConstructUnary) expr;
+			if(exprUnary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
 		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructBinary)
+		{	
+			GeneralDBSqlSpatialConstructBinary exprBinary = (GeneralDBSqlSpatialConstructBinary) expr;
+			if(exprBinary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructTriple)
+		{	
+			GeneralDBSqlSpatialConstructTriple exprTriple = (GeneralDBSqlSpatialConstructTriple) expr;
+			if(exprTriple.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+					
 		else if(expr instanceof GeneralDBSqlSpatialMetricBinary ||
 				expr instanceof GeneralDBSqlSpatialMetricUnary ||
 				expr instanceof GeneralDBSqlMathExpr ||

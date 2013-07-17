@@ -159,10 +159,12 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case STRING: 
 				value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case WKB: 
-				value = createBinaryGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+			case WKT: 
+				value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-
+			case WKTLITERAL: 
+				value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
 			}
 			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 			result.addBinding(construct.getFieldName(), value);
@@ -207,19 +209,12 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
+	
+	protected abstract RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
+	
+	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
 
-	/**
-	 * FIXME the implementation of this function for PostGIS and MonetDB
-	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
-	 * literals. What about geo:wktLiteral?
-	 * However, this method is called by {@link convert} method only, which
-	 * in turn is not called by any method!
-	 */
-	protected abstract RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException;
-
-	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException
+	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	{
 		double potentialMetric;
 		//case of metrics
