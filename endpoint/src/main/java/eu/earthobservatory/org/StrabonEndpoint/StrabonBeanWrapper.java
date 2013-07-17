@@ -194,40 +194,77 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())){
 			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 			List<String> bindingNames = result.getBindingNames();
-			if(bindingNames.size() !=2 ){
-				logger.error("Strabon endpoint: to display results in chart, exactly TWO variables must be projected");
+			if(bindingNames.size() !=2 && answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+				logger.error("Strabon endpoint: to display results in a pie chart, exactly TWO variables must be projected");
 			}
 			else{
-	
-			ArrayList<String> arr = new ArrayList<String>(2);
-			arr.add(0, bindingNames.get(0));
-			arr.add(1, bindingNames.get(1));
+				if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+					
+					ArrayList<String> arr = new ArrayList<String>(2);
+					arr.add(0, bindingNames.get(0));
+					arr.add(1, bindingNames.get(1));
 
-			
-			gChartString = "data.addColumn('string',\'"+arr.get(0)+"');\n";
-			gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
-			
-			int i=1;
-			int index=0;
-			while(result.hasNext()){
-				BindingSet bindings = result.next();
-				arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
-				arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
-				
-				gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
-						arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
-						i++;	
-			}
-			if(answerFormatStrabon.equals(Format.PIECHART.toString())){
+					gChartString +="var data = new google.visualization.DataTable();";
+					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
+					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
+					
+					int i=1;
+					int index=0;
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
+						arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
+						
+						gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
+								arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
+								i++;	
+					}
+					gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
+					gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
+		
+						
+				}
+				else if(answerFormatStrabon.equalsIgnoreCase(Format.AREACHART.toString())){
+					int varNum = bindingNames.size();
+					ArrayList<String> arr = new ArrayList<String>(varNum);
 
-				gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
-				gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
-			}else{
-				gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
-				gChartString += "var chart = new google.visualization.AreaChart(document.getElementById('chart_div')); \n";
-			}
+					gChartString += "var data = google.visualization.arrayToDataTable([[";
+					for(int j=0; j<varNum; j++){
+						String chartValue =bindingNames.get(j);
+							gChartString += "'"+chartValue+"'";
+					
+						if(j != varNum-1){
+							gChartString+=",";
+						}
+					}
+					gChartString += "],";
+					
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						gChartString += "[";
+						for(int j=0; j<varNum; j++){
+							
+							String chartValue =bindings.getValue(bindingNames.get(j)).stringValue();
+							if(j==0){ //the first variable is a string variable.
+								gChartString += "'"+withoutPrefix(chartValue).replace("\"", "")+"'";
+							}
+							else{ //numeric value
+								gChartString += withoutPrefix(chartValue).replace("\"", "");
+							}
+							if(j != varNum-1){
+								gChartString+=",";
+							}
+						}
+						gChartString += "],";
+					}
+					gChartString += "]);";
+					gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
+					gChartString += "var chart = new google.visualization.AreaChart(document.getElementById('chart_div')); \n";
 				
-		}}
+				}
+				
+				
+			}}
 		else{
 			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 		}
