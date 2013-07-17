@@ -1,5 +1,0 @@
-select (strdf:buffer(?g, 0.2, ogc:metre) as ?buf)
-where
-{
-?x <http://example.org/ontology/hasGeometry> ?g
-}

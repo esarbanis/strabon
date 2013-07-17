@@ -7,14 +7,14 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.testsuite.geoSPARQL;
+package eu.earthobservatory.testsuite.stSPARQL;
 
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
-
 /**
- * GeoSPARQL Rcc8's spatial relations test. 
+ * A test for the metric functions of stSPARQL.
  * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-public class Rcc8SpatialRelationsTest extends TemplateTest {}
+
+public class MetricFunctionsTest extends TemplateTest {}
