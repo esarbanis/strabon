@@ -205,7 +205,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					arr.add(0, bindingNames.get(0));
 					arr.add(1, bindingNames.get(1));
 
-					gChartString +="var data = new google.visualization.DataTable();";
+					gChartString ="var data = new google.visualization.DataTable();";
 					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
 					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
 					
@@ -231,7 +231,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					int varNum = bindingNames.size();
 					ArrayList<String> arr = new ArrayList<String>(varNum);
 
-					gChartString += "var data = google.visualization.arrayToDataTable([[";
+					gChartString = "var data = google.visualization.arrayToDataTable([[";
 					for(int j=0; j<varNum; j++){
 						String chartValue =bindingNames.get(j);
 							gChartString += "'"+chartValue+"'";
