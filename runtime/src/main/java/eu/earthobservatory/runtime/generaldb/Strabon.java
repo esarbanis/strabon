@@ -270,6 +270,9 @@ public abstract class Strabon {
 				
 			case AREACHART:
 				return tupleQuery.evaluate();
+
+			case COLUMNCHART:
+				return tupleQuery.evaluate();
 				
 			default:
 				// get the writer for the specified format

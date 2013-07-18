@@ -49,6 +49,7 @@ import eu.earthobservatory.utils.Format;
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Stella Giannakopoulou <sgian@di.uoa.gr>
+ * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  */
 public class QueryBean extends HttpServlet {
 
@@ -139,14 +140,14 @@ public class QueryBean extends HttpServlet {
 			// pass the other parameters as well
 			request.setAttribute("query", request.getParameter("query"));
 			if(request.getParameter("format").equalsIgnoreCase("PIECHART") || 
-					request.getParameter("format").equalsIgnoreCase("AREACHART")){
+					request.getParameter("format").equalsIgnoreCase("AREACHART")|| 
+					request.getParameter("format").equalsIgnoreCase("COLUMNCHART")){
 				request.setAttribute("format", "CHART");
 			} else{
 				request.setAttribute("format", request.getParameter("format"));
 			}
 			request.setAttribute("handle", request.getParameter("handle"));
 			
-			System.out.println("SET FORMAT: "+request.getAttribute("format"));
 			
 			// forward the request
 			dispatcher.forward(request, response);
@@ -339,18 +340,16 @@ public class QueryBean extends HttpServlet {
 					
 					try {
 						strabonWrapper.query(query, format, bos);
-						//System.out.println("FORMAT: "+format);
 						if (format.equals(Common.getHTMLFormat())) {
 							request.setAttribute(RESPONSE, bos.toString());
 						} 
-						else if(format.equals(Format.PIECHART.toString())){
+						else if(format.equals(Format.PIECHART.toString())
+								|| format.equals(Format.AREACHART.toString()) 
+								|| format.equals(Format.COLUMNCHART.toString())){
 							request.setAttribute("format","CHART");
 							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
 						}
-						else if(format.equals(Format.AREACHART.toString())){
-							request.setAttribute("format","CHART");
-							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
-						}
+	
 						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 						}

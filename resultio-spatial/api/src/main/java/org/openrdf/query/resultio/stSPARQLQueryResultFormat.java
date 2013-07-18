@@ -82,6 +82,9 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 	public static final stSPARQLQueryResultFormat AREACHART = new stSPARQLQueryResultFormat("AREACHART", 
 			Arrays.asList("text/plain"), Charset.forName("UTF-8"), Arrays.asList("areachart", "areachart"));
 	
+	public static final stSPARQLQueryResultFormat COLUMNCHART = new stSPARQLQueryResultFormat("COLUMNCHART", 
+			Arrays.asList("text/plain"), Charset.forName("UTF-8"), Arrays.asList("columnchart", "columnchart"));
+	
 	/**
 	 * The available stSPARQLQuery Result Formats
 	 */
@@ -97,6 +100,7 @@ public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 		register(HTML);
 		register(PIECHART);
 		register(AREACHART);
+		register(COLUMNCHART);
 		
 	}
 	

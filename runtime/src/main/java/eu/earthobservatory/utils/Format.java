@@ -98,6 +98,8 @@ public enum Format {
 	
 	PIECHART("PIECHART"),
 	
+	COLUMNCHART("COLUMNCHART"),
+	
 	AREACHART("AREACHART");
 	
 	/**

@@ -191,7 +191,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())){
+		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())|| 
+				answerFormatStrabon.equalsIgnoreCase( Format.COLUMNCHART.toString())){
 			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
 			List<String> bindingNames = result.getBindingNames();
 			if(bindingNames.size() !=2 && answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
@@ -224,7 +225,9 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		
 						
 				}
-				else if(answerFormatStrabon.equalsIgnoreCase(Format.AREACHART.toString())){
+				else {
+					
+					String chartType;
 					int varNum = bindingNames.size();
 					ArrayList<String> arr = new ArrayList<String>(varNum);
 
@@ -257,9 +260,14 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 						}
 						gChartString += "],";
 					}
+					if(answerFormatStrabon.equalsIgnoreCase(Format.AREACHART.toString())){
+						 chartType = "AreaChart";
+					}else{
+						 chartType = "ColumnChart";
+					}
 					gChartString += "]);";
 					gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
-					gChartString += "var chart = new google.visualization.AreaChart(document.getElementById('chart_div')); \n";
+					gChartString += "var chart = new google.visualization."+chartType+"(document.getElementById('chart_div')); \n";
 				
 				}
 				
