@@ -2,6 +2,9 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Version 3.2.9 released.
 
+	* Added support for the following google chart types: PieChart, 
+	AreaChart and ColumnChart to strabon endpoint. 
+	
 	* Added extension function <http://postgis.net/ST_Centroid> which is
 	mapped to the ST_Centroid(geometry) extension function of PostGIS.
 	See also: <http://postgis.org/docs/ST_Centroid.html>.
