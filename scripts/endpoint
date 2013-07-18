@@ -97,22 +97,23 @@ CURL_OPTS="-w HTTP_CODE='%{http_code}\n' -H \"Content-Type:application/x-www-for
 DEBUG=0
 # set default limit
 MAXLIMIT=0
-case "${1}" in
-	-d)
-		shift
-		DEBUG=1
-		;;
-	-i)
-		shift
-		PREFIXES="$(cat ${PREFIXES_FILE})
-"
-		;;
-	-l)
-		MAXLIMIT="${2}"	
-		shift
-		shift
-		;;
-esac
+while test $# -gt 0 -a "X${1:0:1}" == "X-"; do
+	case "${1}" in
+		-d)
+			shift
+			DEBUG=1
+			;;
+		-i)
+			shift
+			PREFIXES="$(cat ${PREFIXES_FILE})"
+			;;
+		-l)
+			MAXLIMIT="${2}"	
+			shift
+			shift
+			;;
+	esac
+done
 
 case "${1}" in
 	help)
@@ -193,7 +194,7 @@ case "${1}" in
 				;;
 		esac
 
-		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${QUERY}' --data maxLimit='${MAXLIMIT}' ${URL}"
+		EXEC="curl -H 'Content-Type:application/x-www-form-urlencoded' -H 'Accept:${MIME_TYPE}' --data-urlencode query='${PREFIXES}${QUERY}' --data maxLimit='${MAXLIMIT}' ${URL}"
 		;;
 	queryfile)
 		shift
