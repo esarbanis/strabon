@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns='http://www.opengis.net/kml/2.2'>
+	<Folder>
+		<Style id='normal_resultStyle1'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>000000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>000000ff</color>
+			</PolyStyle>
+		</Style>
+		<Style id='highlight_resultStyle1'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>000000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>000000ff</color>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='resultStyle1'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#normal_resultStyle1</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#highlight_resultStyle1</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='normal_resultStyle2'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>000000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>000000ff</color>
+			</PolyStyle>
+		</Style>
+		<Style id='highlight_resultStyle2'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>000000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>000000ff</color>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='resultStyle2'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#normal_resultStyle2</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#highlight_resultStyle2</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='normal_resultStyle3'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7d550000</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>ad550000</color>
+			</PolyStyle>
+		</Style>
+		<Style id='highlight_resultStyle3'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7d0000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>ad0000ff</color>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='resultStyle3'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#normal_resultStyle3</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#highlight_resultStyle3</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='normal_resultStyle4'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7d005500</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>ad005500</color>
+			</PolyStyle>
+		</Style>
+		<Style id='highlight_resultStyle4'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7d0000ff</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>ad0000ff</color>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='resultStyle4'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#normal_resultStyle4</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#highlight_resultStyle4</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='normal_resultStyle5'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7dff0000</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>adff0000</color>
+			</PolyStyle>
+		</Style>
+		<Style id='highlight_resultStyle5'>
+			<LineStyle>
+				<width>1.5</width>
+				<color>7dff0000</color>
+			</LineStyle>
+			<PolyStyle>
+				<color>adff0000</color>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='resultStyle5'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#normal_resultStyle5</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#highlight_resultStyle5</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Placemark>
+			<Timespan>
+          <begin>2012-06-18T11:30:00</begin>
+          <end>2012-06-18T11:30:00</end>
+        </Timespan>
+			<name>Hotspot</name>
+			<styleUrl>#resultStyle5</styleUrl>
+			<MultiGeometry>
+
+<Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <coordinates>21.78032003609315,38.27986544034537 21.8237351378524,38.28067909769068 21.824756330144563,38.246456549540326 21.781361560167912,38.24564388474572 21.78032003609315,38.27986544034537</coordinates>
+        </LinearRing>
+    </outerBoundaryIs>
+</Polygon>
+			</MultiGeometry>
+		</Placemark>
+		<Placemark><Timespan>
+          <begin>2012-07-18T11:30:00</begin>
+                    <end>2012-07-18T11:30:00</end>
+        </Timespan>
+			<name>Hotspot</name>
+			<styleUrl>#resultStyle5</styleUrl>
+			<MultiGeometry>
+
+<Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <coordinates>21.822712212427458,38.3149014216257 21.866149416716347,38.31570000259899 21.86715197274519,38.28147670477091 21.8237351378524,38.28067909769068 21.822712212427458,38.3149014216257</coordinates>
+        </LinearRing>
+    </outerBoundaryIs>
+</Polygon>
+			</MultiGeometry>
+		</Placemark>
+		<Placemark>
+			<Timespan>
+          <begin>2012-08-18T11:30:00</begin>
+                    <end>2012-08-18T11:30:00</end>
+        </Timespan>
+			<name>Hotspot</name>
+			<styleUrl>#resultStyle5</styleUrl>
+			<MultiGeometry>
+
+<Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <coordinates>21.779276744436174,38.314086770811485 21.822712212427458,38.3149014216257 21.8237351378524,38.28067909769068 21.78032003609315,38.27986544034537 21.779276744436174,38.314086770811485</coordinates>
+        </LinearRing>
+    </outerBoundaryIs>
+</Polygon>
+			</MultiGeometry>
+		</Placemark>
+		<Placemark>
+			<Timespan>
+          <begin>2012-09-18T11:30:00</begin>
+          <end>2012-09-18T11:30:00</end>
+        </Timespan>
+			<name>Hotspot</name>
+			<styleUrl>#resultStyle5</styleUrl>
+			<MultiGeometry>
+
+<Polygon>
+    <outerBoundaryIs>
+        <LinearRing>
+            <coordinates>21.8237351378524,38.28067909769068 21.86715197274519,38.28147670477091 21.868152830099362,38.24725318362772 21.824756330144563,38.246456549540326 21.8237351378524,38.28067909769068</coordinates>
+        </LinearRing>
+    </outerBoundaryIs>
+</Polygon>
+			</MultiGeometry>
+		</Placemark>
+	</Folder>
+</kml>
