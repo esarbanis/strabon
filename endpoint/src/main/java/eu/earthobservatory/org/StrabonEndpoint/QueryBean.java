@@ -270,7 +270,8 @@ public class QueryBean extends HttpServlet {
 				    
 				    out.flush();
 				    
-				} else if (("map".equals(handle) || "map_local".equals(handle)) && 
+				} else if (("map".equals(handle) || "map_local".equals(handle) ||
+				"timemap".equals(handle) || "timemap_local".equals(handle) ) && 
 						(queryResultFormat == stSPARQLQueryResultFormat.KML || 
 						 queryResultFormat == stSPARQLQueryResultFormat.KMZ) ) {
 					// show map (only valid for KML/KMZ)

@@ -120,7 +120,7 @@
 	}
 
 	if (request.getAttribute("pathToKML") != null) {
-	if ("map_local".equals(request.getAttribute("handle"))) {
+	if ("map_local".equals(request.getAttribute("handle")) || ("timemap_local".equals(request.getAttribute("handle")))) {
 %>
 	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -168,10 +168,13 @@
 						
 			// get KML filename
 			var kml = '<%=request.getAttribute("pathToKML")%>';
-			
+			var map;
 			// create map
-			//var map = new google.maps.Map(document.getElementById("map"), myOptions);
-			var map = tm.map;
+			<%if(request.getAttribute("handle").toString().contains("timemap")){ %>	
+			map = tm.map;
+			<%} else {%>
+			var map = new google.maps.Map(document.getElementById("map"), myOptions);
+			<%}%>
 			<% if (request.getAttribute("pathToKML") == null) {%>
 				center at Brahames
 				map.setCenter(new google.maps.LatLng(37.92253, 23.72275));
@@ -180,7 +183,7 @@
 			addListener(map);
 
 			
-		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
+		<%if ("map_local".equals(request.getAttribute("handle")) || ("timemap_local".equals(request.getAttribute("handle")))) {%>
 			// display using geoxml3
 			var myParser = new geoXML3.parser({map: map});
 			myParser.parse(kml);			
@@ -189,7 +192,8 @@
 			ctaLayer.setMap(map);
 		<%}%>
 		
-		<%if ("map".equals(request.getAttribute("handle")) || "map_local".equals(request.getAttribute("handle"))) {%>	
+		<%if (("map".equals(request.getAttribute("handle"))) || ("map_local".equals(request.getAttribute("handle")))
+		|| ("timemap".equals(request.getAttribute("handle"))) || ("timemap_local".equals(request.getAttribute("handle")))) {%>	
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
 			}, 1500);
@@ -292,7 +296,7 @@ $(function() {
     <link href="js/timemap/examples.css" type="text/css" rel="stylesheet"/>
     <style>
     div#timelinecontainer{ height: 310px; }
-    div#mapcontainer{ height: 300px; }
+    div#mapcontainer{ height: 600px; }
     </style>
     
  	<!-- jQuery end -->
@@ -447,6 +451,8 @@ $(function() {
 		<OPTION value="download"<%= ("download".equals(handle)) ? "selected":""%>>Download</OPTION>
 		<OPTION value="map"<%= ("map".equals(handle)) ? "selected":""%>>On a map</OPTION>
 		<OPTION value="map_local"<%= ("map_local".equals(handle)) ? "selected":""%>>On a map (localhost)</OPTION>
+		<OPTION value="timemap"<%= ("timemap".equals(handle)) ? "selected":""%>>On a timemap</OPTION>
+		<OPTION value="timemap_local"<%= ("timemap_local".equals(handle)) ? "selected":""%>>On a timemap (localhost)</OPTION>
 	</SELECT>
 	</td>
 </tr>
@@ -487,7 +493,7 @@ $(function() {
 	<%}%>
 <%}}%>
 	<!-- Response -->
-<% if (request.getAttribute("pathToKML") != null) { %>
+<% if (request.getAttribute("pathToKML") != null && request.getAttribute("handle").toString().contains("timemap")) { %>
   <div id="timemap">
         <div id="timelinecontainer">
           <div id="timeline"></div>
@@ -497,6 +503,7 @@ $(function() {
         </div>
     </div>
 <%}%>
+          <div id="map"></div>
 <div id="divResultsEnd" style="height: 1px; width 1px"></div>
  <div id="chart_div"></div>
 </body>
