@@ -17,6 +17,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<script type="text/javascript" src="js/more_link.js"></script>
 	<link rel="stylesheet" href="style.css" type="text/css" />
+	    <script type="text/javascript" src="js/timemap/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="js/timemap/mxn.js?(googlev3)"></script>
+    <script type="text/javascript" src="js/timemap/timeline-1.2.js"></script>
+    <script src="js/timemap/timemap.js" type="text/javascript"></script>
+    <script src="js/timemap/param.js" type="text/javascript"></script>
+    <script src="js/timemap/xml.js" type="text/javascript"></script>
+    <script src="js/timemap/kml.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		function toggleMe(a) {
 			var e = document.getElementById(a);
@@ -115,13 +122,14 @@
 	if (request.getAttribute("pathToKML") != null) {
 	if ("map_local".equals(request.getAttribute("handle"))) {
 %>
+	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="js/geoxml3-kmz.js"></script>
 	<script type="text/javascript" src="js/ProjectedOverlay.js"></script>	
 <%
 	}
 %>
-	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
 	<script type="text/javascript">
 		
 		//listener for the event 'bounds_changed'
@@ -155,16 +163,17 @@
 		function initialize() {
 			var myOptions = {
 				zoom: 11,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
+				//mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 						
 			// get KML filename
 			var kml = '<%=request.getAttribute("pathToKML")%>';
 			
 			// create map
-			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			//var map = new google.maps.Map(document.getElementById("map"), myOptions);
+			var map = tm.map;
 			<% if (request.getAttribute("pathToKML") == null) {%>
-				// center at Brahames
+				center at Brahames
 				map.setCenter(new google.maps.LatLng(37.92253, 23.72275));
 			<%}%>
 		
@@ -235,6 +244,57 @@
 		ul#icons li {margin: 1px; position: relative; padding: 1px 0; cursor: pointer; float: left;  list-style: none;}
 		ul#icons span.ui-icon {float: left; margin: 0 1px;}
 	</style>
+	
+		<script type="text/javascript">
+
+var tm;
+$(function() {
+    tm = TimeMap.init({
+        mapId: "map",               // Id of map div element (required)
+        timelineId: "timeline",     // Id of timeline div element (required) 
+        options: {
+            eventIconPath: "../images/"
+        },
+        datasets: [
+            {
+                title: "Visualization of timestamps",
+                theme: "red",
+                type: "kml",     // Data to be loaded in KML - must be a local URL
+                options: {
+                    url: <% if(request.getAttribute("pathToKML") != null){
+                    out.println("\""+request.getAttribute("pathToKML")+"\"");
+                    }%> // KML file to load
+                }
+            }
+        ],
+        bandInfo: [
+            {
+               width:          "85%", 
+               intervalUnit:   Timeline.DateTime.DAY, 
+		       intervalPixels: 210
+            },
+            {
+               width:          "15%", 
+               intervalUnit:   Timeline.DateTime.WEEK, 
+		       intervalPixels: 150,
+               showEventText:  false,
+               trackHeight:    0.2,
+               trackGap:       0.2
+            }
+        ]
+    });
+});
+
+
+    </script>
+    
+     </script>
+    <link href="js/timemap/examples.css" type="text/css" rel="stylesheet"/>
+    <style>
+    div#timelinecontainer{ height: 310px; }
+    div#mapcontainer{ height: 300px; }
+    </style>
+    
  	<!-- jQuery end -->
  
 	<title>TELEIOS: Strabon Endpoint</title>
@@ -271,6 +331,8 @@
         <%}}%>
       }
     </script>
+    
+    
 </head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
 
@@ -426,7 +488,14 @@
 <%}}%>
 	<!-- Response -->
 <% if (request.getAttribute("pathToKML") != null) { %>
-	<div id="map_canvas"></div>
+  <div id="timemap">
+        <div id="timelinecontainer">
+          <div id="timeline"></div>
+        </div>
+        <div id="mapcontainer">
+          <div id="map"></div>
+        </div>
+    </div>
 <%}%>
 <div id="divResultsEnd" style="height: 1px; width 1px"></div>
  <div id="chart_div"></div>

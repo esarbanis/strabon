@@ -116,10 +116,11 @@ public class QueryBean extends HttpServlet {
 		appName = context.getContextPath().replace("/", "");
 		
 		// fix the temporary directory for this web application
-		tempDirectory = appName + "-temp";
+		tempDirectory =  "js/timemap";
 		
 		// get the absolute path of the temporary directory
-		basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+		//basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+		basePath = context.getRealPath("/") + tempDirectory + "/";
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -289,35 +290,38 @@ public class QueryBean extends HttpServlet {
 					try{
 						Date date = new Date();
 
-						FileUtils.forceMkdir(new File(basePath));
+						//FileUtils.forceMkdir(new File(basePath));
 
 						@SuppressWarnings("unchecked")
-						Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
+					/*	Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
 						while(it.hasNext()){
 							File tbd = new File((it.next()).getAbsolutePath());
 							if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
 								FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
 							}
-						}
+						}*/
 						
 						// create temporary KML/KMZ file
 						File file = new File(basePath + tempKMLFile);
-
+						//File file = new File(tempKMLFile);
 						// if file does not exist, then create it
 						if(!file.exists()){
+							System.out.println("FILE PATH"+basePath + tempKMLFile);
 							file.createNewFile();
 						}
 						
 						try {
 							// query and write the result in the temporary KML/KMZ file
+							//FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
 							FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
 							strabonWrapper.query(query, format, fos);
 							fos.close();
 						
-							request.setAttribute("pathToKML", 
+							/*request.setAttribute("pathToKML", 
 									request.getScheme() + "://" +  
 									request.getServerName() + ":" + request.getServerPort() + 
-									"/" + tempDirectory + "/" + tempKMLFile);
+									"/" + tempDirectory + "/" + tempKMLFile);*/
+							request.setAttribute("pathToKML", tempDirectory+"/"+ tempKMLFile);
 							
 						} catch (MalformedQueryException e) {
 							logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());
