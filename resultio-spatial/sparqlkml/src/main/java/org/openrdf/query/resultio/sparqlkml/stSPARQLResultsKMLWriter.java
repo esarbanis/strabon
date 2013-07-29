@@ -15,6 +15,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.apache.xerces.xni.grammars.XMLGrammarDescription;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
@@ -61,6 +62,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String NAMESPACE 			= "http://www.opengis.net/kml/2.2";
 	private static final String RESULT_SET_TAG 		= "Folder";
 	private static final String PLACEMARK_TAG 		= "Placemark";
+	private static final String TIMESTAMP_TAG 		= "TimeStamp";
+	private static final String TIMESPAN_TAG 		= "TimeSpan";
+	private static final String BEGIN_TAG 		= "begin";
+	private static final String END_TAG 		= "end";
+	private static final String WHEN_TAG 		= "when";
 	private static final String NAME_TAG 			= "name";
 	private static final String DESC_TAG 			= "description";
 	private static final String EXT_DATA_TAG 		= "ExtendedData";
@@ -91,6 +97,13 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 */
 	private Boolean hasGeometry;
 
+	/**
+	 * True if results have at least one temporal element.
+	 * This element can be either an instant (xsd:dateTime value) or a period (strdf:period)
+	 */
+	private Boolean hasTimestamp;
+    
+	private Boolean hasTimespan;
 	/**
 	 * The JTS wrapper
 	 */
@@ -175,11 +188,23 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		try {
 			// true if there are bindings that do not correspond to geometries
 			boolean hasDesc = false;
+			String timeValue;
 			
 			Hashtable<String, String> extData = new Hashtable<String, String>();
 
+
 			// write placemark tag
 			xmlWriter.startTag(PLACEMARK_TAG);
+			for (Binding binding : bindingSet) {
+
+				Literal literal = (Literal) binding.getValue();
+				if(XMLGSDatatypeUtil.isCalendarDatatype(literal.getDatatype())){
+					hasTimestamp = true;
+					xmlWriter.startTag(TIMESTAMP_TAG);
+					xmlWriter.textElement(WHEN_TAG, literal.getLabel());
+					xmlWriter.endTag(TIMESTAMP_TAG);
+				}
+			}
 			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
 			
 			// parse binding set
@@ -198,6 +223,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 					xmlWriter.unescapedText(getKML(value));
 					
 				} else { // URI, BlankNode, or Literal other than spatial literal
+					
 					if (logger.isDebugEnabled()) {
 						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
 					}
@@ -253,10 +279,10 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				}
 				xmlWriter.endTag(EXT_DATA_TAG);
 			}
-			
+		
 			// end Placemark
 			xmlWriter.endTag(PLACEMARK_TAG);
-			
+		
 			// clear description string builders
 			descHeader.setLength(0);
 			descData.setLength(0);
