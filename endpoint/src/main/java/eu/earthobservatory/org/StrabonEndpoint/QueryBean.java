@@ -115,12 +115,9 @@ public class QueryBean extends HttpServlet {
 		// get the name of this web application
 		appName = context.getContextPath().replace("/", "");
 		
-		// fix the temporary directory for this web application
-		tempDirectory =  "js/timemap";
+	
 		
-		// get the absolute path of the temporary directory
-		//basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
-		basePath = context.getRealPath("/") + tempDirectory + "/";
+	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -290,17 +287,32 @@ public class QueryBean extends HttpServlet {
 					
 					try{
 						Date date = new Date();
+						
+						// get the absolute path of the temporary directory
+						if(!request.getParameter("handle").toString().contains("timemap")){
+							tempDirectory =  appName + "-temp";
+							
+							basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+							// fix the temporary directory for this web application
+							
+							FileUtils.forceMkdir(new File(basePath));
 
-						//FileUtils.forceMkdir(new File(basePath));
-
-						@SuppressWarnings("unchecked")
-					/*	Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
-						while(it.hasNext()){
-							File tbd = new File((it.next()).getAbsolutePath());
-							if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
-								FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
+							@SuppressWarnings("unchecked")
+							Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
+							while(it.hasNext()){
+								File tbd = new File((it.next()).getAbsolutePath());
+								if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
+									FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
+								}
 							}
-						}*/
+						} else{ //timemap case
+							tempDirectory =  "js/timemap";
+							basePath = context.getRealPath("/") + tempDirectory + "/";
+							// fix the temporary directory for this web application
+						}
+
+
+						// fix the temporary directory for this web application
 						
 						// create temporary KML/KMZ file
 						File file = new File(basePath + tempKMLFile);
@@ -318,11 +330,14 @@ public class QueryBean extends HttpServlet {
 							strabonWrapper.query(query, format, fos);
 							fos.close();
 						
-							/*request.setAttribute("pathToKML", 
-									request.getScheme() + "://" +  
-									request.getServerName() + ":" + request.getServerPort() + 
-									"/" + tempDirectory + "/" + tempKMLFile);*/
-							request.setAttribute("pathToKML", tempDirectory+"/"+ tempKMLFile);
+							if(request.getParameter("handle").toString().contains("timemap")){
+								request.setAttribute("pathToKML", tempDirectory+"/"+ tempKMLFile);
+							}else {
+								request.setAttribute("pathToKML", 
+										request.getScheme() + "://" +  
+										request.getServerName() + ":" + request.getServerPort() + 
+										"/" + tempDirectory + "/" + tempKMLFile);
+							}
 							
 						} catch (MalformedQueryException e) {
 							logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());

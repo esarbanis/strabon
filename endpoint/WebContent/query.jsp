@@ -120,7 +120,7 @@
 	}
 
 	if (request.getAttribute("pathToKML") != null) {
-	if ("map_local".equals(request.getAttribute("handle")) || ("timemap_local".equals(request.getAttribute("handle")))) {
+	if (request.getAttribute("handle").toString().contains("map")) {
 %>
 	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -163,7 +163,8 @@
 		function initialize() {
 			var myOptions = {
 				zoom: 11,
-				//mapTypeId: google.maps.MapTypeId.ROADMAP
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				zoomControl: true
 			};
 						
 			// get KML filename
@@ -171,12 +172,13 @@
 			var map;
 			// create map
 			<%if(request.getAttribute("handle").toString().contains("timemap")){ %>	
-			map = tm.map;
+			map = tm.getNativeMap();
+			map.setOptions(myOptions);
 			<%} else {%>
 			var map = new google.maps.Map(document.getElementById("map"), myOptions);
 			<%}%>
 			<% if (request.getAttribute("pathToKML") == null) {%>
-				center at Brahames
+			//	center at Brahames
 				map.setCenter(new google.maps.LatLng(37.92253, 23.72275));
 			<%}%>
 		
@@ -253,11 +255,21 @@
 
 var tm;
 $(function() {
+	var myOptions = {
+				zoom: 11,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				zoomControl: true,
+				scrollwheel : true
+
+			};
+			
+	var map = new google.maps.Map(document.getElementById("map"), myOptions);		
     tm = TimeMap.init({
-        mapId: "map",               // Id of map div element (required)
+                      // Id of map div element (required)
+        mapId: "map",
         timelineId: "timeline",     // Id of timeline div element (required) 
         options: {
-            eventIconPath: "../images/"
+            eventIconPath: "images/"
         },
         datasets: [
             {
@@ -287,8 +299,10 @@ $(function() {
             }
         ]
     });
+    
+  
 });
-
+	
 
     </script>
     
@@ -502,8 +516,9 @@ $(function() {
           <div id="map"></div>
         </div>
     </div>
-<%}%>
+<%} else {%>
           <div id="map"></div>
+          <%} %>
 <div id="divResultsEnd" style="height: 1px; width 1px"></div>
  <div id="chart_div"></div>
 </body>

@@ -25,6 +25,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.algebra.IsLiteral;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -196,7 +197,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// write placemark tag
 			xmlWriter.startTag(PLACEMARK_TAG);
 			for (Binding binding : bindingSet) {
-
+				
 				Literal literal = (Literal) binding.getValue();
 				if(XMLGSDatatypeUtil.isCalendarDatatype(literal.getDatatype())){
 					hasTimestamp = true;
