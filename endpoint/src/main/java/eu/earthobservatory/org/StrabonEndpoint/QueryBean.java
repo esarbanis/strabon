@@ -316,16 +316,13 @@ public class QueryBean extends HttpServlet {
 						
 						// create temporary KML/KMZ file
 						File file = new File(basePath + tempKMLFile);
-						//File file = new File(tempKMLFile);
 						// if file does not exist, then create it
 						if(!file.exists()){
-							System.out.println("FILE PATH"+basePath + tempKMLFile);
 							file.createNewFile();
 						}
 						
 						try {
 							// query and write the result in the temporary KML/KMZ file
-							//FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
 							FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
 							strabonWrapper.query(query, format, fos);
 							fos.close();

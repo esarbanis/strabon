@@ -198,6 +198,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.startTag(PLACEMARK_TAG);
 			for (Binding binding : bindingSet) {
 				
+				if(!binding.getValue().toString().contains("^^")){
+					continue;
+				}
 				Literal literal = (Literal) binding.getValue();
 				if(XMLGSDatatypeUtil.isCalendarDatatype(literal.getDatatype())){
 					hasTimestamp = true;
