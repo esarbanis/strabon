@@ -6,7 +6,7 @@
 	<results>
 		<result>
 			<binding name='intersection'>
-				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>POINT (1 1)</literal>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>POINT (1 1);http://www.opengis.net/def/crs/EPSG/0/4326</literal>
 			</binding>
 		</result>
 	</results>

@@ -6,7 +6,7 @@
 	<results>
 		<result>
 			<binding name='union'>
-				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOLYGON (((1 1, 1 0, 0 0, 0 1, 1 1)), ((1 1, 1 2, 3 2, 3 1, 1 1)))</literal>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#WKT'>MULTIPOLYGON (((1 1, 1 0, 0 0, 0 1, 1 1)), ((1 1, 1 2, 3 2, 3 1, 1 1)));http://www.opengis.net/def/crs/EPSG/0/4326</literal>
 			</binding>
 		</result>
 	</results>
