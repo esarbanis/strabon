@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openrdf.query.BindingSet;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -32,6 +34,8 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
@@ -352,26 +356,23 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			throw new RepositoryException("Could not connect to Strabon.");
 		}
 
+		SailRepositoryConnection conn = strabon.getSailRepoConnection();
+
 			URL source=null;
-			
 		if (url) {
-				source = new URL(source_data);
+				source = new URL(src);
 			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
 				// it would be a security issue if we read from the server's filesystem
 				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
-				if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
-					// it would be a security issue if we read from the server's filesystem
-					throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
-				}
 			}
 				
-			if(!format.equals(RDFFormat.NQUADS))
+			if(!format.equals(RDFFormat.NQUADS.toString()))
 			{
 				if (url) {				
-					conn.add(source, "", format, new Resource[1]);
+					conn.add(source, "", RDFFormat.NQUADS, new Resource[1]);
 	
 				} else {
-					conn.add(new StringReader(source_data), "", format, new Resource[1]);
+					conn.add(new StringReader(src), "", RDFFormat.NQUADS, new Resource[1]);
 				}			
 			}
 			else
@@ -380,7 +381,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 				if (url) {				
 					in= source.openStream();
 				} else {
-					in= new ByteArrayInputStream(source_data.getBytes());
+					in= new ByteArrayInputStream(src.getBytes());
 				}
 				//ByteArrayInputStream in = new ByteArrayInputStream();
 				NQuadsTranslator translator = new NQuadsTranslator(conn);
@@ -412,9 +413,11 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		strabon.storeInRepo(src, null, context, format, inference);
 		
 		logger.info("[StrabonEndpoint] STORE was successful.");
-		
+		}
 		return true;
+	
 	}
+	
 
 	public void setConnectionDetails(String dbname, String username, String password, String port, String hostname, String dbengine) {
 		this.databaseName = dbname;

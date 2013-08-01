@@ -72,4 +72,11 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs,
+			int index) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

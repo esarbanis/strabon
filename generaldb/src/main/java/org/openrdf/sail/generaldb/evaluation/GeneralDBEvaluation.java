@@ -149,7 +149,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, PERIOD,INSTANT, NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, PERIOD,INSTANT, NULL,  WKT, WKTLITERAL};
 
 	
 	//used to retrieve the appropriate column in the Binding Iteration

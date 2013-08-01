@@ -249,10 +249,10 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected abstract RdbmsValue createTemporalValue(ResultSet rs, int index)
 	throws SQLException;
 	
-	
+	protected abstract RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
+
 	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
 
-	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	/**
 	 * FIXME the implementation of this function for PostGIS and MonetDB
 	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
@@ -314,17 +314,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	}
 
 		
-	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
-
-	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
-	{
-		double potentialMetric;
-		//case of metrics
-		potentialMetric = rs.getFloat(index + 1);
-
-		return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
-
-	}
 
 	protected RdbmsValue createIntegerGeoValueForSelectConstructs(ResultSet rs, int index)
 	throws SQLException

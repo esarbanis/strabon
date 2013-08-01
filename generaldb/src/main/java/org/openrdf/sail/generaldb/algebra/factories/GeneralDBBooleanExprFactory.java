@@ -1141,7 +1141,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			return null;
 		}
 	}
-	
+	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		//XXX stSPARQL		
 		if(function.getURI().equals(GeoConstants.stSPARQLequals))

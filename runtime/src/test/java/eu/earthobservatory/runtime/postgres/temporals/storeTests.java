@@ -99,8 +99,8 @@ public class storeTests {
 		String text2 = "<http://example.org/itemOfString1> <http://example.org/id> \"String121\" \"[2002-11-19T12:41:00,2010-11-19T13:41:00]\"^^<http://strdf.di.uoa.gr/ontology#period> . \n" +
 				"<http://example.org/itemOfString22> <http://example.org/id> \"String122\" \"[2002-11-19T12:42:00,2010-11-19T13:41:00]\"^^<http://strdf.di.uoa.gr/ontology#period>.";
 		try {
-			strabon.storeInRepo(text1, "NQUADS");
-			strabon.storeInRepo(text2, "NQUADS");
+			strabon.storeInRepo(text1, "NQUADS", null);
+			strabon.storeInRepo(text2, "NQUADS", null);
 
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
@@ -124,14 +124,14 @@ public class storeTests {
 	@Test
 	public void testStoreURL() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault 
 	{
-		strabon.storeInRepo("http://manolee.di.uoa.gr/temporals/temporal-periods.nq", "NQUADS");
+		strabon.storeInRepo("http://manolee.di.uoa.gr/temporals/temporal-periods.nq", "NQUADS", null);
 
 	}
 	
 	@Test
 	public void testStoreFile() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault 
 	{
-		strabon.storeInRepo("/temporal-periods.nq", "NQUADS");
+		strabon.storeInRepo("/temporal-periods.nq", "NQUADS", null);
 
 	}
 	
@@ -144,8 +144,8 @@ public class storeTests {
 		String text2 = "<http://example.org/itemOfString31> <http://example.org/id> \"String3121\"  . \n" +
 				"<http://example.org/itemOfString322> <http://example.org/id> \"String3122\" .";
 		try {
-			strabon.storeInRepo(text1, "NQUADS");
-			strabon.storeInRepo(text2, "NQUADS");
+			strabon.storeInRepo(text1, "NQUADS", null);
+			strabon.storeInRepo(text2, "NQUADS", null);
 
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
@@ -175,7 +175,7 @@ public class storeTests {
 		
 		
 		try {
-			strabon.storeInRepo(text1, "NQUADS");
+			strabon.storeInRepo(text1, "NQUADS", null);
 
 		} catch (RDFParseException e) {
 			// TODO Auto-generated catch block
@@ -199,7 +199,7 @@ public class storeTests {
 	@Test
 	public void testNQUADSFile() throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault 
 	{
-		strabon.storeInRepo("/triples-and-quads.nq", "NQUADS");
+		strabon.storeInRepo("/triples-and-quads.nq", "NQUADS", null);
 
 	}
 	

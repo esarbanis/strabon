@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.openrdf.query.algebra.evaluation.function.datetime.Timezone;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;

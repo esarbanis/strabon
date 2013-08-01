@@ -129,4 +129,11 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		int srid = rs.getInt(index + 2);
 		return vf.getRdbmsPolyhedron(114, GeoConstants.WKTLITERAL, label, srid);
 	}
+
+	@Override
+	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs,
+			int index) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
