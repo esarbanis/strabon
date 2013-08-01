@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.postgis.evaluation;
 
@@ -28,7 +32,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -55,14 +58,17 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
@@ -125,13 +131,13 @@ import eu.earthobservatory.constants.OGCConstants;
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
-	public static final String STRDFGEO_FIELD = "strdfgeo";
-	public static final String SRID_FIELD = "srid";
-	public static final String ST_TRANSFORM = "ST_Transform";
-	public static final String ST_ASBINARY = "ST_AsBinary";
+	public static final String STRDFGEO_FIELD	= "strdfgeo";
+	public static final String SRID_FIELD		= "srid";
+	public static final String ST_TRANSFORM 	= "ST_Transform";
+	public static final String ST_ASBINARY		= "ST_AsBinary";
         public static final String PERIOD_COLUMN = "period"; //this is the name of the period column in period_values table
-        public static final String GEOGRAPHY = "Geography";
-	public static final String GEOMETRY = "Geometry";
+	public static final String GEOGRAPHY		= "Geography";
+	public static final String GEOMETRY			= "Geometry";
 	public static final String PERIOD_TO_CSTRING="period_out"; //postgres temporal functions for converting period to cstring
 	public static final String CSTRING_TO_TEXT="textin"; //postres function for converting cstring to text
 	/**
@@ -161,13 +167,18 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		ST_Buffer,
 		ST_Transform,
 		ST_SymDifference,
-
+		
+		// Spatial Constructs - Binary (PostGIS namespace)
+		ST_MakeLine,
 
 		//Spatial Constructs - Unary
 		ST_Envelope,
 		ST_ConvexHull,
 		ST_Boundary,
 
+		// Spatial Constructs - Unary (PostGIS namespace)
+		ST_Centroid,
+		
 		//Spatial Metrics - Binary
 		ST_Distance,
 
@@ -212,8 +223,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		EH_Covers,
 		EH_CoveredBy,
 		EH_Inside,
-		EH_Contains,
-		; 
+		EH_Contains
 	}
 
 	/** Addition for datetime metric functions
@@ -239,17 +249,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	}
 
 	@Override
-	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlIsNull expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		dispatch(expr.getArg(), filter);
 		filter.isNull();
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlNot expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if (expr.getArg() instanceof GeneralDBSqlIsNull) {
 			GeneralDBSqlIsNull arg = (GeneralDBSqlIsNull)expr.getArg();
 			dispatch(arg.getArg(), filter);
@@ -260,7 +268,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			dispatch(expr.getArg(), (GeneralDBSqlExprBuilder) open);
 			open.close();
 		}
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBDateTimeColumn var, GeneralDBSqlExprBuilder filter) {
@@ -527,25 +535,22 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			}
 
 	@Override
-	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlRight expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.right);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlAbove expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.above);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlBelow expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.below);
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBSqlMbbIntersects expr, GeneralDBSqlExprBuilder filter)
@@ -561,8 +566,7 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 
 	
 	@Override
-	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
+	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
 		appendStSPARQLSpatialOperand(expr, filter, SpatialOperandsPostGIS.contains);
 	}
 
@@ -579,7 +583,7 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 	protected void append(GeneralDBSqlSF_Contains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Contains);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Contains);
 			}
 
 	@Override
@@ -595,21 +599,21 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 	protected void append(GeneralDBSqlSF_Disjoint expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Disjoint);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Disjoint);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Equals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Equals);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Equals);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Intersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Intersects);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Intersects);
 			}
 
 	@Override
@@ -625,14 +629,14 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 	protected void append(GeneralDBSqlSF_Touches expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Touches);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Touches);
 			}
 
 	@Override
 	protected void append(GeneralDBSqlSF_Within expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
-		appendgeoSPARQLSpatialRelation(expr, filter,SpatialFunctionsPostGIS.SF_Within);
+		appendGeneralDBSpatialFunctionBinary(expr, filter,SpatialFunctionsPostGIS.ST_Within);
 			}
 
 	//Egenhofer
@@ -795,25 +799,32 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			}
 
 	@Override
-	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoIntersection expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Intersection);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoDifference expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_Difference);
-			}
+	}
 
 	@Override
-	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_SymDifference);
-			}
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBSpatialFunctionBinary(expr, filter, SpatialFunctionsPostGIS.ST_MakeLine);
+	}
+	
+	@Override
+	protected void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_Centroid);
+	}
 
 	/** Addition for datetime metric functions
 	 * 
@@ -866,10 +877,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 
 	@Override
 	protected void append(GeneralDBSqlGeoAsGML expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
-			}
+	}
 	
 	
 
@@ -1035,12 +1046,16 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 
 		StrabonPolyhedron poly = null;
 		try{
-			poly = new StrabonPolyhedron(raw);
+			// have to parse it before and clean it from possible appearance of CRS
+			AbstractWKT wkt = new AbstractWKT(raw);
+			
+			poly = new StrabonPolyhedron(wkt.getWKT());
+			
+			filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(wkt.getSRID())+")");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
 
 		return raw;
 	}
@@ -1954,6 +1969,9 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			case ST_SymDifference: filter.appendFunction("ST_SymDifference"); break;
 			case ST_Buffer: filter.appendFunction("ST_Buffer"); break;
 			
+			// PostGIS
+			case ST_MakeLine: filter.appendFunction("ST_MakeLine"); break;
+			
 			case ST_Equals: filter.appendFunction("ST_Equals"); break;
 			case ST_Disjoint: filter.appendFunction("ST_Disjoint"); break;
 			case ST_Intersects: filter.appendFunction("ST_Intersects"); break;
@@ -2222,6 +2240,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
 			else
 			{
 				appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
@@ -2429,6 +2451,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
 			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);
+			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
@@ -2585,7 +2611,9 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			case ST_SRID: filter.appendFunction("ST_SRID"); break;
 			case ST_IsEmpty: filter.appendFunction("ST_IsEmpty"); break;
 			case ST_IsSimple: filter.appendFunction("ST_IsSimple"); break;
+			case ST_Centroid: filter.appendFunction("ST_Centroid"); break;
 			}
+			
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
@@ -2596,6 +2624,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				appendConstructFunction(expr.getArg(), filter);
 			}
 			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructTriple)
 			{
 				appendConstructFunction(expr.getArg(), filter);
 			}
@@ -2675,6 +2707,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
 			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
@@ -2704,6 +2740,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
@@ -2728,6 +2768,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
@@ -2807,6 +2851,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);				
+			}	
 			else if(expr.getLeftArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getLeftArg()).getEntries().get(0).getResult();
@@ -2829,6 +2877,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
 				appendConstructFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getRightArg(), filter);				
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 			{
@@ -2854,6 +2906,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
 			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricUnary)
+			{
+				appendMetricFunction(expr.getRightArg(), filter);
+			}
+			else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendMetricFunction(expr.getRightArg(), filter);
 			}
@@ -3263,8 +3319,6 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 		else
 		{	
 			filter.appendFunction("ST_Relate");
-
-
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
@@ -3275,6 +3329,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
 			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getLeftArg(), filter);
+			}
+			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructTriple)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
 			}
@@ -3307,6 +3365,11 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				{
 					appendConstructFunction(expr.getRightArg(), filter);
 				}
+				
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructTriple)
+				{
+					appendConstructFunction(expr.getRightArg(), filter);
+				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlCase)
 				{
 					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getRightArg()).getEntries().get(0).getResult();
@@ -3334,6 +3397,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				{
 					appendMetricFunction(expr.getRightArg(), filter);
 				}
+				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialMetricTriple)
+				{
+					appendMetricFunction(expr.getRightArg(), filter);
+				}
 				else
 				{
 					appendMBB((GeneralDBLabelColumn)(expr.getRightArg()),filter);
@@ -3355,7 +3422,7 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 		}
 
 		filter.closeBracket();
-			}
+	}
 
 	
 

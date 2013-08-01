@@ -66,18 +66,7 @@ import eu.earthobservatory.utils.stSPARQLQueryResultToFormatAdapter;
 public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
-
-	public static final String FORMAT_DEFAULT	= "";
-	public static final String FORMAT_XML		= "XML";
-	public static final String FORMAT_KML		= "KML";
-	public static final String FORMAT_KMZ		= "KMZ";
-	public static final String FORMAT_GEOJSON	= "GeoJSON";
-	public static final String FORMAT_EXP		= "EXP";
-	public static final String FORMAT_HTML		= "HTML";
 	public static final int LINES_IN_BATCH = 100;
-	
-	public static final String NEWLINE		= "\n";
-	
 	/**
 	 * Connection details (shared with subclasses)
 	 */
@@ -289,21 +278,35 @@ public abstract class Strabon {
 				}
 				
 				long t3 = System.nanoTime();
-	
+
+				logger.info((t2-t1)+" + "+(t3-t2)+" = "+(t3-t1)+" | "+results);
 				return new long[]{t2-t1, t3-t2, t3-t1, results};
 				//break;
+			
+			case TUQU:
 				
-		default:
-			// get the writer for the specified format
-			TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
-			
-			// check for null format
-			if (resultWriter == null) {
-				logger.error("[Strabon.query] Invalid format.");
-				return false;
-			}
-			
-			tupleQuery.evaluate(resultWriter);
+				return tupleQuery;
+//				break;	
+			case PIECHART:
+				return tupleQuery.evaluate();
+				
+			case AREACHART:
+				return tupleQuery.evaluate();
+
+			case COLUMNCHART:
+				return tupleQuery.evaluate();
+				
+			default:
+				// get the writer for the specified format
+				TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
+				
+				// check for null format
+				if (resultWriter == null) {
+					logger.error("[Strabon.query] Invalid format.");
+					return false;
+				}
+				
+				tupleQuery.evaluate(resultWriter);
 		}
 
 		return status;
@@ -435,15 +438,17 @@ public abstract class Strabon {
 		}
 	}
 
-	public void storeInRepo(String src, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
-		storeInRepo(src, null, null, format);
+		storeInRepo(src, null, null, format, inference);
 	}
 
-	public void storeInRepo(String src, String baseURI, String context, String format) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
+	public void storeInRepo(String src, String baseURI, String context, String format, Boolean inference) throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
 		RDFFormat realFormat = null;
 
+		GeosparqlRDFHandlerBase.ENABLE_INFERENCE=inference;
+		
 		if ((baseURI != null) && (baseURI.equals(""))) {
 			baseURI = null;
 		}
@@ -458,16 +463,16 @@ public abstract class Strabon {
 			uriContext = f.createURI(context);
 		}
 
-		if(format.equalsIgnoreCase("N3")) {
+		if(format.equalsIgnoreCase("N3") || format.equals(RDFFormat.N3.getName())) {
 			realFormat =  RDFFormat.N3;
 			
-		} else if(format.equalsIgnoreCase("NTRIPLES")) {
+		} else if(format.equalsIgnoreCase("NTRIPLES") || format.equals(RDFFormat.NTRIPLES.getName())) {
 			realFormat =  RDFFormat.NTRIPLES;
 			
-		} else if(format.equalsIgnoreCase("RDFXML")) {
+		} else if(format.equalsIgnoreCase("RDFXML") || format.equals(RDFFormat.RDFXML.getName())) {
 			realFormat =  RDFFormat.RDFXML;
 			
-		} else if(format.equalsIgnoreCase("TURTLE")) {
+		} else if(format.equalsIgnoreCase("TURTLE") || format.equals(RDFFormat.TURTLE.getName())) {
 			realFormat =  RDFFormat.TURTLE;
 			
 		}else if(format.equalsIgnoreCase("NQUADS")) {

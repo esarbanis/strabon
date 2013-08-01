@@ -50,6 +50,11 @@ public enum Format {
 	 * Format for experiments
 	 */
 	EXP("EXP"),
+
+	/**
+	 * Tuple query object
+	 */
+	TUQU("TUPLEQUERY"),
 	
 	/**
 	 * HTML format
@@ -89,7 +94,13 @@ public enum Format {
 	/**
 	 * Invalid format.
 	 */
-	INVALID("INVALID");
+	INVALID("INVALID"),
+	
+	PIECHART("PIECHART"),
+	
+	COLUMNCHART("COLUMNCHART"),
+	
+	AREACHART("AREACHART");
 	
 	/**
 	 * The string representation of this format
@@ -107,6 +118,7 @@ public enum Format {
 			// add both upper- and lower-case versions of the format 
 			stringToEnum.put(format.toString(), format);
 			stringToEnum.put(format.toString().toLowerCase(), format);
+	
 		}
 	}
 	

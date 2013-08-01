@@ -1,3 +1,0 @@
-SELECT ?o
-WHERE {?s <http://strdf.di.uoa.gr/ontology#hasGeometry> ?geo.
-?geo <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?o.}

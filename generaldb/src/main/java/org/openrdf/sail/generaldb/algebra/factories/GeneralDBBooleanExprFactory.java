@@ -6,6 +6,8 @@
 package org.openrdf.sail.generaldb.algebra.factories;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
@@ -38,8 +40,10 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelateFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlBufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
@@ -81,6 +85,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.vocabulary.PostGIS;
 
 /**
  * Boolean SQL expression factory. This factory can convert a number of core
@@ -918,6 +923,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				&& !(function instanceof GeoSparqlBoundaryFunc)
 				&& !(function instanceof GeoSparqlConvexHullFunc)
 				&& !(function instanceof GeoSparqlEnvelopeFunc)
+				&& !(function instanceof Centroid)
 				&& !(function instanceof UnionFunc && functionCall.getArgs().size()==1))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -927,7 +933,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer) || function.getURI().equals(GeoConstants.geoSparqlBuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = numeric(right);
@@ -944,7 +950,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 					rightArg = label(right);
 				}
 			}
-			if(function instanceof BufferFunc)
+			if(function instanceof BufferFunc || function instanceof GeoSparqlBufferFunc)
 				thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
@@ -1136,8 +1142,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		}
 	}
 	
-	GeneralDBSqlExpr spatialRelationshipPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, 
-			GeneralDBSqlExpr thirdArg)
 	{
 		//XXX stSPARQL		
 		if(function.getURI().equals(GeoConstants.stSPARQLequals))
@@ -1277,6 +1281,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return sfWithin(leftArg,rightArg);
 		}
+		
 		//RCC8
 		else if(function.getURI().equals(GeoConstants.rccDisconnected))
 		{
@@ -1357,70 +1362,83 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
-			return geoUnion(leftArg, rightArg);
+			return geoUnion(leftArg, rightArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
-			return geoBuffer(leftArg, rightArg, thirdArg);
+			return geoBuffer(leftArg, rightArg, thirdArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
-			return geoTransform(leftArg,rightArg);
+			return geoTransform(leftArg,rightArg,GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
-			return geoEnvelope(leftArg);
+			return geoEnvelope(leftArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
-			return geoConvexHull(leftArg);
+			return geoConvexHull(leftArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
-			return geoBoundary(leftArg);
+			return geoBoundary(leftArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
-			return geoIntersection(leftArg, rightArg);
+			return geoIntersection(leftArg, rightArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
-			return geoDifference(leftArg, rightArg);
+			return geoDifference(leftArg, rightArg, GeoConstants.WKT);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
-			return geoSymDifference(leftArg, rightArg);
+			return geoSymDifference(leftArg, rightArg, GeoConstants.WKT);
 		}
-		//XXX GeoSPARQL - Non topological - except distance
-		//TODO Must add buffer after deciding how to implement it
+		//XXX GeoSPARQL - Non topological - except distance		
 		else if(function.getURI().equals(GeoConstants.geoSparqlConvexHull))
 		{
-			return geoConvexHull(leftArg);
+			return geoConvexHull(leftArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlIntersection))
 		{
-			return geoIntersection(leftArg, rightArg);
+			return geoIntersection(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlUnion))
 		{
-			return geoUnion(leftArg, rightArg);
+			return geoUnion(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlDifference))
 		{
-			return geoDifference(leftArg, rightArg);
+			return geoDifference(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlSymmetricDifference))
 		{
-			return geoSymDifference(leftArg, rightArg);
+			return geoSymDifference(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlEnvelope))
 		{
-			return geoEnvelope(leftArg);
+			return geoEnvelope(leftArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlBoundary))
 		{
-			return geoBoundary(leftArg);
+			return geoBoundary(leftArg, GeoConstants.WKTLITERAL);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
+		{
+			return geoBuffer(leftArg, rightArg, thirdArg, GeoConstants.WKTLITERAL);
+		}
+		/* PostGIS Construct functions */
+		else if (function.getURI().equals(PostGIS.ST_MAKELINE))
+		{
+			return st_MakeLine(leftArg, rightArg, GeoConstants.WKT);
+		}
+		else if (function.getURI().equals(PostGIS.ST_CENTROID))
+		{
+			return st_Centroid(leftArg, GeoConstants.WKT);
+		}
+		/* PostGIS Construct functions */
 
 		logger.error("[Strabon.spatialConstructPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;
@@ -1449,11 +1467,14 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return geoDistance(leftArg, rightArg, thirdArg);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlDistance))
+		{
+			return geoDistance(leftArg, rightArg, thirdArg);
+		}	
 		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
-		}
-		//GeoSPARQL's distance must be added at this place
+		}		
 
 		logger.error("[Strabon.spatialMetricPicker] No appropriate SQL expression was generated for extension function {}. This is probably a bug.", function.getURI());
 		return null;

@@ -188,8 +188,11 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case STRING: 
 				value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case WKB: 
-				value = createBinaryGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+			case WKT: 
+				value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
+			case WKTLITERAL: 
+				value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
 			case PERIOD: 
 				value = createPeriodValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
@@ -197,7 +200,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case INSTANT: 
 				value = createPeriodValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-
 
 			}
 			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
@@ -243,10 +245,14 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
-
+	
 	protected abstract RdbmsValue createTemporalValue(ResultSet rs, int index)
 	throws SQLException;
 	
+	
+	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
+
+	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	/**
 	 * FIXME the implementation of this function for PostGIS and MonetDB
 	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
@@ -304,6 +310,19 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		String  instant = rs.getString(index + 1);
 
 		return vf.asRdbmsLiteral(vf.createLiteral(instant, new URIImpl(TemporalConstants.INSTANT)));
+
+	}
+
+		
+	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
+
+	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
+	{
+		double potentialMetric;
+		//case of metrics
+		potentialMetric = rs.getFloat(index + 1);
+
+		return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
 
 	}
 

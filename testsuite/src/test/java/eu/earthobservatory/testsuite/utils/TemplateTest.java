@@ -10,6 +10,7 @@
 package eu.earthobservatory.testsuite.utils;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,25 +31,31 @@ import org.junit.Test;
  */
 public abstract class TemplateTest
 {	
-	private String datasetFile;
-	private ArrayList<String> queryFile;
-	private ArrayList<String> resultsFile;
+	protected String datasetFile;
+	protected ArrayList<String> queryFile;
+	protected ArrayList<String> resultsFile;
+	protected Boolean inference;
 
-	public TemplateTest(String datasetFile, ArrayList<String> queryFile, ArrayList<String> resultsFile)
-	{
-		this.datasetFile = datasetFile;
-		this.queryFile = queryFile;
-		this.resultsFile = resultsFile;
-	}
-
+	
 	public TemplateTest()
 	{
 		queryFile=new ArrayList<String>();
 		resultsFile=new ArrayList<String>();
 		
 		String testname=this.getClass().getSimpleName();
+		
 		String testpackage=this.getClass().getPackage().getName().substring(this.getClass().getPackage().getName().lastIndexOf('.')+1);
-		File testfolder = new File(this.getClass().getResource("/"+testpackage+"/"+testname+"/").getPath());
+		File testfolder = null;
+		
+		try 
+		{
+			testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).toURI());
+		} 
+		catch (URISyntaxException e) 
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
 		
 		String[] files = testfolder.list();
 		
@@ -56,28 +63,30 @@ public abstract class TemplateTest
 		{
 			if(file.endsWith(".nt") || file.endsWith(".nq"))
 			{
-				this.datasetFile="/"+testpackage+"/"+testname+"/"+file;
+				datasetFile=File.separator+testpackage+File.separator+testname+File.separator+file;
 			}
 			else if(file.endsWith(".rq"))
 			{
-				this.queryFile.add("/"+testpackage+"/"+testname+"/"+file);
-				this.resultsFile.add("/"+testpackage+"/"+testname+"/"+file.substring(0, file.length()-3)+".srx");
+				queryFile.add(File.separator+testpackage+File.separator+testname+File.separator+file);
+				resultsFile.add(File.separator+testpackage+File.separator+testname+File.separator+file.substring(0, file.length()-3)+".srx");
 			}
 		}
+		
+		inference=false;
 	}
 
 	@Before
 	public void before() throws Exception
 	{
 		Utils.createdb();
-		Utils.storeDataset(datasetFile);
+		Utils.storeDataset(datasetFile, inference);
 	}
 	
 	@Test
 	public void test() throws Exception
 	{
-		Iterator<String> queryFileIterator = this.queryFile.iterator();
-		Iterator<String> resultsFileIterator = this.resultsFile.iterator();
+		Iterator<String> queryFileIterator = queryFile.iterator();
+		Iterator<String> resultsFileIterator = resultsFile.iterator();
 		
 		while(queryFileIterator.hasNext() && resultsFileIterator.hasNext())
 		{

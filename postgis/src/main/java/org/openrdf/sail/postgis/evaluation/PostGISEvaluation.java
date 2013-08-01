@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.postgis.evaluation;
 
@@ -29,21 +33,23 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.openrdf.sail.generaldb.schema.IdSequence;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
  * them on a database.
  * 
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class PostGISEvaluation extends GeneralDBEvaluation {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.postgis.evaluation.PostGISEvaluation.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostGISEvaluation.class);
 
-	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset, IdSequence ids)
+	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
+			IdSequence ids)
 	{
 		super(factory, triples, dataset, ids);
 		this.factory = factory;
@@ -64,20 +70,19 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 					stmt.setObject(++p, o);
 				}
 				Collection<GeneralDBColumnVar> proj = qb.getProjections();
-//				System.out.println("In PostGIS Evaluation, query is: \n" + stmt);
+				if (logger.isDebugEnabled()) {
+					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
+				}
 				GeneralDBBindingIteration result = new PostGISBindingIteration(stmt);
 				result.setProjections(proj);
 				result.setBindings(bindings);
 				result.setValueFactory(vf);
 				result.setIdSequence(ids);
-				// addition
+				//XXX addition
 				result.setGeoNames(this.geoNames);
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
 				//XXX addition- constant
 				result.setTemporalVars(this.temporalVars);
-				if (logger.isDebugEnabled()) {
-					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
-				}
 				return result;
 			}
 			catch (SQLException e) {

@@ -52,10 +52,10 @@ import eu.earthobservatory.utils.Format;
  */
 public class Utils
 {
-	private static final String dbPropertiesFile="/databases.properties";
+	private static final String dbPropertiesFile=File.separator+"databases.properties";
+	private static final String prefixesFile=File.separator+"prefixes";
 	
 	private static String databaseTemplateName = null;
-	private static String defaultUser = null;
 	private static String serverName = null;
 	private static String username = null;
 	private static String password = null;
@@ -81,11 +81,6 @@ public class Utils
 		{
 			databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
 		}
-
-		if((defaultUser = System.getProperty("postgis.defaultUser"))==null)
-		{
-			defaultUser = properties.getProperty("postgis.defaultUser");
-		}
 		
 		if((serverName = System.getProperty("postgis.serverName"))==null)
 		{
@@ -108,7 +103,7 @@ public class Utils
 		}
 		
 		//Connect to server and create the temp database
-		url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
         pst = conn.prepareStatement("SELECT * FROM pg_catalog.pg_database");
@@ -138,18 +133,18 @@ public class Utils
 	    strabon = new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
 	}
 	
-	public static void storeDataset(String datasetFile) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static void storeDataset(String datasetFile, Boolean inference) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 	    if(datasetFile.endsWith(".nt"))
-	    	strabon.storeInRepo(datasetFile, "NTRIPLES");
+	    	strabon.storeInRepo(datasetFile, "NTRIPLES", inference);
 	    else if(datasetFile.endsWith(".nq"))
-	    	strabon.storeInRepo(datasetFile, "NQUADS");
+	    	strabon.storeInRepo(datasetFile, "NQUADS", inference);
 	}
 	
 	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
-		String query = FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
+		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
 		//Pose the query
 		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);
@@ -160,7 +155,7 @@ public class Utils
 
 		List<String> eBindingNames = expectedResults.getBindingNames();
 		List<String> aBindingNames = actualResults.getBindingNames();
-		assertTrue("Results are not the expected.", aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
+		assertTrue("Results are not the expected. QueryFile: "+queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
 		
 		//Sort each binding's values
 		List<String> eBindingList = new ArrayList<String>();
@@ -183,7 +178,7 @@ public class Utils
 			aBindingList.add(aBindingValues);
 		}
 		
-		assertFalse("Results are not the expected.", expectedResults.hasNext() || actualResults.hasNext());
+		assertFalse("Results are not the expected. QueryFile: "+queryFile, expectedResults.hasNext() || actualResults.hasNext());
 		
 		//Sort bindings alphabetically
 		Collections.sort(eBindingList);
@@ -195,7 +190,7 @@ public class Utils
 
 		while(eBindingListIterator.hasNext() && aBindingListIterator.hasNext())
 		{
-			assertEquals("Results are not the expected.", eBindingListIterator.next(), aBindingListIterator.next());
+			assertEquals("Results are not the expected. QueryFile: "+queryFile, eBindingListIterator.next(), aBindingListIterator.next());
 		}
 		
 		actualResults.close();
@@ -208,7 +203,7 @@ public class Utils
 		
 		//Drop the temp database
 		conn.close();
-		String url = "jdbc:postgresql://"+serverName+":"+port+"/"+defaultUser;
+		String url = "jdbc:postgresql://"+serverName+":"+port;
 		conn = DriverManager.getConnection(url, username, password);
 		
 		PreparedStatement pst = conn.prepareStatement("DROP DATABASE "+databaseName);

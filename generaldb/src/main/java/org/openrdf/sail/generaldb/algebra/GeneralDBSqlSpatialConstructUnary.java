@@ -1,20 +1,16 @@
 package org.openrdf.sail.generaldb.algebra;
 
-import java.util.ArrayList;
-
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 public class GeneralDBSqlSpatialConstructUnary extends UnaryGeneralDBOperator
 {
-	
+	private String resultType;
 
-	/*CONSTRUCTOR*/
-	
-	public GeneralDBSqlSpatialConstructUnary(GeneralDBSqlExpr expr) {
+	public GeneralDBSqlSpatialConstructUnary(GeneralDBSqlExpr expr, String resultType) {
 		super(expr);
+		this.resultType = resultType;
 	}
 
 	@Override
@@ -24,4 +20,11 @@ public class GeneralDBSqlSpatialConstructUnary extends UnaryGeneralDBOperator
 		visitor.meet(this);
 	}
 
+	public String getResultType() {
+		return resultType;
+	}
+
+	public void setResultType(String resultType) {
+		this.resultType = resultType;
+	}
 }

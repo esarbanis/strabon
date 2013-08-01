@@ -59,7 +59,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[2.3,)</versionRange>
+										<versionRange>[2.4,)</versionRange>
 										<goals>
 											<goal>copy-dependencies</goal>
 										</goals>
@@ -154,6 +154,16 @@
                                                                         <mainClass>eu.earthobservatory.org.StrabonEndpoint.client.StrabonEndpoint</mainClass>
                                                                 </transformer>
                                                         </transformers>
+                                                        <filters>
+															<filter>
+																<artifact>*:*</artifact>
+																<excludes>
+																	<exclude>META-INF/*.SF</exclude>
+																	<exclude>META-INF/*.DSA</exclude>
+																	<exclude>META-INF/*.RSA</exclude>
+																</excludes>
+															</filter>
+														</filters>
                                                 </configuration>
                                         </execution>
                                 </executions>

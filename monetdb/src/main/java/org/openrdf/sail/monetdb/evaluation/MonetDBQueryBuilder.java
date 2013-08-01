@@ -19,7 +19,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
@@ -46,15 +45,18 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
@@ -135,8 +137,8 @@ import eu.earthobservatory.constants.OGCConstants;
 public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 	
 	public static final String ST_TRANSFORM = "ST_Transform";	
-	public static final String GEOGRAPHY = "Geography";
-	public static final String GEOMETRY = "Geometry";
+	public static final String GEOGRAPHY 	= "Geography";
+	public static final String GEOMETRY 	= "Geometry";
 	
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
@@ -2602,19 +2604,23 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 	@Override
-	protected void append(GeneralDBSqlMbbContains expr,
-			GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-		// TODO Auto-generated method stub
-		
+	protected void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("MbbContains is not available in MonetDB.");
 	}
 
 	@Override
-	protected void append(GeneralDBSqlMbbWithin expr,
-			GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException {
-		// TODO Auto-generated method stub
-		
+	protected void append(GeneralDBSqlMbbWithin expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("MbbWithin is not available in MonetDB.");
+	}
+
+	@Override
+	protected void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("ST_MakeLine is not available in MonetDB.");
+	}
+
+	@Override
+	protected void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		throw new UnsupportedRdbmsOperatorException("ST_Centroid is not available in MonetDB.");
 	}
 
 	@Override

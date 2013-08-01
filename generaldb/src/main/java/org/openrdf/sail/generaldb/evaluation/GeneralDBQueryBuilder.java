@@ -75,6 +75,8 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlShift;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
@@ -751,6 +753,11 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlDiffDateTime) {
 			append((GeneralDBSqlDiffDateTime)expr, filter);
 		}
+		/* PostGIS Construct functions */
+		else if (expr instanceof GeneralDBSqlST_MakeLine) {
+			append((GeneralDBSqlST_MakeLine)expr, filter);
+		}
+		/* PostGIS Construct functions */
 		/**
 		 * end of my addition
 		 */
@@ -1183,6 +1190,13 @@ public abstract class GeneralDBQueryBuilder {
 	protected abstract void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
+	/* PostGIS Construct Functions */
+	protected abstract void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	/* PostGIS Construct Functions */
+	
 	/** Addition for datetime metric functions
 	 * 
 	 * @author George Garbis <ggarbis@di.uoa.gr>
@@ -1319,6 +1333,17 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlPeriodEnd)constr, filter);
 		}
+		/* PostGIS functions */
+		else if(constr instanceof GeneralDBSqlST_MakeLine)
+		{
+			append((GeneralDBSqlST_MakeLine)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlST_Centroid)
+		{
+			append((GeneralDBSqlST_Centroid)constr, filter);
+		}
+		/* PostGIS functions */
+
 		
 	}
 

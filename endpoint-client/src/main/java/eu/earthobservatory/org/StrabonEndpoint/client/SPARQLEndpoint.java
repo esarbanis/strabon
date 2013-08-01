@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Copyright (C) 2012, Pyravlos Team
+ * Copyright (C) 2012, 2013 Pyravlos Team
  *
  * http://www.strabon.di.uoa.gr/
  */
@@ -18,12 +18,17 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.params.HostParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
@@ -134,6 +139,14 @@ public class SPARQLEndpoint extends HTTPClient{
 		}
 	}
 
+	
+	/* Functions 'store' and 'update' do not follow the SPARQL Protocol.
+	 * This means that only Strabon Endpoint supports these operations.
+	 * In future they must be modified in order to be compatible with
+	 * Virtuso and Parliament endpoints.
+	 */
+	
+	
 	/**
 	 * Stores the RDF <code>data</code> which are in the RDF format
 	 * <code>format</code> in the named graph specified by the URL
@@ -143,10 +156,61 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @param format
 	 * @param namedGraph
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 * @throws IOException 
 	 */
 	
-	public boolean store(String data, RDFFormat format, URL namedGraph) {
-		throw new UnsupportedOperationException();
+	public boolean store(String data, RDFFormat format, URL namedGraph) throws IOException {
+assert(format != null);
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the url and fromurl parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("data", data));
+		if (namedGraph!=null)
+			params.add(new BasicNameValuePair("graph", namedGraph.toString()));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", format.getDefaultMIMEType());
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+		//	String responseBody = "";
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
 	}
 
 	/**
@@ -160,19 +224,129 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
 	 */
 
-	public boolean store(URL data, RDFFormat format, URL namedGraph) {
-		throw new UnsupportedOperationException();
+
+	/*
+	 * Comment: in order to make queries to strabon endpoint we must create a SPARQLEndpoint
+	 * with endpointName ".../Query". To store data to strabon endpoint the endpointName of
+	 * SPARQLEndpoint must be something like ".../Store". This means that the same object of
+	 * SPARQLEndpoint cannot execute store and query operations for strabon endpoints.
+	 * This is wrong and must be fixed. Also, the main idea is that the SPARQLEndpoint client 
+	 * should be a general endpoint client that supports strabon, virtuoso and parliament endpoints.
+	 */
+	public boolean store(URL data, RDFFormat format, URL namedGraph) throws IOException{
+		
+		assert(format != null);
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the url and fromurl parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("url", data.toString()));
+		params.add(new BasicNameValuePair("fromurl", ""));
+		if (namedGraph!=null)
+			params.add(new BasicNameValuePair("graph", namedGraph.toString()));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", format.getDefaultMIMEType());
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+		//	String responseBody = "";
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
 	}
+		
 
 	/**
 	 * Executes the SPARQL Update query specified in <code>sparqlUpdate</code>.
 	 * 
 	 * @param sparqlUpdate
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
+	 * @throws IOException 
 	 */
 
-	public boolean update(String sparqlUpdate) {
-		throw new UnsupportedOperationException();
+	public boolean update(String sparqlUpdate) throws IOException {
+		
+		// create a post method to execute
+		HttpPost method = new HttpPost(getConnectionURL());
+		
+		// set the query parameter
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("query", sparqlUpdate));
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		method.setEntity(encodedEntity);
+		
+		// set the content type
+		method.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		// set the accept format
+		method.addHeader("Accept", "text/xml");
+		
+		//set username and password
+		if (getUser()!=null && getPassword()!=null){
+			
+			String userPass = getUser()+":"+ getPassword();
+			String encoding = Base64.encode(userPass.getBytes());
+			method.setHeader("Authorization", "Basic "+ encoding);
+		}
+		
+		try {
+			// response that will be filled next
+			
+			// execute the method
+			HttpResponse response = hc.execute(method);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode==200)
+				return true;
+			else{
+				System.err.println("Status code " + statusCode);
+				return false;
+			}
+				
+			
+
+		} catch (IOException e) {
+			throw e;
+			
+		} finally {
+			// release the connection.
+			method.releaseConnection();
+		}
+		
 	}
 
 	public EndpointResult describe(String sparqlDescribe) {
@@ -190,7 +364,7 @@ public class SPARQLEndpoint extends HTTPClient{
 	
 	public static void main(String args[]) {
 		if (args.length < 4) {
-			System.err.println("Usage: eu.earthobservatory.org.StrabonEndpoint.client.StrabonEndpoint <HOST> <PORT> <APPNAME> [<FORMAT>]");
+			System.err.println("Usage: eu.earthobservatory.org.StrabonEndpoint.client.SPARQLEndpoint <HOST> <PORT> <APPNAME> [<FORMAT>]");
 			System.err.println("       where <HOST>       is the hostname of the Strabon Endpoint");
 			System.err.println("             <PORT>       is the port to connect to on the host");
 			System.err.println("             <APPNAME>    is the application name of Strabon Endpoint as deployed in the Tomcat container");

@@ -3,44 +3,45 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
-import eu.earthobservatory.utils.Format;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openrdf.model.Resource;
+import org.openrdf.query.BindingSet;
 import org.openrdf.model.Statement;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepositoryConnection;
-import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration;
+import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.NQuadsParser;
 import eu.earthobservatory.runtime.generaldb.NQuadsTranslator;
 import eu.earthobservatory.runtime.generaldb.Strabon;
+import eu.earthobservatory.utils.Format;
 
 
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
@@ -59,6 +60,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String prefixes;
 	
 	private Strabon strabon = null;
+		
+	private String gChartString =" ";
 	
 	private boolean checkForLockTable;
 	private List<StrabonBeanWrapperConfiguration> entries;
@@ -196,7 +199,91 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())|| 
+				answerFormatStrabon.equalsIgnoreCase( Format.COLUMNCHART.toString())){
+			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+			List<String> bindingNames = result.getBindingNames();
+			if(bindingNames.size() !=2 && answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+				logger.error("Strabon endpoint: to display results in a pie chart, exactly TWO variables must be projected");
+			}
+			else{
+				if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+					
+					ArrayList<String> arr = new ArrayList<String>(2);
+					arr.add(0, bindingNames.get(0));
+					arr.add(1, bindingNames.get(1));
+
+					gChartString ="var data = new google.visualization.DataTable();";
+					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
+					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
+					
+					int i=1;
+					int index=0;
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
+						arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
+						
+						gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
+								arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
+								i++;	
+					}
+					gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
+					gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
+		
+						
+				}
+				else {
+					
+					String chartType;
+					int varNum = bindingNames.size();
+					ArrayList<String> arr = new ArrayList<String>(varNum);
+
+					gChartString = "var data = google.visualization.arrayToDataTable([[";
+					for(int j=0; j<varNum; j++){
+						String chartValue =bindingNames.get(j);
+							gChartString += "'"+chartValue+"'";
+					
+						if(j != varNum-1){
+							gChartString+=",";
+						}
+					}
+					gChartString += "],";
+					
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						gChartString += "[";
+						for(int j=0; j<varNum; j++){
+							
+							String chartValue =bindings.getValue(bindingNames.get(j)).stringValue();
+							if(j==0){ //the first variable is a string variable.
+								gChartString += "'"+withoutPrefix(chartValue).replace("\"", "")+"'";
+							}
+							else{ //numeric value
+								gChartString += withoutPrefix(chartValue).replace("\"", "");
+							}
+							if(j != varNum-1){
+								gChartString+=",";
+							}
+						}
+						gChartString += "],";
+					}
+					if(answerFormatStrabon.equalsIgnoreCase(Format.AREACHART.toString())){
+						 chartType = "AreaChart";
+					}else{
+						 chartType = "ColumnChart";
+					}
+					gChartString += "]);";
+					gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
+					gChartString += "var chart = new google.visualization."+chartType+"(document.getElementById('chart_div')); \n";
+				
+				}
+				
+				
+			}}
+		else{
+			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		}
 		
 	}
 	
@@ -250,27 +337,28 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	 * @return
 	 * @throws MalformedQueryException
 	 * @throws RepositoryException
+	 * @throws InvalidDatasetFormatFault 
+	 * @throws RDFHandlerException 
+	 * @throws RDFParseException 
 	 * @throws QueryEvaluationException
 	 * @throws TupleQueryResultHandlerException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public boolean store(String source_data, RDFFormat format, boolean url) throws Exception {
+	public boolean store(String src, String context, String format, Boolean inference, Boolean url) throws RepositoryException, RDFParseException, RDFHandlerException, IOException, InvalidDatasetFormatFault {
 		logger.info("[StrabonEndpoint] Received STORE request.");
 		
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		}
 
-		// get sail connection
-		SailRepositoryConnection conn = strabon.getSailRepoConnection();
-
-		try {
-			// store data
 			URL source=null;
 			
-			if (url) {
+		if (url) {
 				source = new URL(source_data);
+			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
+				// it would be a security issue if we read from the server's filesystem
+				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
 				if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
 					// it would be a security issue if we read from the server's filesystem
 					throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
@@ -319,14 +407,12 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					}
 		
 				}
-			}
-			
-			logger.info("[StrabonEndpoint] STORE was successful.");
-
-		} catch (Exception e) {
-			throw e;
 		}
 
+		strabon.storeInRepo(src, null, context, format, inference);
+		
+		logger.info("[StrabonEndpoint] STORE was successful.");
+		
 		return true;
 	}
 
@@ -438,5 +524,36 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return prefixes;
 	}
 
+	
+
+	public String getgChartString() {
+		return gChartString;
+	}
+
+	public void setgChartString(String gChartString) {
+		this.gChartString = gChartString;
+	}
+	
+	
+	public String withoutPrefix(String inputURI){
+		int index;
+	
+		if(!inputURI.contains("http") ){ //plain literal case- no prefixes to remove
+			return inputURI;
+		}
+		else{ //URI case
+			//removing prefixes so that they will not be displayed in the chart
+			if(inputURI.lastIndexOf('#') > inputURI.lastIndexOf('/')){
+				index = inputURI.lastIndexOf('#')+1;
+			}
+			else{
+				index = inputURI.lastIndexOf("/")+1;
+			}
+			
+			int endIndex= inputURI.length();
+			return  inputURI.substring(index, endIndex );
+
+	}
+	}
 }
 

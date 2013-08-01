@@ -18,6 +18,8 @@ import java.net.URLDecoder;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -30,6 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
@@ -37,12 +41,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import eu.earthobservatory.utils.Format;
+
 /**
  * 
  * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Stella Giannakopoulou <sgian@di.uoa.gr>
+ * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  */
 public class QueryBean extends HttpServlet {
 
@@ -86,6 +93,7 @@ public class QueryBean extends HttpServlet {
 	 * The name of this web application
 	 */
 	private String appName;
+	
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -102,15 +110,14 @@ public class QueryBean extends HttpServlet {
 
 		// the the strabon wrapper
 		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
+	
 		
 		// get the name of this web application
 		appName = context.getContextPath().replace("/", "");
 		
-		// fix the temporary directory for this web application
-		tempDirectory = appName + "-temp";
+	
 		
-		// get the absolute path of the temporary directory
-		basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -130,8 +137,15 @@ public class QueryBean extends HttpServlet {
 			
 			// pass the other parameters as well
 			request.setAttribute("query", request.getParameter("query"));
-			request.setAttribute("format", request.getParameter("format"));
+			if(request.getParameter("format").equalsIgnoreCase("PIECHART") || 
+					request.getParameter("format").equalsIgnoreCase("AREACHART")|| 
+					request.getParameter("format").equalsIgnoreCase("COLUMNCHART")){
+				request.setAttribute("format", "CHART");
+			} else{
+				request.setAttribute("format", request.getParameter("format"));
+			}
 			request.setAttribute("handle", request.getParameter("handle"));
+			
 			
 			// forward the request
 			dispatcher.forward(request, response);
@@ -253,7 +267,8 @@ public class QueryBean extends HttpServlet {
 				    
 				    out.flush();
 				    
-				} else if (("map".equals(handle) || "map_local".equals(handle)) && 
+				} else if (("map".equals(handle) || "map_local".equals(handle) ||
+				"timemap".equals(handle) || "timemap_local".equals(handle) ) && 
 						(queryResultFormat == stSPARQLQueryResultFormat.KML || 
 						 queryResultFormat == stSPARQLQueryResultFormat.KMZ) ) {
 					// show map (only valid for KML/KMZ)
@@ -272,21 +287,35 @@ public class QueryBean extends HttpServlet {
 					
 					try{
 						Date date = new Date();
+						
+						// get the absolute path of the temporary directory
+						if(!request.getParameter("handle").toString().contains("timemap")){
+							tempDirectory =  appName + "-temp";
+							
+							basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+							// fix the temporary directory for this web application
+							
+							FileUtils.forceMkdir(new File(basePath));
 
-						FileUtils.forceMkdir(new File(basePath));
-
-						@SuppressWarnings("unchecked")
-						Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
-						while(it.hasNext()){
-							File tbd = new File((it.next()).getAbsolutePath());
-							if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
-								FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
+							@SuppressWarnings("unchecked")
+							Iterator<File> it = FileUtils.iterateFiles(new File(basePath), null, false);
+							while(it.hasNext()){
+								File tbd = new File((it.next()).getAbsolutePath());
+								if (FileUtils.isFileOlder(new File(tbd.getAbsolutePath()), date.getTime())){
+									FileUtils.forceDelete(new File(tbd.getAbsolutePath()));
+								}
 							}
+						} else{ //timemap case
+							tempDirectory =  "js/timemap";
+							basePath = context.getRealPath("/") + tempDirectory + "/";
+							// fix the temporary directory for this web application
 						}
+
+
+						// fix the temporary directory for this web application
 						
 						// create temporary KML/KMZ file
 						File file = new File(basePath + tempKMLFile);
-
 						// if file does not exist, then create it
 						if(!file.exists()){
 							file.createNewFile();
@@ -298,10 +327,18 @@ public class QueryBean extends HttpServlet {
 							strabonWrapper.query(query, format, fos);
 							fos.close();
 						
-							request.setAttribute("pathToKML", 
-									request.getScheme() + "://" +  
-									request.getServerName() + ":" + request.getServerPort() + 
-									"/" + tempDirectory + "/" + tempKMLFile);
+							if(request.getParameter("handle").toString().contains("timemap")){
+								request.setAttribute("pathToKML", tempDirectory+"/"+ tempKMLFile);
+							}else {
+								request.setAttribute("pathToKML", 
+										request.getScheme() + "://" +  
+										request.getServerName() + ":" + request.getServerPort() + 
+										"/" + tempDirectory + "/" + tempKMLFile);
+							}
+							
+						} catch (MalformedQueryException e) {
+							logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());
+							request.setAttribute(ERROR, e.getMessage());
 							
 						} catch (Exception e) {
 							logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
@@ -322,9 +359,21 @@ public class QueryBean extends HttpServlet {
 						strabonWrapper.query(query, format, bos);
 						if (format.equals(Common.getHTMLFormat())) {
 							request.setAttribute(RESPONSE, bos.toString());
-						} else {
+						} 
+						else if(format.equals(Format.PIECHART.toString())
+								|| format.equals(Format.AREACHART.toString()) 
+								|| format.equals(Format.COLUMNCHART.toString())){
+							request.setAttribute("format","CHART");
+							request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
+						}
+	
+						else {
 							request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 						}
+						
+					} catch (MalformedQueryException e) {
+						logger.error("[StrabonEndpoint.QueryBean] Error during querying. {}", e.getMessage());
+						request.setAttribute(ERROR, e.getMessage());
 						
 					} catch (Exception e) {
 						logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);

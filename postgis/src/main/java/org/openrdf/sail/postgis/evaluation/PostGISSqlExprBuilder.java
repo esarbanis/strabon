@@ -5,8 +5,6 @@
  */
 package org.openrdf.sail.postgis.evaluation;
 
-import java.math.BigDecimal;
-
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilderFactory;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder;
 

@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.generaldb.evaluation;
 
@@ -112,6 +116,8 @@ import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 import org.openrdf.sail.rdbms.model.RdbmsURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
+
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -125,7 +131,7 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);;
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);
 
 	protected GeneralDBQueryBuilderFactory factory;
 
@@ -262,8 +268,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
 		
 		if (function == null) {
-			logger.warn("[Strabon.evaluation(FunctionCall)] Extension function <{}> is not supported.", fc.getURI());
-			return null;
+			throw new UnsupportedExtensionFunctionException("Extension function " + fc.getURI()+ " is not supported.");
 		}
 		
 		// get the first argument of the function call
@@ -891,7 +896,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
 					
 					// set increaseIndex to <tt>true</tt> for geometries only (see commend below)
-					if (type == ResultType.WKB) {
+					if (type == ResultType.WKT || type == ResultType.WKTLITERAL) {
 						increaseIndex = true;
 					}
 					
@@ -1164,10 +1169,32 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(expr instanceof GeneralDBSqlSpatialConstructBinary || expr instanceof GeneralDBSqlSpatialConstructUnary || expr instanceof GeneralDBSqlSpatialConstructTriple)
-		{
-			return ResultType.WKB;
+		
+		else if(expr instanceof GeneralDBSqlSpatialConstructUnary)
+		{	
+			GeneralDBSqlSpatialConstructUnary exprUnary = (GeneralDBSqlSpatialConstructUnary) expr;
+			if(exprUnary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
 		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructBinary)
+		{	
+			GeneralDBSqlSpatialConstructBinary exprBinary = (GeneralDBSqlSpatialConstructBinary) expr;
+			if(exprBinary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructTriple)
+		{	
+			GeneralDBSqlSpatialConstructTriple exprTriple = (GeneralDBSqlSpatialConstructTriple) expr;
+			if(exprTriple.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+					
 		else if(expr instanceof GeneralDBSqlSpatialMetricBinary ||
 				expr instanceof GeneralDBSqlSpatialMetricUnary ||
 				expr instanceof GeneralDBSqlMathExpr ||

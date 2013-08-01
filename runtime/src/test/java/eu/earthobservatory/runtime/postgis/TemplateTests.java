@@ -9,14 +9,15 @@
  */
 package eu.earthobservatory.runtime.postgis;
 
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -26,12 +27,9 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
-
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.SimpleTests;
 import eu.earthobservatory.runtime.generaldb.Strabon;
-
-import static org.junit.Assert.assertNull;
 
 /**
  * A set of simple tests on SPARQL query functionality 
@@ -127,7 +125,7 @@ public class TemplateTests {
 	protected static void loadTestData(String inputfile, Strabon strabon)
 		throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 	{
-		strabon.storeInRepo(inputfile, "NTRIPLES");
+		strabon.storeInRepo(inputfile, "NTRIPLES", false);
 	}
 
 	

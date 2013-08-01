@@ -24,8 +24,7 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 
-	public MonetDBBindingIteration(PreparedStatement stmt)
-	throws SQLException
+	public MonetDBBindingIteration(PreparedStatement stmt) throws SQLException
 	{
 		super(stmt);
 	}
@@ -47,10 +46,18 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 		return createResource(rs, index);
 	}
 
-
 	@Override
-	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException
+	protected RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
+	{
+		//Case of spatial constructs
+		Blob labelBlob = rs.getBlob(index + 1); 
+		byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
+		int srid = rs.getInt(index + 2);
+		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
+	}
+	
+	@Override
+	protected RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	{
 		//Case of spatial constructs
 		Blob labelBlob = rs.getBlob(index + 1); 

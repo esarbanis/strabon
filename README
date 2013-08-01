@@ -59,12 +59,12 @@ How to build and run Strabon from command line
 Assuming you have already downloaded Strabon and you are in the top-level
 directory of Strabon, issue the following command to build it from command line:
 
-	$ mvn package
+	$ mvn clean package
 
-The above command runs automatically the JUnit tests. To skip them pass option
-`-DskipTests=true' to the above command. The complete command is the following:
+In order to run automatically the JUnit tests, pass the option `-DskipTests=false' 
+to the above command. The complete command is the following:
 
-	$ mvn -DskipTests=true package
+	$ mvn -DskipTests=false clean package
 
 In case of an error during building of Strabon and assuming that the error does
 not come from the JUnit tests, please have a look at the `Known Issues' section
@@ -229,6 +229,13 @@ Ubuntu machine that is dedicated to PostgreSQL and Strabon.
 #random_page_cost = 1.3 #1.1-2.0
 ## SSD array
 #random_page_cost = 2.0 #1.5-2.5
+### Planner options
+# Increase the following values in order to avoid using the GEQO planner. 
+# Small values (<8) reduce planning time but may produce inferior query plans
+# 
+geqo_threshold = 15 # keep this value larger that the following two parameters
+from_collapse_limit = 14
+join_collapse_limit = 14
 ### Misc
 default_statistics_target    = 10000 
 constraint_exclusion         = on 
@@ -322,8 +329,9 @@ you need to follow to test the functionality of Strabon:
 		3.2. Pairs of files with sparql test queries and expected test results in xml format.
 			 Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
 	4. Create a test class that extends TemplateTest class.
-	5. If you have followed the recommendations the test is ready. If you have different names for your
-	files, insert them explicitly in the constructor of TemplateTest class (super class).
+	5. If you have followed the recommendations the test is ready. If you have different names or location for your
+	files, insert them explicitly in the constructor of the class. WARNING: All prefixes must be placed in file "prefixes" so that
+	every time a namespace changes, we have to change it just once.
 	
 	If you want to run a test:
 	
@@ -338,7 +346,7 @@ you need to follow to test the functionality of Strabon:
 	If you want to run all the tests:
 	
 	1. Go to Strabon directory (root directory of all the subprojects).
-	2. Run "mvn test".
+	2. Run "mvn test -DskipTests=false".
 	3. Optionally you can pass an environment variable with "-DvariableName=variableValue".
 
 
