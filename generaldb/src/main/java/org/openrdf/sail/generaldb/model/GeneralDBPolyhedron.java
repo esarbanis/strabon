@@ -111,7 +111,7 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 
 
 	public String stringValue() {
-		return new String(this.polyhedronStringRep);
+		return new String(this.polyhedronStringRep)+";http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID();
 	}
 
 	@Override
