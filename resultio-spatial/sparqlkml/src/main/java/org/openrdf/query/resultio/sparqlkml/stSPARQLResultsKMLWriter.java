@@ -215,7 +215,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 					String end = period.substring(period.indexOf(",")+2, period.indexOf("]"));
 					xmlWriter.startTag(TIMESPAN_TAG);
 					xmlWriter.textElement(BEGIN_TAG, start);
-					xmlWriter.textElement(END_TAG, end);
+					if(!end.contains("UC")){
+						xmlWriter.textElement(END_TAG, end);	
+					}
 					xmlWriter.endTag(TIMESPAN_TAG);
 
 				}
