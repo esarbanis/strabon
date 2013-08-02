@@ -2232,14 +2232,13 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		filter.closeBracket();
 		//Used to explicitly include SRID
-		if(sridNeeded)
-		{	
-			if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
-			{
-				filter.appendComma();
-				filter.append(sridExpr);
-			}
+		
+		if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+		{
+			filter.appendComma();
+			filter.append(sridExpr);
 		}
+		
 	}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
