@@ -48,6 +48,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.TemporalConstants;
 
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
@@ -198,15 +199,25 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.startTag(PLACEMARK_TAG);
 			for (Binding binding : bindingSet) {
 				
-				if(!binding.getValue().toString().contains("^^")){
+				if(!binding.getValue().toString().contains("^^") || (binding.getValue() instanceof org.openrdf.sail.generaldb.model.GeneralDBPolyhedron)){
 					continue;
 				}
 				Literal literal = (Literal) binding.getValue();
+		
 				if(XMLGSDatatypeUtil.isCalendarDatatype(literal.getDatatype())){
 					hasTimestamp = true;
 					xmlWriter.startTag(TIMESTAMP_TAG);
 					xmlWriter.textElement(WHEN_TAG, literal.getLabel());
 					xmlWriter.endTag(TIMESTAMP_TAG);
+				} else if(literal.getDatatype().stringValue().equalsIgnoreCase(TemporalConstants.PERIOD)){
+					String period = literal.getLabel().replace(")", "]");
+					String start = period.substring(period.indexOf("[")+1, period.indexOf(","));
+					String end = period.substring(period.indexOf(",")+2, period.indexOf("]"));
+					xmlWriter.startTag(TIMESPAN_TAG);
+					xmlWriter.textElement(BEGIN_TAG, start);
+					xmlWriter.textElement(END_TAG, end);
+					xmlWriter.endTag(TIMESPAN_TAG);
+
 				}
 			}
 			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
