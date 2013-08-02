@@ -33,7 +33,7 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			// catch the spatial case and create a new literal
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
-			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep(), dbpolyhedron.getDatatype());
+			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
 		}
 		
 		// write value
