@@ -1245,6 +1245,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
 					{
 						sridNeeded  = false;
+						sridExpr = String.valueOf(WKTHelper.getSRID(((GeneralDBStringValue) tmp).getValue()));
 						break;
 					}
 
@@ -1283,12 +1284,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 
 			//SRID Support
-			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
-			{
-				filter.appendComma();
-				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
-				filter.append(sridExpr);
-				filter.closeBracket();
+			if(sridNeeded)
+			{	
+				if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null && sridNeeded)
+				{
+					filter.appendComma();
+					//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
 			}
 
 			filter.appendComma();
@@ -1507,6 +1511,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
 					{
 						sridNeeded  = false;
+						sridExpr = String.valueOf(WKTHelper.getSRID(((GeneralDBStringValue) tmp).getValue()));
 						break;
 					}
 
@@ -1633,12 +1638,15 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 			filter.closeBracket();
 			//SRID Support
-			if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
-			{
-				filter.appendComma();
-				//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
-				filter.append(sridExpr);
-				filter.closeBracket();
+			if(sridNeeded)
+			{	
+				if(expr instanceof GeneralDBSqlSpatialConstructBinary && expr.getParentNode() == null)
+				{
+					filter.appendComma();
+					//filter.append(((GeneralDBSqlSpatialConstructBinary)expr).getSrid());
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
 			}
 			///
 		}
@@ -1899,6 +1907,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
 					{
 						sridNeeded  = false;
+						sridExpr = String.valueOf(WKTHelper.getSRID(((GeneralDBStringValue) tmp).getValue()));
 						break;
 					}
 				}
@@ -2053,14 +2062,17 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			
 			if(units.equals(OGCConstants.OGCmetre) && !((expr.getRightArg() instanceof GeneralDBDoubleValue) && (((GeneralDBDoubleValue)expr.getRightArg()).getValue().equals(0.0))))
-				filter.closeBracket(); //close Geometry
+			filter.closeBracket(); //close Geometry
 			filter.closeBracket();
 			//SRID Support
-			if(expr instanceof GeneralDBSqlSpatialConstructTriple && expr.getParentNode() == null)
-			{
-				filter.appendComma();
-				filter.append(sridExpr);
-				filter.closeBracket();
+			if(sridNeeded)
+			{	
+				if(expr instanceof GeneralDBSqlSpatialConstructTriple && expr.getParentNode() == null)
+				{
+					filter.appendComma();
+					filter.append(sridExpr);
+					filter.closeBracket();
+				}
 			}
 			///
 		}
@@ -2147,6 +2159,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					else if (tmp instanceof GeneralDBStringValue) //Constant!!
 					{
 						sridNeeded  = false;
+						sridExpr = String.valueOf(WKTHelper.getSRID(((GeneralDBStringValue) tmp).getValue()));
 						break;
 					}
 
@@ -2219,17 +2232,19 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		filter.closeBracket();
 		//Used to explicitly include SRID
-		if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
-		{
-			filter.appendComma();
-			filter.append(sridExpr);
-		}
+		if(sridNeeded)
+		{	
+			if(expr instanceof GeneralDBSqlSpatialConstructUnary && expr.getParentNode() == null)
+			{
+				filter.appendComma();
+				filter.append(sridExpr);
 			}
+		}
+	}
 
 	//Used in all the generaldb boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
-	protected void appendGeneralDBSpatialFunctionTriple(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendGeneralDBSpatialFunctionTriple(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, SpatialFunctionsPostGIS func) throws UnsupportedRdbmsOperatorException
+	{
 		filter.openBracket();
 
 		boolean check1a = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
