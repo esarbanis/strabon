@@ -212,7 +212,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				} else if(literal.getDatatype().stringValue().equalsIgnoreCase(TemporalConstants.PERIOD)){
 					String period = literal.getLabel().replace(")", "]");
 					String start = period.substring(period.indexOf("[")+1, period.indexOf(","));
-					String end = period.substring(period.indexOf(",")+2, period.indexOf("]"));
+					String end = period.trim().substring(period.indexOf(",")+1, period.indexOf("]"));
 					xmlWriter.startTag(TIMESPAN_TAG);
 					xmlWriter.textElement(BEGIN_TAG, start);
 					if(!end.contains("UC")){
