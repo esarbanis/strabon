@@ -286,12 +286,12 @@ $(function() {
         bandInfo: [
             {
                width:          "85%", 
-               intervalUnit:   Timeline.DateTime.DAY, 
+               intervalUnit:   Timeline.DateTime.MONTH, 
 		       intervalPixels: 210
             },
             {
                width:          "15%", 
-               intervalUnit:   Timeline.DateTime.WEEK, 
+               intervalUnit:   Timeline.DateTime.YEAR, 
 		       intervalPixels: 150,
                showEventText:  false,
                trackHeight:    0.2,
