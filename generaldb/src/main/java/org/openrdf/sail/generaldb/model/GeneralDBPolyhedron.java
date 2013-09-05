@@ -111,16 +111,32 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 
 
 	public String stringValue() {
-		return new String(this.polyhedronStringRep)+";http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID();
+		if(String.valueOf(datatype) == GeoConstants.WKT)
+			return new String(this.polyhedronStringRep)+";http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID();
+		else
+			return new String("<http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep);
 	}
 
 	@Override
 	public String toString() {
-		return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
-				+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" + 
-				((StrabonPolyhedron.EnableConstraintRepresentation)  ? 
-						GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
-						+">");
+		if(String.valueOf(datatype) == GeoConstants.WKT)
+		{
+			return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
+					+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" +
+					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
+							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
+							+">");
+		}
+		else if(String.valueOf(datatype) == GeoConstants.WKTLITERAL)
+		{
+			return new String("\""+"<"+"http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep
+					+"\"" + "^^<" +
+					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
+							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
+							+">");
+		}
+		//must not reach this place
+		return null;
 	}
 
 	@Override
