@@ -119,7 +119,7 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
 				+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" + 
 				((StrabonPolyhedron.EnableConstraintRepresentation)  ? 
-						GeoConstants.stRDFSemiLinearPointset : GeoConstants.WKT)
+						GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
 						+">");
 	}
 
