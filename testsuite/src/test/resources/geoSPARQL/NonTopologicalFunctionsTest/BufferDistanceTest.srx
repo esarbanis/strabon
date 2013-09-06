@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='buffer'/>
+	</head>
+	<results>
+		<result>
+			<binding name='buffer'>
+				<literal datatype='http://www.opengis.net/ont/geosparql#wktLiteral'>&lt;http://www.opengis.net/def/crs/EPSG/0/3857&gt; POLYGON ((0 -0.0000000007081155, 0 0.9999999994774795, 0.9999999999775806 0.9999999994774795, 0.9999999999775806 -0.0000000007081155, 0 -0.0000000007081155))</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+
