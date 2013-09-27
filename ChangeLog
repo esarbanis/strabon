@@ -68,6 +68,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	(https://portal.opengeospatial.org/files/?artifact_id=47664, pg. 53) have been 
 	implemented.
 
+	* Changed the definition and implementation of strdf:distance function, by
+	adopting the definition of GeoSPARQL.
+	(bug #23: http://bug.strabon.di.uoa.gr/ticket/23) 
+
 	* Fixed a bug where the GeoSPARQL construct functions did not return the datatype 
 	geo:wktLiteral datatype but strdf:WKT.
 
