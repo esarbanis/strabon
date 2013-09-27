@@ -76,6 +76,9 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
         adopting the definition of GeoSPARQL.
         (bug #35: http://bug.strabon.di.uoa.gr/ticket/35)
 
+	* Added geof:distance and geof:buffer functions, which have the same definition
+	with strdf:distance and strdf:buffer respectively.
+
 	* Fixed a bug where the GeoSPARQL construct functions did not return the datatype 
 	geo:wktLiteral datatype but strdf:WKT.
 
