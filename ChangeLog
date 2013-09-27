@@ -68,6 +68,9 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	(https://portal.opengeospatial.org/files/?artifact_id=47664, pg. 53) have been 
 	implemented.
 
+	* Fixed a bug where the GeoSPARQL construct functions did not return the datatype 
+	geo:wktLiteral datatype but strdf:WKT.
+
 Tue Mar 26 13:28:26 2013   Pyravlos Team
 
 	* Version 3.2.8 released.
