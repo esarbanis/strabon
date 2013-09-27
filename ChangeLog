@@ -79,6 +79,14 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	* Added geof:distance and geof:buffer functions, which have the same definition
 	with strdf:distance and strdf:buffer respectively.
 
+	* Added a download button when performing describe and construct queries at the
+        endpoint.
+        (bug #38: http://bug.strabon.di.uoa.gr/ticket/38)
+
+	* Fixed a bug, where XMLWriter and TSVWriter did not return geometries with the
+	SRID.
+	(bug #47: http://bug.strabon.di.uoa.gr/ticket/47)
+
 	* Fixed a bug where the GeoSPARQL construct functions did not return the datatype 
 	geo:wktLiteral datatype but strdf:WKT.
 
