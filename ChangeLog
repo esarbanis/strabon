@@ -72,6 +72,10 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	adopting the definition of GeoSPARQL.
 	(bug #23: http://bug.strabon.di.uoa.gr/ticket/23) 
 
+	* Changed the definition and implementation of strdf:buffer function, by
+        adopting the definition of GeoSPARQL.
+        (bug #35: http://bug.strabon.di.uoa.gr/ticket/35)
+
 	* Fixed a bug where the GeoSPARQL construct functions did not return the datatype 
 	geo:wktLiteral datatype but strdf:WKT.
 
