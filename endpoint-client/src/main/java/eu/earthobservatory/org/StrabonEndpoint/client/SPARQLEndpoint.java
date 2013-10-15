@@ -18,15 +18,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.params.HostParams;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -40,10 +36,10 @@ import org.openrdf.rio.RDFFormat;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Kallirroi Dogani <kallirroi@di.uoa.gr.
  */
-public class SPARQLEndpoint extends HTTPClient{
+public class SPARQLEndpoint extends HTTPClient {
 
 	public SPARQLEndpoint(String host, int port) {
-		super(host, port);
+		this(host, port, "");
 	}
 	
 	public SPARQLEndpoint(String host, int port, String endpointName) {
@@ -360,7 +356,6 @@ assert(format != null);
 	public EndpointResult ask(String sparqlAsk) {
 		throw new UnsupportedOperationException();
 	}
-	
 	
 	public static void main(String args[]) {
 		if (args.length < 4) {
