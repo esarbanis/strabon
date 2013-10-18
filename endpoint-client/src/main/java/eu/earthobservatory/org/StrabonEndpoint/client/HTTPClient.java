@@ -107,6 +107,6 @@ public abstract class HTTPClient {
 	 * @return
 	 */
 	public String getConnectionURL() {
-		return "http://" + host + ":" + port + "/" + endpointName; 
+		return "http://" + host + ((port == 80) ? "":":" + port) + "/" + endpointName; 
 	}
 }
