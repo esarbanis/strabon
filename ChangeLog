@@ -53,6 +53,11 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 	geo:wktLiteral.
 	(bug #33: http://bug.strabon.di.uoa.gr/ticket/33)
 
+	* Endpoint Client now supports querying of Virtuoso and Parliament endpoints.
+
+	* Endpoint Client now supports store and update operations, but only
+	for Strabon Endpoints.
+
 	* GeoSPARQL functions sfCrosses, sfOverlaps, ehOverlaps do not use the 
 	ST_Relate PostGIS function (bug #24: http://bug.strabon.di.uoa.gr/ticket/24)
 
