@@ -83,6 +83,7 @@ Day Month Date Hour:Min:Sec Year   Pyravlos Team
 
 	* Added geof:distance and geof:buffer functions, which have the same definition
 	with strdf:distance and strdf:buffer respectively.
+	(bug #32: http://bug.strabon.di.uoa.gr/ticket/32)
 
 	* Added a download button when performing describe and construct queries at the
         endpoint.
