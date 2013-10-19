@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openrdf.sesame</groupId>
 		<artifactId>sesame-queryresultio-spatial</artifactId>
-		<version>3.2.9-SNAPSHOT</version>
+		<version>3.2.9</version>
 	</parent>
 
 	<artifactId>sesame-queryresultio-spatial-sparqlxml</artifactId>
