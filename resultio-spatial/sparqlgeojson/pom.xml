@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openrdf.sesame</groupId>
 		<artifactId>sesame-queryresultio-spatial</artifactId>
-		<version>3.2.10-temporals-SNAPSHOT</version>
+		<version>3.2.8-temporals-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sesame-queryresultio-spatial-sparqlgeojson</artifactId>
