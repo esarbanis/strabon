@@ -24,9 +24,6 @@ data represented in an extension of RDF called stRDF. stRDF and stSPARQL have
 been designed for representing and querying geospatial data that changes over
 time (e.g., the growth of a city over the years due to new developments). 
 
-Currently, only the geospatial features of stSPARQL have been implemented fully.
-The temporal features have been implemented under the "temporals" branch of the repository.
-
 Given the very close relationship between stSPARQL and GeoSPARQL which is a 
 recent OGC standard for an extension of SPARQL for querying geospatial metadata,
 we recently provided support for the Core, Geometry and Geometry Topology 
@@ -156,7 +153,10 @@ followed in order to use Strabon using Eclipse:
 1. Install PostgreSQL from http://www.postgresql.org/download/. At the time of
    this writing the latest PostgreSQL version is 9.1.
 2. Install PostGIS from http://postgis.refractions.net/download/. At the time of
-   this writing we have tested Strabon with PostGIS 1.5.3.
+   this writing we have tested Strabon with PostGIS 1.5.3. For the
+   temporal features of stSPARQL download the PostgreSQL temporal extension
+   from here: https://github.com/jeff-davis/PostgreSQL-Temporal and follow
+   the installation guide.
 3. Install Maven from http://maven.apache.org/download.html. At the time of this
    writing the latest Maven version is 3.0.4. 
 4. Install Eclipse from http://www.eclipse.org/downloads/. At the time of this
@@ -295,7 +295,10 @@ followed in order to use Strabon using Eclipse:
 1. Install PostgreSQL from http://www.postgresql.org/download/. At the time of
    this writing the latest PostgreSQL version is 9.1.
 2. Install PostGIS from http://postgis.refractions.net/download/. At the time of
-   this writing we have tested Strabon with PostGIS 1.5.3.
+   this writing we have tested Strabon with PostGIS 1.5.3. For the
+   temporal features of stSPARQL download the PostgreSQL temporal extension
+   from here: https://github.com/jeff-davis/PostgreSQL-Temporal and follow
+   the installation guide.
 3. Install Maven from http://maven.apache.org/download.html. At the time of this
    writing the latest Maven version is 3.0.4. 
 4. Install Eclipse from http://www.eclipse.org/downloads/. At the time of this
