@@ -14,3 +14,4 @@ stderr\.log
 stdout\.log
 endpoint-client/dependency-reduced-pom\.xml
 WEB-INF/faces-config.xml
+\/bin\/

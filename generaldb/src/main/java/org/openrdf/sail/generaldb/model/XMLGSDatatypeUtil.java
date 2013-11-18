@@ -19,6 +19,7 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.MiscConstants;
 import eu.earthobservatory.constants.TemporalConstants;
 
 
@@ -120,7 +121,23 @@ public class XMLGSDatatypeUtil {
 	}
 	
 	/**
-	 * Checks whether the supplied datatype is actually a GML literal.
+	 * Checks whether the supplied datatype is actually a color literal.
+	 * 
+	 * @param datatype
+	 * @return
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 */
+	public static boolean isColorDatatype(URI datatype)
+	{
+		if(datatype == null) {
+			return false;
+		}
+	
+		return MiscConstants.color.equals(datatype.stringValue());
+	}
+	
+	/**
+	 * Checks whether the supplied datatype is actually a Period literal.
 	 * 
 	 * @param datatype
 	 * @return
