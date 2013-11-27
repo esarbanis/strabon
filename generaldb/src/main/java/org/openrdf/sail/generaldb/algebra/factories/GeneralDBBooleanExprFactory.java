@@ -130,6 +130,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
@@ -874,7 +875,8 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 				&& !(function instanceof GeoSparqlConvexHullFunc)
 				&& !(function instanceof GeoSparqlEnvelopeFunc)
 				&& !(function instanceof Centroid)
-				&& !(function instanceof UnionFunc && functionCall.getArgs().size()==1))
+				&& !(function instanceof UnionFunc && functionCall.getArgs().size()==1)
+				&& !(function instanceof IntersectionFunc && functionCall.getArgs().size()==1))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
 			if(right instanceof FunctionCall)
