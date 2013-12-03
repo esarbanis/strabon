@@ -268,6 +268,14 @@ public class NQuadsParser extends ModifiedNTriplesParser {
         String uri = strdf+"/"+ startDate+"_"+ endDate+ "_" +format.getTimeZone().getID(); 
         Resource cont = createURI(uri);
         return cont;
+    }else if(sb.contains("^^<"+TemporalConstants.INSTANT))
+    {
+    	String instant = sb.replace("^^<"+TemporalConstants.INSTANT+">", "").replace("\"","");
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+     	Date point = format.parse(instant);
+        String uri = strdf+"/"+ instant; 
+        Resource cont = createURI(uri);
+        return cont;
     }
     	return null;
     }
