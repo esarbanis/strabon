@@ -116,7 +116,7 @@ public class utils {
 				{
 					String tgraph =  "<"+parser.createValidTimeURI(token[3]).toString()+">";
 					newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-					newQueryString+= tgraph+ TemporalConstants.VALID_TIME_PROPERTY;
+					newQueryString+= tgraph+" "+ TemporalConstants.VALID_TIME_PROPERTY;
 					i=3;
 	
 				}
@@ -137,15 +137,15 @@ public class utils {
 					
 					if(inWhere == false)
 					{
-						newQueryString+="\n GRAPH "+tgraph+ "{ " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-						i=5;
+						newQueryString+="\n GRAPH "+tgraph+ " { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
+						i=4;
 				
 					}
 					else
 					{
 				
 						newQueryString+="\n GRAPH "+tgraph+" { " +token[0]+" "+token[1]+" "+token[2]+" .}\n";
-						newQueryString+=tgraph+ TemporalConstants.VALID_TIME_PROPERTY;
+						newQueryString+=tgraph+" "+ TemporalConstants.VALID_TIME_PROPERTY;
 						i=3;
 					
 					}

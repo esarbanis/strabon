@@ -421,7 +421,7 @@ public abstract class Strabon {
 		try {
 			
 			String reWrittenUpdate = utils.queryRewriting(updateString);
-			System.out.println("REWRITTEN UPDATE= "+ reWrittenUpdate);
+			logger.info("REWRITTEN UPDATE= "+ reWrittenUpdate);
 			
 			update = con.prepareUpdate(QueryLanguage.SPARQL, reWrittenUpdate);
 			
