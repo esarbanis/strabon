@@ -96,14 +96,14 @@
 		</developer>
 		<developer>
 			<id>psmeros</id>
-			<name>Panagiotis Smeros</name>
+			<name>Panayiotis Smeros</name>
 			<email>psmeros@di.uoa.gr</email>
 			<url>http://users.uoa.gr/~psmeros/</url>
 			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
 			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
 			<timezone>+2</timezone>
 			<properties>
-				<picUrl>http://users.uoa.gr/~psmeros/images/me%20and%20plastic%20yiayia.JPG</picUrl>
+				<picUrl>http://users.uoa.gr/~psmeros/images/psmeros.jpg</picUrl>
 			</properties>
 		</developer>
 		<developer>
