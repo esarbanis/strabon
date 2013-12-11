@@ -1,3 +1,5 @@
+	* Fixed a bug that occured when storing quads from endpoint.
+
 Sun Oct 20 20:23:14 2013  Pyravlos Team
 
 	* Version 3.2.9 released.
