@@ -356,66 +356,19 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 			throw new RepositoryException("Could not connect to Strabon.");
 		}
 
-		SailRepositoryConnection conn = strabon.getSailRepoConnection();
-
-			URL source=null;
 		if (url) {
-				source = new URL(src);
+			URL source = new URL(src);
 			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
 				// it would be a security issue if we read from the server's filesystem
 				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
 			}
-				
-			if(!format.equals(RDFFormat.NQUADS.toString()))
-			{
-				if (url) {				
-					conn.add(source, "", RDFFormat.NQUADS, new Resource[1]);
-	
-				} else {
-					conn.add(new StringReader(src), "", RDFFormat.NQUADS, new Resource[1]);
-				}			
-			}
-			else
-			{
-				InputStream in=null;
-				if (url) {				
-					in= source.openStream();
-				} else {
-					in= new ByteArrayInputStream(src.getBytes());
-				}
-				//ByteArrayInputStream in = new ByteArrayInputStream();
-				NQuadsTranslator translator = new NQuadsTranslator(conn);
-							 
-				Collection<Statement> statements = translator.translate(in, "");
-				for(Statement st: statements)
-				{
-					String cont = st.getContext().toString();
-					 String validPeriod= cont;
-					 if(!cont.contains(","))
-					 {
-						 int i = cont.indexOf('"')+1;
-						 int j = cont.lastIndexOf('"');
-						 validPeriod = "\"[" + cont.substring(i,j) + "," + cont.substring(i,j) + "]\"^^<"+TemporalConstants.PERIOD; 
-						 //validPeriod = cont.replace("]",","+cont.substring(i, j)+"]");		 
-					 }
-					 
-					try {
-						Resource newContext = new NQuadsParser().createValidTimeURI(validPeriod);
-						conn.add(st.getSubject(), st.getPredicate(), st.getObject(), newContext);
-					} catch (ParseException e) {
-						logger.error(this.getClass().toString()+": error when constructing the new context");
-						e.printStackTrace();
-					}
-		
-				}
 		}
 
 		strabon.storeInRepo(src, null, context, format, inference);
 		
 		logger.info("[StrabonEndpoint] STORE was successful.");
-		}
+		
 		return true;
-	
 	}
 	
 

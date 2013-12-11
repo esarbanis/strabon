@@ -475,7 +475,7 @@ public abstract class Strabon {
 		} else if(format.equalsIgnoreCase("TURTLE") || format.equals(RDFFormat.TURTLE.getName())) {
 			realFormat =  RDFFormat.TURTLE;
 			
-		}else if(format.equalsIgnoreCase("NQUADS")) {
+		}else if(format.equalsIgnoreCase("NQUADS") || format.equals(RDFFormat.NQUADS.getName())) {
 			realFormat =  RDFFormat.NQUADS;
 		} 
 		else {
