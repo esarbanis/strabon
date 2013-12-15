@@ -58,8 +58,8 @@ public class utils {
 			String updateREGEX= "((where([\\s])*\\{(.)*\\})|(WHERE([\\s])*\\{(.)*\\}))";
 	
 			//check whether the query contains quadruples	
-			String Word="((\\w)|(\\p{InGreek}))+";
-			String URI="(<([\\S])*>)|("+Word+":"+Word+")";
+			String Word="((\\w)|(\\p{InGreek})|-)+";
+			String URI="(<([\\S-])*>)|("+Word+":"+Word+")";
 			String Literal="\".*\"(\\^\\^"+URI+")?";
 			String Variable="\\?"+Word;
 			
