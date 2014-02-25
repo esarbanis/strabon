@@ -80,13 +80,13 @@
 		ul#icons span.ui-icon {float: left; margin: 0 1px;}
 	</style>
 	
-		<title>TELEIOS: Strabon Endpoint</title>
+		<title>Strabon Endpoint</title>
 	
 	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
 <!-- include TELEIOS header and description -->
-<jsp:include page="teleios-header.html"/>
+<jsp:include page="header.html"/>
 <!-- include TELEIOS header and description -->
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Describe">

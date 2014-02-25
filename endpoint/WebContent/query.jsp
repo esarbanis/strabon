@@ -315,7 +315,7 @@ $(function() {
     
  	<!-- jQuery end -->
  
-	<title>TELEIOS: Strabon Endpoint</title>
+	<title>Strabon Endpoint</title>
 	   <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -355,7 +355,7 @@ $(function() {
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
 
 <!-- include TELEIOS header and description -->
-<%@ include file="teleios-header.html"%>
+<%@ include file="header.html"%>
 <!-- include TELEIOS header and description -->
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Query">
