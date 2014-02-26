@@ -65,7 +65,12 @@
         
         <constructor-arg type="int" >
             <!-- Query limit -->
-            <value>1000</value>
+            <value>0</value>
+        </constructor-arg>
+        
+        <constructor-arg type="boolean" >
+            <!-- Load from File -->
+            <value>true</value>
         </constructor-arg>
         
         <constructor-arg type="java.lang.String" >
