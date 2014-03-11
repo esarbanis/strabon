@@ -159,7 +159,7 @@
 	<tr>
 		<td colspan=2 id="output">
 			<div style="font-size:13px"> 
-				You must be logged in to store.
+				You must be logged in to store, or run in localhost.
 			</div>
 		</td>	
 	</tr>

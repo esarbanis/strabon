@@ -186,7 +186,7 @@ WHERE {
 	                <!-- Statement -->
 	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>	                
 
-SELECT (?o AS ?class)
+SELECT DISTINCT (?o AS ?class)
 WHERE { 
 	?s rdf:type ?o
 }
@@ -225,7 +225,7 @@ WHERE {
 				<list>
 					<!-- Link to bean: two arguemnts -->
 					<value>Configuration</value>
-					<value>ChangeConnection</value>
+					<value>connection.jsp</value>
 				</list>
             </list>
          </constructor-arg>

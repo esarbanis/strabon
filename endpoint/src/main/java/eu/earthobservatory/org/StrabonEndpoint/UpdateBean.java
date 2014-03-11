@@ -10,6 +10,7 @@
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URLDecoder;
 
 import javax.servlet.RequestDispatcher;
@@ -38,6 +39,22 @@ public class UpdateBean extends HttpServlet {
 	
 	private StrabonBeanWrapper strabonWrapper;
 	
+	//Check for localHost. Works with ipV4 and ipV6
+	public static boolean isLocalClient(HttpServletRequest request) { 
+		HttpServletRequest testRequest = request; 
+		try { 
+		   	InetAddress remote = InetAddress.getByName(testRequest.getRemoteAddr()); 
+		    if (remote.isLoopbackAddress()) { 
+		        return true;
+		    } 
+		    InetAddress localHost = InetAddress.getLocalHost(); 
+		    String localAddress = localHost.getHostAddress(); 
+		    String remoteAddress = remote.getHostAddress(); 
+		    return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress)); 
+		} catch (Exception e) { } 
+		return false; 
+	} 
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -59,7 +76,7 @@ public class UpdateBean extends HttpServlet {
 		
 		request.setCharacterEncoding("UTF-8");						
 		ServletContext context = getServletContext();
-		if(!request.getLocalAddr().equals("127.0.0.1")) {
+		if(!isLocalClient(request)) {
 			Authenticate authenticate = new Authenticate();
 			String authorization = request.getHeader("Authorization");
 	   		

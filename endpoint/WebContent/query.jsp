@@ -306,7 +306,7 @@ $(function() {
 
     </script>
     
-     </script>
+
     <link href="js/timemap/examples.css" type="text/css" rel="stylesheet"/>
     <style>
     div#timelinecontainer{ height: 310px; }
@@ -438,7 +438,7 @@ $(function() {
 <tr>
 	<td id="output" colspan=2>
 		<div style="font-size:13px"> 
-			You must be logged in to perform update queries.
+			You must be logged in to perform update queries, or run in localhost.
 		</div>
 	</td>
 </tr>
