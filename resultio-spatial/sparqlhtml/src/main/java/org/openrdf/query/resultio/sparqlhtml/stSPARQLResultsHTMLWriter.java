@@ -147,8 +147,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 								"}";
 							href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");						
 						}
-						else{
-							System.out.println("url:"+ boundValue.toString());
+						else{							
 							href = boundValue.toString();
 						}
 						xmlWriter.setAttribute(LINK_REF, href);
