@@ -72,6 +72,8 @@
             <!-- Load from File -->
             <value>true</value>
         </constructor-arg>
+     
+     	<!-- Boolean variable linkURL in stSPARQLResultsHTMLWriter.java (line 115) to change the links between web and describe -->
         
         <constructor-arg type="java.lang.String" >
             <!-- Default prefixes -->
