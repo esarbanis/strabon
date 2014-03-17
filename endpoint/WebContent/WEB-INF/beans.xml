@@ -196,7 +196,44 @@ WHERE {
 					<!-- Hander (plain, download, map or map_local)-->
 					<value>Plain</value>
 	            </list>
-	        	      
+	            
+	        	<list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>Find the number of triples that appear in the dataset.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[SELECT (COUNT(?s) AS ?NumOfTriples)
+WHERE { 
+	?s ?p ?o
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
+	            </list>
+	            <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>Present the first ten triples of the dataset.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[SELECT *
+WHERE { 
+	?s ?p ?o
+}
+LIMIT 10
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
+	            </list>      
 
 				<list>
              		<!-- Single valued elements correspond to headers -->

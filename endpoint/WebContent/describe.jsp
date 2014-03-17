@@ -208,12 +208,13 @@
 
 </table></td></tr>
 
-<% if (request.getAttribute("response") != null) {%>
-	<!-- Response -->
-	<tr><%=request.getAttribute("response") %></tr>
-	<!-- Response -->
-<%}%>
+
 </table>
 </form>
+<% if (request.getAttribute("response") != null) {%>
+	<!-- Response -->
+	<div><%=request.getAttribute("response") %></div>
+	<!-- Response -->
+<%}%>
 </body>
 </html>
