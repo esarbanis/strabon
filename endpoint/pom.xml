@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.2-MonetDB-SNAPSHOT</version>
+		<version>3.2.2-MonetDB</version>
 	</parent>
 
 	<artifactId>strabon-endpoint</artifactId>
