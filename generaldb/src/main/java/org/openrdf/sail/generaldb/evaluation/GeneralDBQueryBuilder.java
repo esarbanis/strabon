@@ -29,15 +29,15 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBRefIdColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbs;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
@@ -59,7 +59,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
@@ -67,16 +66,20 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlShift;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
@@ -532,8 +535,8 @@ public abstract class GeneralDBQueryBuilder {
 		 * FIXME
 		 */
 		//Relationships - boolean - stSPARQL
-		else if (expr instanceof GeneralDBSqlAnyInteract) {
-			append((GeneralDBSqlAnyInteract)expr, filter);
+		else if (expr instanceof GeneralDBSqlCrosses) {
+			append((GeneralDBSqlCrosses)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlIntersects) {
 			append((GeneralDBSqlIntersects)expr, filter);
@@ -541,26 +544,20 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlContains) {
 			append((GeneralDBSqlContains)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlCovers) {
-			append((GeneralDBSqlCovers)expr, filter);
-		}
-		else if (expr instanceof GeneralDBSqlCoveredBy) {
-			append((GeneralDBSqlCoveredBy)expr, filter);
-		}
 		else if (expr instanceof GeneralDBSqlEqualsSpatial) {
 			append((GeneralDBSqlEqualsSpatial)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlInside) {
-			append((GeneralDBSqlInside)expr, filter);
+		else if (expr instanceof GeneralDBSqlWithin) {
+			append((GeneralDBSqlWithin)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlTouch) {
-			append((GeneralDBSqlTouch)expr, filter);
+		else if (expr instanceof GeneralDBSqlTouches) {
+			append((GeneralDBSqlTouches)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlDisjoint) {
 			append((GeneralDBSqlDisjoint)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlOverlap) {
-			append((GeneralDBSqlOverlap)expr, filter);
+		else if (expr instanceof GeneralDBSqlOverlaps) {
+			append((GeneralDBSqlOverlaps)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlLeft) {
 			append((GeneralDBSqlLeft)expr, filter);
@@ -576,6 +573,12 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if (expr instanceof GeneralDBSqlMbbIntersects) {
 			append((GeneralDBSqlMbbIntersects)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlMbbWithin) {
+			append((GeneralDBSqlMbbWithin)expr, filter);
+		}
+		else if (expr instanceof GeneralDBSqlMbbContains) {
+			append((GeneralDBSqlMbbContains)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlMbbEquals) {
 			append((GeneralDBSqlMbbEquals)expr, filter);
@@ -660,9 +663,6 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoUnion) {
 			append((GeneralDBSqlGeoUnion)expr, filter);
 		}
-		else if (expr instanceof GeneralDBSqlGeoBuffer) {
-			append((GeneralDBSqlGeoBuffer)expr, filter);
-		}
 		else if (expr instanceof GeneralDBSqlGeoTransform) {
 			append((GeneralDBSqlGeoTransform)expr, filter);
 		}
@@ -675,11 +675,14 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoSymDifference) {
 			append((GeneralDBSqlGeoSymDifference)expr, filter);
 		}
-		//Metrics
-		else if (expr instanceof GeneralDBSqlGeoDistance) {
-			append((GeneralDBSqlGeoDistance)expr, filter);
+		else if (expr instanceof GeneralDBSqlDiffDateTime) {
+			append((GeneralDBSqlDiffDateTime)expr, filter);
 		}
-
+		/* PostGIS Construct functions */
+		else if (expr instanceof GeneralDBSqlST_MakeLine) {
+			append((GeneralDBSqlST_MakeLine)expr, filter);
+		}
+		/* PostGIS Construct functions */
 		/**
 		 * end of my addition
 		 */
@@ -688,19 +691,24 @@ public abstract class GeneralDBQueryBuilder {
 		}
 	}
 
-	protected void dispatchTripleSqlOperator(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void dispatchTripleSqlOperator(TripleGeneralDBOperator expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if (expr instanceof GeneralDBSqlRelate) {
 			append((GeneralDBSqlRelate)expr, filter);
+		}
+		//Metrics
+		else if (expr instanceof GeneralDBSqlGeoDistance) {
+			append((GeneralDBSqlGeoDistance)expr, filter);
+		}
+		//Construct
+		else if (expr instanceof GeneralDBSqlGeoBuffer) {
+			append((GeneralDBSqlGeoBuffer)expr, filter);
 		}
 		else
 		{
 			throw unsupported(expr);
 		}
-			}
-
-
+	}
 
 	protected void dispatchOther(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -941,10 +949,10 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 
 	//Spatial Relationship Functions
-	protected abstract void append(GeneralDBSqlAnyInteract expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 	
-	protected abstract void append(GeneralDBSqlIntersects expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlCrosses expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlContains expr, GeneralDBSqlExprBuilder filter)
@@ -953,19 +961,13 @@ public abstract class GeneralDBQueryBuilder {
 	protected abstract void append(GeneralDBSqlEqualsSpatial expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
-	protected abstract void append(GeneralDBSqlInside expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlWithin expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
-	protected abstract void append(GeneralDBSqlCovers expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlTouches expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
-	protected abstract void append(GeneralDBSqlCoveredBy expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException;
-
-	protected abstract void append(GeneralDBSqlTouch expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException;
-
-	protected abstract void append(GeneralDBSqlOverlap expr, GeneralDBSqlExprBuilder filter)
+	protected abstract void append(GeneralDBSqlOverlaps expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlDisjoint expr, GeneralDBSqlExprBuilder filter)
@@ -987,10 +989,14 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 	protected abstract void append(GeneralDBSqlMbbIntersects expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlMbbWithin expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlMbbContains expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
 	protected abstract void append(GeneralDBSqlMbbEquals expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
-	//GeoSPARQL - Spatial Relationship Functions 
+	//GeoSPARQL - Spatial Relationship Functions
 	//Simple Features
 	protected abstract void append(GeneralDBSqlSF_Contains expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
@@ -1094,6 +1100,22 @@ public abstract class GeneralDBQueryBuilder {
 	protected abstract void append(GeneralDBSqlGeoSymDifference expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
+	/* PostGIS Construct Functions */
+	protected abstract void append(GeneralDBSqlST_MakeLine expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	protected abstract void append(GeneralDBSqlST_Centroid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	/* PostGIS Construct Functions */
+	
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	protected abstract void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	/***/
+	
 	//Spatial Metric Functions
 	protected abstract void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
@@ -1146,9 +1168,8 @@ public abstract class GeneralDBQueryBuilder {
 
 	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter);
 
-	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) 
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if(constr instanceof GeneralDBSqlGeoUnion)
 		{
 			append((GeneralDBSqlGeoUnion)constr, filter);
@@ -1185,12 +1206,24 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlGeoSymDifference)constr, filter);
 		}
+		else if(constr instanceof GeneralDBSqlGeoSymDifference)
+		{
+			append((GeneralDBSqlGeoSymDifference)constr, filter);
+		}
+		/* PostGIS functions */
+		else if(constr instanceof GeneralDBSqlST_MakeLine)
+		{
+			append((GeneralDBSqlST_MakeLine)constr, filter);
+		}
+		else if(constr instanceof GeneralDBSqlST_Centroid)
+		{
+			append((GeneralDBSqlST_Centroid)constr, filter);
+		}
+		/* PostGIS functions */
+	}
 
-			}
-
-	protected void appendMetricFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) 
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void appendMetricFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		if(constr instanceof GeneralDBSqlGeoDistance)
 		{
 			append((GeneralDBSqlGeoDistance)constr, filter);
@@ -1199,10 +1232,20 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlGeoArea)constr, filter);
 		}
+	}
 
-
-			}
-
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	protected void appendCastToEpoch(GeneralDBSqlExprBuilder filter)
+	{
+//		filter.epochCastBefore();
+//		filter.epochCastAfter();
+	}	
+	/***/
+	
 	protected void appendCastToDouble(GeneralDBSqlExprBuilder filter)
 	{
 		filter.doubleCast();
@@ -1215,5 +1258,4 @@ public abstract class GeneralDBQueryBuilder {
 
 	protected abstract void appendRelate(BinaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter, char[] intersectionPattern)
 			throws UnsupportedRdbmsOperatorException;
-
 }

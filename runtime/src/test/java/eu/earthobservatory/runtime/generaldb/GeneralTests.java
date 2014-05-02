@@ -1,22 +1,20 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import eu.earthobservatory.runtime.generaldb.Strabon;
-import eu.earthobservatory.runtime.postgis.SimpleTests;
 
 abstract public class GeneralTests {
 	public static Strabon strabon;
@@ -57,7 +55,7 @@ abstract public class GeneralTests {
 			"rdfs:label ?placename ; "+	
 			"geo:geometry ?placegeo ; "+
 			"a ?type. "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query2 = 
@@ -68,7 +66,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query3 = 
@@ -79,7 +77,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query4 =
@@ -90,8 +88,8 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) " +
-			"&& strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo) " +
+			"&& strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query5 =
@@ -102,8 +100,8 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)). "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)). "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)). "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)). "+
 			"}";
 
 	protected String query6 =
@@ -115,7 +113,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo)) "+
 			"}";
 
 	protected String query7 = 
@@ -136,7 +134,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+
 			"}";
 
 	protected String queryBufferVar =
@@ -147,7 +145,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
 	protected String queryBufferConst =
@@ -158,7 +156,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
 	protected String queryBufferConst2 =
@@ -169,7 +167,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(\"POINT(23.72873 37.97205)\"^^<http://strdf.di.uoa.gr/ontology#WKT>,0.0572),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(\"POINT(23.72873 37.97205)\"^^<http://strdf.di.uoa.gr/ontology#WKT>,0.0572),?placegeo)) "+
 			"}";
 
 	protected String queryBufferConstInSelect =
@@ -180,7 +178,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2.5),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(?placegeo,2.5),?placegeo)) "+
 			"}";
 
 
@@ -192,7 +190,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,2),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(?placegeo,2),?placegeo)) "+
 			"}";
 
 	protected String queryBufferSelectFilterB =
@@ -203,7 +201,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"	geo:geometry ?placegeo ; "+
 			"	rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:buffer(?placegeo,?ext),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:buffer(?placegeo,?ext),?placegeo)) "+
 			"}";
 
 	protected String queryEnvelopeConvexHull = 
@@ -214,7 +212,7 @@ abstract public class GeneralTests {
 			"	a ?type ; "+
 			"   geo:geometry ?placegeo ; "+
 			"   rdfs:label ?placename . "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,strdf:envelope(?placegeo)),?placegeo) && strdf:anyInteract(strdf:convexHull(?placegeo),?placegeo)) "+
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,strdf:envelope(?placegeo)),?placegeo) && strdf:mbbIntersects(strdf:convexHull(?placegeo),?placegeo)) "+
 			"}";
 
 	protected String queryMetrics1 =
@@ -273,7 +271,7 @@ abstract public class GeneralTests {
 			"	rdfs:label ?placename ; "+	
 			"	geo:geometry ?placegeo ; "+
 			"	a ?type. "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 //			"&& strdf:dimension(?placegeo) - 1 < 3" +
 			") "+
 			"}";
@@ -286,7 +284,7 @@ abstract public class GeneralTests {
 		"	rdfs:label ?placename ; "+	
 		"	geo:geometry ?placegeo ; "+
 		"	a ?type. "+
-		"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+		"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 		"&& strdf:dimension(?placegeo) - 1 < 3) "+
 		"}";
 
@@ -298,7 +296,7 @@ abstract public class GeneralTests {
 			"	rdfs:label ?placename ; "+	
 			"	geo:geometry ?placegeo ; "+
 			"	a ?type. "+
-			"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+			"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 //			"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3" +
 			") "+
 			"}";
@@ -311,7 +309,7 @@ abstract public class GeneralTests {
 		"	rdfs:label ?placename ; "+	
 		"	geo:geometry ?placegeo ; "+
 		"	a ?type. "+
-		"FILTER(strdf:anyInteract(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
+		"FILTER(strdf:mbbIntersects(strdf:union(?placegeo,?placegeo),?placegeo) && strdf:isSimple(?placegeo) "+ 
 		"&& strdf:dimension(\"POINT(0 0)\") - 1 < 3) "+
 		"}";
 	

@@ -21,7 +21,6 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryBase;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.managers.BNodeManager;
 import org.openrdf.sail.generaldb.managers.LiteralManager;
@@ -41,6 +40,8 @@ import org.openrdf.sail.rdbms.model.RdbmsURI;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 import com.vividsolutions.jts.io.ParseException;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Provides basic value creation both for traditional values as well as values
@@ -239,26 +240,26 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 
     /****************************************************/
     public RdbmsLiteral asRdbmsLiteral(GeneralDBPolyhedron polyhedron) {
-            try {
-                    URI wkt = new URIImpl(GeoConstants.WKT);
-                    RdbmsLiteral literal = new RdbmsLiteral(polyhedron.getInternalId(), polyhedron.getVersion(),new LiteralImpl(polyhedron.stringValue(), wkt));
+        try {
+                URI wkt = new URIImpl(GeoConstants.WKT);
+                RdbmsLiteral literal = new RdbmsLiteral(polyhedron.getInternalId(), polyhedron.getVersion(),new LiteralImpl(polyhedron.stringValue(), wkt));
 
-                    if (polyhedron instanceof GeneralDBPolyhedron) {
-                            literals.cache(literal);
-                            return (RdbmsLiteral)literal;
-                    }
+                if (polyhedron instanceof GeneralDBPolyhedron) {
+                        literals.cache(literal);
+                        return (RdbmsLiteral)literal;
+                }
 
-                    RdbmsLiteral lit = literals.findInCache(literal);
-                    
-                    if (lit == null) {
-                            lit = new RdbmsLiteral(literal);
-                            literals.cache(lit);
-                    }
-                    return lit;
-            }
-            catch (InterruptedException e) {
-                    throw new RdbmsRuntimeException(e);
-            }
+                RdbmsLiteral lit = literals.findInCache(literal);
+                
+                if (lit == null) {
+                        lit = new RdbmsLiteral(literal);
+                        literals.cache(lit);
+                }
+                return lit;
+        }
+        catch (InterruptedException e) {
+                throw new RdbmsRuntimeException(e);
+        }
     }
     
     public RdbmsLiteral asRdbmsLiteral(StrabonPolyhedron polyhedron) {

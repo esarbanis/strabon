@@ -16,18 +16,19 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBFalseValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbs;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlExtDiffDateTime;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoArea;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
@@ -46,7 +47,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoUnion;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLeft;
@@ -54,15 +54,19 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbEquals;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbIntersects;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlaps;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRelate;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRight;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_Centroid;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlST_MakeLine;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouches;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlWithin;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.egenhofer.GeneralDBSqlEgenhofer_Contains;
 import org.openrdf.sail.generaldb.algebra.egenhofer.GeneralDBSqlEgenhofer_CoveredBy;
@@ -89,11 +93,13 @@ import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Overlaps;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Touches;
 import org.openrdf.sail.generaldb.algebra.sf.GeneralDBSqlSF_Within;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+
 /**
  * Support method to create SQL expressions.
- * 
+ *
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author James Leigh
- * 
+ *
  */
 public class GeneralDBExprSupport {
 
@@ -267,177 +273,200 @@ public class GeneralDBExprSupport {
 		// no constructor
 	}
 
-	/**
-	 * my addition
-	 * FIXME  
-	 * 
-	 */
-
-	//XXX Spatial Relationship Functions - all 10 of them - stSPARQL++
-	public static GeneralDBSqlExpr anyInteract(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlAnyInteract(left, right);
+	//XXX Spatial Relationship Functions - all 9 of them - stSPARQL++
+	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlEqualsSpatial(left, right);
 	}
 
 	public static GeneralDBSqlExpr disjoint(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlDisjoint(left, right);
 	}
 
-	public static GeneralDBSqlExpr touch(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlTouch(left, right);
-	}
-	
 	public static GeneralDBSqlExpr intersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlIntersects(left, right);
 	}
-	
-	public static GeneralDBSqlExpr mbbIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlMbbIntersects(left, right);
-	}
-	
-	public static GeneralDBSqlExpr mbbEqualsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlMbbEquals(left, right);
+
+	public static GeneralDBSqlExpr touches(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlTouches(left, right);
 	}
 
-	public static GeneralDBSqlExpr equalsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlEqualsSpatial(left, right);
+	public static GeneralDBSqlExpr crosses(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlCrosses(left, right);
+	}
+
+	public static GeneralDBSqlExpr within(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlWithin(left, right);
 	}
 
 	public static GeneralDBSqlExpr contains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlContains(left, right);
 	}
 
-	public static GeneralDBSqlExpr covers(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlCovers(left, right);
-	}
-
-	public static GeneralDBSqlExpr inside(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlInside(left, right);
-	}
-
-	public static GeneralDBSqlExpr coveredBy(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlCoveredBy(left, right);
-	}
-
-	public static GeneralDBSqlExpr overlap(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		return new GeneralDBSqlOverlap(left, right);
+	public static GeneralDBSqlExpr overlaps(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlOverlaps(left, right);
 	}
 
 	public static GeneralDBSqlExpr relate(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) {
 		return new GeneralDBSqlRelate(left, right,third);
 	}
-	
+
+	// mbb functions
+
+	public static GeneralDBSqlExpr mbbIntersects(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbIntersects(left, right);
+	}
+	public static GeneralDBSqlExpr mbbWithin(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbWithin(left, right);
+	}
+
+	public static GeneralDBSqlExpr mbbEqualsGeo(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbEquals(left, right);
+	}
+
+	public static GeneralDBSqlExpr mbbContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+		return new GeneralDBSqlMbbContains(left, right);
+	}
+
+	// directional
+
 	public static GeneralDBSqlExpr left(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlLeft(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr right(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlRight(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr above(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlAbove(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr below(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlBelow(left, right);
 	}
 
 	//XXX Spatial Construct Functions
-	public static GeneralDBSqlExpr geoUnion(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public static GeneralDBSqlExpr geoUnion(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
 
-		return new GeneralDBSqlGeoUnion(left, right);
+		return new GeneralDBSqlGeoUnion(left, right, resultType);
 	}
 
-	public static GeneralDBSqlExpr geoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public static GeneralDBSqlExpr geoBuffer(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third, String resultType) {
 
-		return new GeneralDBSqlGeoBuffer(left, right);
-	}
-	
-	public static GeneralDBSqlExpr geoTransform(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-
-		return new GeneralDBSqlGeoTransform(left, right);
-	}
-	
-	public static GeneralDBSqlExpr geoEnvelope(GeneralDBSqlExpr expr) {
-
-		return new GeneralDBSqlGeoEnvelope(expr);
-	}
-	
-	public static GeneralDBSqlExpr geoConvexHull(GeneralDBSqlExpr expr) {
-
-		return new GeneralDBSqlGeoConvexHull(expr);
-	}
-	
-	public static GeneralDBSqlExpr geoBoundary(GeneralDBSqlExpr expr) {
-
-		return new GeneralDBSqlGeoBoundary(expr);
+		return new GeneralDBSqlGeoBuffer(left, right, third, resultType);
 	}
 
-	public static GeneralDBSqlExpr geoIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public static GeneralDBSqlExpr geoTransform(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
 
-		return new GeneralDBSqlGeoIntersection(left, right);
+		return new GeneralDBSqlGeoTransform(left, right, resultType);
 	}
-	
-	public static GeneralDBSqlExpr geoDifference(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
-		return new GeneralDBSqlGeoDifference(left, right);
-	}
-	
-	public static GeneralDBSqlExpr geoSymDifference(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+	public static GeneralDBSqlExpr geoEnvelope(GeneralDBSqlExpr expr, String resultType) {
 
-		return new GeneralDBSqlGeoSymDifference(left, right);
+		return new GeneralDBSqlGeoEnvelope(expr, resultType);
 	}
-	
+
+	public static GeneralDBSqlExpr geoConvexHull(GeneralDBSqlExpr expr, String resultType) {
+
+		return new GeneralDBSqlGeoConvexHull(expr, resultType);
+	}
+
+	public static GeneralDBSqlExpr geoBoundary(GeneralDBSqlExpr expr, String resultType) {
+
+		return new GeneralDBSqlGeoBoundary(expr, resultType);
+	}
+
+	public static GeneralDBSqlExpr geoIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
+
+		return new GeneralDBSqlGeoIntersection(left, right, resultType);
+	}
+
+	public static GeneralDBSqlExpr geoDifference(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
+
+		return new GeneralDBSqlGeoDifference(left, right, resultType);
+	}
+
+	public static GeneralDBSqlExpr geoSymDifference(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
+
+		return new GeneralDBSqlGeoSymDifference(left, right, resultType);
+	}
+
+	/** PostGIS Construct functions **/
+	// Binary
+	public static GeneralDBSqlExpr st_MakeLine(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
+
+		return new GeneralDBSqlST_MakeLine(left, right, resultType);
+	}
+	// Unary
+	public static GeneralDBSqlExpr st_Centroid(GeneralDBSqlExpr expr, String resultType) {
+
+		return new GeneralDBSqlST_Centroid(expr, resultType);
+	}
+	/** PostGIS Construct functions **/
+
+
+	/** Addition for datetime metric functions
+	 *
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 *
+	 */
+	public static GeneralDBSqlExpr extDiffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+
+		return new GeneralDBSqlExtDiffDateTime(left, right);
+	}
+	/***/
+
+	/** Addition for datetime metric functions
+	 *
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 *
+	 */
+	public static GeneralDBSqlExpr diffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
+
+		return new GeneralDBSqlDiffDateTime(left, right);
+	}
+	/***/
+
 	//XXX Spatial Metric Functions
 	public static GeneralDBSqlExpr geoArea(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoArea(expr);
 	}
-	
-	public static GeneralDBSqlExpr geoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
-		return new GeneralDBSqlGeoDistance(left, right);
+	public static GeneralDBSqlExpr geoDistance(GeneralDBSqlExpr left, GeneralDBSqlExpr right, GeneralDBSqlExpr third) {
+		return new GeneralDBSqlGeoDistance(left, right,third);
 	}
-	
 
 	//XXX Spatial Property Functions
 	public static GeneralDBSqlExpr dimension(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoDimension(expr);
 	}
 
 	public static GeneralDBSqlExpr geometryType(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoGeometryType(expr);
 	}
-	
-	public static GeneralDBSqlExpr asText(GeneralDBSqlExpr expr) {
 
+	public static GeneralDBSqlExpr asText(GeneralDBSqlExpr expr) {
 		return new GeneralDBSqlGeoAsText(expr);
 	}
-	
+
 	public static GeneralDBSqlExpr asGML(GeneralDBSqlExpr expr) {
 		return new GeneralDBSqlGeoAsGML(expr);
 	}
 
 	public static GeneralDBSqlExpr srid(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoSrid(expr);
 	}
-	
-	public static GeneralDBSqlExpr isEmpty(GeneralDBSqlExpr expr) {
 
+	public static GeneralDBSqlExpr isEmpty(GeneralDBSqlExpr expr) {
 		return new GeneralDBSqlGeoIsEmpty(expr);
 	}
 
 	public static GeneralDBSqlExpr isSimple(GeneralDBSqlExpr expr) {
-
 		return new GeneralDBSqlGeoIsSimple(expr);
 	}
-	
 
 
-	//XXX GeoSPARQL - Spatial Relations
+	// GeoSPARQL - Spatial Relations
 	//Simple Features
 	public static GeneralDBSqlExpr sfContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlSF_Contains(left, right);
@@ -466,7 +495,7 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr sfTouches(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlSF_Touches(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr sfWithin(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlSF_Within(left, right);
 	}
@@ -499,11 +528,11 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr rccNonTangentialProperPart(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlRCC8_Ntpp(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr rccNonTangentialProperPartInverse(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlRCC8_Ntppi(left, right);
 	}
-	
+
 	//Egenhofer
 	public static GeneralDBSqlExpr ehContains(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEgenhofer_Contains(left, right);
@@ -532,14 +561,8 @@ public class GeneralDBExprSupport {
 	public static GeneralDBSqlExpr ehMeet(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEgenhofer_Meet(left, right);
 	}
-	
+
 	public static GeneralDBSqlExpr ehOverlap(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		return new GeneralDBSqlEgenhofer_Overlap(left, right);
 	}
-
-
-	/**
-	 * end of my addition
-	 */
-
 }

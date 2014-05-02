@@ -25,19 +25,13 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbs;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnyInteract;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCoveredBy;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCovers;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDisjoint;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDateTimeMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEqualsSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlInside;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLike;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlLowerCase;
@@ -45,7 +39,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOverlap;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlRegex;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlShift;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
@@ -53,7 +46,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlTouch;
 import org.openrdf.sail.generaldb.algebra.GeneralDBStringValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBTrueValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
@@ -339,7 +331,7 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 	 {
 		 meetUnarySqlOperator(node);
 	 }
-
+	 
 	 public void meet(GeneralDBSqlSpatialMetricBinary node) throws X 
 	 {
 		 meetBinarySqlOperator(node);
@@ -373,6 +365,17 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 		 meetNode(node);
 	 }
 
+	 /** Addition for datetime metric functions
+	  * 
+	  * @author George Garbis <ggarbis@di.uoa.gr>
+	  * 
+	  */ 
+	public void meet(GeneralDBSqlDateTimeMetricBinary node) 
+	throws X {
+		meetBinarySqlOperator(node);
+	}
+	/***/
+	
 	 //	public void meet(GeneralDBSqlAnyInteract node) throws X
 	 //	{
 	 //		meetBinarySqlOperator(node);

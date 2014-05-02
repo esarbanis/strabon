@@ -1,8 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 1997-2007.
- * Copyright James Leigh (c) 2006.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.query.algebra.evaluation.impl;
 
@@ -31,6 +34,7 @@ import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
@@ -186,7 +190,15 @@ public class stSPARQLConstantOptimizer implements QueryOptimizer {
 			if(!(function instanceof SpatialConstructFunc) && 
 					!(function instanceof SpatialMetricFunc) &&
 					!(function instanceof SpatialPropertyFunc) &&
-					!(function instanceof SpatialRelationshipFunc) )
+					!(function instanceof SpatialRelationshipFunc) 
+					/**
+					 * Addition for datetime metric functions
+					 * 
+					 * @author George Garbis <ggarbis@di.uoa.gr>
+					 * 
+					 */
+					&& !(function instanceof DateTimeMetricFunc)
+				)
 			{
 				super.meet(functionCall);
 

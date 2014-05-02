@@ -6,14 +6,12 @@
 package org.openrdf.sail.generaldb.managers;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 import org.openrdf.sail.generaldb.schema.Batch;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.schema.TransactionTable;
@@ -246,7 +244,12 @@ public class TransTableManager {
 		synchronized (tables) {
 			TransactionTable table = tables.get(pred);
 			if (table == null) {
-				triples.flushManagers();// charnik's addition (see flushManagers() method for details)
+				/**
+				 * @author charnik
+				 * @see method {@link TripleTableManager#flushManagers()} for details
+				 */
+				//triples.flushManagers();
+				
 				TripleTable predicate = triples.getPredicateTable(pred);
 				Number key = pred;
 				if (predicate.isPredColumnPresent()) {
@@ -308,7 +311,6 @@ public class TransTableManager {
 
 	private String getEmptyTableName() {
 		StringBuilder sb = new StringBuilder(256);
-		GeneralDBSqlTable temp = (GeneralDBSqlTable)temporaryTable;
 		sb.append("(");
 		sb.append("SELECT ");
 		sb.append(getZeroBigInt()).append(" AS ctx, ");

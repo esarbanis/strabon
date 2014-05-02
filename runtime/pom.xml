@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.3-MonetDB-SNAPSHOT</version>
+		<version>3.2.10-MonetDB-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>strabon-runtime</artifactId>
@@ -22,8 +22,37 @@
 	
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryresultio-spatial</artifactId>
+			<artifactId>sesame-queryresultio-spatial-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-spatial-sparqlgeojson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-spatial-sparqlkml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-spatial-sparqlxml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-spatial-sparqlhtml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-spatial-text</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-sparqljson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-binary</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
@@ -186,6 +215,12 @@
 		<dependency>
 			<groupId>info.aduna.commons</groupId>
 			<artifactId>aduna-commons-net-http-server-embedded</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>jsp-2.1</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Apache Commons -->
@@ -328,7 +363,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[2.3,)</versionRange>
+										<versionRange>[2.4,)</versionRange>
 										<goals>
 											<goal>copy-dependencies</goal>
 										</goals>
@@ -394,4 +429,16 @@
 		</plugins>
 	</build>
 </project>
+
+
+
+
+
+
+
+
+
+
+
+
 

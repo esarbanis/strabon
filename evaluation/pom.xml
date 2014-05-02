@@ -5,16 +5,22 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.3-MonetDB-SNAPSHOT</version>
+		<version>3.2.10-MonetDB-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.openrdf.sesame</groupId>
 	<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-	<name>OpenRDF Sesame: Query algebra - evaluation -spatial</name>
+	<name>OpenRDF Sesame: Query algebra - evaluation - spatial</name>
 	<description>Spatial Extension Functions - stSPARQL </description>
 	<packaging>jar</packaging>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>eu.earthobservatory</groupId>
+			<artifactId>strabon-vocabulary</artifactId>
+		</dependency>
+			
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryalgebra-evaluation</artifactId>

@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.generaldb;
 
@@ -41,7 +45,7 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  * Coordinates the triple store, namespace manager, optimizer, and evaluation
  * strategy into the {@link SailConnection} interface.
  * 
- * @author James Leigh
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class GeneralDBConnection extends SailConnectionBase {
@@ -112,7 +116,6 @@ public class GeneralDBConnection extends SailConnectionBase {
 		throws SailException
 	{
 		removeStatementsInternal(null, null, null, contexts);
-		//XXX our code
 //		triples.clearGeoValues();
 	}
 
@@ -211,6 +214,7 @@ public class GeneralDBConnection extends SailConnectionBase {
 			EvaluationStrategy strategy;
 			strategy = factory.createRdbmsEvaluation(dataset);
 			tupleExpr = optimizer.optimize(expr, dataset, bindings, strategy);
+			// Mexri edw to GeneralDBSqlDiffDateTime ftanei kanonika
 			return strategy.evaluate(tupleExpr, EmptyBindingSet.getInstance());
 		}
 		catch (QueryEvaluationException e) {

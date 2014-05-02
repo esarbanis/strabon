@@ -4,7 +4,7 @@
 
 	<groupId>eu.earthobservatory</groupId>
 	<artifactId>strabon</artifactId>
-	<version>3.2.3-MonetDB-SNAPSHOT</version>
+	<version>3.2.10-MonetDB-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -17,6 +17,113 @@
 	<description>Strabon is a storage and query evaluation module for stRDF/stSPARQL.</description>
 	<url>http://www.strabon.di.uoa.gr/</url>
 	<inceptionYear>2008</inceptionYear>
+	
+	<organization>
+		<name>Strabon Team - Team Pyravlos</name>
+		<url>http://www.strabon.di.uoa.gr/</url>
+	</organization>
+	
+	<licenses>
+		<license>
+		<name>Mozilla Public License, v. 2.0</name>
+		<url>http://www.strabon.di.uoa.gr/license</url>
+		<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>manolee</id>
+			<name>Manos Karpathiotakis</name>
+			<email>manos.karpathiotakis@epfl.ch</email>
+			<url>http://people.epfl.ch/manos.karpathiotakis</url>
+			<organization>Data-Intensive Applications and Systems Laboratory, Institute of Core Computing Science, School of Computer and Communication Sciences, Ecole polytechnique fédérale de Lausanne
+			</organization>
+			<organizationUrl>http://search.epfl.ch/ubrowse.action?acro=DIAS</organizationUrl>
+			<timezone>+1</timezone>
+			<properties>
+				<picUrl>http://people.epfl.ch/cgi-bin/people/getPhoto?id=222383</picUrl>
+			</properties>
+		</developer>
+		<developer>
+			<id>kk</id>
+			<name>Kostis Kyzirakos</name>
+			<email>kk@di.uoa.gr</email>
+			<url>http://www.di.uoa.gr/~kkyzir</url>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+			<properties>
+				<picUrl>http://cgi.di.uoa.gr/~kkyzir/images/me.jpg</picUrl>
+			</properties>
+		</developer>
+		<developer>
+			<id>charnik</id>
+			<name>Charalampos Nikolaou</name>
+			<email>charnik@di.uoa.gr</email>
+			<url>http://www.di.uoa.gr/~charnik</url>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+			<properties>
+				<picUrl>http://www.madgik.di.uoa.gr/sites/default/files/imagecache/profile_image/madgik-photo-charnik_0.jpg</picUrl>
+			</properties>
+		</developer>
+		<developer>
+			<id>ggarbis</id>
+			<name>Giorgos Garbis</name>
+			<email>ggarbis@di.uoa.gr</email>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
+			<id>kbereta</id>
+			<name>Konstantina Bereta</name>
+			<email>konstantina.bereta@di.uoa.gr</email>
+			<url>http://cgi.di.uoa.gr/~grad1110/</url>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
+			<id>sgian</id>
+			<name>Stella Gianakopoulou</name>
+			<email>sgian@di.uoa.gr</email>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
+			<id>psmeros</id>
+			<name>Panayiotis Smeros</name>
+			<email>psmeros@di.uoa.gr</email>
+			<url>http://users.uoa.gr/~psmeros/</url>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+			<properties>
+				<picUrl>http://users.uoa.gr/~psmeros/images/psmeros.jpg</picUrl>
+			</properties>
+		</developer>
+		<developer>
+			<id>roi</id>
+			<name>Kallirroi Dogani</name>
+			<email>kallirroi@di.uoa.gr</email><url>http://www.di.uoa.gr/~charnik</url>
+			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
+			<id>koubarak</id>
+			<name>Manolis Koubarakis</name>
+			<email>koubarak@di.uoa.gr</email>
+			<url>http://www.di.uoa.gr/~koubarak</url>
+			<organization>Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
+			<organizationUrl>http://www.di.uoa.gr/</organizationUrl>
+			<timezone>+2</timezone>
+		</developer>
+	</developers>
 
 	<modules>
 		<module>evaluation</module>
@@ -24,12 +131,16 @@
 		<module>postgis</module>
 		<module>monetdb</module>
 		<module>generaldb</module>
-		<module>resultio</module>
+		<module>resultio-spatial</module>
 		<module>endpoint</module>
+		<module>endpoint-client</module>
+		<module>endpoint-exec</module>
+		<module>testsuite</module>
+		<module>vocab</module>
 	</modules>
 
 	<properties>
-        <eu.earthobservatory.version>3.2.3-MonetDB-SNAPSHOT</eu.earthobservatory.version>
+	        <eu.earthobservatory.version>3.2.10-MonetDB-SNAPSHOT</eu.earthobservatory.version>
 		<sesame.version>2.6.3</sesame.version>
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
 		<!--slf4j.version>1.5.8</slf4j.version-->
@@ -53,11 +164,67 @@
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
+
+		<!-- queryresultio-spatial dependencies-->
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
-				<artifactId>sesame-queryresultio-spatial</artifactId>
+				<artifactId>sesame-queryresultio-spatial-api</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-spatial-sparqlgeojson</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-spatial-sparqlhtml</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-spatial-sparqlkml</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-spatial-sparqlxml</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-spatial-text</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+		<!-- queryresultio-spatial dependencies-->
+
+		<!-- sesame queryresultio dependencies -->
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-api</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-text</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-binary</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-queryresultio-sparqljson</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+		<!-- sesame queryresultio dependencies -->
 
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
@@ -80,6 +247,12 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>strabon-endpoint</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>eu.earthobservatory</groupId>
+				<artifactId>strabon-vocabulary</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
@@ -207,6 +380,11 @@
 			</dependency>
 
 			<!-- RIO -->
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-api</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-rdfxml</artifactId>
@@ -354,11 +532,13 @@
 				<version>5.1.15</version>
 			</dependency>
 
+			<!--
 			<dependency>
 				<groupId>net.sf</groupId>
 				<artifactId>log4jdbc4</artifactId>
 				<version>1.2</version>
 			</dependency>
+			-->
 
 			<!--  LOG4J -->
 			<dependency>
@@ -495,16 +675,16 @@
 				<version>2.2</version>
 			</dependency>
 
-<dependency>
-	<groupId>org.jvnet.ogc</groupId>
-	<artifactId>ogc-tools-gml-jts</artifactId>
-	<version>1.0.2</version>
-</dependency>
-<dependency>
-	<groupId>com.sun.xml.bind</groupId>
-	<artifactId>jaxb-impl</artifactId>
-	<version>2.1.1</version>
-</dependency>
+			<dependency>
+				<groupId>org.jvnet.ogc</groupId>
+				<artifactId>ogc-tools-gml-jts</artifactId>
+				<version>1.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>2.1.1</version>
+			</dependency>
 
 			<dependency>
 				<groupId>javax</groupId>
@@ -560,9 +740,9 @@
 			<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-surefire-plugin</artifactId>
-		        <version>2.12</version>
+		        <version>2.14</version>
 		        <configuration>
-		          <skipTests>${skipTests}</skipTests>
+		        <skipTests>${skipTests}</skipTests>
 			    </configuration>
 		    </plugin>
 		</plugins>
@@ -579,6 +759,31 @@
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
+			<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<id>uml</id>
+						<configuration>
+							<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+							<docletArtifact>
+								<groupId>org.umlgraph</groupId>
+								<artifactId>doclet</artifactId>
+								<version>5.1</version>
+							</docletArtifact>
+							<additionalparam>-views</additionalparam>
+							<destDir>target/uml</destDir>
+							<show>private</show>
+						</configuration>
+						<reports>
+						<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			-->
 		</plugins>
 	</reporting>
 
@@ -602,12 +807,38 @@
 	</pluginRepositories>
 
 	<scm>
-		<connection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</connection>
+		<connection>scm:hg:http://hg.strabon.di.uoa.gr/Strabon/</connection>
 		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</developerConnection>
 		<url>http://hg.strabon.di.uoa.gr/Strabon/</url>
 	  <tag>HEAD</tag>
   </scm>
-
+	
+	<issueManagement>
+		<system>Trac</system>
+		<url>http://bug.strabon.di.uoa.gr/</url>
+	</issueManagement>
+	
+	<ciManagement>
+		<system>Jekins - Continuous Integration System</system>
+		<url>http://test.strabon.di.uoa.gr/cis</url>
+	</ciManagement>
+	
+	<mailingLists>
+		<mailingList>
+			<name>User List</name>
+			<subscribe>strabon-users-request@di.uoa.gr</subscribe>
+			<unsubscribe>strabon-users-request@di.uoa.gr</unsubscribe>
+			<post>strabon-users@di.uoa.gr</post>
+			<archive>http://cgi.di.uoa.gr/~mailman/pipermail/strabon-users/</archive>
+		</mailingList>
+		<mailingList>
+			<name>Developers List</name>
+			<subscribe>strabon-devel-request@di.uoa.gr</subscribe>
+			<unsubscribe>strabon-devel-request@di.uoa.gr</unsubscribe>
+			<post>strabon-devel@di.uoa.gr</post>
+			<archive>http://cgi.di.uoa.gr/~mailman/pipermail/strabon-devel/</archive>
+		</mailingList>
+	</mailingLists>
 	<repositories>
 		<!--
 		<repository>
@@ -644,6 +875,8 @@
 			<name>Strabon - maven repository - snapshots</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
 		</repository>
+
+		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -655,6 +888,7 @@
 			<name>Strabon - maven repository - sesame artifacts (temporary)</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame</url>
 		</repository>
+		-->
 		<!--
 		<repository>
 			<releases>
@@ -687,6 +921,16 @@
 			<name>OpenGeo Maven Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
+		<!--
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>umlgraph</id>
+			<name>UMLGraph binaries provider</name>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+		</repository>
+		-->
 	</repositories>
 
 	<distributionManagement>

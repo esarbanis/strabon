@@ -7,6 +7,7 @@ package org.openrdf.sail.generaldb.algebra.factories;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.asText;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.dimension;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.extDiffDateTime;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoArea;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBoundary;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoBuffer;
@@ -23,6 +24,8 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isEmp
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isSimple;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.sqlNull;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.srid;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
 
 import org.openrdf.model.Literal;
@@ -41,7 +44,7 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
@@ -49,6 +52,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlEnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
@@ -60,6 +64,9 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
+
+import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.vocabulary.PostGIS;
 
 /**
  * Creates an SQL expression of a literal's numeric value.
@@ -91,15 +98,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 	public void setUrisPeek(GeneralDBURIExprFactory labelsPeek) {
-		this.urisPeek = urisPeek;
+		this.urisPeek = labelsPeek;
 	}
-	/**
-	 * 
-	 */
 
-	public GeneralDBSqlExpr createNumericExpr(ValueExpr expr)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public GeneralDBSqlExpr createNumericExpr(ValueExpr expr) throws UnsupportedRdbmsOperatorException
+	{
 		result = null;
 		if (expr == null)
 			return new GeneralDBSqlNull();
@@ -107,7 +110,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		if (result == null)
 			return new GeneralDBSqlNull();
 		return result;
-			}
+	}
 
 	@Override
 	public void meet(Datatype node) {
@@ -122,7 +125,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 
 	/**
-	 * XXX changes here to enable more complicated metric expressions
+	 * changes here to enable more complicated metric expressions
 	 */
 	@Override
 	public void meet(MathExpr node)
@@ -212,6 +215,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -225,8 +229,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			leftArg = label(left);
 		}
 
-
-
 		if((function instanceof DistanceFunc))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -238,18 +240,37 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			{
 				rightArg = label(right);
 			}
+			
+			thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
 		if(function instanceof SpatialMetricFunc)
 		{
-			return spatialMetricPicker(function, leftArg, rightArg);
+			return spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 		}
 		else //if(functionCall instanceof SpatialPropertyFunc)
 		{
 			return spatialPropertyPicker(function, leftArg);
 		}
 	}
-
+	
+	/** Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
+	{
+		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
+		if(function instanceof DateTimeMetricFunc)
+		{
+			return dateTimeMetricFunction(functionCall,function);	
+		}
+		
+		return null;
+	}
+	/***/
+	
 	public GeneralDBSqlExpr spatialFunction(FunctionCall functionCall) throws UnsupportedRdbmsOperatorException
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
@@ -273,6 +294,7 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -285,8 +307,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			leftArg = label(left);
 		}
-
-
 
 		if(!(function instanceof EnvelopeFunc) 
 				&& !(function instanceof ConvexHullFunc) 
@@ -302,12 +322,12 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			}
 			else
 			{
-				if(function.getURI().equals(GeoConstants.buffer))
+				if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 				{
 					//Be it a Var or a Value Constant, 'numeric' is the way to go
 					rightArg = this.createNumericExpr(right);
 				}
-				else if(function.getURI().equals(GeoConstants.transform))
+				else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 				{
 					//Another special case -> Second argument of this function is a URI
 					rightArg = uri(right);
@@ -318,21 +338,43 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 					//thus the special treatment
 					rightArg = label(right);
 				}
-
-
-
-
 			}
+			if(function instanceof BufferFunc)
+				thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialConstructPicker(function, leftArg, rightArg);
+		return spatialConstructPicker(function, leftArg, rightArg, thirdArg);
 
 	}
 
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
+	{
+		GeneralDBSqlExpr leftArg = null;
+		GeneralDBSqlExpr rightArg = null;
+
+		//ValueExpr left = functionCall.getArgs().get(0);
+		//ValueExpr right = functionCall.getArgs().get(1);
+
+		// TODO ti bazw edw??
+		leftArg = null;
+
+		rightArg = null;
+		return dateTimeMetricPicker(function, leftArg, rightArg);
+
+	}
+	/***/
+	
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
 		GeneralDBSqlExpr rightArg = null;
+		GeneralDBSqlExpr thirdArg = null;
 
 		ValueExpr left = functionCall.getArgs().get(0);
 
@@ -346,8 +388,6 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			leftArg = label(left);
 		}
 
-
-
 		if(!(function instanceof AreaFunc))
 		{
 			ValueExpr right = functionCall.getArgs().get(1);
@@ -359,10 +399,11 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 			{
 				rightArg = label(right);
 			}
+
+			thirdArg = uri(functionCall.getArgs().get(2));
 		}
 
-		return spatialMetricPicker(function, leftArg, rightArg);
-
+		return spatialMetricPicker(function, leftArg, rightArg, thirdArg);
 	}
 
 	GeneralDBSqlExpr spatialPropertyFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
@@ -386,90 +427,124 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 
-	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
-		if(function.getURI().equals(GeoConstants.union))
+		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
-			return geoUnion(leftArg, rightArg);
+			return geoUnion(leftArg, rightArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.buffer))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
-			return geoBuffer(leftArg,rightArg);
+			return geoBuffer(leftArg,rightArg, thirdArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.transform))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
-			return geoTransform(leftArg,rightArg);
+			return geoTransform(leftArg,rightArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.envelope))
+		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
-			return geoEnvelope(leftArg);
+			return geoEnvelope(leftArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.convexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
-			return geoConvexHull(leftArg);
+			return geoConvexHull(leftArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.boundary))
+		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
-			return geoBoundary(leftArg);
+			return geoBoundary(leftArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.intersection))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
-			return geoIntersection(leftArg, rightArg);
+			return geoIntersection(leftArg, rightArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.difference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
-			return geoDifference(leftArg, rightArg);
+			return geoDifference(leftArg, rightArg, GeoConstants.WKT);
 		}
-		else if(function.getURI().equals(GeoConstants.symDifference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
-			return geoSymDifference(leftArg, rightArg);
+			return geoSymDifference(leftArg, rightArg, GeoConstants.WKT);
 		}
-		//XXX GeoSPARQL - Non topological - except distance
-		//TODO Must add buffer after deciding how to implement it
+		// GeoSPARQL - Non topological - except distance		
 		else if(function.getURI().equals(GeoConstants.geoSparqlConvexHull))
 		{
-			return geoConvexHull(leftArg);
+			return geoConvexHull(leftArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlIntersection))
 		{
-			return geoIntersection(leftArg, rightArg);
+			return geoIntersection(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlUnion))
 		{
-			return geoUnion(leftArg, rightArg);
+			return geoUnion(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlDifference))
 		{
-			return geoDifference(leftArg, rightArg);
+			return geoDifference(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlSymmetricDifference))
 		{
-			return geoSymDifference(leftArg, rightArg);
+			return geoSymDifference(leftArg, rightArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlEnvelope))
 		{
-			return geoEnvelope(leftArg);
+			return geoEnvelope(leftArg, GeoConstants.WKTLITERAL);
 		}
 		else if(function.getURI().equals(GeoConstants.geoSparqlBoundary))
 		{
-			return geoBoundary(leftArg);
+			return geoBoundary(leftArg, GeoConstants.WKTLITERAL);
 		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlBuffer))
+		{
+			return geoBuffer(leftArg,rightArg, thirdArg, GeoConstants.WKTLITERAL);
+		}
+		/** PostGIS construct functions */
+		else if(function.getURI().equals(PostGIS.ST_MAKELINE))
+		{
+			return st_MakeLine(leftArg, rightArg,GeoConstants.WKT);
+		}
+		else if(function.getURI().equals(PostGIS.ST_CENTROID))
+		{
+			return st_Centroid(leftArg, GeoConstants.WKT);
+		}
+		/** PostGIS construct functions */
 		//Should never reach this place
 		return null;
 	}
 
-	//TODO more to be added here probably
-	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
+	/**
+	 * Addition for datetime metric functions
+	 * 
+	 * @author George Garbis <ggarbis@di.uoa.gr>
+	 * 
+	 */
+	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
-		if(function.getURI().equals(GeoConstants.distance))
+		if(function.getURI().equals(GeoConstants.diffDateTime))
 		{
-			return geoDistance(leftArg, rightArg);
+			return extDiffDateTime(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.area))
+
+		//Should never reach this place
+		return null;
+	}
+	/***/
+	
+	//TODO more to be added here probably
+	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
+	{
+		if(function.getURI().equals(GeoConstants.stSPARQLdistance))
+		{
+			return geoDistance(leftArg, rightArg, thirdArg);
+		}
+		else if(function.getURI().equals(GeoConstants.geoSparqlDistance))
+		{
+			return geoDistance(leftArg, rightArg, thirdArg);
+		}
+		else if(function.getURI().equals(GeoConstants.stSPARQLarea))
 		{
 			return geoArea(leftArg);
-		}
-		//GeoSPARQL's distance must be added at this place
+		}		
 
 		//Should never reach this place
 		return null;
@@ -477,27 +552,27 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 
 	GeneralDBSqlExpr spatialPropertyPicker(Function function,GeneralDBSqlExpr arg)
 	{
-		if(function.getURI().equals(GeoConstants.dimension))
+		if(function.getURI().equals(GeoConstants.stSPARQLdimension))
 		{
 			return dimension(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.geometryType))
+		else if(function.getURI().equals(GeoConstants.stSPARQLgeometryType))
 		{
 			return geometryType(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.asText))
+		else if(function.getURI().equals(GeoConstants.stSPARQLasText))
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.srid))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
 		{
 			return srid(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isEmpty))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisEmpty))
 		{
 			return isEmpty(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.isSimple))
+		else if(function.getURI().equals(GeoConstants.stSPARQLisSimple))
 		{
 			return isSimple(arg);
 		}
@@ -506,22 +581,19 @@ public class GeneralDBNumericExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
-	protected GeneralDBSqlExpr label(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr label(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return labelsPeek.createLabelExpr(arg);
-			}
+	}
 
-	protected GeneralDBSqlExpr uri(ValueExpr arg)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected GeneralDBSqlExpr uri(ValueExpr arg) throws UnsupportedRdbmsOperatorException
+	{
 		return urisPeek.createUriExpr(arg);
-			}
+	}
 
 	//	protected GeneralDBSqlExpr numeric(ValueExpr arg)
 	//	throws UnsupportedRdbmsOperatorException
 	//	{
 	//		return sql.createNumericExpr(arg);
 	//	}
-
 }

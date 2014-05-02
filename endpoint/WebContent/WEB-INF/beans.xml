@@ -6,6 +6,23 @@
 		xmlns:jaxws="http://cxf.apache.org/jaxws"
 		jaxws:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
+	<bean id="serverProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/connection.properties</value>
+			</list>
+		</property>
+	</bean>
+  
+	<bean id="capsBean" class="eu.earthobservatory.org.StrabonEndpoint.capabilities.CapabilitiesDelegateBean" destroy-method="destroy">
+		<!-- specify which implementation of the Capabilities interface shall be used -->
+		<!-- true : AutoDiscoveryCapabilities -->
+		<!-- false: EndpointCapabilities -->
+		<constructor-arg type="boolean">
+            <value>false</value>
+        </constructor-arg>
+	</bean>
+	
     <bean
         id="strabonBean"
         class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"
@@ -13,27 +30,27 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database name -->
-            <value>endpoint</value>
+            <value>${dbname}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Username -->
-            <value>postgres</value>
+            <value>${username}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Password -->
-	    <value>postgres</value>
+	    <value>${password}</value>
         </constructor-arg>
 
         <constructor-arg type="int" >
             <!-- Port -->
-            <value>5432</value>
+            <value>${port}</value>
         </constructor-arg>
 
         <constructor-arg type="java.lang.String" >
             <!-- Database server -->
-            <value>localhost</value>
+            <value>${hostname}</value>
         </constructor-arg>
 
         <constructor-arg type="boolean" >
@@ -43,317 +60,212 @@
 
         <constructor-arg type="java.lang.String" >
             <!-- Database Backend (either "postgis" or "monetdb") -->
-            <value>postgis</value>
+            <value>${dbengine}</value>
         </constructor-arg>
         
-         <constructor-arg>
+        <constructor-arg type="int" >
+            <!-- Query limit -->
+            <value>0</value>
+        </constructor-arg>
+        
+        <constructor-arg type="boolean" >
+            <!-- Load from File -->
+            <value>true</value>
+        </constructor-arg>
+     
+     	<!-- Boolean variable linkURL in stSPARQLResultsHTMLWriter.java (line 115) to change the links between web and describe -->
+        
+        <constructor-arg type="java.lang.String" >
+            <!-- Default prefixes -->
+            <!-- PREFIX gag: <http://teleios.di.uoa.gr/ontologies/gagKallikratis.rdf#> -->
+            <value><![CDATA[PREFIX lgd:<http://linkedgeodata.org/triplify/>
+PREFIX lgdgeo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX lgdont:<http://linkedgeodata.org/ontology/>
+PREFIX geonames:<http://www.geonames.org/ontology#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/greekadministrativeregion/ontology#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geor: <http://www.opengis.net/def/rule/geosparql/>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+]]>
+</value>
+        </constructor-arg>
+        
+        <constructor-arg>
              <list>
-	             <list>
+             	<list>
+             		<!-- Single valued elements correspond to headers -->
+					<value>Discovery Queries</value>
+	            </list>
+				<list>
 	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
 	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>Query 1: Discover raw data and products</value> 
+	                <value>Find all triples in the dataset.</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Discovering raw data and products
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-
-SELECT ?filename
-WHERE {?file rdf:type noa:ShpFile ;
-	         noa:hasFilename ?filename ;
-	         noa:hasAcquisitionTime ?sensingTime .
-	 FILTER( str(?sensingTime) >= "2007-08-26T12:00:00" ) .
-	 FILTER( str(?sensingTime) <= "2007-08-26T12:30:00" ) .
-	 ?file noa:isDerivedFromSensor ?sensor .
-	 FILTER( str(?sensor) = "MSG2" ) .
-	 ?file noa:producedFromProcessingChain ?chain .
-	 FILTER( str(?chain) = "StaticThresholds" ) . 
-}]]></value>
-<value>Find all shapefiles derived from sensor MSG2 between [2007-08-26T12:00:00,2007-08-26T12:30:00], using dynamic thresholds.</value>
-	            </list>
-	            <list>
-	                <!-- Bean -->
-	                <value>Query</value> 
-	                <!-- Format -->
-	                <value>KMZMAP</value>
-	                <!-- Label -->
-	                <value>Query 2: Discover Hotspots</value> 
-	                <!-- Statement -->
-	                <value><![CDATA[# Get all hotspots 
-# - in Pelloponesus 
-# - at 2007-08-24
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-
-SELECT ?h ?hAcqTime ?hConfidence ?hConfirmation ?hProvider ?hSensor ?hSatellite (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) as ?geo) 
-WHERE { ?h 	rdf:type noa:Hotspot;
-			noa:hasGeometry ?hGeo;
-			noa:hasAcquisitionTime ?hAcqTime;
-			noa:hasConfidence ?hConfidence;
-			noa:isProducedBy ?hProvider;
-			noa:hasConfirmation ?hConfirmation;
-			noa:isDerivedFromSensor ?hSensor;
-			noa:isDerivedFromSatellite ?hSatellite ;
-			noa:producedFromProcessingChain ?hChain .
-	FILTER(str(?hChain) = "StaticThresholds").
-	FILTER(?hAcqTime = "2007-08-24T14:45:00"^^xsd:dateTime) .
-	FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)) . 
-}]]></value>
-<value>Find all hotspots in Pelloponesus derived from the dynamic thresholds processing chain at 2007-08-24T14:45:00.  </value>
-	            </list>
-				<list>
-	                <!-- Bean -->
-	                 <value>Update</value>
-	                <!-- Format -->
-	                <value>HTML</value>
-	                <!-- Label -->
-	                <value>Update A: Invalidate hotspots in sea</value> 
-	                <!-- Statement -->
-	                <value><![CDATA[# Delete hotspots that lie in sea
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-DELETE {?h ?property ?object}
-WHERE { ?h 	rdf:type noa:Hotspot;
-            noa:hasAcquisitionTime ?hAcqTime;
-            noa:producedFromProcessingChain ?hChain;
-            noa:hasGeometry ?hGeo;
-            ?property ?object.
-        FILTER(str(?hChain) = "StaticThresholds").
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)).
-        FILTER("2007-08-24T14:45:00"^^xsd:dateTime = ?hAcqTime).
-        OPTIONAL {
-            ?c rdf:type noa:Coastline;
-               noa:hasGeometry ?cGeo.
-            FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?cGeo)).
-            FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
-        }
-        FILTER(!bound(?c)). 
-}]]></value>
-<value>Mark as invalid all hotspots produced by the static thresholds processing chain and are acquired at 2007-08-24T14:45:00 which are located in the sea</value>
-	            </list>
-	            <list>
-	                <!-- Bean -->
-	                <value>Update</value> 
-	                <!-- Format -->
-	                <value>HTML</value>
-	                <!-- Label -->
-	                <value>Update B: Refine hotspots in sea</value>
-	                <!-- Statement -->
-	                <value><![CDATA[# Refine the geometry of hotspots that partially lie in sea
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#> 
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-
-
-INSERT { ?h noa:isDiscarded "1"^^xsd:int . 
-	 ?valid rdf:type noa:Hotspot ;
-		noa:hasConfidence ?conf ;
-	        noa:hasGeometry ?dif ;
-		noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime ; 
-	        noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
-		noa:hasConfirmation noa:unknown ;
-	        noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
-		noa:isProducedBy noa:noa ;
-		noa:isDerivedFromSatellite ?sat .
-}
+	                <value><![CDATA[
+SELECT *
 WHERE { 
-  SELECT DISTINCT ?h ?hGeo (strdf:intersection(?hGeo, strdf:union(?cGeo)) AS ?dif) (BNODE() AS ?valid) ?conf ?sat
-  WHERE { 
-    ?h rdf:type noa:Hotspot ; 
-       noa:hasAcquisitionTime ?hAcqTime ; 
-       noa:producedFromProcessingChain "PROCESSING_CHAIN"^^xsd:string ; 
-       noa:isDerivedFromSensor "SENSOR"^^xsd:string ;
-       noa:hasGeometry ?hGeo ;
-       noa:hasConfidence ?conf ;
-       noa:isDerivedFromSatellite ?sat .
-    FILTER("TIMESTAMP"^^xsd:dateTime = ?hAcqTime) .
-    ?c rdf:type noa:Coastline ;
-       noa:hasGeometry ?cGeo .
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
-  }
-  GROUP BY ?h ?hGeo ?conf ?sat
-  HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))
+	?s ?p ?o	
 }
 ]]></value>
-	      <value>Refine hotspots acquired at 2007-08-24T14:45:00 removing the part that lies in the sea. </value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
 	            </list>
 	            <list>
-	                <!-- Bean -->
+	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>Query 3: Discover coniferous forests</value> 
+	                <value>Select all distinct subjects that appear in the dataset.</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[#Get all coniferous forests in Peloponnese
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-
-SELECT ?a ?aGeo
-WHERE{ ?a rdf:type clc:Area;
-          clc:hasLandUse ?aLandUse;
-          noa:hasGeometry ?aGeo.
-       ?aLandUse rdf:type ?aLandUseType.
-       FILTER(?aLandUseType = clc:ConiferousForest).
-       FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^strdf:WKT,?aGeo)). 
-}]]></value>
-<value>Discover all coniferous forests using the clc ontology </value>
+	                <value><![CDATA[
+SELECT DISTINCT (?s AS ?subject)
+WHERE { 
+	?s ?p ?o
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
 	            </list>
 	            <list>
-	                <!-- Bean -->
+	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>Query 4: Discover primary roads</value> 
+	                <value>Select all distinct predicates that appear in the dataset.</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Get all municipalities of Pelloponnese
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/lontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-
-SELECT  ?d ?dGeo
-WHERE { ?d rdf:type gag:Dhmos; 
-           strdf:hasGeometry ?dGeo; 
-           rdfs:label ?dLabel. 
-           FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?dGeo)). 
-}]]></value>
-<value>Find all municipalities of Pelloponnese using kallikratis ontology </value>
+	                <value><![CDATA[
+SELECT DISTINCT (?p AS ?predicate)
+WHERE { 
+	?s ?p ?o
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
+	            </list>
+	            
+	            <list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>Select all distinct objets that appear in the dataset.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[
+SELECT DISTINCT (?o AS ?object)
+WHERE { 
+	?s ?p ?o	
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
 	            </list>
 	            <list>
-	                <!-- Bean -->
+	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>Query 5: Get all primary roads in Pelloponnese</value> 
+	                <value>Find all distinct classes of the dataset.</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Get all primary roads in Pelloponnese
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
+	                <value><![CDATA[PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>	                
 
-SELECT  ?r ?rGeo
-WHERE { ?r rdf:type ?rType ;
-           noa:hasGeometry ?rGeo .
-        FILTER(?rType = lgdo:Primary) .
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05,21.027 38.36))"^^strdf:WKT, ?rGeo) ). 
-}]]></value>
-<value>Get all primary roads in Pelloponnese using the linked geodata ontology </value>
+SELECT DISTINCT (?o AS ?class)
+WHERE { 
+	?s rdf:type ?o
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
+	            </list>
+	            
+	        	<list>
+	                 <!-- Bean -->
+	                <value>Query</value> 
+	                <!-- Format -->
+	                <value>HTML</value>   
+	                <!-- Label -->
+	                <value>Find the number of triples that appear in the dataset.</value> 
+	                <!-- Statement -->
+	                <value><![CDATA[SELECT (COUNT(?s) AS ?NumOfTriples)
+WHERE { 
+	?s ?p ?o
+}
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
 	            </list>
 	            <list>
-	                <!-- Bean -->
+	                 <!-- Bean -->
 	                <value>Query</value> 
 	                <!-- Format -->
-	                <value>KMZMAP</value>
+	                <value>HTML</value>   
 	                <!-- Label -->
-	                <value>Query 6: Discover hotspots</value> 
+	                <value>Present the first ten triples of the dataset.</value> 
 	                <!-- Statement -->
-	                <value><![CDATA[# Get all hotspots 
-# - in Pelloponesus 
-# - at 2007-08-24
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX clc: <http://teleios.di.uoa.gr/ontologies/clcOntology.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX teleios: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
-PREFIX gag: <http://www.semanticweb.org/ontologies/2011/gagKallikratis.rdf#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX georss: <http://www.georss.org/georss/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX lgdo: <http://linkedgeodata.org/ontology/>
-PREFIX gn: <http://www.geonames.org/ontology#>
+	                <value><![CDATA[SELECT *
+WHERE { 
+	?s ?p ?o
+}
+LIMIT 10
+]]></value>
+	                <!-- Description -->
+					<value></value>
+					<!-- Hander (plain, download, map or map_local)-->
+					<value>Plain</value>
+	            </list>      
 
-SELECT  ?h ?hAcqTime (strdf:transform(?hGeo, <http://www.opengis.net/def/crs/EPSG/0/4326>) as ?geo) 
-WHERE { ?h 	rdf:type noa:Hotspot;
-            noa:hasGeometry ?hGeo;
-            noa:hasAcquisitionTime ?hAcqTime;
-            noa:producedFromProcessingChain ?hChain .
-        FILTER(str(?hChain) = "StaticThresholds").
-        FILTER(?hAcqTime = "2007-08-24T14:45:00"^^xsd:dateTime) .
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^ strdf:WKT, ?hGeo)) . 
-        ?a rdf:type clc:Area;
-           clc:hasLandUse ?aLandUse;
-           noa:hasGeometry ?aGeo.
-        ?aLandUse rdf:type ?aLandUseType.
-        FILTER(?aLandUseType = clc:Forest).
-        FILTER(strdf:contains("POLYGON((21.027 38.36, 23.77 38.36, 23.77 36.05, 21.027 36.05, 21.027 38.36))"^^strdf:WKT,?aGeo)). 
-        FILTER(strdf:overlap(?aGeo, ?hGeo)) . 
-}]]></value>
-<value>Find all hotspots located in Pelloponnesian forests and acquired at 2007-08-24T14:45:00 using static thresholds processing chain </value>
+				<list>
+             		<!-- Single valued elements correspond to headers -->
+					<value>Explore/Modify operations</value>
 	            </list>
-<!-- 	            <list> -->
-<!-- 	                Bean -->
-<!-- 	                <value>Query</value>  -->
-<!-- 	                Format -->
-<!-- 	                <value>KMZMAP</value> -->
-<!-- 	                Label -->
-<!-- 	                <value></value>  -->
-<!-- 	                Statement -->
-<!-- 	                <value></value> -->
-<!-- 	            </list> -->
+	            <list>
+             		<!-- Link to bean: two arguemnts -->
+					<value>Store</value>
+					<value>store.jsp</value>
+	            </list>
+	            <list>
+             		<!-- Link to bean: two arguemnts -->
+					<value>Query/Update</value>
+					<value>query.jsp</value>
+	            </list>
+	            <list>
+             		<!-- Link to bean: two arguemnts -->
+					<value>Describe</value>
+					<value>describe.jsp</value>
+	            </list>
+	            <list>
+             		<!-- Link to bean: two arguemnts -->
+					<value>Browse</value>
+					<value>browse.jsp</value>
+	            </list>
+				<list>
+					<!-- Link to bean: two arguemnts -->
+					<value>Configuration</value>
+					<value>connection.jsp</value>
+				</list>
             </list>
          </constructor-arg>
     </bean>

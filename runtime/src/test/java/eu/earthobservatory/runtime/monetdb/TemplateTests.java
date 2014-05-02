@@ -1,8 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.monetdb;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,19 +24,17 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
-import eu.earthobservatory.runtime.generaldb.SimpleTests;
 import eu.earthobservatory.runtime.generaldb.Strabon;
 
 /**
  * A set of simple tests on SPARQL query functionality 
  * 
- * @author George Garbis
+ * @author George Garbis <ggarbis@di.uoa.gr>
  */
-
 public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 
 	@BeforeClass
-	public static Strabon beforeClass(String inputfile) throws SQLException, ClassNotFoundException, RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
+	public static Strabon beforeClass(String inputfile) throws Exception
 	{
 		// Read properties
 		Properties properties = new Properties();
@@ -78,7 +84,7 @@ public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleT
 	protected static void loadTestData(String inputfile, Strabon strabon)
 			throws RDFParseException, RepositoryException, IOException, RDFHandlerException, InvalidDatasetFormatFault
 		{
-			strabon.storeInRepo(inputfile, "NTRIPLES");
+			strabon.storeInRepo(inputfile, "NTRIPLES", false);
 		}
 	
 //	/**

@@ -25,11 +25,12 @@ import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
 
@@ -41,7 +42,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 
 	protected IdSequence ids;
 
-	//XXX addition
 	protected HashMap<Integer,String> geoNames = new HashMap<Integer, String>();
 
 	//protected HashMap<String, Integer> sp_ConstructIndexesAndNames = new HashMap<String, Integer>();
@@ -62,8 +62,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	{
 		super(stmt);
 	}
-
-	////
 
 	public HashMap<GeneralDBSpatialFuncInfo, Integer> getConstructIndexesAndNames() {
 		return sp_ConstructIndexesAndNames;
@@ -97,7 +95,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		this.ids = ids;
 	}
 
-	//XXX Numerous additions here!
 	@Override
 	protected BindingSet convert(ResultSet rs)
 	throws SQLException
@@ -162,10 +159,12 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case STRING: 
 				value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case WKB: 
-				value = createBinaryGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+			case WKT: 
+				value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-
+			case WKTLITERAL: 
+				value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
 			}
 			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 			result.addBinding(construct.getFieldName(), value);
@@ -202,23 +201,20 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	}
 
 	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
+	 * FIXME the implementation of this function for PostGIS and MonetDB
+	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
+	 * literals. What about geo:wktLiteral?
+	 * However, this method is called by {@link convert} method only, which
+	 * in turn is not called by any method!
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
+	
+	protected abstract RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
+	
+	protected abstract RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException;
 
-
-
-	protected abstract RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException;
-
-	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException
+	protected RdbmsValue createDoubleGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	{
 		double potentialMetric;
 		//case of metrics
@@ -253,26 +249,4 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		return vf.asRdbmsLiteral(vf.createLiteral(spProperty));
 
 	}
-
-	//	protected RdbmsValue createGeoValueForSelectConstructs(ResultSet rs, int index)
-	//	throws SQLException
-	//	{
-	//		double potentialMetric;
-	//		try
-	//		{
-	//			//case of metrics
-	//			potentialMetric = rs.getFloat(index + 1);
-	//
-	//			return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
-	//
-	//		}
-	//		catch(SQLException e)
-	//		{
-	//			//Case of spatial constructs
-	//			byte[] label = rs.getBytes(index + 1);
-	//			return vf.getRdbmsPolyhedron(114, StrabonPolyhedron.ogcGeometry, label);
-	//		}
-	//
-	//	}
-
 }

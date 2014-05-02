@@ -1,9 +1,16 @@
 /**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URLDecoder;
 
 import javax.servlet.RequestDispatcher;
@@ -32,6 +39,22 @@ public class UpdateBean extends HttpServlet {
 	
 	private StrabonBeanWrapper strabonWrapper;
 	
+	//Check for localHost. Works with ipV4 and ipV6
+	public static boolean isLocalClient(HttpServletRequest request) { 
+		HttpServletRequest testRequest = request; 
+		try { 
+		   	InetAddress remote = InetAddress.getByName(testRequest.getRemoteAddr()); 
+		    if (remote.isLoopbackAddress()) { 
+		        return true;
+		    } 
+		    InetAddress localHost = InetAddress.getLocalHost(); 
+		    String localAddress = localHost.getHostAddress(); 
+		    String remoteAddress = remote.getHostAddress(); 
+		    return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress)); 
+		} catch (Exception e) { } 
+		return false; 
+	} 
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -48,15 +71,34 @@ public class UpdateBean extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		
-		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
-			// HTML visual interface
-			processVIEWRequest(request, response);
-			
-		} else {// invoked as a service
-			processRequest(request, response);
-	    }
+		boolean authorized;
+		
+		request.setCharacterEncoding("UTF-8");						
+		ServletContext context = getServletContext();
+		if(!isLocalClient(request)) {
+			Authenticate authenticate = new Authenticate();
+			String authorization = request.getHeader("Authorization");
+	   		
+			authorized = authenticate.authenticateUser(authorization, context);
+		}
+		else
+			authorized = true;
+				
+	   	 if (!authorized) {	   		 
+	   		 // not allowed, so report he's unauthorized
+	   		 response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
+	   		 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
+	   	 }
+	   	 else {	 		
+	   		if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
+				// HTML visual interface
+				processVIEWRequest(request, response);
+				
+			} else {// invoked as a service
+				processRequest(request, response);
+		    }		
+	   	 }	
 	}
 
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {

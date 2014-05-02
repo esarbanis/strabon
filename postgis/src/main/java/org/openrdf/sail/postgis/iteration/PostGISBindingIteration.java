@@ -5,16 +5,15 @@
  */
 package org.openrdf.sail.postgis.iteration;
 
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
@@ -30,14 +29,6 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		super(stmt);
 	}
 
-	/**
-	 * XXX additions
-	 */
-	/**
-	 * 
-	 * my addition
-	 * 
-	 */
 	@Override
 	protected RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException
@@ -53,16 +44,22 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 
 		return createResource(rs, index);
 	}
-
-
+	
 	@Override
-	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException
+	protected RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	{		
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);
 		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
-
+	}
+	
+	@Override
+	protected RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
+	{		
+		//Case of spatial constructs
+		byte[] label = rs.getBytes(index + 1);
+		int srid = rs.getInt(index + 2);
+		return vf.getRdbmsPolyhedron(114, GeoConstants.WKTLITERAL, label, srid);
 	}
 }

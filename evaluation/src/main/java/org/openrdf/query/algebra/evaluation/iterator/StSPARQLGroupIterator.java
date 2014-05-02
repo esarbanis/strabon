@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 1997-2007.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.query.algebra.evaluation.iterator;
 
@@ -48,7 +52,6 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
@@ -67,6 +70,8 @@ import org.openrdf.query.algebra.evaluation.util.ValueComparator;
 import org.openrdf.query.impl.EmptyBindingSet;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 
@@ -444,9 +449,17 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				}
 				else if(function instanceof IntersectionFunc)
 				{
-					leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
-					rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
-					return StrabonPolyhedron.intersection(leftArg, rightArg);
+					if(((FunctionCall) expr).getArgs().size()==1)
+					{
+						//Aggregate!!! => Value ready in spatialAggregatesResults
+						return new StrabonPolyhedron(spatialAggregatesResult.get(expr));
+					}
+					else
+					{
+						leftArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(0),prototype);
+						rightArg = (StrabonPolyhedron) evaluateConstruct(((FunctionCall) expr).getArgs().get(1),prototype);
+						return StrabonPolyhedron.intersection(leftArg, rightArg);
+					}
 				}
 				else if(function instanceof DifferenceFunc)
 				{
@@ -505,13 +518,14 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 			computeAggregateFunctions(fc, bindingSet);
 		}
 
-		//Currently: Either Union OR Extent
+		//Currently: Either Union OR Extent OR Intersection
 		private void computeAggregateFunctions(ValueExpr expr, BindingSet bindingSet)
 		{
 			if(expr instanceof FunctionCall)
 			{
 				Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
 				boolean condition = ((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+						&& (!(function instanceof IntersectionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
 						&&!(function instanceof ExtentFunc));
 				if(condition)
 				{
@@ -569,6 +583,10 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 						{
 							this.spatialAggregatesResult.put((FunctionCall) expr, poly.getGeometry());
 						}
+						else if(function instanceof IntersectionFunc)
+						{
+							this.spatialAggregatesResult.put((FunctionCall) expr, poly.getGeometry());
+						}
 						else if(function instanceof ExtentFunc)
 						{
 							Geometry env = poly.getGeometry().getEnvelope();
@@ -587,6 +605,15 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 							Geometry united = aggr.union(poly.getGeometry());
 							united.setSRID(poly.getGeometry().getSRID());
 							this.spatialAggregatesResult.put((FunctionCall) expr, united);
+						}
+						else if(function instanceof IntersectionFunc)
+						{
+							//XXX possible issue with expressions like
+							// ?x hasGeom sth^^4326
+							// ?x hasGeom sthElse^^2100
+							Geometry intersection = aggr.intersection(poly.getGeometry());
+							intersection.setSRID(poly.getGeometry().getSRID());
+							this.spatialAggregatesResult.put((FunctionCall) expr, intersection);
 						}
 						else if(function instanceof ExtentFunc)
 						{

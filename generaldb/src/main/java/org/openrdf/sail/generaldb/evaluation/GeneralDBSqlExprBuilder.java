@@ -270,7 +270,7 @@ public abstract class GeneralDBSqlExprBuilder {
 	public void intersectsMBB() {
 
 		//XXX
-		//edw prepei na ginei allou eidous douleia!! oxi na mpei to anyinteract, 
+		//edw prepei na ginei allou eidous douleia!! oxi na mpei to mbbIntersects, 
 		//alla na prostethei kati pou tha mou pei o kwstis
 		where.append(" && ");
 	}

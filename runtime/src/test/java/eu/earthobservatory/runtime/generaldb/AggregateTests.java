@@ -1,17 +1,20 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import eu.earthobservatory.runtime.postgis.SimpleTests;
 
 public class AggregateTests {
 	public static Strabon strabon;
@@ -43,7 +46,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo (STR(?place) AS ?str) strdf:union(?placegeo,?placegeo) "+
 		"HAVING (AVG(?str) < 1) "+
@@ -59,7 +62,7 @@ public class AggregateTests {
 		"geo:geometry ?placegeo ; "+
 		"geo:geometry ?placegeo2 ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo ?placegeo2";
 
@@ -72,7 +75,7 @@ public class AggregateTests {
 		"geo:geometry ?placegeo ; "+
 		"geo:geometry ?placegeo2 ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"GROUP BY ?placegeo ?placegeo2";
 		
@@ -85,7 +88,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type. "+ 
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"ORDER BY strdf:union(?placegeo,?placegeo) ?placegeo ?place";
 		
@@ -98,7 +101,7 @@ public class AggregateTests {
 		"rdfs:label ?placename ; "+ 	
 		"geo:geometry ?placegeo ; "+
 		"a ?type.  "+
-		"FILTER(strdf:anyInteract(?placegeo,?placegeo)) "+ 
+		"FILTER(strdf:mbbIntersects(?placegeo,?placegeo)) "+ 
 		"} "+
 		"ORDER BY ?placegeo ";
 		

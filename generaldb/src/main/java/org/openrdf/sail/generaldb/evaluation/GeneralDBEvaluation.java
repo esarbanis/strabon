@@ -1,7 +1,11 @@
-/*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
- * Licensed under the Aduna BSD-style license.
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
  */
 package org.openrdf.sail.generaldb.evaluation;
 
@@ -38,26 +42,25 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AnyInteractFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CoveredByFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CoversFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.CrossesFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.DisjointFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.EqualsFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.InsideFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.IntersectsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.LeftFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.OverlapsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RightFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.TouchesFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.WithinFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbEqualsFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbIntersectsFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.mbb.MbbWithinFunc;
 import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.algebra.evaluation.iterator.OrderIterator;
 import org.openrdf.query.algebra.evaluation.iterator.StSPARQLGroupIterator;
@@ -74,6 +77,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDateTimeMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsText;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoDimension;
@@ -85,12 +89,15 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlNot;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialConstructUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricTriple;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialProperty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
+import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.util.StSPARQLValueComparator;
@@ -104,6 +111,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
  * them on a database.
@@ -112,7 +121,7 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
-	public Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.class);
 
 	protected GeneralDBQueryBuilderFactory factory;
 
@@ -130,7 +139,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKB, DOUBLE, NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKT, WKTLITERAL, DOUBLE, NULL};
 
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -140,11 +149,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//	private HashMap<String, Integer> boolPropertiesIndexesAndNames = new HashMap<String, Integer>();
 	//	private HashMap<String, Integer> stringPropertiesIndexesAndNames = new HashMap<String, Integer>();
 
-	public GeneralDBEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
-			IdSequence ids)
+	public GeneralDBEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset, IdSequence ids)
 	{
 		super(new GeneralDBTripleSource(triples), dataset);
-		this.logger = LoggerFactory.getLogger(GeneralDBEvaluation.class);
 		this.factory = factory;
 		this.triples = triples;
 		this.vf = triples.getValueFactory();
@@ -152,9 +159,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	}
 
 	@Override
-	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr,
-			BindingSet bindings)
-	throws QueryEvaluationException
+	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(TupleExpr expr, BindingSet bindings) throws QueryEvaluationException
 	{
 		if (expr instanceof GeneralDBSelectQuery)
 			return evaluate((GeneralDBSelectQuery)expr, bindings);
@@ -168,8 +173,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	}
 	
 	@Override
-	public Value evaluate(ValueExpr expr, BindingSet bindings)
-	throws ValueExprEvaluationException, QueryEvaluationException
+	public Value evaluate(ValueExpr expr, BindingSet bindings) throws ValueExprEvaluationException, QueryEvaluationException
 	{
 		if (expr instanceof Var) {
 			return evaluate((Var)expr, bindings);
@@ -246,6 +250,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// get the function corresponding to the function call
 		Function function = FunctionRegistry.getInstance().get(fc.getURI());
+		
+		if (function == null) {
+			throw new UnsupportedExtensionFunctionException("Extension function " + fc.getURI()+ " is not supported.");
+		}
 		
 		// get the first argument of the function call
 		ValueExpr left = fc.getArgs().get(0);
@@ -355,13 +363,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinY() > rightConverted.getEnvelopeInternal().getMaxY();
 				}
-				else if(function instanceof AnyInteractFunc)
-				{
-					int targetSRID = leftGeom.getSRID();
-					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.intersects(rightConverted);
-				}
 				else if(function instanceof IntersectsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
@@ -383,19 +384,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.contains(rightConverted);
 				}
-				else if(function instanceof CoveredByFunc)
+				else if(function instanceof CrossesFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.coveredBy(rightConverted);
-				}
-				else if(function instanceof CoversFunc)
-				{
-					int targetSRID = leftGeom.getSRID();
-					int sourceSRID = rightGeom.getSRID();
-					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
-					funcResult = leftGeom.covers(rightConverted);
+					funcResult = leftGeom.crosses(rightConverted);
 				}
 				else if(function instanceof DisjointFunc)
 				{
@@ -411,7 +405,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.equals(rightConverted);
 				}
-				else if(function instanceof InsideFunc)
+				else if(function instanceof WithinFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -425,7 +419,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMaxX() < rightConverted.getEnvelopeInternal().getMinX();
 				}
-				else if(function instanceof OverlapFunc)
+				else if(function instanceof OverlapsFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -439,7 +433,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelopeInternal().getMinX() > rightConverted.getEnvelopeInternal().getMaxX();
 				}
-				else if(function instanceof TouchFunc)
+				else if(function instanceof TouchesFunc)
 				{
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
@@ -452,6 +446,20 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
 					funcResult = leftGeom.getEnvelope().intersects(rightConverted.getEnvelope());
+				}
+				else if(function instanceof MbbWithinFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelope().within(rightConverted.getEnvelope());
+				}
+				else if(function instanceof MbbContainsFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.getEnvelope().contains(rightConverted.getEnvelope());
 				}
 				else if(function instanceof MbbEqualsFunc)
 				{
@@ -476,7 +484,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				return function.evaluate(tripleSource.getValueFactory(), argValues);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Strabon.evaluate(FunctionCall)] Error during evaluation of extension function.", e);
 			return null;
 		}
 
@@ -485,12 +493,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
 	{
 		StrabonPolyhedron leftArg = ((GeneralDBPolyhedron) left).getPolyhedron();
-		if(function.getURI().equals(GeoConstants.union))
+		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.buffer))
+		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
 		{
 			if(right instanceof LiteralImpl)
 			{
@@ -504,7 +512,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(GeoConstants.transform))
+		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
 			if(right instanceof URIImpl)
 			{
@@ -520,29 +528,29 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(function.getURI().equals(GeoConstants.envelope))
+		else if(function.getURI().equals(GeoConstants.stSPARQLenvelope))
 		{
 			return StrabonPolyhedron.envelope(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.convexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
 		{
 			return StrabonPolyhedron.convexHull(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.boundary))
+		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
 		{
 			return StrabonPolyhedron.boundary(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.intersection))
+		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.difference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
-		else if(function.getURI().equals(GeoConstants.symDifference))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.symDifference(leftArg, rightArg);		
@@ -681,7 +689,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 		}
 
-		List<GeneralDBSelectProjection> projForOrderBy = new ArrayList<GeneralDBSelectProjection>();
+		//List<GeneralDBSelectProjection> projForOrderBy = new ArrayList<GeneralDBSelectProjection>();
 
 		int index = 0;
 		for (GeneralDBSelectProjection proj : qb.getSqlSelectVar()) {
@@ -754,7 +762,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
 					
 					// set increaseIndex to <tt>true</tt> for geometries only (see commend below)
-					if (type == ResultType.WKB) {
+					if (type == ResultType.WKT || type == ResultType.WKTLITERAL) {
 						increaseIndex = true;
 					}
 					
@@ -795,7 +803,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 */
 	private void locateColumnVars(GeneralDBSqlExpr expr, Collection<GeneralDBColumnVar> allKnown)
 	{
-		ArrayList<GeneralDBColumnVar> allVars = new ArrayList<GeneralDBColumnVar>();
+		//ArrayList<GeneralDBColumnVar> allVars = new ArrayList<GeneralDBColumnVar>();
 		if(expr instanceof GeneralDBSqlSpatialProperty) //1 arg
 		{
 
@@ -813,11 +821,36 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			locateColumnVars(((GeneralDBSqlSpatialConstructUnary)expr).getArg(),allKnown);
 		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructTriple)
+		{
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getLeftArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getRightArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialConstructTriple)expr).getThirdArg(),allKnown);
+		}
+		/** Addition for datetime metric functions
+		 * 
+		 * @author George Garbis <ggarbis@di.uoa.gr>
+		 * 
+		 */
+		else if(expr instanceof GeneralDBSqlDateTimeMetricBinary)
+		{
+			locateColumnVars(((GeneralDBSqlDateTimeMetricBinary)expr).getLeftArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlDateTimeMetricBinary)expr).getRightArg(),allKnown);
+		}
+		/***/
 		else if(expr instanceof GeneralDBSqlSpatialMetricBinary)
 		{
 			locateColumnVars(((GeneralDBSqlSpatialMetricBinary)expr).getLeftArg(),allKnown);
 			locateColumnVars(((GeneralDBSqlSpatialMetricBinary)expr).getRightArg(),allKnown);
 		}
+
+		else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
+		{
+			locateColumnVars(((GeneralDBSqlSpatialMetricTriple)expr).getLeftArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialMetricTriple)expr).getRightArg(),allKnown);
+			locateColumnVars(((GeneralDBSqlSpatialMetricTriple)expr).getThirdArg(),allKnown);
+		}
+
 		else if(expr instanceof GeneralDBSqlSpatialMetricUnary)
 		{
 			locateColumnVars(((GeneralDBSqlSpatialMetricUnary)expr).getArg(),allKnown);
@@ -888,7 +921,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBURIColumn)//Used for 2nd argument of Transform
 		{
-			boolean found = false;
 			String name = ((GeneralDBURIColumn) expr).getVarName();
 
 			for(GeneralDBColumnVar reference: allKnown)
@@ -897,7 +929,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{
 					GeneralDBSqlExpr exprCopy = new GeneralDBURIColumn(reference);
 					expr.replaceWith(exprCopy);
-					found = true;
 				}
 			}
 
@@ -965,14 +996,43 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
-		else if(expr instanceof GeneralDBSqlSpatialConstructBinary ||
-				expr instanceof GeneralDBSqlSpatialConstructUnary)
-		{
-			return ResultType.WKB;
+		
+		else if(expr instanceof GeneralDBSqlSpatialConstructUnary)
+		{	
+			GeneralDBSqlSpatialConstructUnary exprUnary = (GeneralDBSqlSpatialConstructUnary) expr;
+			if(exprUnary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
 		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructBinary)
+		{	
+			GeneralDBSqlSpatialConstructBinary exprBinary = (GeneralDBSqlSpatialConstructBinary) expr;
+			if(exprBinary.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+		else if(expr instanceof GeneralDBSqlSpatialConstructTriple)
+		{	
+			GeneralDBSqlSpatialConstructTriple exprTriple = (GeneralDBSqlSpatialConstructTriple) expr;
+			if(exprTriple.getResultType() == GeoConstants.WKT)
+				return ResultType.WKT;
+			else
+				return ResultType.WKTLITERAL;
+		}
+					
 		else if(expr instanceof GeneralDBSqlSpatialMetricBinary ||
 				expr instanceof GeneralDBSqlSpatialMetricUnary ||
-				expr instanceof GeneralDBSqlMathExpr)
+				expr instanceof GeneralDBSqlMathExpr ||
+				expr instanceof GeneralDBSqlSpatialMetricTriple ||
+				/** Addition for datetime metric functions
+				 * 
+				 * @author George Garbis <ggarbis@di.uoa.gr>
+				 *
+				 */
+				expr instanceof GeneralDBSqlDateTimeMetricBinary
+				/***/)
 		{
 			return ResultType.DOUBLE;
 		}

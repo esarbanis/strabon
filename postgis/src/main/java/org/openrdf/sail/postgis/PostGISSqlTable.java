@@ -7,8 +7,9 @@ package org.openrdf.sail.postgis;
 
 import java.sql.SQLException;
 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts table names to lower-case and include the analyse optimisation.

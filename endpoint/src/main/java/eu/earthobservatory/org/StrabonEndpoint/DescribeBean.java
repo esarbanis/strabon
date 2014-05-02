@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.ByteArrayOutputStream;
@@ -102,30 +111,57 @@ public class DescribeBean extends HttpServlet{
 		
 		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
 		String format = request.getParameter("format");
-		
-		if (format == null || query == null) {
+		String handle = request.getParameter("handle");
+		RDFFormat rdfFormat = RDFFormat.valueOf(format);
+
+		if (format == null || query == null || rdfFormat == null) {
 			request.setAttribute(ERROR, PARAM_ERROR);
 			dispatcher.forward(request, response);
 			
 		} else {
-			// set the query and format to be selected in the rendered page
+			// set the query, format and handle to be selected in the rendered page
 			//request.setAttribute("query", URLDecoder.decode(query, "UTF-8"));
 			//request.setAttribute("format", URLDecoder.decode(reqFormat, "UTF-8"));
+			//request.setAttribute("handle", URLDecoder.decode(handle, "UTF-8"));
 		
-			try {
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-				strabonWrapper.describe(query, format, bos);
+			if ("download".equals(handle)) { // download as attachment
+				ServletOutputStream out = response.getOutputStream();
 				
-				request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
-				
-			} catch (Exception e) {
-				request.setAttribute(ERROR, e.getMessage());
+				response.setContentType(rdfFormat.getDefaultMIMEType());
+			    response.setHeader("Content-Disposition", 
+			    				"attachment; filename=results." + 
+			    						rdfFormat.getDefaultFileExtension() + "; " + 
+			    						rdfFormat.getCharset());
+			    
+			    try {
+					strabonWrapper.describe(query, format, out);
+					response.setStatus(HttpServletResponse.SC_OK);
+					
+			    } catch (Exception e) {
+			    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					out.print(ResponseMessages.getXMLHeader());
+					out.print(ResponseMessages.getXMLException(e.getMessage()));
+					out.print(ResponseMessages.getXMLFooter());
+			    }
+			    
+			    out.flush();
+			    
 			}
-			
-			dispatcher.forward(request, response);
+			else //plain
+			{	
+				try {
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	
+					strabonWrapper.describe(query, format, bos);
+					
+					request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
+					
+				} catch (Exception e) {
+					request.setAttribute(ERROR, e.getMessage());
+				}
+				dispatcher.forward(request, response);
+			}			
 		}
-
     }
     
     /**

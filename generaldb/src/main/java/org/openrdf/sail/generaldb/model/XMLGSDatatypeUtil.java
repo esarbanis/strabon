@@ -17,7 +17,8 @@ import org.openrdf.model.datatypes.XMLDateTime;
 import org.openrdf.model.vocabulary.XMLSchema;
 
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 
 
@@ -95,7 +96,8 @@ public class XMLGSDatatypeUtil {
 			return false;
 		}
 		
-		return GeoConstants.WKT.equals(datatype.stringValue());
+		return GeoConstants.WKT.equals(datatype.stringValue()) || 
+				GeoConstants.WKTLITERAL.equals(datatype.stringValue());
 	}
 	
 	/**

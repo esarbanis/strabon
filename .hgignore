@@ -1,4 +1,5 @@
 /target$
+target$
 \.project$
 \.settings$
 \.classpath$
@@ -11,3 +12,5 @@ stderr\.txt
 stdout\.txt
 stderr\.log
 stdout\.log
+endpoint-client/dependency-reduced-pom\.xml
+WEB-INF/faces-config.xml

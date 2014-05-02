@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.3-MonetDB-SNAPSHOT</version>
+		<version>3.2.10-MonetDB-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>strabon-endpoint</artifactId>
 	<packaging>war</packaging>
 
-	<name>StrabonEndpoint</name>
+	<name>Strabon: Endpoint</name>
 	<description>An endpoint for Strabon</description>
 
 	<properties>
@@ -22,6 +22,11 @@
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.earthobservatory</groupId>
+			<artifactId>strabon-vocabulary</artifactId>
 		</dependency>
 
 		<dependency>
@@ -97,28 +102,6 @@
 			</exclusions>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-jdk14</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
@@ -126,6 +109,22 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/version.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/version.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -167,6 +166,8 @@
 							<directory>${basedir}/WebContent/WEB-INF</directory>
 							<includes>
 								<include>beans.xml</include>
+								<include>connection.properties</include>
+								<include>credentials.properties</include>
 							</includes>
 						</resource>
 
@@ -183,10 +184,14 @@
 							<directory>${basedir}/WebContent</directory>
 							<includes>
 								<include>style.css</include>
+								<include>style-menu.css</include>
 								<include>store.jsp</include>
 								<include>query.jsp</include>
 								<include>describe.jsp</include>
-								<include>teleios-header.html</include>
+								<include>connection.jsp</include>
+								<include>connection.jsp</include>
+								<include>browse.jsp</include>
+								<include>header.html</include>
 							</includes>
 						</resource>
 
@@ -195,6 +200,7 @@
 							<directory>${basedir}/WebContent</directory>
 							<includes>
 								<include>images/**</include>
+								<include>js/**</include>
 							</includes>
 						</resource>
 					</webResources>
@@ -202,13 +208,32 @@
 						</archive> -->
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId> 
-				<version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions> 
-				<pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-dependency-plugin</artifactId> <versionRange>[2.1,)</versionRange> 
-				<goals> <goal>copy-dependencies</goal> </goals> </pluginExecutionFilter> 
-				<action> <ignore /> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata> 
-				</configuration> </plugin> -->
+			<!--
+			<plugin>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-dependency-plugin</artifactId>
+									<versionRange>[2.1,)</versionRange>
+									<goals>
+										<goal>copy-dependencies</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore />
+								</action>
+							</pluginExecution>
+						</pluginExecutions>
+						</lifecycleMappingMetadata>
+				</configuration>
+			</plugin>
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -243,23 +268,6 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>tomcat-run</id>
-						<goals>
-							<goal>exec-war-only</goal>
-						</goals>
-						<!-- <phase>package</phase> -->
-						<phase>integration-test</phase>
-						<configuration>
-							<enableNaming>true</enableNaming>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -282,7 +290,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[2.1,)</versionRange>
+										<versionRange>[2.4,)</versionRange>
 										<goals>
 											<goal>copy-dependencies</goal>
 										</goals>

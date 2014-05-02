@@ -1,8 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.postgis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class DescribeOp {
 
@@ -39,7 +47,7 @@ public class DescribeOp {
 		
 		Strabon strabon = null;
 		try {
-			strabon = new Strabon(db, user, passwd, port, host, true);
+			strabon = new Strabon(db, user, passwd, port, host, false);
 			strabon.describe(queryString, format, strabon.getSailRepoConnection(), System.out);
 			
 		} catch (Exception e) {

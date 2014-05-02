@@ -1,22 +1,20 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * 
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * 
+ * http://www.strabon.di.uoa.gr/
+ */
 package eu.earthobservatory.runtime.generaldb;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-
-import eu.earthobservatory.runtime.generaldb.Strabon;
-import eu.earthobservatory.runtime.postgis.SimpleTests;
 
 public class JoinTests {
 
@@ -53,7 +51,7 @@ public class JoinTests {
 		"?sensorsDeployment <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> ?sensorPlatform . "+
 		"?sensorPlatform <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?spaceRegion . "+
 		"?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo) && strdf:anyInteract(?sensorsGeo,?placeGeo)) . "+ 
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?areaGeo) && strdf:mbbIntersects(?sensorsGeo,?placeGeo)) . "+ 
 		"}";
 
 	String query5b = 
@@ -69,8 +67,8 @@ public class JoinTests {
 		"?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
 		"?areaOfInterest <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> ?areaGeo . "+
 		"?areaOfInterest <http://www.geonames.org/ontology#name>  \"London\". "+	
-		"FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo)) . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?placeGeo)). }";
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?areaGeo)) . "+
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?placeGeo)). }";
 
 	String query5c = 
 		"PREFIX strdf:<http://strdf.di.uoa.gr/ontology#> "+
@@ -85,8 +83,8 @@ public class JoinTests {
 		"?sensorsDeployment <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> ?sensorPlatform . "+
 		"?sensorPlatform <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?spaceRegion . "+
 		"?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo)) . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?placeGeo)). }";
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?areaGeo)) . "+
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?placeGeo)). }";
 
 	String query9a =
 		"PREFIX strdf:<http://strdf.di.uoa.gr/ontology#> " +
@@ -104,8 +102,8 @@ public class JoinTests {
 		" ?populatedArea <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/PopulatedPlace> . " +
 		" ?populatedAreaGeoNames <http://www.w3.org/2002/07/owl#sameAs> ?populatedArea .			 " +
 		" ?populatedAreaGeoNames <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> ?areaGeo .  " +
-		"  FILTER( strdf:anyInteract(?areaGeo,?sensorsGeo) ) . " +
-		" FILTER( strdf:anyInteract(?seaGeo,?sensorsGeo) ) . " +
+		"  FILTER( strdf:mbbIntersects(?areaGeo,?sensorsGeo) ) . " +
+		" FILTER( strdf:mbbIntersects(?seaGeo,?sensorsGeo) ) . " +
 		"}";
 
 	String query3way = 
@@ -121,8 +119,8 @@ public class JoinTests {
 		"?sensorsDeployment <http://purl.oclc.org/NET/ssnx/ssn#deployedOnPlatform> ?sensorPlatform . "+
 		"?sensorPlatform <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?spaceRegion . "+
 		"?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,strdf:union(?areaGeo,?placeGeo)) " +
-		"&& strdf:anyInteract(?sensorsGeo,?placeGeo) && ?place = ?spaceRegion) . "+
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,strdf:union(?areaGeo,?placeGeo)) " +
+		"&& strdf:mbbIntersects(?sensorsGeo,?placeGeo) && ?place = ?spaceRegion) . "+
 		"}";
 
 	String query5_3filters = 
@@ -138,9 +136,9 @@ public class JoinTests {
 		"	?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
 		"?areaOfInterest <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> ?areaGeo . "+
 		"?areaOfInterest <http://www.geonames.org/ontology#name>  \"London\".	 "+
-		"	FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo)) .  "+
-		"FILTER(strdf:anyInteract(?sensorsGeo,?placeGeo)).  "+
-		"      FILTER(strdf:anyInteract(?areaGeo,?placeGeo)).}";
+		"	FILTER(strdf:mbbIntersects(?sensorsGeo,?areaGeo)) .  "+
+		"FILTER(strdf:mbbIntersects(?sensorsGeo,?placeGeo)).  "+
+		"      FILTER(strdf:mbbIntersects(?areaGeo,?placeGeo)).}";
 	
 	String query5_properties = 
 		"PREFIX strdf:<http://strdf.di.uoa.gr/ontology#> "+
@@ -155,7 +153,7 @@ public class JoinTests {
 		"	?spaceRegion <http://dbpedia.org/property/hasGeometry> ?sensorsGeo . "+
 		"?areaOfInterest <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeography> ?areaGeo . "+
 		"?areaOfInterest <http://www.geonames.org/ontology#name>  \"London\".	 "+
-		"	FILTER(strdf:anyInteract(?sensorsGeo,?areaGeo)) .  "+
+		"	FILTER(strdf:mbbIntersects(?sensorsGeo,?areaGeo)) .  "+
 		"FILTER(strdf:dimension(?sensorsGeo) = strdf:dimension(?placeGeo)).  }";
 
 	@Test

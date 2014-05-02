@@ -8,8 +8,8 @@ package org.openrdf.sail.generaldb.optimizers;
 import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createCtx;
 import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createObj;
 import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createPred;
-import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createSubj;
 import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createSpatialColumn;
+import static org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar.createSubj;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.coalesce;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.eq;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.isNull;
@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,29 +51,26 @@ import org.openrdf.query.algebra.OrderElem;
 import org.openrdf.query.algebra.Projection;
 import org.openrdf.query.algebra.ProjectionElem;
 import org.openrdf.query.algebra.ProjectionElemList;
-import org.openrdf.query.algebra.QueryModelNode;
 import org.openrdf.query.algebra.Slice;
 import org.openrdf.query.algebra.StatementPattern;
+import org.openrdf.query.algebra.StatementPattern.Scope;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.UnaryValueOperator;
 import org.openrdf.query.algebra.Union;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
-import org.openrdf.query.algebra.StatementPattern.Scope;
-import org.openrdf.query.algebra.evaluation.QueryOptimizer;
 import org.openrdf.query.algebra.evaluation.function.Function;
-import org.openrdf.query.algebra.evaluation.function.FunctionRegistry; 
-import org.openrdf.query.algebra.evaluation.function.spatial.GeoConstants;
+import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
-import org.openrdf.query.algebra.evaluation.iterator.SPARQLMinusIteration;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBBNodeColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -91,22 +87,19 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlEq;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlOr;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricBinary;
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlSpatialMetricUnary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBURIColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBUnionItem;
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
-import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.factories.GeneralDBSqlExprFactory;
+import org.openrdf.sail.generaldb.managers.TransTableManager;
+import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsRuntimeException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
-import org.openrdf.sail.generaldb.managers.TransTableManager;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
-import org.openrdf.sail.generaldb.schema.HashTable;
-import org.openrdf.sail.generaldb.schema.IdSequence;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Rewrites the core algebra model with a relation optimised model, using SQL.
@@ -798,7 +791,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							//					}
 							//					else //DEFAULT CASE
 							//					{
-							query.addFilter(sql.createBooleanExpr(expr));
+ 							query.addFilter(sql.createBooleanExpr(expr));
 							//					}
 
 						}
@@ -878,6 +871,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			throws RuntimeException
 			{
 		super.meet(node);
+		// Edw ftanei to Filter GeneralDBSqlDiffDateTime!
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 
@@ -905,13 +899,13 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	@Override
 	public void meet(FunctionCall node)
 			throws RuntimeException
-			{
+	{
 		Function function = FunctionRegistry.getInstance().get(node.getURI());
 
 		super.meet(node);
 
 		if(function instanceof SpatialRelationshipFunc || function instanceof SpatialConstructFunc 
-				|| function instanceof SpatialMetricFunc || function instanceof SpatialPropertyFunc)
+				|| function instanceof SpatialMetricFunc || function instanceof SpatialPropertyFunc )
 		{
 			List<ValueExpr> allArgs = node.getArgs();
 
@@ -966,8 +960,31 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			//				
 			//			}
 		}
+		/**
+		 * Addition for datetime metric functions
+		 * 
+		 * @author George Garbis <ggarbis@di.uoa.gr>
+		 * 
+		 */
+		else if (function instanceof DateTimeMetricFunc)
+		{
+			List<ValueExpr> allArgs = node.getArgs();
 
+			int argNo = 0; 
+			//Used so that the second argument of buffer func is not 
+			//mistakenly confused with a spatial variable
+			for(ValueExpr arg : allArgs)
+			{	
+				argNo++;
+				if(arg instanceof Var && argNo!=2)
+				{
+					String originalName = ((Var)arg).getName();
+					((Var)arg).setName(originalName);
+				}
 			}
+		}
+		/***/
+	}
 
 	//
 	@Override
@@ -1187,7 +1204,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	/**
 	 * Function used recursively to specify whether the function call present in the select clause contains an aggregate
-	 * of the form strdf:union(?aggrValue). 
+	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue). 
 	 * @param expr 
 	 * @return true if no aggregate is present, false otherwise.
 	 */
@@ -1196,18 +1213,20 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		if(expr instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc))
+			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&(!(function instanceof IntersectionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&!(function instanceof ExtentFunc))
 			{
 				//Recursively check arguments
-				boolean unionPresent = false;
+				boolean aggregatePresent = false;
 				for(int i = 0 ; i< ((FunctionCall) expr).getArgs().size(); i++)
 				{
 					//ValueExpr tmp = ((FunctionCall) expr).getArgs().get(i);
 					//containsAggregateUnion = containsAggregateUnion || evaluateInDB(tmp);
 					//					noUnionPresent = noUnionPresent ^ evaluateInJava(((FunctionCall) expr).getArgs().get(i));
-					unionPresent = unionPresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
+					aggregatePresent = aggregatePresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
 				}
-				return unionPresent;
+				return aggregatePresent;
 			}
 			else
 			{
@@ -1265,7 +1284,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 							String originalName = copy.getName();
 							//((Var) expr).setName(originalName+"?spatial");
 
-							FunctionCall fc = new FunctionCall(GeoConstants.envelope,copy);
+							FunctionCall fc = new FunctionCall(GeoConstants.stSPARQLenvelope,copy);
 							//XXX volatile - using an extra arg to 'hang' the name I need
 							fc.addArg(new Var("-mbb-"+originalName));
 							ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+originalName);
@@ -1300,7 +1319,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				}
 				else //Function call met
 				{
-					FunctionCall fc = new FunctionCall(GeoConstants.envelope,expr);
+					FunctionCall fc = new FunctionCall(GeoConstants.stSPARQLenvelope,expr);
 
 					fc.addArg(new Var("-mbb-"+(++mbbCounter)));
 					ExtensionElem extElem = new ExtensionElem(fc,"-mbb-"+(mbbCounter));
@@ -1722,6 +1741,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
 				//Aggregate Function
 				if(((function instanceof UnionFunc) && (((FunctionCall) expr).getArgs().size()==1))
+						|| ((function instanceof IntersectionFunc) && (((FunctionCall) expr).getArgs().size()==1))
 						|| (function instanceof ExtentFunc))
 				{
 					GroupElem groupElem = new GroupElem("havingCondition"+(havingID++)+"-aggregateInside-", new Avg(expr));

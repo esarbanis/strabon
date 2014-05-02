@@ -1,5 +1,16 @@
 #! /bin/bash
 
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (C) 2010, 2011, 2012, Pyravlos Team
+#
+# http://www.strabon.di.uoa.gr/
+#
+
+
 dataDir="/home/ggarbis/TELEIOS/NOA_Processing_Chain/chain_msg2/data/out_triples/"
 dataUrl="http://pathway.di.uoa.gr/hotspots/out_triples/"
 name="HMSG2_IR_039_s7_070825"
@@ -25,7 +36,7 @@ WHERE {
   OPTIONAL {
     ?c rdf:type noa:Coastline;
        noa:hasGeometry ?cGeo . 
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) .
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) .
   } 
   FILTER(!bound(?c)) . 
 }"
@@ -48,7 +59,7 @@ WHERE {
     FILTER(\"TIMESTAMP\"^^xsd:dateTime = ?hAcqTime) .
     ?c rdf:type noa:Coastline;
        noa:hasGeometry ?cGeo .
-    FILTER(strdf:anyInteract(?hGeo, ?cGeo)) . 
+    FILTER(strdf:mbbIntersects(?hGeo, ?cGeo)) . 
   }
   GROUP BY ?h ?hGeo 
   HAVING strdf:overlap(?hGeo, strdf:union(?cGeo))

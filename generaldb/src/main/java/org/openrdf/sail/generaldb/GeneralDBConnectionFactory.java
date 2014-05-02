@@ -5,45 +5,39 @@
  */
 package org.openrdf.sail.generaldb;
 
-import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
+import info.aduna.concurrent.locks.ExclusiveLockManager;
+import info.aduna.concurrent.locks.Lock;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import info.aduna.concurrent.locks.ExclusiveLockManager;
-import info.aduna.concurrent.locks.Lock;
-
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
-import org.openrdf.sail.helpers.DefaultSailChangedEvent;
-import org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluationFactory;
 import org.openrdf.sail.generaldb.evaluation.GeneralDBQueryBuilderFactory;
-import org.openrdf.sail.generaldb.optimizers.GeneralDBQueryOptimizer;
-import org.openrdf.sail.generaldb.optimizers.GeneralDBSelectQueryOptimizerFactory;
-import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.generaldb.managers.BNodeManager;
 import org.openrdf.sail.generaldb.managers.HashManager;
 import org.openrdf.sail.generaldb.managers.LiteralManager;
-import org.openrdf.sail.rdbms.managers.NamespaceManager;
 import org.openrdf.sail.generaldb.managers.PredicateManager;
 import org.openrdf.sail.generaldb.managers.TransTableManager;
-import org.openrdf.sail.generaldb.managers.TripleManager;
 import org.openrdf.sail.generaldb.managers.TripleTableManager;
 import org.openrdf.sail.generaldb.managers.UriManager;
+import org.openrdf.sail.generaldb.optimizers.GeneralDBQueryOptimizer;
+import org.openrdf.sail.generaldb.optimizers.GeneralDBSelectQueryOptimizerFactory;
 import org.openrdf.sail.generaldb.schema.BNodeTable;
 import org.openrdf.sail.generaldb.schema.HashTable;
 import org.openrdf.sail.generaldb.schema.IdSequence;
 import org.openrdf.sail.generaldb.schema.IntegerIdSequence;
 import org.openrdf.sail.generaldb.schema.LiteralTable;
 import org.openrdf.sail.generaldb.schema.LongIdSequence;
-import org.openrdf.sail.rdbms.schema.NamespacesTable;
-import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.generaldb.schema.URITable;
 import org.openrdf.sail.generaldb.schema.ValueTableFactory;
-import org.openrdf.sail.rdbms.util.DatabaseLockManager;
+import org.openrdf.sail.rdbms.exceptions.RdbmsException;
+import org.openrdf.sail.rdbms.managers.NamespaceManager;
+import org.openrdf.sail.rdbms.schema.NamespacesTable;
+import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.rdbms.util.Tracer;
 
 /**
@@ -185,6 +179,7 @@ public abstract class GeneralDBConnectionFactory {
 			literalManager = new LiteralManager();
 			ValueTableFactory tables = createValueTableFactory();
 			tables.setSequenced(sequenced);
+			
 			if (sequenced) {
 				ids = new IntegerIdSequence();
 				tables.setIdSequence(ids);
@@ -200,11 +195,14 @@ public abstract class GeneralDBConnectionFactory {
 				hashManager.setUriManager(uriManager);
 				hashManager.setIdSequence(ids);
 				hashManager.init();
+				
 			} else {
 				ids = new LongIdSequence();
 				ids.init();
 				tables.setIdSequence(ids);
+				
 			}
+			
 			namespaces = new NamespaceManager();
 			namespaces.setConnection(resourceInserts);
 			NamespacesTable nsTable = tables.createNamespacesTable(nsAndTableIndexes);
@@ -239,11 +237,15 @@ public abstract class GeneralDBConnectionFactory {
 			tripleTableManager.setMaxNumberOfTripleTables(maxTripleTables);
 			tripleTableManager.setIndexingTriples(triplesIndexed);
 			tripleTableManager.initialize();
+			
 			if (triplesIndexed) {
 				tripleTableManager.createTripleIndexes();
+				
 			} else {
 				tripleTableManager.dropTripleIndexes();
+				
 			}
+			
 			bnodeManager.setTable(bnodeTable);
 			bnodeManager.init();
 			vf.setBNodeManager(bnodeManager);
@@ -252,6 +254,7 @@ public abstract class GeneralDBConnectionFactory {
 			literalManager.init();
 			vf.setLiteralManager(literalManager);
 			vf.setPredicateManager(predicateManager);
+			
 		} catch (SQLException e) {
 			throw new RdbmsException(e);
 		}
