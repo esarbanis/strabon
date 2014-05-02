@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.earthobservatory</groupId>
 		<artifactId>strabon</artifactId>
-		<version>3.2.2-MonetDB</version>
+		<version>3.2.2-MonetDB-SNAPSHOT</version>
 	</parent>
   
 	<groupId>org.openrdf.sesame</groupId>
