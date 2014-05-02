@@ -4,7 +4,7 @@
 
 	<groupId>eu.earthobservatory</groupId>
 	<artifactId>strabon</artifactId>
-	<version>3.2.2-MonetDB</version>
+	<version>3.2.3-MonetDB-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -29,7 +29,7 @@
 	</modules>
 
 	<properties>
-        <eu.earthobservatory.version>3.2.2-MonetDB</eu.earthobservatory.version>
+        <eu.earthobservatory.version>3.2.3-MonetDB-SNAPSHOT</eu.earthobservatory.version>
 		<sesame.version>2.6.3</sesame.version>
 		<aduna.appbase.version>3.5.0</aduna.appbase.version>
 		<!--slf4j.version>1.5.8</slf4j.version-->
@@ -605,7 +605,7 @@
 		<connection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</connection>
 		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</developerConnection>
 		<url>http://hg.strabon.di.uoa.gr/Strabon/</url>
-	  <tag>v3.2.2-MonetDB</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<repositories>
