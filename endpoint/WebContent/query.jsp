@@ -172,10 +172,10 @@
 			var map;
 			// create map
 			<%if(request.getAttribute("handle").toString().contains("timemap")){ %>	
-			map = tm.getNativeMap();
-			map.setOptions(myOptions);
+				map = tm.getNativeMap();
+				map.setOptions(myOptions);
 			<%} else {%>
-			var map = new google.maps.Map(document.getElementById("map"), myOptions);
+				var map = new google.maps.Map(document.getElementById("map"), myOptions);
 			<%}%>
 			<% if (request.getAttribute("pathToKML") == null) {%>
 			//	center at Brahames
@@ -185,7 +185,7 @@
 			addListener(map);
 
 			
-		<%if ("map_local".equals(request.getAttribute("handle")) || ("timemap_local".equals(request.getAttribute("handle")))) {%>
+		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
 			// display using geoxml3
 			var myParser = new geoXML3.parser({map: map});
 			myParser.parse(kml);			
@@ -195,7 +195,7 @@
 		<%}%>
 		
 		<%if (("map".equals(request.getAttribute("handle"))) || ("map_local".equals(request.getAttribute("handle")))
-		|| ("timemap".equals(request.getAttribute("handle"))) || ("timemap_local".equals(request.getAttribute("handle")))) {%>	
+		|| ("timemap".equals(request.getAttribute("handle")))) {%>	
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
 			}, 1500);
@@ -466,7 +466,6 @@ $(function() {
 		<OPTION value="map"<%= ("map".equals(handle)) ? "selected":""%>>On a map</OPTION>
 		<OPTION value="map_local"<%= ("map_local".equals(handle)) ? "selected":""%>>On a map (localhost)</OPTION>
 		<OPTION value="timemap"<%= ("timemap".equals(handle)) ? "selected":""%>>On a timemap</OPTION>
-		<OPTION value="timemap_local"<%= ("timemap_local".equals(handle)) ? "selected":""%>>On a timemap (localhost)</OPTION>
 	</SELECT>
 	</td>
 </tr>
