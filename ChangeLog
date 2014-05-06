@@ -1,5 +1,13 @@
 Sat Oct 19 23:37:23 2013   Pyravlos Team
 
+	* Revised the logos in Strabon Endpoint and the sample queries.
+	Results query limit is set to zero (unlimited).
+	Users can store from files and credentials are now required for uploading files or updating,
+	except if you run the endpoint on localhost.
+	Results in queries that are web urls now link to those urls and are not described.
+	The describe functionality can be accessed through the menu bar.
+	
+
 	* Version 3.2.9 released.
 
 	* Added support for the following google chart types: PieChart, 
