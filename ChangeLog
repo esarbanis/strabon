@@ -1,16 +1,26 @@
+
+
+	* Version 3.2.10 released.
+
+	* Various changes in the interface and behavior of Strabon Endpoint:
+	  - Revised the logos and the sample queries.
+	  - Results query limit is set to zero (unlimited).
+	  - Users can now store RDF data that is present in a file on the
+	    client side (the file is uploaded to the server).
+	  - Credentials are now required for uploading files or executing
+	    UPDATE queries, unless Strabon Endpoint runs locally (localhost).
+	  - When viewing the results of queries in HTML, any URI is now an
+	    active link to itself. Previously, that URI was being DESCRIBEd
+	    and one was being transferred to a page viewing the result of the
+	    DESCRIBE query.
+	  - The DESCRIBE functionality can now be accessed through the menu bar.
+	
 	* Fixed a bug where strdf:intersection function did not work as an
 	aggregate when used without 'GROUP BY'.
 	(bug #46 https://bug.strabon.di.uoa.gr/ticket/46)
 
 Sat Oct 19 23:37:23 2013   Pyravlos Team
 
-	* Revised the logos in Strabon Endpoint and the sample queries.
-	Results query limit is set to zero (unlimited).
-	Users can store from files and credentials are now required for uploading files or updating,
-	except if you run the endpoint on localhost.
-	Results in queries that are web urls now link to those urls and are not described.
-	The describe functionality can be accessed through the menu bar.
-	
 	* Version 3.2.9 released.
 
 	* Added support for the following google chart types: PieChart, 
