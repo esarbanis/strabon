@@ -810,8 +810,7 @@
 		<connection>scm:hg:http://hg.strabon.di.uoa.gr/Strabon/</connection>
 		<developerConnection>scm:hg:ssh://hg.strabon.di.uoa.gr//opt/hg/Strabon/</developerConnection>
 		<url>http://hg.strabon.di.uoa.gr/Strabon/</url>
-	  <tag>HEAD</tag>
-  </scm>
+	  </scm>
 	
 	<issueManagement>
 		<system>Trac</system>
@@ -876,7 +875,6 @@
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
 		</repository>
 
-		<!--
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -888,7 +886,6 @@
 			<name>Strabon - maven repository - sesame artifacts (temporary)</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame</url>
 		</repository>
-		-->
 		<!--
 		<repository>
 			<releases>
@@ -931,6 +928,17 @@
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
 		</repository>
 		-->
+               	<repository>
+                       	<releases>
+                               	<enabled>true</enabled>
+                       	</releases>
+                       	<snapshots>
+                               	<enabled>false</enabled>
+                       	</snapshots>
+                       	<id>ontotext.aduna</id>
+                       	<name>Maven repository of Aduna software - hosted by OntoText</name>
+                       	<url>http://maven.ontotext.com/content/repositories/aduna/</url>
+               	</repository>
 	</repositories>
 
 	<distributionManagement>
