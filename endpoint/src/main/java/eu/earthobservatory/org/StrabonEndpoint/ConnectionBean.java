@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
@@ -59,6 +60,22 @@ public class ConnectionBean extends HttpServlet {
 	 */
 	private ServletContext context;
 	
+	//Check for localHost. Works with ipV4 and ipV6
+	public static boolean isLocalClient(HttpServletRequest request) { 
+        HttpServletRequest testRequest = request; 
+        try { 
+            	InetAddress remote = InetAddress.getByName(testRequest.getRemoteAddr()); 
+            	if (remote.isLoopbackAddress()) { 
+            		return true;
+            	} 
+            	InetAddress localHost = InetAddress.getLocalHost(); 
+            	String localAddress = localHost.getHostAddress(); 
+            	String remoteAddress = remote.getHostAddress(); 
+            	return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress)); 
+        } catch (Exception e) { } 
+        return false; 
+    } 
+	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
@@ -85,63 +102,83 @@ public class ConnectionBean extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher dispatcher;
 		
-		// set new connection details
-		strabonWrapper.setConnectionDetails(request.getParameter("dbname"), 
-											request.getParameter("username"), 
-											request.getParameter("password"), 
-											request.getParameter("port"),
-											request.getParameter("hostname"), 
-											request.getParameter("dbengine"));
+		//Authorization
+		boolean authorized;
 		
-		// pass the query, format, and the handle that had been issued to the dispatcher
-		request.setAttribute("query",  	request.getAttribute("query"));
-		request.setAttribute("format",  request.getAttribute("format"));
-		request.setAttribute("handle", 	request.getAttribute("handle"));
+		if(!isLocalClient(request)) {
+			Authenticate authenticate = new Authenticate();
+			String authorization = request.getHeader("Authorization");
+	   		
+			authorized = authenticate.authenticateUser(authorization, context);
+		}
+		else
+			authorized = true;
+				
+	   	if (!authorized) {	   		 
+	   		// not allowed, so report he's unauthorized
+	   		response.setHeader("WWW-Authenticate", "BASIC realm=\"Please login\"");
+	   		response.sendError(HttpServletResponse.SC_UNAUTHORIZED);	   		 
+	   	}
+	   	else {	 		
+	   	// set new connection details
+	 		strabonWrapper.setConnectionDetails(request.getParameter("dbname"), 
+	 											request.getParameter("username"), 
+	 											request.getParameter("password"), 
+	 											request.getParameter("port"),
+	 											request.getParameter("hostname"), 
+	 											request.getParameter("dbengine"));
+	 		
+	 		// pass the query, format, and the handle that had been issued to the dispatcher
+	 		request.setAttribute("query",  	request.getAttribute("query"));
+	 		request.setAttribute("format",  request.getAttribute("format"));
+	 		request.setAttribute("handle", 	request.getAttribute("handle"));
 
-		if (logger.isInfoEnabled()) {
-			logger.info("[StrabonEndpoint.ConnectionBean] Establishing connection with database using new connection details.");
-		}
-		
-		// establish connection
-		if (strabonWrapper.init()) { // successfully connected, go to query.jsp
-			if (logger.isInfoEnabled()) {
-				logger.info("[StrabonEndpoint.ConnectionBean] Connection with database established.");
-				logger.info("[StrabonEndpoint.ConnectionBean] Saving new connection details in {}.", CONNECTION_PROPERTIES_FILE);
-			}
+	 		if (logger.isInfoEnabled()) {
+	 			logger.info("[StrabonEndpoint.ConnectionBean] Establishing connection with database using new connection details.");
+	 		}
+	 		
+	 		// establish connection
+	 		if (strabonWrapper.init()) { // successfully connected, go to query.jsp
+	 			if (logger.isInfoEnabled()) {
+	 				logger.info("[StrabonEndpoint.ConnectionBean] Connection with database established.");
+	 				logger.info("[StrabonEndpoint.ConnectionBean] Saving new connection details in {}.", CONNECTION_PROPERTIES_FILE);
+	 			}
+	 			
+	 			// save the new connection details
+	 			saveNewConnectionDetails(request.getParameter("dbname"),
+	 									 request.getParameter("username"), 
+	 									 request.getParameter("password"), 
+	 									 request.getParameter("port"), 
+	 									 request.getParameter("hostname"), 
+	 									 request.getParameter("dbengine"));
+	 			
+	 			if (logger.isInfoEnabled()) {
+	 				logger.info("[StrabonEndpoint.ConnectionBean] New connection details succesfully saved.");
+	 			}
+	 			
+	 			// go to query.jsp
+	 			dispatcher = request.getRequestDispatcher("/query.jsp");
+	 			
+	 		} else { // try again
+	 			if (logger.isInfoEnabled()) {
+	 				logger.info("[StrabonEndpoint.ConnectionBean] Cannot establish connection with database.");
+	 			}
+	 			
+	 			// pass the current details of the connection
+	 			request.setAttribute("dbname", 	 request.getParameter("dbname"));
+	 			request.setAttribute("username", request.getParameter("username"));
+	 			request.setAttribute("password", request.getParameter("password"));
+	 			request.setAttribute("port", 	 request.getParameter("port"));
+	 			request.setAttribute("hostname", request.getParameter("hostname"));
+	 			request.setAttribute("dbengine", request.getParameter("dbengine"));
+	 			
+	 			dispatcher = request.getRequestDispatcher("/connection.jsp");
+	 			
+	 		}
+	 		
+	 		dispatcher.forward(request, response);
+	   	 }		
 			
-			// save the new connection details
-			saveNewConnectionDetails(request.getParameter("dbname"),
-									 request.getParameter("username"), 
-									 request.getParameter("password"), 
-									 request.getParameter("port"), 
-									 request.getParameter("hostname"), 
-									 request.getParameter("dbengine"));
-			
-			if (logger.isInfoEnabled()) {
-				logger.info("[StrabonEndpoint.ConnectionBean] New connection details succesfully saved.");
-			}
-			
-			// go to query.jsp
-			dispatcher = request.getRequestDispatcher("/query.jsp");
-			
-		} else { // try again
-			if (logger.isInfoEnabled()) {
-				logger.info("[StrabonEndpoint.ConnectionBean] Cannot establish connection with database.");
-			}
-			
-			// pass the current details of the connection
-			request.setAttribute("dbname", 	 request.getParameter("dbname"));
-			request.setAttribute("username", request.getParameter("username"));
-			request.setAttribute("password", request.getParameter("password"));
-			request.setAttribute("port", 	 request.getParameter("port"));
-			request.setAttribute("hostname", request.getParameter("hostname"));
-			request.setAttribute("dbengine", request.getParameter("dbengine"));
-			
-			dispatcher = request.getRequestDispatcher("/connection.jsp");
-			
-		}
-		
-		dispatcher.forward(request, response);
 	}
 
 	private void saveNewConnectionDetails(String dbname, String username, String password, 

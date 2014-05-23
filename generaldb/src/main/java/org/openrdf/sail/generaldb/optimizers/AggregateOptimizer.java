@@ -20,6 +20,7 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 /**
@@ -64,15 +65,17 @@ public class AggregateOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeEx
 		if(expr instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc))
+			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&& (!(function instanceof IntersectionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&!(function instanceof ExtentFunc))
 			{
 				//Recursively check arguments
-				boolean unionPresent = false;
+				boolean aggregatePresent = false;
 				for(int i = 0 ; i< ((FunctionCall) expr).getArgs().size(); i++)
 				{
-					unionPresent = unionPresent || aggregateInQuery(((FunctionCall) expr).getArgs().get(i));
+					aggregatePresent = aggregatePresent || aggregateInQuery(((FunctionCall) expr).getArgs().get(i));
 				}
-				return unionPresent;
+				return aggregatePresent;
 			}
 			else
 				return true;

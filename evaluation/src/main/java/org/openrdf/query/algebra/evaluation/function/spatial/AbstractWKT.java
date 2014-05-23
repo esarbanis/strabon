@@ -24,6 +24,7 @@ import eu.earthobservatory.constants.GeoConstants;
  * might not be valid.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class AbstractWKT {
 
@@ -94,7 +95,7 @@ public class AbstractWKT {
 	public AbstractWKT(String literalValue) {
 		datatype = null;
 		
-		if (literalValue.indexOf(WKTHelper.STRDF_SRID_DELIM) > 0) { // strdf:WKT
+		if (literalValue.lastIndexOf(WKTHelper.STRDF_SRID_DELIM) > 0) { // strdf:WKT
 			datatype = GeoConstants.WKT;
 		
 			isstRDFWKT = true;

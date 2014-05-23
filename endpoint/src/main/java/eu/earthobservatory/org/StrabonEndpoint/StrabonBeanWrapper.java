@@ -61,6 +61,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String password;
 	private String dbBackend;
 	private int maxLimit;
+	private boolean loadFromFile;
 	private String prefixes;
 	
 	private Strabon strabon = null;
@@ -72,7 +73,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
 			int port, String serverName, boolean checkForLockTable, String dbBackend, 
-			int maxLimit, String prefixes, 	List<List<String>> args) {
+			int maxLimit, boolean loadFromFile,String prefixes, 	List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -80,7 +81,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
-		this.maxLimit = maxLimit;		
+		this.maxLimit = maxLimit;	
+		this.loadFromFile = loadFromFile;
 		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
@@ -358,10 +360,11 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 		if (url) {
 			URL source = new URL(src);
-			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
+			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL) && !loadFromFile) {
 				// it would be a security issue if we read from the server's filesystem
 				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
 			}
+			
 		}
 
 		strabon.storeInRepo(src, null, context, format, inference);

@@ -22,6 +22,8 @@ import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr> (extensions for the temporal case)
@@ -41,7 +43,10 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			// catch the spatial case and create a new literal
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
-			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
+			if(String.valueOf(dbpolyhedron.getDatatype()) == GeoConstants.WKT)
+				val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
+			else
+				val = new LiteralImpl("<http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID()+"> "+dbpolyhedron.getPolyhedronStringRep(),dbpolyhedron.getDatatype());
 		}
 		else if(val instanceof StrabonTemporalElement){
 			//creating a temporal literal, which is either a period or an instant

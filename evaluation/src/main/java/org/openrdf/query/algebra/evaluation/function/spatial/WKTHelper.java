@@ -18,6 +18,7 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *
  */
 public class WKTHelper {
@@ -37,7 +38,7 @@ public class WKTHelper {
 	public static String getWithoutSRID(String wkt) {
 		if (wkt == null) return wkt;
 		
-		int pos = wkt.indexOf(STRDF_SRID_DELIM);
+		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
 		if (pos != -1) {
 			return wkt.substring(0, pos);
 			
@@ -59,7 +60,7 @@ public class WKTHelper {
 		
 		if (wkt == null) return srid;
 		
-		int pos = wkt.indexOf(STRDF_SRID_DELIM);
+		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
 		if (pos != -1) {
 			try {
 				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));

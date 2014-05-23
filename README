@@ -448,13 +448,13 @@ Contributors
 The system Strabon has been developed by the following members of our team:
 
 * Manos Karpathiotakis	<mk@di.uoa.gr>
-* Kostis Kyzirakos	<kkyzir@di.uoa.gr>
+* Kostis Kyzirakos	<Kostis.Kyzirakos@cwi.nl>
 * Manolis Koubarakis	<koubarak@di.uoa.gr>
 * Giorgos Garbis	<ggarbis@di.uoa.gr>
 * Konstantina Bereta	<konstantina.bereta@di.uoa.gr>
 * Charalampos Nikolaou	<charnik@di.uoa.gr>
 * Stella Gianakopoulou	<sgian@di.uoa.gr>
-* Panagiotis Smeros	<psmeros@di.uoa.gr>
+* Panayiotis Smeros	<psmeros@di.uoa.gr>
 * Kallirroi Dogani	<kallirroi@di.uoa.gr>
 
 
@@ -481,6 +481,31 @@ the Strabon-devel mailing-list Strabon-devel@di.uoa.gr.
 
 Known Issues
 ============
+* Strabon depends on a version of Sesame OpenRDF that is not hosted at the central
+  repository of Maven. These artifacts resided on the Maven repository of Aduna 
+  which is not maintained any more. For this reason, you can use a mirror repository 
+  hosted by Ontotext. To configure maven to use the Ontotext mirror for the Aduna 
+  repository, you append to your settings file ${user.home}/.m2/settings.xml) the 
+  following:
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+...
+...
+  <mirrors>
+    <mirror>
+      <id>aduna-mirror</id>
+      <name>Aduna Maven Repository - Mirror</name>
+      <url>http://maven.ontotext.com/content/repositories/aduna/</url>
+      <mirrorOf>aduna-opensource.releases</mirrorOf>
+    </mirror>
+  </mirrors>
+...
+...
+</settings>
+
  * By default, Tomcat uses ISO-8859-1 character encoding when decoding URLs received 
    from a browser. This can cause problems when encoding is UTF-8, and you are using 
    international characters. In order to fix this, edit conf/server.xml and find the 

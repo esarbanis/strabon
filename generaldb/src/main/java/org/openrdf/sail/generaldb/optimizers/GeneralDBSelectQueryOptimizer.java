@@ -71,6 +71,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc;
@@ -1449,7 +1450,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	/**
 	 * Function used recursively to specify whether the function call present in the select clause contains an aggregate
-	 * of the form strdf:union(?aggrValue). 
+	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue). 
 	 * @param expr 
 	 * @return true if no aggregate is present, false otherwise.
 	 */
@@ -1458,19 +1459,22 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		if(expr instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc) && !(function instanceof PeriodPrecedingFunc)
-					&& !(function instanceof PeriodSucceedingFunc))
+			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&(!(function instanceof IntersectionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+                                        && !(function instanceof PeriodPrecedingFunc)  
+                                        && !(function instanceof PeriodSucceedingFunc)
+					&&!(function instanceof ExtentFunc))
 			{
 				//Recursively check arguments
-				boolean unionPresent = false;
+				boolean aggregatePresent = false;
 				for(int i = 0 ; i< ((FunctionCall) expr).getArgs().size(); i++)
 				{
 					//ValueExpr tmp = ((FunctionCall) expr).getArgs().get(i);
 					//containsAggregateUnion = containsAggregateUnion || evaluateInDB(tmp);
 					//					noUnionPresent = noUnionPresent ^ evaluateInJava(((FunctionCall) expr).getArgs().get(i));
-					unionPresent = unionPresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
+					aggregatePresent = aggregatePresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
 				}
-				return unionPresent;
+				return aggregatePresent;
 			}
 			else
 			{
@@ -1987,6 +1991,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
 				//Aggregate Function
 				if(((function instanceof UnionFunc) && (((FunctionCall) expr).getArgs().size()==1))
+						|| ((function instanceof IntersectionFunc) && (((FunctionCall) expr).getArgs().size()==1))
 						|| (function instanceof ExtentFunc))
 				{
 					GroupElem groupElem = new GroupElem("havingCondition"+(havingID++)+"-aggregateInside-", new Avg(expr));

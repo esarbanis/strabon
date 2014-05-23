@@ -37,6 +37,8 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
+import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+
 
 import eu.earthobservatory.constants.GeoConstants;
 
@@ -158,7 +160,8 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		else { // spatial literal
 			// else if (value instanceof RdbmsPolyhedron)
 			URI datatype = new URIImpl(GeoConstants.WKT);
-			Literal literal = new LiteralImpl(value.stringValue(), datatype);
+			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) value;
+			Literal literal = new LiteralImpl(value.stringValue(), dbpolyhedron.getDatatype());
 			writeLiteral(literal);
 		}
 	}

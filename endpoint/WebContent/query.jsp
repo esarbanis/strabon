@@ -172,10 +172,10 @@
 			var map;
 			// create map
 			<%if(request.getAttribute("handle").toString().contains("timemap")){ %>	
-			map = tm.getNativeMap();
-			map.setOptions(myOptions);
+				map = tm.getNativeMap();
+				map.setOptions(myOptions);
 			<%} else {%>
-			var map = new google.maps.Map(document.getElementById("map"), myOptions);
+				var map = new google.maps.Map(document.getElementById("map"), myOptions);
 			<%}%>
 			<% if (request.getAttribute("pathToKML") == null) {%>
 			//	center at Brahames
@@ -185,7 +185,7 @@
 			addListener(map);
 
 			
-		<%if ("map_local".equals(request.getAttribute("handle")) || ("timemap_local".equals(request.getAttribute("handle")))) {%>
+		<%if ("map_local".equals(request.getAttribute("handle"))) {%>
 			// display using geoxml3
 			var myParser = new geoXML3.parser({map: map});
 			myParser.parse(kml);			
@@ -195,7 +195,7 @@
 		<%}%>
 		
 		<%if (("map".equals(request.getAttribute("handle"))) || ("map_local".equals(request.getAttribute("handle")))
-		|| ("timemap".equals(request.getAttribute("handle"))) || ("timemap_local".equals(request.getAttribute("handle")))) {%>	
+		|| ("timemap".equals(request.getAttribute("handle")))) {%>	
 			$('html, body').animate({
 				scrollTop: $("#divResultsStart").offset().top
 			}, 1500);
@@ -306,7 +306,7 @@ $(function() {
 
     </script>
     
-     </script>
+
     <link href="js/timemap/examples.css" type="text/css" rel="stylesheet"/>
     <style>
     div#timelinecontainer{ height: 310px; }
@@ -315,7 +315,7 @@ $(function() {
     
  	<!-- jQuery end -->
  
-	<title>TELEIOS: Strabon Endpoint</title>
+	<title>Strabon Endpoint</title>
 	   <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -355,7 +355,7 @@ $(function() {
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="initialize()">
 
 <!-- include TELEIOS header and description -->
-<%@ include file="teleios-header.html"%>
+<%@ include file="header.html"%>
 <!-- include TELEIOS header and description -->
 
 <FORM enctype="UTF-8" accept-charset="UTF-8" method="post" action="Query">
@@ -438,7 +438,7 @@ $(function() {
 <tr>
 	<td id="output" colspan=2>
 		<div style="font-size:13px"> 
-			You must be logged in to perform update queries.
+			You must be logged in to perform update queries, or run in localhost.
 		</div>
 	</td>
 </tr>
@@ -466,7 +466,6 @@ $(function() {
 		<OPTION value="map"<%= ("map".equals(handle)) ? "selected":""%>>On a map</OPTION>
 		<OPTION value="map_local"<%= ("map_local".equals(handle)) ? "selected":""%>>On a map (localhost)</OPTION>
 		<OPTION value="timemap"<%= ("timemap".equals(handle)) ? "selected":""%>>On a timemap</OPTION>
-		<OPTION value="timemap_local"<%= ("timemap_local".equals(handle)) ? "selected":""%>>On a timemap (localhost)</OPTION>
 	</SELECT>
 	</td>
 </tr>

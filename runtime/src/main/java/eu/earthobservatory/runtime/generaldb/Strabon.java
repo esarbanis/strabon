@@ -95,7 +95,11 @@ public abstract class Strabon {
 			
 		}
 
+		long start = System.currentTimeMillis();
 		initiate(databaseName, user, password, port, serverName);
+		long end = System.currentTimeMillis();
+		
+		logger.info("[Strabon] Initialization took {} ms.", (end - start));
 	}
 
 

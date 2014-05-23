@@ -32,19 +32,41 @@
 		ul#icons li {margin: 1px; position: relative; padding: 1px 0; cursor: pointer; float: left;  list-style: none;}
 		ul#icons span.ui-icon {float: left; margin: 0 1px;}
 		</style>
-		<title>TELEIOS: Strabon Endpoint</title>
+		<title>Strabon Endpoint</title>
 	</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
 <!-- include TELEIOS header and description -->
-<jsp:include page="teleios-header.html"/>
+<jsp:include page="header.html"/>
 <!-- include TELEIOS header and description -->
 
 <FORM method=POST enctype="UTF-8" accept-charset="UTF-8" action="DBConnect">
 <input type="hidden" name="query" value="<%=request.getAttribute("query")%>"/>
 <input type="hidden" name="handle" value="<%=request.getAttribute("handle")%>"/>
 <input type="hidden" name="format" value="<%=request.getAttribute("format")%>"/>
-<TABLE class="style4">
+<TABLE class="style4">	
+	<% if (request.getAttribute("error") != null) {%>
+		<!-- Error Message -->
+	  		<TR><TD colspan=2>
+	  		<CENTER><P style="color: red;"><%=request.getAttribute("error") %></P></CENTER>
+	  		</TD></TR>
+		<!-- Error Message -->
+	<%}%>
+
+	<%if (request.getAttribute("info") != null) { %>
+		<!-- Info Message -->
+  		<TR><TD colspan=2>
+  		<CENTER><P><%=request.getAttribute("info") %></P></CENTER>
+  		</TD></TR>
+		<!-- Info Message -->
+	<%}%>
+	<tr>
+		<td colspan=2 id="output">
+			<div style="font-size:13px"> 
+				You must be logged in to change configuration, or run in localhost.
+			</div>
+		</td>	
+	</tr>
 	<TR> 
 		<TD valign="top" class="style4">Database Name:</TD>
 		<TD><input type="text" name="dbname" value="<%=request.getAttribute("dbname")%>"/></TD>
@@ -78,6 +100,7 @@
 		<TD colspan=2><input type="submit" value="Connect"/></TD>
 	</TR>
 </TABLE>
+
 </FORM>
 <br/><br/><br/><br/><br/>
 </BODY>

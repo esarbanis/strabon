@@ -110,6 +110,12 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 		try {
 			StringBuilder value = new StringBuilder();
 			Value boundValue = null;
+			String href;
+			
+			// if set to FALSE, urls link to web. if set to TRUE, urls are described //
+			boolean linkURL = false; 
+			///////////////////////////////////////////////////////////////////////////
+			
 			
 			xmlWriter.startTag(TABLE_ROW_TAG);
 			for (String bindingName : bindingNames) {
@@ -130,7 +136,8 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 						xmlWriter.startTag(TABLE_DATA_TAG);
 						
 						// select all the triples that contain the boundValue  
-						String query= "select * " +
+						if (linkURL){
+							String query= "select * " +
 								"where " +
 								"{ " +
 								  "?subject ?predicate ?object . "+
@@ -138,8 +145,11 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 								         "(?predicate = <"+ boundValue.toString()+ ">)  || "+
 								         "(?object = <"+ boundValue.toString()+ ">)) " +  
 								"}";
-						
-						String href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");						
+							href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");						
+						}
+						else{							
+							href = boundValue.toString();
+						}
 						xmlWriter.setAttribute(LINK_REF, href);
 						xmlWriter.startTag(LINK);							
 						xmlWriter.text(boundValue.toString());					
