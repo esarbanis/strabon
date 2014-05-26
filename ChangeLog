@@ -2,6 +2,11 @@
 
 	* Version 3.2.10 released.
 
+	* Fixed a bug in queries that contain variables that exist inside 
+	  spatial functions in select and do not exist in the where clause 
+	  made Strabon throw a NULL pointer exception.
+	  (bug #51 https://bug.strabon.di.uoa.gr/ticket/51)
+
 	* Various changes in the interface and behavior of Strabon Endpoint:
 	  - Revised the logos and the sample queries.
 	  - Results query limit is set to zero (unlimited).
