@@ -267,7 +267,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	
 	@Override
 	protected void append(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter) {
-		if (var.getRdbmsVar().isResource()) {
+		if (var.getRdbmsVar() == null || var.getRdbmsVar().isResource()) {
 			filter.appendNull();
 			nullLabel = true;
 		}
@@ -847,7 +847,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		boolean check2 = false;
 		if(expr.getArg() instanceof GeneralDBLabelColumn)
 		{
-			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
+			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar() == null || ((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
 			{
 				check2 = true;
 			}
@@ -892,7 +892,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}
@@ -1197,7 +1197,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		boolean check2 = expr.getRightArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
-
+	
 		if(check1)
 		{
 			this.append((GeneralDBSqlNull)expr.getLeftArg(), filter);
@@ -1229,7 +1229,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					if(tmp instanceof GeneralDBLabelColumn)
 					{
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null ||  ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}
@@ -1377,7 +1377,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}
@@ -1495,7 +1495,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}
@@ -1891,7 +1891,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}
@@ -2098,7 +2098,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		boolean check2 = false;
 		if(expr.getArg() instanceof GeneralDBLabelColumn)
 		{
-			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
+			if(((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar() ==null || ((GeneralDBLabelColumn) expr.getArg()).getRdbmsVar().isResource())
 			{
 				check2 = true;
 			}
@@ -2143,7 +2143,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
-						if (((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
+						if (((GeneralDBLabelColumn) tmp).getRdbmsVar() == null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
 							alias="NULL";
 						}

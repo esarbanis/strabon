@@ -377,7 +377,8 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 
 		Number id = ids.idOf(num);
 		try {
-			return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), wkb, srid);
+			if(wkb != null)
+				return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), wkb, srid);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

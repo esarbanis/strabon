@@ -1154,7 +1154,7 @@ public abstract class GeneralDBQueryBuilder {
 	{
 		//I seriously doubt it will ever visit this case
 
-		if (var.getRdbmsVar().isResource()) {
+		if (var.getRdbmsVar()==null || var.getRdbmsVar().isResource()) {
 			filter.appendNull();
 
 		}
