@@ -218,9 +218,13 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	{
 		double potentialMetric;
 		//case of metrics
-		potentialMetric = rs.getFloat(index + 1);
+		if(rs.getArray(index+1) != null)
+		{
+			potentialMetric = rs.getFloat(index + 1);
 
-		return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
+			return vf.asRdbmsLiteral(vf.createLiteral(potentialMetric));
+		}
+		return null;
 
 	}
 
