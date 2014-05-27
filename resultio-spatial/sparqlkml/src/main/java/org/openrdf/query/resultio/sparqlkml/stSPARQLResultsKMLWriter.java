@@ -2,8 +2,9 @@
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. Copyright (C) 2010, 2011, 2012,
- * Pyravlos Team http://www.strabon.di.uoa.gr/
+ * 2013, 2014 Pyravlos Team http://www.strabon.di.uoa.gr/
  */
+
 package org.openrdf.query.resultio.sparqlkml;
 
 import java.io.ByteArrayOutputStream;
@@ -53,6 +54,7 @@ import eu.earthobservatory.constants.GeoConstants;
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
+ * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  * 
  */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
@@ -327,11 +329,18 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				String geomRep = spatial.stringValue();
 				
 				if (XMLGSDatatypeUtil.isWKTLiteral(spatial)) { // WKT
-					AbstractWKT awkt = new AbstractWKT(geomRep, spatial.getDatatype().stringValue());
-					
+
+					AbstractWKT awkt = null;
+					if (spatial.getDatatype() == null) { // plain WKT literal
+						awkt = new AbstractWKT(geomRep);
+					} else { // typed WKT literal
+						awkt = new AbstractWKT(geomRep, spatial.getDatatype()
+								.stringValue());
+					}
+
 					geom = jts.WKTread(awkt.getWKT());
 					srid = awkt.getSRID();
-					
+
 				} else { // GML
 					geom = jts.GMLread(geomRep);
 					srid = geom.getSRID();

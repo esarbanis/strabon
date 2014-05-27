@@ -15,10 +15,10 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.datatypes.XMLDateTime;
 import org.openrdf.model.vocabulary.XMLSchema;
-
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.WKTConstants;
 
 
 
@@ -71,7 +71,11 @@ public class XMLGSDatatypeUtil {
 	 * @return
 	 */
 	public static boolean isWKTLiteral(Literal literal) {
-		return isWKTDatatype(literal.getDatatype());
+		if (literal.getDatatype() == null){
+			return containsWKTGeometry(literal);
+		} else {
+			return isWKTDatatype(literal.getDatatype());
+		}		
 	}
 	
 	/**
@@ -98,6 +102,20 @@ public class XMLGSDatatypeUtil {
 		
 		return GeoConstants.WKT.equals(datatype.stringValue()) || 
 				GeoConstants.WKTLITERAL.equals(datatype.stringValue());
+	}
+	
+	//TODO: seems a bit quick and dirty
+	
+	public static boolean containsWKTGeometry(Literal literal){
+		return
+		literal.stringValue().contains(WKTConstants.WKTPOINT)||
+		literal.stringValue().contains(WKTConstants.WKTLINESTRING)||
+		literal.stringValue().contains(WKTConstants.WKTLINEARRING)||
+		literal.stringValue().contains(WKTConstants.WKTPOLYGON)||
+		literal.stringValue().contains(WKTConstants.WKTMULTIPOINT)||
+		literal.stringValue().contains(WKTConstants.WKTMULTILINESTRING)||
+		literal.stringValue().contains(WKTConstants.WKTGEOMETRYCOLLECTION)||
+		literal.stringValue().contains(WKTConstants.WKTMULTIPOLYGON);
 	}
 	
 	/**
