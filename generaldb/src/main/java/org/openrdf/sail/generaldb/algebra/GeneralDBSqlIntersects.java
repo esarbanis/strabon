@@ -6,8 +6,6 @@
 package org.openrdf.sail.generaldb.algebra;
 
  
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator; 
-import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlIntersects extends GeneralDBSqlGeoSpatial{

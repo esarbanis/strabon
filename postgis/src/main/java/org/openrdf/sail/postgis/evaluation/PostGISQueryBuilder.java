@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, 2013 Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013, 2014 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -44,6 +44,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIntersection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
@@ -119,7 +120,7 @@ import eu.earthobservatory.constants.OGCConstants;
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
+ * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
@@ -359,7 +360,8 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				&&!(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
-				&&!(expr instanceof GeneralDBSqlSpatialProperty))
+				&&!(expr instanceof GeneralDBSqlSpatialProperty)
+				&& !(expr instanceof GeneralDBSqlGeoSpatial))
 		{
 			query.select().appendFunction(ST_ASBINARY);
 		}

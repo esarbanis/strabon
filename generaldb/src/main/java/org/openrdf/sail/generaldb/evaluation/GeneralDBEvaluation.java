@@ -84,6 +84,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoDimension;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMathExpr;
@@ -118,6 +119,7 @@ import eu.earthobservatory.constants.GeoConstants;
  * them on a database.
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
@@ -938,6 +940,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			locateColumnVars(((GeneralDBSqlMathExpr)expr).getLeftArg(),allKnown);
 			locateColumnVars(((GeneralDBSqlMathExpr)expr).getRightArg(),allKnown);
 		}
+		else if(expr instanceof GeneralDBSqlGeoSpatial)
+		{
+			locateColumnVars(((GeneralDBSqlGeoSpatial)expr).getLeftArg(),allKnown); 
+			locateColumnVars(((GeneralDBSqlGeoSpatial)expr).getRightArg(),allKnown);
+		}
 		else
 		{
 			//must recurse
@@ -964,6 +971,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 
 		}
+		
 
 		//return allVars;
 	}
@@ -1036,6 +1044,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			return ResultType.DOUBLE;
 		}
+		else if(expr instanceof GeneralDBSqlGeoSpatial)
+		{
+			return ResultType.BOOLEAN;
+		}
+		
 		return ResultType.NULL;//SHOULD NEVER REACH THIS CASE
 	}
 }

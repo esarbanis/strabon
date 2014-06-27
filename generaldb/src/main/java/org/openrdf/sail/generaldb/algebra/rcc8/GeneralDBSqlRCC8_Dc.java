@@ -7,8 +7,6 @@ package org.openrdf.sail.generaldb.algebra.rcc8;
 
  
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator; 
-import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlRCC8_Dc extends GeneralDBSqlGeoSpatial{
