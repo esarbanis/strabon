@@ -22,6 +22,7 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
@@ -43,8 +44,11 @@ import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc;
@@ -198,7 +202,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		//		{
 		//			var.setName(var.getName().replace("-mbbVar-",""));
 		//		}
-
+		
+		
 		//Case met when evaluating a construct function inside an aggregate 
 		if(var.getName().endsWith("?spatial"))
 		{
@@ -268,8 +273,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// evaluate first argument
 		leftResult = evaluate(left, bindings);
-
+		
 		// function call with 2 arguments, evaluate the second one now
+		// see distance function as example
 		if ( fc.getArgs().size() == 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
@@ -278,7 +284,101 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// having evaluated the arguments of the function, evaluate the function
 		try {
-			if ( function instanceof SpatialConstructFunc ) {
+			if(function instanceof SpatialMetricFunc)
+			{
+				double funcResult = 0;
+				Geometry leftGeom = null;
+				Geometry rightGeom = null;
+				if(leftResult instanceof StrabonPolyhedron)
+				{
+					leftGeom = ((StrabonPolyhedron) leftResult).getGeometry();
+				}
+				else if(leftResult instanceof GeneralDBPolyhedron)
+				{
+					leftGeom = ((GeneralDBPolyhedron) leftResult).getPolyhedron().getGeometry();
+				}
+				else if(leftResult instanceof Literal)
+				{	
+					/**
+					 * Duplicate work done here in order to retain the literal's datatype...
+					 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
+					 * in order to have them appear in Select Clause along with the appropriate datatype.
+					 */
+					leftGeom = new StrabonPolyhedron(((Literal) leftResult).getLabel()).getGeometry();
+					int sridPosition = ((Literal) leftResult).getLabel().indexOf(';');
+					//Default case
+					if(sridPosition == -1)
+					{
+						leftGeom.setSRID(GeoConstants.defaultSRID);
+					}
+					else
+					{
+						sridPosition = ((Literal) leftResult).getLabel().lastIndexOf('/');
+						int srid = Integer.parseInt(((Literal) leftResult).getLabel().substring(sridPosition+1));
+						leftGeom.setSRID(srid);
+					}
+				}
+				else
+				{	//SHOULD NEVER REACH THIS CASE!
+					return null;
+				}
+				if(rightResult != null)
+				{
+				if(rightResult instanceof StrabonPolyhedron)
+				{
+					rightGeom = ((StrabonPolyhedron) rightResult).getGeometry();
+				}
+				else if(rightResult instanceof GeneralDBPolyhedron)
+				{
+					rightGeom = ((GeneralDBPolyhedron) rightResult).getPolyhedron().getGeometry();
+				}
+				else if(rightResult instanceof Literal)
+				{	
+					/**
+					 * Duplicate work done here in order to retain the literal's datatype...
+					 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
+					 * in order to have them appear in Select Clause along with the appropriate datatype.
+					 */
+					rightGeom = new StrabonPolyhedron(((Literal) rightResult).getLabel()).getGeometry();
+					int sridPosition = ((Literal) rightResult).getLabel().indexOf(';');
+					//Default case
+					if(sridPosition == -1)
+					{
+						rightGeom.setSRID(GeoConstants.defaultSRID);
+					}
+					else
+					{
+						sridPosition = ((Literal) rightResult).getLabel().lastIndexOf('/');
+						int srid = Integer.parseInt(((Literal) rightResult).getLabel().substring(sridPosition+1));
+						rightGeom.setSRID(srid);
+					}
+				}
+				else
+				{	//SHOULD NEVER REACH THIS CASE!
+					return null;
+				}
+				}
+				else
+				{
+					//it's ok, maybe this is a non-binary function!
+				}
+				
+				
+				if(function instanceof AreaFunc)
+				{
+					funcResult = leftGeom.getArea();
+				}
+				if(function instanceof DistanceFunc)
+				{
+					int targetSRID = leftGeom.getSRID();
+					int sourceSRID = rightGeom.getSRID();
+					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
+					funcResult = leftGeom.distance(rightConverted);
+				}
+				return org.openrdf.model.impl.ValueFactoryImpl.getInstance().createLiteral(funcResult);
+				
+			}
+			else if ( function instanceof SpatialConstructFunc ) {
 				return spatialConstructPicker(function, leftResult, rightResult);
 
 			}  else if(function instanceof SpatialRelationshipFunc)	{
