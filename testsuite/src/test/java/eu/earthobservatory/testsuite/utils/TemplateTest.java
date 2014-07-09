@@ -36,7 +36,7 @@ public abstract class TemplateTest
 	protected ArrayList<String> queryFile;
 	protected ArrayList<String> resultsFile;
 	protected Boolean inference;
-
+	protected Boolean orderResults;
 	
 	public TemplateTest()
 	{
@@ -74,6 +74,7 @@ public abstract class TemplateTest
 		}
 		
 		inference=false;
+		orderResults=false;
 	}
 
 	@Before
@@ -91,7 +92,7 @@ public abstract class TemplateTest
 		
 		while(queryFileIterator.hasNext() && resultsFileIterator.hasNext())
 		{
-			Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next());
+			Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next(),orderResults);
 		}
 	}
 	

@@ -143,10 +143,6 @@ public class Utils
 	}
 	
 	
-	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
-	{
-		testQuery(queryFile, resultsFile, false); //dimis
-	}
 	public static void testQuery(String queryFile, String resultsFile,boolean orderOn) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();

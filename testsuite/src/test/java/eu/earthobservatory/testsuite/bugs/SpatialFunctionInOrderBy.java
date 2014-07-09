@@ -9,7 +9,7 @@
  */
 package eu.earthobservatory.testsuite.bugs;
 
-import eu.earthobservatory.testsuite.utils.TemplateOrderByTest;
+import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
@@ -17,4 +17,9 @@ import eu.earthobservatory.testsuite.utils.TemplateOrderByTest;
  * 
  * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
-public class SpatialFunctionInOrderBy extends TemplateOrderByTest{}
+public class SpatialFunctionInOrderBy extends TemplateTest{
+	public SpatialFunctionInOrderBy() {
+		super();
+		this.orderResults=true;
+	}
+}
