@@ -167,7 +167,7 @@ public class GeoConstants {
 	public static final String WGS84_LAT_LON	= "http://www.opengis.net/def/crs/EPSG/0/4326";
 	
 	/**
-	 * WGS 84 longitude-longitude
+	 * WGS 84 longitude-latitude
 	 * (used as the default CRS for GeoSPARQL geometries)
 	 */
 	public static final String WGS84_LON_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
@@ -184,9 +184,9 @@ public class GeoConstants {
 	public static final Integer WGS84_LON_LAT_SRID = 3857;
 
 	/**
-	 * Default SRID (WGS84 latitude-longitude)
+	 * Default GeoSPARQL SRID (WGS84 longitude-latitude)
 	 */
-	public static final Integer defaultSRID 	= WGS84_LAT_LON_SRID;
+	public static final Integer defaultSRID 	= WGS84_LON_LAT_SRID;
 	
 	/**																		*
 	 *  						Extended functions 							*
