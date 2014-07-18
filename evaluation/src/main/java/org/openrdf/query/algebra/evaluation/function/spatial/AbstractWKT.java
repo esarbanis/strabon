@@ -185,7 +185,7 @@ public class AbstractWKT {
 	 * @return
 	 */
 	protected int getEPSG_SRID(String wkt) {
-		int srid = GeoConstants.defaultSRID;
+		int srid = GeoConstants.default_GeoSPARQL_SRID;
 		
 		try {
 			srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf('/') + 1).replace(">", ""));
