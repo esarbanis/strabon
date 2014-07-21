@@ -2,9 +2,13 @@
 
 	* Version 3.2.10 released.
 
+	* Fixed a bug in which Strabon hanged when a unary spatial construct 
+	  had a ternary spatial construct as argument. 
+	  (bug #45 http://bug.strabon.di.uoa.gr/ticket/45
+
 	* Altered default SRID to GeoSPARQL SRID: Geometries with wktLiteral 
-	datatype in SPARQL queries were not interpreted in the correct CRS.
-	(bug #44 http://bug.strabon.di.uoa.gr/ticket/44)
+	  datatype in SPARQL queries were not interpreted in the correct CRS.
+	  (bug #44 http://bug.strabon.di.uoa.gr/ticket/44)
 
 	* Fixed a bug in queries that contain variables that exist inside 
 	  spatial functions in select and do not exist in the where clause 

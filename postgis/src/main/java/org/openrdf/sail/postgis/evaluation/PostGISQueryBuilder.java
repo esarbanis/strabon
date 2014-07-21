@@ -2139,6 +2139,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						sridNeeded  = false;
 						break;
 					}
+					else if (tmp instanceof GeneralDBSqlSpatialConstructTriple) {
+						//here we consider the case where the current argument is a Spatial Construct Ternary function, to dodge the infinite loop
+						child = ((GeneralDBSqlSpatialConstructTriple) tmp).getLeftArg();
+					}
 
 					tmp = child;
 					if(tmp instanceof GeneralDBLabelColumn)
