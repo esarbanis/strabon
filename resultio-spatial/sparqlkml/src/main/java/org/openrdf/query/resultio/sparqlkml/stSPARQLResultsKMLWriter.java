@@ -91,6 +91,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private stSPARQLXMLWriter xmlWriter;
 
 	/**
+	 * The ordered list of binding names of the result.
+	 */
+	private List<String> bindingNames;
+	
+	/**
 	 * The number of results seen.
 	 */
 	private int nresults;
@@ -158,6 +163,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	@Override
 	public void startQueryResult(List<String> bindingNames) throws TupleQueryResultHandlerException {
 		try {
+			// keep the order of binding names
+			this.bindingNames = bindingNames;
 			xmlWriter.startDocument();
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
 			xmlWriter.startTag(ROOT_TAG);
@@ -214,34 +221,37 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
 			
 			// parse binding set
-			for (Binding binding : bindingSet) {
-
-				Value value = binding.getValue();
+			for (String bindingName : bindingNames) {
 				
-				// check for geometry value
-				if (XMLGSDatatypeUtil.isGeometryValue(value)) {
-					hasGeometry=true;
-
-					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon] Found geometry: {}", value);
+				Binding binding = bindingSet.getBinding(bindingName);
+				if(binding != null) {
+					Value value = binding.getValue();
+					
+					// check for geometry value
+					if (XMLGSDatatypeUtil.isGeometryValue(value)) {
+						hasGeometry=true;
+	
+						if (logger.isDebugEnabled()) {
+							logger.debug("[Strabon] Found geometry: {}", value);
+						}
+						
+						xmlWriter.unescapedText(getKML(value));
+						
+					} else { // URI, BlankNode, or Literal other than spatial literal
+						
+						if (logger.isDebugEnabled()) {
+							logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
+						}
+						
+						// mark that we found sth corresponding to the description
+						hasDesc = true;
+						
+						// write description
+						writeDesc(binding);
+						
+						// fill also the extended data attribute of the Placemark
+						extData.put(binding.getName(), getBindingValue(binding));
 					}
-					
-					xmlWriter.unescapedText(getKML(value));
-					
-				} else { // URI, BlankNode, or Literal other than spatial literal
-					
-					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
-					}
-					
-					// mark that we found sth corresponding to the description
-					hasDesc = true;
-					
-					// write description
-					writeDesc(binding);
-					
-					// fill also the extended data attribute of the Placemark
-					extData.put(binding.getName(), getBindingValue(binding));
 				}
 			}
 			

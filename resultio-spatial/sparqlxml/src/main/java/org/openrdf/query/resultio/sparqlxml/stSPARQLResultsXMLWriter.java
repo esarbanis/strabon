@@ -39,7 +39,6 @@ import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
-
 import eu.earthobservatory.constants.GeoConstants;
 
 /**
@@ -60,6 +59,11 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 	 */
 	private XMLWriter xmlWriter;
 
+	/**
+	 * The ordered list of binding names of the result.
+	 */
+	private List<String> bindingNames;
+	
 	/*--------------*
 	 * Constructors *
 	 *--------------*/
@@ -92,6 +96,9 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		throws TupleQueryResultHandlerException
 	{
 		try {
+			// keep the order of binding names
+			this.bindingNames = bindingNames;	
+			
 			xmlWriter.startDocument();
 
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
@@ -133,13 +140,17 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		try {
 			xmlWriter.startTag(RESULT_TAG);
 
-			for (Binding binding : bindingSet) {
-				xmlWriter.setAttribute(BINDING_NAME_ATT, binding.getName());
-				xmlWriter.startTag(BINDING_TAG);
-
-				writeValue(binding.getValue());
-
-				xmlWriter.endTag(BINDING_TAG);
+			for (String bindingName : bindingNames) {
+				Binding binding = bindingSet.getBinding(bindingName);
+				if(binding != null)
+				{
+					xmlWriter.setAttribute(BINDING_NAME_ATT, binding.getName());
+					xmlWriter.startTag(BINDING_TAG);
+	
+					writeValue(binding.getValue());
+	
+					xmlWriter.endTag(BINDING_TAG);
+				}
 			}
 
 			xmlWriter.endTag(RESULT_TAG);
