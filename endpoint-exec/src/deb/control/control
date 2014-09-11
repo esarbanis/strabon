@@ -1,0 +1,8 @@
+Package: Strabon
+Version: 3.2.10
+Section: strabon-endpoint
+Priority: optional
+Architecture: all
+Maintainer: Manolis Karpathiotakis <manos.karpathiotakis@epfl.ch>, Kostis Kyzirakos <Kostis.Kyzirakos@cwi.nl>, Charalambos Nikolaou <charnik@di.uoa.gr>, Konstantina Bereta <konstantina.bereta@di.uoa.gr>, Georgios Garbis <ggarbis@di.uoa.gr>,  Dimitrios Bilidas <dbilidas@di.uoa.gr>, Stella Giannakopoulou <sgian@di.uoa.gr>, Panayiotis Smeros <psmeros@di.uoa.gr>, Kalliroi Dogani <kallirroi@di.uoa.gr>, Maria Karpathiotaki <mkarpat@di.uoa.gr>, Ioannis Vlachopoulos <johnvl@di.uoa.gr>, Dimitrianos Savva <dimis@di.uoa.gr>, Georgios Stamoulis <gstam@di.uoa.gr>, Kanela Kaligosi <kalkan@di.uoa.gr>
+Description: Strabon endpoint executable
+Distribution: Mozilla v2.0 Public Liscence
