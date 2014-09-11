@@ -152,7 +152,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					// use PostGIS as the default database backend
 					this.strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, user, password, port, serverName, checkForLockTable);	
 				}
-				
+
+				installSIGTERMHandler(this.strabon);
 				
 			} catch (Exception e) {
 				logger.error("[StrabonEndpoint] Exception occured while creating Strabon. {}\n{}", e.getMessage(), this.getDetails());
@@ -163,6 +164,33 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return true;
 	}
 
+	/**
+	 * Registers a handler for SIGTERM signals, like Ctrl-C. One may send such a signal
+	 * at the command prompt, when running Strabon Endpoint from the command line, i.e.,
+	 * using the endpoint-exec module.   
+	 * 
+	 * @param strabon The strabon instance
+	 */
+	private static void installSIGTERMHandler(final Strabon strabon) {
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Installing handler for SIGTERM signals...");
+		}
+		
+		// register the handler
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			
+			@Override
+			public void run() {
+				// just call the Strabon.close() method
+				strabon.close();
+			}
+		});
+		
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Handler for SIGTERM signals installed successfully.");
+		}
+	}
+	
 	public Strabon getStrabon() {
 		return strabon;
 	}
