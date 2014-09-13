@@ -18,7 +18,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.geotools.factory.Hints;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.BindingSet;

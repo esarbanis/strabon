@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,8 +28,6 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.Strabon;
@@ -241,8 +237,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
 					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
 					
-					int i=1;
-					int index=0;
 					while(result.hasNext()){
 						BindingSet bindings = result.next();
 						arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
@@ -250,7 +244,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 						
 						gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
 								arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
-								i++;	
 					}
 					gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
 					gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
@@ -261,7 +254,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					
 					String chartType;
 					int varNum = bindingNames.size();
-					ArrayList<String> arr = new ArrayList<String>(varNum);
 
 					gChartString = "var data = google.visualization.arrayToDataTable([[";
 					for(int j=0; j<varNum; j++){
