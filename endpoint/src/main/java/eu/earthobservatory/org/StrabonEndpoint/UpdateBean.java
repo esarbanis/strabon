@@ -28,8 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * @author charnik
- *
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class UpdateBean extends HttpServlet {
 

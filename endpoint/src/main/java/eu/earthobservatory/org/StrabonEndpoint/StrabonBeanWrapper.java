@@ -13,16 +13,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
@@ -30,6 +30,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.Strabon;

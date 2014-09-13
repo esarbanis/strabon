@@ -475,11 +475,14 @@
 				<version>${geotools.version}</version>
 			</dependency>
 
+			<!--
+			     One epsg jar file suffices. Read this: http://docs.geotools.org/latest/userguide/faq.html#q-how-to-choose-an-epsg-authority
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-epsg-wkt</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
+			-->
 
 			<dependency>
 				<groupId>org.geotools</groupId>
