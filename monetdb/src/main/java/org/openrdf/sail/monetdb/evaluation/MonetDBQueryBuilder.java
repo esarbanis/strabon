@@ -397,7 +397,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 		//SRID support must be explicitly added!
 		return this;
-			}
+	}
 
 	
 	@Override

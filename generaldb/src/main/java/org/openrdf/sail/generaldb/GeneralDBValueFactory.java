@@ -372,13 +372,13 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 	 * FIXME my addition
 	 * @throws ParseException 
 	 */
-
 	public GeneralDBPolyhedron getRdbmsPolyhedron(Number num, String datatype, byte[] wkb, int srid)  {
 
 		Number id = ids.idOf(num);
 		try {
-			if(wkb != null)
+			if(wkb != null) {
 				return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), wkb, srid);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -386,20 +386,4 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 		}
 		return null;
 	}
-	
-//	public GeneralDBPolyhedron getRdbmsPolyhedron(Number num, String datatype, String pointSet) {
-//
-//		Number id = ids.idOf(num);
-//		try {
-//			return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), pointSet);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-	/**
-	 * 
-	 */
 }

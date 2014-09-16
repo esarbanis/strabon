@@ -130,6 +130,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	public static final String ST_ASBINARY		= "ST_AsBinary";
 	public static final String GEOGRAPHY		= "Geography";
 	public static final String GEOMETRY			= "Geometry";
+	
 	/**
 	 * If (spatial) label column met is null, I must not try to retrieve its srid. 
 	 * Opting to ask for 'null' instead
@@ -827,21 +828,20 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
 	}
 
-	//	@Override
-	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
-	//	throws UnsupportedRdbmsOperatorException
-	//	{
-	//		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_SRID);
-	//	}
-
+/*	
+   @Override
+	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
+	throws UnsupportedRdbmsOperatorException
+	{
+		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_SRID);
+	}
+*/
 	/**
-	 * Special Case because I need to retrieve a single different column from geo_values when this function occurs
-	 * in the select clause
+	 * Special case because I need to retrieve a single different column from geo_values when this function occurs
+	 * in the select clause and not call the st_srid() function, which will always give me 4326.
 	 */
 	@Override
-	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
 		boolean sridNeeded = true;
 		filter.openBracket();
 
@@ -905,6 +905,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 							alias=alias+".srid";
 						}
 						sridExpr = alias;
+						
 						filter.append(sridExpr);
 						filter.closeBracket();
 						return;
@@ -960,7 +961,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 
 		filter.closeBracket();
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
@@ -2197,7 +2198,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.openBracket();
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
-				appendWKT(expr.getArg(),filter);
+				appendWKT(expr.getArg(), filter);
 			}
 			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
@@ -2214,7 +2215,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
-				appendMBB(onlyLabel,filter); 
+				appendMBB(onlyLabel, filter); 
 			}
 			else
 			{
