@@ -45,6 +45,7 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 
 		try {
 			this.polyhedron = new StrabonPolyhedron(polyhedron, srid);
+			
 		} catch (ParseException e) {
 
 			e.printStackTrace();
@@ -56,25 +57,6 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		setPolyhedronStringRep(this.polyhedron);
 		this.datatype = datatype;
 	}
-
-	//	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, String polyhedron) throws IOException, ClassNotFoundException {
-	//		super(id, version);
-	//
-	//		try {
-	//			this.polyhedron = new StrabonPolyhedron(polyhedron);
-	//		} catch (ParseException e) {
-	//
-	//			e.printStackTrace();
-	//		} catch (Exception e) {
-	//
-	//			e.printStackTrace();
-	//		}
-	//		setPolyhedronStringRep(this.polyhedron);
-	//		this.datatype = datatype;
-	//	}
-	/**
-	 * METHODS
-	 */
 
 	public String getPolyhedronStringRep() {
 		return polyhedronStringRep;
