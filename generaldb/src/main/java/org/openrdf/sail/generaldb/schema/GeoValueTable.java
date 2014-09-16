@@ -38,7 +38,7 @@ public class GeoValueTable {
 
 	//private static final String[] MINIMUM_BOUNDING_BOX = { "value" };
 
-	private static final String[] CONSTRAINT = { "constr" };
+	//private static final String[] CONSTRAINT = { "constr" };
 
 	private int length = -1;
 
@@ -259,11 +259,21 @@ public class GeoValueTable {
 	//	}
 
 
+	/**
+	 * Stores the given tuple into the geo_values table.  
+	 * 
+	 * @param id hash
+	 * @param srid a *PostGIS/MonetDB* EPSG code
+	 * @param geom the geometry in bytes expressed in the above srid
+	 * @param originalSRID the official SRID of this geometry (e.g., EPSG:4326 lat/long, the custom 66666 WGS84 long/lat)
+	 *   
+	 * @throws SQLException
+	 * @throws InterruptedException
+	 * @throws NullPointerException
+	 */
 	public synchronized void insert(Number id, Integer srid,/*String constraint, Timestamp interval_start, Timestamp interval_end,*/ byte[] geom)
 		throws SQLException, InterruptedException, NullPointerException
 	{
-
-	
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -273,10 +283,9 @@ public class GeoValueTable {
 		//batch.setObject(2, interval_start);
 		//batch.setObject(3, interval_end);
 
-
 		if(geom.length==0)
 		{
-			batch.setObject(2,null); 
+			batch.setObject(2, null); 
 		}
 		else
 		{
@@ -285,7 +294,7 @@ public class GeoValueTable {
 //			String hexString = new String(Hex.encodeHex(geom));
 //			System.err.println(id+", "+hexString);
 			///
-			batch.setBytes(2,geom);
+			batch.setBytes(2, geom);
 		}
 		batch.setObject(3, srid); //adding original srid-constant
 		batch.setObject(4, srid);

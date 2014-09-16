@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
+import org.openrdf.sail.generaldb.managers.LiteralManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,6 +167,18 @@ public class LiteralTable {
 	}
 
 	/********************************************************************/
+	/**
+	 * @deprecated This method is called from {@link LiteralManager.insert} when 
+	 * the datatype of the label is a SemiLinearPointSet (that is http://stsparql.di.uoa.gr/SemiLinearPointSet). 
+	 * 
+	 * @param id
+	 * @param label
+	 * @param datatype
+	 * @param start
+	 * @param end
+	 * @throws SQLException
+	 * @throws InterruptedException
+	 */
 	public void insertGeoSpatial(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, InterruptedException
 	{
 		 
@@ -195,12 +208,16 @@ public class LiteralTable {
 	}
 	
 	//the new version will actually deal with WKB
-	public void insertWKT(Number id, String label, String datatype, Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
+	public void insertWKT(Number id, String label, String datatype, Timestamp start, Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
 		try {
+			JTSWrapper JTS = JTSWrapper.getInstance();
+			
 			AbstractWKT awkt = new AbstractWKT(label, datatype);
-			Geometry geom = JTSWrapper.getInstance().WKTread(awkt.getWKT());
-			geoSpatialTable.insert(id, awkt.getSRID(),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
+			Geometry geom = JTS.WKTread(awkt.getWKT());
+			int srid = awkt.getDB_SRID();
+			
+			geoSpatialTable.insert(id, srid, /*start,end,*/ JTS.WKBwrite(geom));
 			
 		} catch (ParseException e) {
 			throw new IllegalArgumentException(e);
@@ -277,8 +294,14 @@ public class LiteralTable {
 	}
 	
 	
-	
-	public static Integer findSRID(String label){
+	/**
+	 * @deprecated To find the SRID for a geometry literal, one has to use the {@link AbstractWKT}
+	 * class. Luckily enough, this method is called only from method {@link LiteralTable.insertGeoSpatial}.
+	 *  
+	 * @param label
+	 * @return
+	 */
+	protected static Integer findSRID(String label){
 		String[] crs=label.split(";");
 		String crsUri=null;
 		
