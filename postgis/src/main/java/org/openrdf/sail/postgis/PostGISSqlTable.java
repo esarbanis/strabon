@@ -9,15 +9,18 @@ import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * Converts table names to lower-case and include the analyse optimisation.
  * 
- * @author James Leigh
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class PostGISSqlTable extends GeneralDBSqlTable {
 
-	public static final int DEFAULT_SRID = 4326;
+	public static final int DEFAULT_SRID = GeoConstants.WGS84_LONG_LAT_SRID;
 	
 	public PostGISSqlTable(String name) {
 		super(name.toLowerCase());

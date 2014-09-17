@@ -215,7 +215,7 @@ public class LiteralTable {
 			
 			AbstractWKT awkt = new AbstractWKT(label, datatype);
 			Geometry geom = JTS.WKTread(awkt.getWKT());
-			int srid = awkt.getDB_SRID();
+			int srid = awkt.getSRID();
 			
 			geoSpatialTable.insert(id, srid, /*start,end,*/ JTS.WKBwrite(geom));
 			

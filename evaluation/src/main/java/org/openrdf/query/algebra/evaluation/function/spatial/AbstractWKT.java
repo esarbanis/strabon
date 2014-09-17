@@ -132,7 +132,7 @@ public class AbstractWKT {
 	
 	private void parseWKTLITERAL(String literalValue) {
 		wkt = literalValue.trim();
-		srid = GeoConstants.WGS84_LON_LAT_SRID;
+		srid = GeoConstants.default_GeoSPARQL_SRID;
 		
 		if (wkt.length() == 0) { // empty geometry
 			wkt = EMPTY_GEOM;
@@ -144,9 +144,8 @@ public class AbstractWKT {
 			// FIXME: handle invalid URIs
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
-			// FIXME: get the SRID for crs properly. HOW??
-			if (GeoConstants.WGS84_LON_LAT.equals(crs.toString())) {
-				srid = GeoConstants.WGS84_LON_LAT_SRID;
+			if (GeoConstants.WGS84_LONG_LAT.equals(crs.toString())) {
+				srid = GeoConstants.WGS84_LONG_LAT_SRID;
 				
 			} else { // parse it to get the srid
 				// FIXME: this code assumes an EPSG URI
@@ -171,7 +170,7 @@ public class AbstractWKT {
 		return datatype;
 	}
 	
-	boolean isstRDFWKT() {
+	public boolean isstRDFWKT() {
 		return isstRDFWKT;
 	}
 	
@@ -185,7 +184,7 @@ public class AbstractWKT {
 	 * @return
 	 */
 	protected int getEPSG_SRID(String wkt) {
-		int srid = GeoConstants.default_GeoSPARQL_SRID;
+		int srid = GeoConstants.defaultSRID;
 		
 		try {
 			srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf('/') + 1).replace(">", ""));

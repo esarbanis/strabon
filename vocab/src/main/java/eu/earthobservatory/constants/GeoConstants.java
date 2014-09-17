@@ -164,34 +164,42 @@ public class GeoConstants {
 	/**
 	 * WGS 84 latitude-longitude (EPSG:4326)
 	 */
-	public static final String WGS84_LAT_LON	= "http://www.opengis.net/def/crs/EPSG/0/4326";
+	public static final String WGS84_LAT_LONG	= "http://www.opengis.net/def/crs/EPSG/0/4326";
 	
 	/**
 	 * WGS 84 longitude-latitude
-	 * (used as the default CRS for GeoSPARQL geometries)
 	 */
-	public static final String WGS84_LON_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+	public static final String WGS84_LONG_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
 	/**
 	 * EPSG:4326
 	 */
-	public static final Integer WGS84_LAT_LON_SRID = 4326;
+	public static final Integer WGS84_LAT_LONG_SRID = 4326;
 	
 	/**
-	 * EPSG:3857 (not sure whether this is correct for WGS84_LON_LAT)
-	 * http://spatialreference.org/ref/sr-org/7483/
+	 * The SRID for WGS84 long/lat does not exist, because no such CRS
+	 * exist in the EPSG database. Geotools return the same code, i.e.,
+	 * EPSG:4326, but this is wrong to have here. Therefore, we use a
+	 * custom SRID inspired by the devil, and thus, it is our custom and
+	 * internal code for referencing the LONG/LAT version of EPSG:4326 
+	 * (i.e., WGS84 lat/long).
 	 */
-	public static final Integer WGS84_LON_LAT_SRID = 3857;
+	public static final Integer WGS84_LONG_LAT_SRID = 84000;
 
 	/**
-	 * Default SRID (WGS84 latitude-longitude)
+	 * Default stRDF/stSPARQL SRID (WGS84 latitude-longitude)
 	 */
-	public static final Integer defaultSRID 	= WGS84_LAT_LON_SRID;
+	public static final Integer default_stRDF_SRID = WGS84_LONG_LAT_SRID;
 	
 	/**
 	 * Default GeoSPARQL SRID (WGS84 longitude-latitude)
 	 */
-	public static final Integer default_GeoSPARQL_SRID 	= WGS84_LON_LAT_SRID;
+	public static final Integer default_GeoSPARQL_SRID 	= WGS84_LONG_LAT_SRID;
+	
+	/**
+	 * Default SRID (WGS84 longitude/latitude)
+	 */
+	public static final Integer defaultSRID 	= WGS84_LONG_LAT_SRID;
 	
 	/**																		*
 	 *  						Extended functions 							*

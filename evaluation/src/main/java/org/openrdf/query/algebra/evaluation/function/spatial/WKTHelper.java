@@ -49,14 +49,13 @@ public class WKTHelper {
 	
 	/**
 	 * Returns the SRID of the given WKT (if any). If the WKT
-	 * does not contain any, then the default is returned (specified in
-	 * org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron.defaultSRID).
+	 * does not contain any, then the default is returned.
 	 * 
 	 * @param wkt
 	 * @return
 	 */
 	public static Integer getSRID(String wkt) {
-		int srid = GeoConstants.defaultSRID;
+		int srid = GeoConstants.default_stRDF_SRID;
 		
 		if (wkt == null) return srid;
 		
@@ -72,6 +71,5 @@ public class WKTHelper {
 		}
 		
 		return srid;
-
 	}
 }

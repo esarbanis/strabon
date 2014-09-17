@@ -18,6 +18,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.geotools.factory.Hints;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.BindingSet;
@@ -114,8 +115,8 @@ public abstract class Strabon {
 		//Setting up store
 
 		//Used for the conversions taking place involving JTS + WGS84 (4326)
-		//Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
-		System.setProperty("org.geotools.referencing.forceXY", "true");
+		Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.FALSE);
+		//System.setProperty("org.geotools.referencing.forceXY", "true");
 		
 		//our repository
 		repo = new GeneralDBSailRepository(db_store);

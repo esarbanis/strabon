@@ -16,7 +16,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.apache.xerces.xni.grammars.XMLGrammarDescription;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
@@ -26,7 +25,6 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.IsLiteral;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -198,7 +196,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		try {
 			// true if there are bindings that do not correspond to geometries
 			boolean hasDesc = false;
-			String timeValue;
 			
 			Hashtable<String, String> extData = new Hashtable<String, String>();
 
@@ -357,8 +354,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				}
 			}
 			
-			// transform the geometry to {@link GeoConstants#defaultSRID}
-			geom = jts.transform(geom, srid, GeoConstants.defaultSRID);
+			// transform the geometry to {@link GeoConstants#WGS84_LONG_LAT_SRID}
+			geom = jts.transform(geom, srid, GeoConstants.WGS84_LONG_LAT_SRID);
 			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;
