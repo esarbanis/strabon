@@ -162,9 +162,14 @@ public class GeoConstants {
 	public static final String stSPARQLextent 		= stRDF + "extent";
 	
 	/**
+	 * Prefix used in EPSG URIs
+	 */
+	public static final String EPSG_URI_PREFIX		= "http://www.opengis.net/def/crs/EPSG/0/";
+	
+	/**
 	 * WGS 84 latitude-longitude (EPSG:4326)
 	 */
-	public static final String WGS84_LAT_LONG	= "http://www.opengis.net/def/crs/EPSG/0/4326";
+	public static final String WGS84_LAT_LONG	= EPSG_URI_PREFIX + "4326";
 	
 	/**
 	 * WGS 84 longitude-latitude

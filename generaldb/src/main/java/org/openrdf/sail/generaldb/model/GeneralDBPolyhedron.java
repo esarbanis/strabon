@@ -3,6 +3,7 @@ package org.openrdf.sail.generaldb.model;
 import java.io.IOException;
 
 import org.openrdf.model.URI;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
@@ -93,25 +94,25 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 
 
 	public String stringValue() {
-		if(String.valueOf(datatype) == GeoConstants.WKT)
-			return new String(this.polyhedronStringRep)+";http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID();
-		else
-			return new String("<http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep);
+		if(String.valueOf(datatype) == GeoConstants.WKT) {
+			return new String(this.polyhedronStringRep) + ";" + AbstractWKT.getURI_forSRID(this.getPolyhedron().getGeometry().getSRID());
+			
+		} else {
+			return new String(AbstractWKT.getURI_forSRID(this.getPolyhedron().getGeometry().getSRID()) + " " + this.polyhedronStringRep);
+		} // TODO FIXME we miss GML here
 	}
 
 	@Override
 	public String toString() {
 		if(String.valueOf(datatype) == GeoConstants.WKT)
 		{
-			return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
-					+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" +
+			return new String("\""+this.polyhedronStringRep+";" +AbstractWKT.getURI_forSRID(this.getPolyhedron().getGeometry().getSRID())+"\"" + "^^<" +
 					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
-							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
-							+">");
+							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))+">");
 		}
 		else if(String.valueOf(datatype) == GeoConstants.WKTLITERAL)
 		{
-			return new String("\""+"<"+"http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep
+			return new String("\""+AbstractWKT.getURI_forSRID(this.getPolyhedron().getGeometry().getSRID())+" "+this.polyhedronStringRep
 					+"\"" + "^^<" +
 					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
 							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))

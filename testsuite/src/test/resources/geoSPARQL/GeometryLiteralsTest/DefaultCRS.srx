@@ -6,7 +6,7 @@
 	<results>
 		<result>
 			<binding name='srid'>
-				<literal datatype='http://www.w3.org/2001/XMLSchema#int'>3857</literal>
+				<literal datatype='http://www.w3.org/2001/XMLSchema#int'>84000</literal>
 			</binding>
 		</result>
 	</results>

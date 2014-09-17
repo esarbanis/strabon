@@ -17,8 +17,6 @@ import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * 
@@ -35,10 +33,11 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			// catch the spatial case and create a new literal
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
-			if(String.valueOf(dbpolyhedron.getDatatype()) == GeoConstants.WKT)
-				val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
-			else
-				val = new LiteralImpl("<http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID()+"> "+dbpolyhedron.getPolyhedronStringRep(),dbpolyhedron.getDatatype());
+			val = new LiteralImpl(dbpolyhedron.stringValue());
+//			if(String.valueOf(dbpolyhedron.getDatatype()) == GeoConstants.WKT)
+//				val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
+//			else
+//				val = new LiteralImpl("<http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID()+"> "+dbpolyhedron.getPolyhedronStringRep(),dbpolyhedron.getDatatype());
 		}
 		
 		// write value
