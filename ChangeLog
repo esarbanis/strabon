@@ -1,6 +1,20 @@
 
-
 	* Version 3.2.10 released.
+
+	* The test suite of Strabon has now reached a mature level. It
+	  contains tests for both stSPARQL and GeoSPARQL query languages and
+	  most of the compliance tests covered in the specification of
+	  GeoSPARQL (well, only those tests for the components that we have
+	  chosen to implement). 
+
+	* The endpoint now parses Accept headers with multiple values and uses
+	  the first mimetype corresponding to a valid stSPARQLQueryResultFormat.
+	  (bug #64: http://bug.strabon.di.uoa.gr/ticket/64)
+
+	* The endpoint now registers a handler for SIGTERM signals, so that if
+	  it is run from the command-line (endpoint-exec), then the closing of
+	  the connection will be ultimately called.
+	  (bug #40: http://bug.strabon.di.uoa.gr/ticket/40)
 
 	* Strabon goes debian v1. the endpoint-exec jar is now given in a .deb 
           format. By dpkg-ing it, one can run a stand alone strabon endpoint
@@ -9,11 +23,15 @@
 
 	* Fixed a bug in which Strabon hanged when a unary spatial construct 
 	  had a ternary spatial construct as argument. 
-	  (bug #45 http://bug.strabon.di.uoa.gr/ticket/45
+	  (bug #45 http://bug.strabon.di.uoa.gr/ticket/45)
 
-	* Altered default SRID to GeoSPARQL SRID: Geometries with wktLiteral 
-	  datatype in SPARQL queries were not interpreted in the correct CRS.
-	  (bug #44 http://bug.strabon.di.uoa.gr/ticket/44)
+	* Fixed a bug according to which spatial functions in ORDER BY were not
+	  evaluated at all.
+	  (bug #62: http://bug.strabon.di.uoa.gr/ticket/62)
+
+	* Fixed a bug according to which spatial boolean functions appearing
+	  in the SELECT clause were raising a NULL pointer exception.
+	  (bug #34: http://bug.strabon.di.uoa.gr/ticket/34)
 
 	* Fixed a bug in queries that contain variables that exist inside 
 	  spatial functions in select and do not exist in the where clause 
@@ -34,8 +52,8 @@
 	  - The DESCRIBE functionality can now be accessed through the menu bar.
 	
 	* Fixed a bug where strdf:intersection function did not work as an
-	aggregate when used without 'GROUP BY'.
-	(bug #46 https://bug.strabon.di.uoa.gr/ticket/46)
+	  aggregate when used without 'GROUP BY'.
+	  (bug #46 https://bug.strabon.di.uoa.gr/ticket/46)
 
 
 Sat Oct 19 23:37:23 2013   Pyravlos Team
