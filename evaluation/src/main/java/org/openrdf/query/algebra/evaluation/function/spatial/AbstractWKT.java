@@ -175,31 +175,6 @@ public class AbstractWKT {
 	}
 	
 	/**
-	 * Returns the URI corresponding to the given SRID.
-	 * The given SRID might be an EPSG one or our custom 84000
-	 * corresponding to CRS84. If the given SRID is less than
-	 * or equal to 0, then an empty string is returned.
-	 * 
-	 * @param srid
-	 * @return
-	 */
-	public static String getURI_forSRID(int srid) {
-		String uri = "";
-		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
-			uri = GeoConstants.WGS84_LONG_LAT;
-			
-		} else if (srid > 0) { // assuming EPSG now
-			uri = GeoConstants.EPSG_URI_PREFIX + srid; 
-		}
-		
-		if (uri.length() > 0) {
-			uri = "<" + uri + ">";
-		}
-		
-		return uri;
-	}
-	
-	/**
 	 * Returns the SRID corresponding to the URI of the given CRS. We assume
 	 * EPSG URIs only.
 	 * 

@@ -52,8 +52,8 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
@@ -358,7 +358,9 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				if (val != null) {
 					if(val instanceof StrabonPolyhedron)
 					{ // TODO FIXME why we assume here strdf:WKT? Can we generalize?
-						String label = val.toString() + ";" + AbstractWKT.getURI_forSRID(((StrabonPolyhedron)val).getGeometry().getSRID());
+						String label = WKTHelper.createWKT(val.toString(), 
+														   ((StrabonPolyhedron)val).getGeometry().getSRID(), 
+														   GeoConstants.WKT);
 						Literal wkt = new LiteralImpl(label,new URIImpl(GeoConstants.WKT));
 						sol.setBinding(name,wkt);
 					}
@@ -367,11 +369,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 						sol.setBinding(name, val);
 					}
 				}
-
 			}
-
-
-
 
 		}
 

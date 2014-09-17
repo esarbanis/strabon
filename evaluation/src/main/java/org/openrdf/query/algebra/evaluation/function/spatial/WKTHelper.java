@@ -72,4 +72,90 @@ public class WKTHelper {
 		
 		return srid;
 	}
+	
+	/**
+	 * Given the WKT representation of a geometry, a SRID, and a datatype, it
+	 * creates a WKT literal conforming to the syntax implied by the given
+	 * datatype. If the given datatype is NULL or different than one of the
+	 * standard ones (e.g., {@link GeoConstants.WKT} or
+	 * {@link GeoConstants.WKTLITERAL}), then the default literal is returned,
+	 * which is determined by {@link GeoConstants.default_WKT_datatype}.  
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @param datatype
+	 * @return
+	 */
+	public static String createWKT(String plainWKT, int srid, String datatype) {
+		if (GeoConstants.WKTLITERAL.equals(datatype)) {
+			return createWKTLiteral(plainWKT, srid);
+			
+		} else if (GeoConstants.WKT.equals(datatype)) {
+			return createstRDFWKT(plainWKT, srid);
+			
+		} else { // no datatype, create default
+			return createWKT(plainWKT, srid, GeoConstants.default_WKT_datatype);
+		}
+	}
+	
+	/**
+	 * Given the well-known representation of a geometry and a SRID, it creates
+	 * a stRDF WKT literal. If the given SRID is the default for that type, then
+	 * it is ignored. 
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @return
+	 */
+	public static String createstRDFWKT(String plainWKT, int srid) {
+		if (srid == GeoConstants.default_stRDF_SRID) {
+			return plainWKT;
+			
+		} else {
+			return plainWKT + ";" + getURI_forSRID(srid);
+		}
+	}
+	
+	/**
+	 * Given the well-known representation of a geometry and a SRID, it creates
+	 * a GeoSPARQL wktLiteral literal. If the given SRID is the default for that type, then
+	 * it is ignored.
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @return
+	 */
+	public static String createWKTLiteral(String plainWKT, int srid) {
+		if (srid == GeoConstants.default_GeoSPARQL_SRID) {
+			return plainWKT;
+			
+		} else {
+			return getURI_forSRID(srid) + " " + plainWKT; 
+		}
+	}
+	
+	/**
+	 * Returns the URI corresponding to the given SRID.
+	 * The given SRID might be an EPSG one or our custom 84000
+	 * corresponding to CRS84. If the given SRID is less than
+	 * or equal to 0, then an empty string is returned.
+	 * 
+	 * @param srid
+	 * @return
+	 */
+	public static String getURI_forSRID(int srid) {
+		String uri = "";
+		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
+			uri = GeoConstants.WGS84_LONG_LAT;
+			
+		} else if (srid > 0) { // assuming EPSG now
+			uri = GeoConstants.EPSG_URI_PREFIX + srid; 
+		}
+		
+		if (uri.length() > 0) {
+			uri = "<" + uri + ">";
+		}
+		
+		return uri;
+	}
 }

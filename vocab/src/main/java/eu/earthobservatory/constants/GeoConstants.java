@@ -204,7 +204,12 @@ public class GeoConstants {
 	/**
 	 * Default SRID (WGS84 longitude/latitude)
 	 */
-	public static final Integer defaultSRID 	= WGS84_LONG_LAT_SRID;
+	public static final Integer defaultSRID 			= WGS84_LONG_LAT_SRID;
+	
+	/**
+	 * Default datatype for creating new well-known text literals
+	 */
+	public static final String default_WKT_datatype 	= WKTLITERAL; 
 	
 	/**																		*
 	 *  						Extended functions 							*
