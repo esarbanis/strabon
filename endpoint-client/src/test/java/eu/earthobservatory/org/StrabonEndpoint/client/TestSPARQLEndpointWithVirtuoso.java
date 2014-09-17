@@ -9,8 +9,6 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Vector;
 
@@ -23,7 +21,6 @@ import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
  * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  *
  */
-
 //Virtuso endpoint also needs to be tested for all formats included in stSPARQLQueryResultFormat
 //because some of them are not supported
 public class TestSPARQLEndpointWithVirtuoso {
@@ -35,7 +32,7 @@ public class TestSPARQLEndpointWithVirtuoso {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("dbpedia.org", 8890, "sparql");
+		endpoint = new SPARQLEndpoint("dbpedia.org", 80, "sparql");
 		
 		// set query
 		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +

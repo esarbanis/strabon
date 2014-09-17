@@ -9,8 +9,6 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Vector;
 
@@ -32,7 +30,7 @@ public class TestSPARQLEndpointWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 9090, "gag-endpoint/Query");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 80, "gag-endpoint/Query");
 		
 		// set query
 		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
