@@ -34,7 +34,8 @@ public class TestSPARQLEndpointWithVirtuoso {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("dbpedia.org", 80, "sparql");
+		//endpoint = new SPARQLEndpoint("dbpedia.org", 80, "sparql");
+		endpoint = new SPARQLEndpoint("lod.openlinksw.com", 80, "sparql");
 		
 		// set query
 		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
@@ -59,8 +60,6 @@ public class TestSPARQLEndpointWithVirtuoso {
 	public void testQuery() {
 			try {
 				EndpointResult response = endpoint.query(query, stSPARQLQueryResultFormat.TSV);
-				
-			//	System.out.println(response.getResponse());
 				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
