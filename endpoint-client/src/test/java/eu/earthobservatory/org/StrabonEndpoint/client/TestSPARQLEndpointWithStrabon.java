@@ -39,12 +39,9 @@ public class TestSPARQLEndpointWithStrabon {
 				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
 				"PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/> " +
 
-				"SELECT ?geometry " +
+				"SELECT ?g " +
 				"WHERE {" +
-
-  				"	?m rdf:type gag:Δήμος . " +
-  				"	?m rdfs:label \"ΔΗΜΟΣ ΑΘΗΝΑΙΩΝ\" . " +
-  				"	?m gag:έχει_γεωμετρία ?geometry. " +
+  				"	<http://geo.linkedopendata.gr/gag/id/9186> rdf:έχει_γεωμετρία ?g . " +
 				" } "  ;
 		
 		// initialized formats

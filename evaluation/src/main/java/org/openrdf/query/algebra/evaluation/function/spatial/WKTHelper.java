@@ -26,11 +26,13 @@ public class WKTHelper {
 	private static Logger logger = LoggerFactory.getLogger(org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper.class);
 	
 	public static String  STRDF_SRID_DELIM 	= ";";
-	private static String CUT_DELIM 	= "/";
-	private static String URI_ENDING	= ">";
+	private static String CUT_DELIM 		= "/";
+	private static String URI_ENDING		= ">";
 	
 	/**
 	 * Returns the given WKT without the SRID (if any).
+	 *
+	 * FIXME I think that this works only for stRDF. If this is its purpose, rename it to reflect it.
 	 * 
 	 * @param wkt
 	 * @return
@@ -50,6 +52,8 @@ public class WKTHelper {
 	/**
 	 * Returns the SRID of the given WKT (if any). If the WKT
 	 * does not contain any, then the default is returned.
+	 * 
+	 * FIXME I think that this works only for stRDF. If this is its purpose, rename it to reflect it.
 	 * 
 	 * @param wkt
 	 * @return
@@ -130,7 +134,7 @@ public class WKTHelper {
 			return plainWKT;
 			
 		} else {
-			return getURI_forSRID(srid) + " " + plainWKT; 
+			return "<" + getURI_forSRID(srid) + "> " + plainWKT; 
 		}
 	}
 	
@@ -150,10 +154,6 @@ public class WKTHelper {
 			
 		} else if (srid > 0) { // assuming EPSG now
 			uri = GeoConstants.EPSG_URI_PREFIX + srid; 
-		}
-		
-		if (uri.length() > 0) {
-			uri = "<" + uri + ">";
 		}
 		
 		return uri;
