@@ -9,6 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Vector;
 
@@ -65,7 +67,7 @@ public class TestSPARQLEndpointWithVirtuoso {
 					
 				}
 				
-			//	assertTrue(response.getStatusCode() == 200);
+				assertTrue(response.getStatusCode() == 200);
 				
 			} catch (IOException e) {
 				e.printStackTrace();

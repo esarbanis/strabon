@@ -9,6 +9,8 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Vector;
 
@@ -65,10 +67,9 @@ public class TestSPARQLEndpointWithStrabon {
 				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
-					
 				}
 				
-			//	assertTrue(response.getStatusCode() == 200);
+				assertTrue(response.getStatusCode() == 200);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -82,7 +83,7 @@ public class TestSPARQLEndpointWithStrabon {
 	 * returns an IOException when it should do so.
 	 */
 	@Test(expected= IOException.class)
-	public void testIOException() throws Exception {
+	public void testIOException() throws IOException {
 		SPARQLEndpoint ep = new SPARQLEndpoint("blabla.dgr", 80, "bla");
 		ep.query(query, formats.get(0));
 	}

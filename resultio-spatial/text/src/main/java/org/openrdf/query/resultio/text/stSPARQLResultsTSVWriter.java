@@ -34,10 +34,6 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
 			val = new LiteralImpl(dbpolyhedron.stringValue());
-//			if(String.valueOf(dbpolyhedron.getDatatype()) == GeoConstants.WKT)
-//				val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep()+";http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID(), dbpolyhedron.getDatatype());
-//			else
-//				val = new LiteralImpl("<http://www.opengis.net/def/crs/EPSG/0/"+dbpolyhedron.getPolyhedron().getGeometry().getSRID()+"> "+dbpolyhedron.getPolyhedronStringRep(),dbpolyhedron.getDatatype());
 		}
 		
 		// write value
