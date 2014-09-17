@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * A TupleQueryResultWriter that writes query results in the <a
  * href="http://www.geojson.org/geojson-spec.html/">GeoJSON Format</a>.
@@ -181,9 +183,16 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 					
 					SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
 					sftb.setName("Feature_" + nresults + "_" + nfeatures);
-					sftb.setCRS(CRS.decode("EPSG:" + srid));
-					sftb.setSRS("EPSG:" + srid);
 					sftb.add("geometry", Geometry.class);
+					
+					// CRS84 (or EPSG:4326 Long/Lat) is the default CRS for GeoJSON features
+					// we transform explicitly, because searching for "EPSG:<code>" CRSs is
+					// not the preferred way for GeoJSON (see here 
+					// http://geojson.org/geojson-spec.html#coordinate-reference-system-objects). 
+					// Instead the OGC CRS URNs should be preferred.
+					geom = jts.transform(geom, srid, GeoConstants.WGS84_LONG_LAT_SRID);
+					//sftb.setCRS(CRS.decode("EPSG:" + srid));
+					//sftb.setSRS("EPSG:" + srid);
 					
 					// add the feature in the list of features
 					features.add(sftb);
