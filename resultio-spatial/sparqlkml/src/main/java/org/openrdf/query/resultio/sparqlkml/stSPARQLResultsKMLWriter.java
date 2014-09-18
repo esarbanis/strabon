@@ -53,7 +53,6 @@ import eu.earthobservatory.constants.GeoConstants;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
- * 
  */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter.class);
@@ -65,9 +64,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String PLACEMARK_TAG 		= "Placemark";
 	private static final String TIMESTAMP_TAG 		= "TimeStamp";
 	private static final String TIMESPAN_TAG 		= "TimeSpan";
-	private static final String BEGIN_TAG 		= "begin";
-	private static final String END_TAG 		= "end";
-	private static final String WHEN_TAG 		= "when";
+	private static final String BEGIN_TAG 			= "begin";
+	private static final String END_TAG 			= "end";
+	private static final String WHEN_TAG 			= "when";
 	private static final String NAME_TAG 			= "name";
 	private static final String DESC_TAG 			= "description";
 	private static final String EXT_DATA_TAG 		= "ExtendedData";
