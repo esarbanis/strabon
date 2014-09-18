@@ -192,7 +192,7 @@ public class GeoConstants {
 	public static final Integer WGS84_LONG_LAT_SRID = 84000;
 
 	/**
-	 * Default stRDF/stSPARQL SRID (WGS84 latitude-longitude)
+	 * Default stRDF/stSPARQL SRID (WGS84 longitude-latitude)
 	 */
 	public static final Integer default_stRDF_SRID = WGS84_LONG_LAT_SRID;
 	

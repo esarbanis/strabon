@@ -158,4 +158,28 @@ public class WKTHelper {
 		
 		return uri;
 	}
+	
+	/**
+	 * Returns the SRID corresponding to the given URI identifying a CRS.
+	 * In case of a malformed URI, it returns -1.
+	 * 
+	 * @param uriCRS
+	 * @return
+	 */
+	public static int getSRID_forURI(String uriCRS) {
+		if (uriCRS == null) return -1;
+		
+		if (GeoConstants.WGS84_LONG_LAT.equals(uriCRS)) {
+			return GeoConstants.WGS84_LONG_LAT_SRID;
+			
+		} else { // should be an EPSG one, need to parse
+			try {
+				return Integer.parseInt(uriCRS.substring(uriCRS.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
+				
+			} catch (NumberFormatException e) {
+				logger.warn("[Strabon.WKTHelper] Malformed URI for CRS. The URL was {}.", uriCRS);
+				return -1;
+			}
+		}
+	}
 }

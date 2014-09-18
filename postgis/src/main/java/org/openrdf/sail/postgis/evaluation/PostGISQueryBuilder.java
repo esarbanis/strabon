@@ -1314,10 +1314,9 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 				filter.keepSRID_part3();
 			}
 			else if(expr.getRightArg() instanceof GeneralDBStringValue)
-			{
-				String unparsedSRID = ((GeneralDBStringValue)expr.getRightArg()).getValue();
-				// TODO Check for other kinds of URIs (e.g., not only for EPSG)
-				sridExpr = String.valueOf(WKTHelper.getSRID(unparsedSRID));
+			{ // the argument is the URI of a CRS
+				String unparsedCRS = ((GeneralDBStringValue)expr.getRightArg()).getValue();
+				sridExpr = String.valueOf(WKTHelper.getSRID_forURI(unparsedCRS));
 				filter.append(sridExpr);
 				filter.closeBracket();
 			}
