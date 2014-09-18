@@ -38,8 +38,8 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		{
 			byte[] label = rs.getBytes(index + 1);
 			int srid = rs.getInt(index + 2);
-			return vf.getRdbmsPolyhedron(id, GeoConstants.default_WKT_datatype, label, srid);
-
+			String datatype = rs.getString(index + 3);
+			return vf.getRdbmsPolyhedron(id, datatype, label, srid);
 		}
 
 		return createResource(rs, index);

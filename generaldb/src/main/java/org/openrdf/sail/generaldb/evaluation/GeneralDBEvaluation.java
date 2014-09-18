@@ -835,8 +835,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 		}
 
-
-
 		//XXX Attention: Will try to add projections in select for the constructs
 		Iterator it = qb.getSpatialConstructs().entrySet().iterator();
 		while (it.hasNext()) {

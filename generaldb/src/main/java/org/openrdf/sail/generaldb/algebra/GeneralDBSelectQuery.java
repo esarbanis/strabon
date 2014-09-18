@@ -50,7 +50,6 @@ public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements
 	/**
 	 * XXX addition for spatial constructs in select
 	 */
-	
 	private Map<String, GeneralDBSqlExpr> spatialConstructs = new HashMap<String, GeneralDBSqlExpr>();
 	
 	//Extra addition for true spatial selections and joins in FROM clause - 07/09/2011
