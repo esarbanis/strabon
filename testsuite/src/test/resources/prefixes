@@ -14,3 +14,5 @@ PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
 PREFIX ogc: <http://www.opengis.net/def/uom/OGC/1.0/>
 PREFIX ex: <http://example.org#>
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+
