@@ -1,3 +1,8 @@
+	* Fixed a bug that would raise an exception for queries involving two
+	  UNION graph patterns and a projection to a predicate or a URI in
+	  general.
+	  (bug #53: http://bug.strabon.di.uoa.gr/ticket/53)
+
 Wed Sep 17 20:14:12 2014   Pyravlos Team
 
 	* Version 3.2.10 released.
