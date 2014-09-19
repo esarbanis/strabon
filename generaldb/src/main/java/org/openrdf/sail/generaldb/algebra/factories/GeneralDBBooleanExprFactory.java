@@ -41,6 +41,7 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoIn
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoSymDifference;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoTransform;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geoUnion;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geofSRID;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geometryType;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.gt;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.intersects;
@@ -129,8 +130,8 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
@@ -1323,10 +1324,13 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLsrid) ||
-				function.getURI().equals(GeoConstants.geoSparqlGetSRID))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
 		{
 			return srid(arg);
+		} 
+		else if (function.getURI().equals(GeoConstants.geoSparqlGetSRID))
+		{
+			return geofSRID(arg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLisEmpty))
 		{

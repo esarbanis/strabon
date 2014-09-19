@@ -13,10 +13,16 @@ public class GeneralDBSpatialFuncInfo {
 
 	private String fieldName;
 	private ResultType type;
+	private boolean sridFunc;
 
-	public GeneralDBSpatialFuncInfo(String fieldName, ResultType type) {
+	public GeneralDBSpatialFuncInfo(String fieldName, ResultType type, boolean sridFunc) {
 		this.fieldName = fieldName;
 		this.type = type;
+		this.sridFunc = sridFunc;
+	}
+	
+	public boolean isSRIDFunc() {
+		return sridFunc;
 	}
 	
 	public String getFieldName() {

@@ -35,6 +35,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
@@ -124,7 +125,6 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  * 
  */
 public abstract class GeneralDBQueryBuilder {
-
 
 	protected GeneralDBSqlQueryBuilder query;
 
@@ -748,8 +748,8 @@ public abstract class GeneralDBQueryBuilder {
 			}
 
 	protected void dispatchUnarySqlOperator(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		if (expr instanceof GeneralDBSqlAbs) {
 			append((GeneralDBSqlAbs)expr, filter);
 		}
@@ -797,6 +797,9 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if (expr instanceof GeneralDBSqlGeoSrid) {
 			append((GeneralDBSqlGeoSrid)expr, filter);
+			
+		} else if (expr instanceof GeneralDBSqlGeoSPARQLSrid) {
+			append((GeneralDBSqlGeoSPARQLSrid)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlGeoIsEmpty) {
 			append((GeneralDBSqlGeoIsEmpty)expr, filter);
@@ -808,7 +811,7 @@ public abstract class GeneralDBQueryBuilder {
 		else {
 			throw unsupported(expr);
 		}
-			}
+	}
 
 	protected void dispatchValueColumnBase(GeneralDBValueColumnBase expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -1137,6 +1140,9 @@ public abstract class GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException;
 	
 	protected abstract void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
+	
+	protected abstract void append(GeneralDBSqlGeoSPARQLSrid expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)

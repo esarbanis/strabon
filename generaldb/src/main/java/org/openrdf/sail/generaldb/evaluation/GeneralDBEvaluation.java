@@ -22,7 +22,6 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
@@ -80,6 +79,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectProjection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSelectQuery.OrderElem;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbstractGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDateTimeMetricBinary;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoAsGML;
@@ -88,6 +88,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoDimension;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlIsNull;
@@ -145,7 +146,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * Enumeration of the possible types of the results of spatial functions.
 	 * A <tt>NULL</tt> result type is to be interpreted as error.   
 	 */ 
-	public enum ResultType { INTEGER, STRING, BOOLEAN, WKT, WKTLITERAL, DOUBLE, NULL};
+	public enum ResultType { INTEGER, STRING, BOOLEAN, WKT, WKTLITERAL, DOUBLE, URI, NULL};
 
 	//used to retrieve the appropriate column in the Binding Iteration
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> constructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -859,8 +860,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					throw new UnsupportedRdbmsOperatorException("No such spatial expression exists!");
 					
 				} else {
-					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type);
-					
+					info = new GeneralDBSpatialFuncInfo((String) pairs.getKey(), type, expr instanceof GeneralDBSqlAbstractGeoSrid);
+
 					// set increaseIndex to <tt>true</tt> for geometries only (see commend below)
 					if (type == ResultType.WKT || type == ResultType.WKTLITERAL) {
 						increaseIndex = true;
@@ -1099,6 +1100,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					expr instanceof GeneralDBSqlGeoIsEmpty	)
 			{
 				return ResultType.BOOLEAN;
+				
+			} else if (expr instanceof GeneralDBSqlGeoSPARQLSrid) {
+				return ResultType.URI;
 			}
 
 		}

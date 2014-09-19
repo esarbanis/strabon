@@ -14,7 +14,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * 
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
-public class GeneralDBSqlGeoSrid extends GeneralDBSqlSpatialProperty {
+public class GeneralDBSqlGeoSrid extends GeneralDBSqlAbstractGeoSrid {
 
 	public GeneralDBSqlGeoSrid(GeneralDBSqlExpr expr) {
 		super(expr);

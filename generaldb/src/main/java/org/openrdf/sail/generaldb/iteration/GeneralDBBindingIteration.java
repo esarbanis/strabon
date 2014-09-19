@@ -15,6 +15,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.evaluation.QueryBindingSet;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.generaldb.GeneralDBSpatialFuncInfo;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
@@ -98,7 +99,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected BindingSet convert(ResultSet rs)
 	throws SQLException
 	{
-		
 		/// debug
 		/*for(int i=1; i<12;i++) {
 			Object o = rs.getObject(i);
@@ -155,14 +155,17 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			case INTEGER: 
 				value = createIntegerGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
-			case STRING: 
-				value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+			case STRING:
+					value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
 			case WKT: 
 				value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
 				break;
 			case WKTLITERAL: 
 				value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+				break;
+			case URI:
+				value = createURIGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct), construct.isSRIDFunc());				
 				break;
 			}
 			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
@@ -199,15 +202,6 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		return createResource(rs, index);
 	}
 
-	/**
-	 * FIXME the implementation of this function for PostGIS and MonetDB
-	 * uses by default the {@link GeoConstants#WKT} datatype when creating WKT
-	 * literals. What about geo:wktLiteral?
-	 * However, this method is called by {@link convert} method only, which
-	 * in turn is not called by any method!
-	 * 
-	 */
-	
 	/**
 	 * Creates a geospatial value from the given result set and index position.
 	 * When projecting on a geospatial value, we get also its SRID, and its 
@@ -266,5 +260,24 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 
 		return vf.asRdbmsLiteral(vf.createLiteral(spProperty));
 
+	}
+	
+	protected RdbmsResource createURIGeoValueForSelectConstructs(ResultSet rs, int index, boolean sridTransform)
+	throws SQLException
+	{
+		String uri;
+		
+		if (sridTransform) {
+			// we have to differentiate here for geoSPARQL's getSRID function, since we need to transform
+			// the result to a URI
+			// this is called for GeoSPARQL's getSRID, thus the column would be of type Integer
+			int srid = rs.getInt(index + 1);
+			uri = WKTHelper.getURI_forSRID(srid);
+			
+		} else { // we get this as a string first, and then we shall construct the URI
+			uri = rs.getString(index + 1);
+		}
+		
+		return vf.asRdbmsURI(vf.createURI(uri));
 	}
 }
