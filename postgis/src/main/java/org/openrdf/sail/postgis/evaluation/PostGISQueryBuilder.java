@@ -861,7 +861,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	 * in the select clause and not call the st_srid() function, which will always give me 4326.
 	 */
 	protected void appendSrid(GeneralDBSqlAbstractGeoSrid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
-		boolean sridNeeded = true;
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -884,7 +883,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		}
 		else
 		{
-			//XXX Incorporating SRID
+			// Incorporating SRID
 			GeneralDBSqlExpr tmp = expr;
 			if(tmp.getParentNode() == null)
 			{
@@ -901,15 +900,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						child = ((UnaryGeneralDBOperator) tmp).getArg();
 					}
-					else if(tmp instanceof GeneralDBStringValue)
-					{
-						//Constant!!
-						sridNeeded  = false;
-						break;
-					}
-
-					tmp = child;
-					if(tmp instanceof GeneralDBLabelColumn)
+					else if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
@@ -928,57 +919,53 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						filter.append(sridExpr);
 						filter.closeBracket();
 						return;
-						//break;
 					}
 					else if(tmp instanceof GeneralDBStringValue)
 					{
-						//Constant!!
-						sridNeeded  = false;
+						// We need the srid, since this is a constant in the query, so we
+						// should not return just the default SRID, but instead we should
+						// determine it.
+						// Computing it based on the following code using ST_SRID, ST_GeomFromText,
+						// and appendWKT is not the best way, but it does the job good.
 						break;
 					}
-
+					
+					tmp = child;
 				}
 			}
 
-			if(sridNeeded)
+			// we have to compute it
+			filter.appendFunction("ST_SRID");
+			filter.openBracket();
+			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
-				filter.appendFunction("ST_SRID");
-				filter.openBracket();
-				if(expr.getArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getArg(),filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getArg(), filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getArg(), filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructTriple)
-				{
-					appendConstructFunction(expr.getArg(), filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlCase)
-				{
-					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter); 
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
-				}
-
-				filter.closeBracket();
+				appendWKT(expr.getArg(),filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructTriple)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
 			}
 			else
 			{
-				// set default SRID ({@link GeoConstants#defaultSRID})
-				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
 			}
-		}
 
+			filter.closeBracket();
+		}
+		
 		filter.closeBracket();
 	}
 
@@ -1000,7 +987,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 	/**
 	 * 'helper' functions
 	 */
-
 	@Override
 	protected String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
 	{
@@ -1264,7 +1250,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 						sridExpr = alias;
 						break;
 					}
-					else if (tmp instanceof GeneralDBStringValue) //Constant!!
+					else if (tmp instanceof GeneralDBStringValue) // constant!!
 					{
 						sridNeeded  = false;
 						sridExpr = String.valueOf(WKTHelper.getSRID(((GeneralDBStringValue) tmp).getValue()));
