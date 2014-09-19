@@ -74,7 +74,7 @@ QueryOptimizer
 	 * We used data from this tree traversal and supplied it to a new optimizer
 	 * that got the job done --> SpatialJoinOptimizer
 	 */
-	private boolean spatiallyEnabled = false;
+	//private boolean spatiallyEnabled = false;
 	//Will be used in the FOLLOWING - NEW - OPTIMIZER!
 	private int geo_values_occurences = 0;
 

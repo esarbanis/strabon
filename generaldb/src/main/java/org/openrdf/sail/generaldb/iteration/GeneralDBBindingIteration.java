@@ -25,11 +25,10 @@ import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr.
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
@@ -206,6 +205,21 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	 * literals. What about geo:wktLiteral?
 	 * However, this method is called by {@link convert} method only, which
 	 * in turn is not called by any method!
+	 * 
+	 */
+	
+	/**
+	 * Creates a geospatial value from the given result set and index position.
+	 * When projecting on a geospatial value, we get also its SRID, and its 
+	 * datatype, so that we are able to assign that datatype to the new value. 
+	 * 
+	 * @param rs the current result set over which we are iterating
+	 * @param index the index position to start reading from
+	 *        index + 1: geospatial value (in binary)
+	 *        index + 2: SRID
+	 *        index + 3: datatype
+	 * @return
+	 * @throws SQLException
 	 */
 	protected abstract RdbmsValue createGeoValue(ResultSet rs, int index)
 	throws SQLException;
