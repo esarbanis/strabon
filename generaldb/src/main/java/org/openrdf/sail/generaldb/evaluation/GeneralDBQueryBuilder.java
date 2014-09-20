@@ -778,6 +778,9 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoBoundary) {
 			append((GeneralDBSqlGeoBoundary)expr, filter);
 		}
+		else if (expr instanceof GeneralDBSqlST_Centroid) {
+			append((GeneralDBSqlST_Centroid)expr, filter);
+		}
 		//Metrics
 		else if (expr instanceof GeneralDBSqlGeoArea) {
 			append((GeneralDBSqlGeoArea)expr, filter);
