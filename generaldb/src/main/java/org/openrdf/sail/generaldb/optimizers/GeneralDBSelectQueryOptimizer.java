@@ -104,6 +104,7 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * Rewrites the core algebra model with a relation optimised model, using SQL.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr.
  */
 public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> 
@@ -994,8 +995,9 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			ValueExpr expr = elem.getExpr();
 			GeneralDBSqlExpr sqlExpr = null;
 			String name = elem.getName();
-			if(expr instanceof FunctionCall)
-			{
+			
+			if(expr instanceof FunctionCall && !isFuncExprGrounded(expr))
+			{ // if the expr is grounded we are going to evaluate it in Java 
 				if(!evaluateInJava(expr))
 				{
 					Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
@@ -1064,14 +1066,37 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					}
 				}
 			}
-			/**
-			 * 
-			 */
-
-
 		}
 	}
 
+	/**
+	 * Checks whether the given value expression contains only grounded
+	 * terms (constants). 
+	 * 
+	 * This should work for the spatial case, but I am not 100% sure whether
+	 * it is going to work for whole SPARQL 1.1.
+	 * 
+	 * @param funcExpr
+	 * @return
+	 */
+	private boolean isFuncExprGrounded(ValueExpr funcExpr) {
+		if (funcExpr instanceof FunctionCall) {
+			// recursively check its arguments
+			boolean groundedChildren = true;
+			for (int i = 0; i < ((FunctionCall) funcExpr).getArgs().size(); i++) {
+				groundedChildren &= isFuncExprGrounded(((FunctionCall) funcExpr).getArgs().get(i));
+			}
+			
+			return groundedChildren;
+			
+		} else if (funcExpr instanceof Var) { // variable
+			return false;
+			
+		} else { // all other cases (constant, UnaryExpressions, etc...) -> dodgy!
+			return true;
+		}
+	}
+	
 	//Checking that no spatial function exists in this metric expression
 	private boolean thematicExpression(ValueExpr expr)
 	{
@@ -1196,7 +1221,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	/**
 	 * Function used recursively to specify whether the function call present in the select clause contains an aggregate
-	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue). 
+	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue).
+	 *  
 	 * @param expr 
 	 * @return true if no aggregate is present, false otherwise.
 	 */
@@ -1231,9 +1257,6 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 
 	}
-	/**
-	 * 
-	 */
 
 	@Override
 	public void meet(Slice node)

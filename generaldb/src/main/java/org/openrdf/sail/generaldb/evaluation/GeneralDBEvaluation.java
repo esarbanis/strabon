@@ -22,6 +22,7 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
@@ -42,12 +43,23 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
+import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsGMLFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsTextFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.DimensionFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.GeometryTypeFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsSimpleFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.SridFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.AboveFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.BelowFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.ContainsFunc;
@@ -116,6 +128,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 
 import eu.earthobservatory.constants.GeoConstants;
 
@@ -123,8 +136,9 @@ import eu.earthobservatory.constants.GeoConstants;
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
  * them on a database.
  * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Dimitrianos Savva <dimis@di.uoa.gr>
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
@@ -285,7 +299,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 		// having evaluated the arguments of the function, evaluate the function
 		try {
-			if(function instanceof SpatialMetricFunc)
+
+			//
+			// SPATIAL METRIC FUNCTIONS
+			//
+			if (function instanceof SpatialMetricFunc)
 			{
 				double funcResult = 0;
 				Geometry leftGeom = null;
@@ -323,41 +341,43 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				{	//SHOULD NEVER REACH THIS CASE!
 					return null;
 				}
+				
+				
 				if(rightResult != null)
 				{
-				if(rightResult instanceof StrabonPolyhedron)
-				{
-					rightGeom = ((StrabonPolyhedron) rightResult).getGeometry();
-				}
-				else if(rightResult instanceof GeneralDBPolyhedron)
-				{
-					rightGeom = ((GeneralDBPolyhedron) rightResult).getPolyhedron().getGeometry();
-				}
-				else if(rightResult instanceof Literal)
-				{	
-					/**
-					 * Duplicate work done here in order to retain the literal's datatype...
-					 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
-					 * in order to have them appear in Select Clause along with the appropriate datatype.
-					 */
-					rightGeom = new StrabonPolyhedron(((Literal) rightResult).getLabel()).getGeometry();
-					int sridPosition = ((Literal) rightResult).getLabel().indexOf(';');
-					//Default case
-					if(sridPosition == -1)
+					if(rightResult instanceof StrabonPolyhedron)
 					{
-						rightGeom.setSRID(GeoConstants.defaultSRID);
+						rightGeom = ((StrabonPolyhedron) rightResult).getGeometry();
+					}
+					else if(rightResult instanceof GeneralDBPolyhedron)
+					{
+						rightGeom = ((GeneralDBPolyhedron) rightResult).getPolyhedron().getGeometry();
+					}
+					else if(rightResult instanceof Literal)
+					{	
+						/**
+						 * Duplicate work done here in order to retain the literal's datatype...
+						 * Instead of only utilizing StrabonPolyhedron items, I converted them to Literals
+						 * in order to have them appear in Select Clause along with the appropriate datatype.
+						 */
+						rightGeom = new StrabonPolyhedron(((Literal) rightResult).getLabel()).getGeometry();
+						int sridPosition = ((Literal) rightResult).getLabel().indexOf(';');
+						//Default case
+						if(sridPosition == -1)
+						{
+							rightGeom.setSRID(GeoConstants.defaultSRID);
+						}
+						else
+						{
+							sridPosition = ((Literal) rightResult).getLabel().lastIndexOf('/');
+							int srid = Integer.parseInt(((Literal) rightResult).getLabel().substring(sridPosition+1));
+							rightGeom.setSRID(srid);
+						}
 					}
 					else
-					{
-						sridPosition = ((Literal) rightResult).getLabel().lastIndexOf('/');
-						int srid = Integer.parseInt(((Literal) rightResult).getLabel().substring(sridPosition+1));
-						rightGeom.setSRID(srid);
+					{	//SHOULD NEVER REACH THIS CASE!
+						return null;
 					}
-				}
-				else
-				{	//SHOULD NEVER REACH THIS CASE!
-					return null;
-				}
 				}
 				else
 				{
@@ -379,10 +399,19 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				return org.openrdf.model.impl.ValueFactoryImpl.getInstance().createLiteral(funcResult);
 				
 			}
+			
+			//
+			// SPATIAL CONSTRUCT FUNCTIONS
+			//
 			else if ( function instanceof SpatialConstructFunc ) {
 				return spatialConstructPicker(function, leftResult, rightResult);
 
-			}  else if(function instanceof SpatialRelationshipFunc)	{
+			}
+			
+			//
+			// SPATIAL RELATIONSHIP FUNCTIONS
+			//
+			else if(function instanceof SpatialRelationshipFunc)	{
 				// Any boolean function present in HAVING - Must evaluate here!
 				
 				boolean funcResult = false;
@@ -573,8 +602,45 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				}
 
 				return funcResult ? BooleanLiteralImpl.TRUE : BooleanLiteralImpl.FALSE;
+				
 			}
-			else {
+			
+			//
+			// SPATIAL PROPERTY FUNCTIONS
+			//
+			else if (function instanceof SpatialPropertyFunc) {
+				
+				if (function instanceof GeoSparqlGetSRIDFunc) {
+					return new URIImpl(WKTHelper.getURI_forSRID(getSRIDFromValue(leftResult)));
+					
+				} else if (function instanceof SridFunc) {
+					return new NumericLiteralImpl(getSRIDFromValue(leftResult));
+					
+				} else if (function instanceof IsSimpleFunc) {
+					return new BooleanLiteralImpl(getGeometryFromValue(leftResult).isSimple());
+					
+				} else if (function instanceof IsEmptyFunc) {
+					return new BooleanLiteralImpl(getGeometryFromValue(leftResult).isEmpty());
+					
+				} else if (function instanceof GeometryTypeFunc) {
+					return new LiteralImpl(getGeometryFromValue(leftResult).getGeometryType());
+					
+				} else if (function instanceof DimensionFunc) {
+					return new NumericLiteralImpl(getGeometryFromValue(leftResult).getDimension());
+					
+				} else if (function instanceof AsTextFunc) { 
+					// already handled
+					return leftResult;
+					
+				} else if (function instanceof AsGMLFunc) {
+					return new LiteralImpl(JTSWrapper.getInstance().GMLWrite(getGeometryFromValue(leftResult)));
+					
+				} else {
+					logger.error("[Strabon.evaluate(FunctionCall)] Function {} has not been implemented yet. ", function.getURI());
+					return null;
+				}
+				
+			} else {
 				//Default Sesame Behavior
 				List<ValueExpr> args = fc.getArgs();
 
@@ -586,11 +652,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				
 				return function.evaluate(tripleSource.getValueFactory(), argValues);
 			}
+			
 		} catch (Exception e) {
-			logger.error("Strabon.evaluate(FunctionCall)] Error during evaluation of extension function.", e);
+			logger.error("[Strabon.evaluate(FunctionCall)] Error during evaluation of extension function.", e);
 			return null;
 		}
-
 	}
 
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
@@ -1075,6 +1141,47 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		//return allVars;
 	}
 
+	
+	public int getSRIDFromValue(Value value) {
+		if (value instanceof GeneralDBPolyhedron) {
+			return ((GeneralDBPolyhedron) value).getPolyhedron().getGeometry().getSRID();
+			
+		} else if (value instanceof StrabonPolyhedron) {
+			return ((StrabonPolyhedron) value).getGeometry().getSRID();
+			
+		} else if (value instanceof Literal) {
+			return (new AbstractWKT(((Literal) value).stringValue())).getSRID();
+			
+		} else { // default error SRID value 
+			return -1;
+		}
+	}
+	
+	public Geometry getGeometryFromValue(Value value) throws ParseException {
+		if (value instanceof GeneralDBPolyhedron) {
+			return ((GeneralDBPolyhedron) value).getPolyhedron().getGeometry();
+			
+		} else if (value instanceof StrabonPolyhedron) {
+			return ((StrabonPolyhedron) value).getGeometry();
+			
+		} else if (value instanceof Literal) {
+			Literal literal = (Literal) value;
+			AbstractWKT wkt = null;
+			
+			if (literal.getDatatype() == null) {
+				wkt = new AbstractWKT(literal.stringValue());
+				
+			} else {
+				wkt = new AbstractWKT(literal.stringValue(), literal.getDatatype().stringValue());
+			}
+			
+			return JTSWrapper.getInstance().WKTread(wkt.getWKT());
+			
+		} else {
+			return null;
+		}
+	}
+	
 	/**
 	 * Given an expression get the type of the result. 
 	 * 

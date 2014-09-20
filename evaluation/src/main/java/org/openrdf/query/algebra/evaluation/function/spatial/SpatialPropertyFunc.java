@@ -9,6 +9,7 @@
  */
 package org.openrdf.query.algebra.evaluation.function.spatial;
 
+import org.apache.log4j.Logger;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
@@ -28,13 +29,14 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  */
 public abstract class SpatialPropertyFunc implements Function {
 
+	private static Logger logger = Logger.getLogger(org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc.class);
+	
 	//No need for any implementation, I will have replaced this class's presence before reaching this place
 	public Value evaluate(ValueFactory valueFactory, Value... args)
 	throws ValueExprEvaluationException {
-
+		logger.error(this.getURI() + ": I should have been taken care of before in GeneralDBEvaluation.evaluate(FunctionCall, BindingSet).");
 		return null;
 	}
 
-	// charnik: made method (and hence the class) abstract
 	public abstract String getURI();
 }

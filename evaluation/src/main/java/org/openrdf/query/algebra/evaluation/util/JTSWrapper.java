@@ -34,6 +34,7 @@ import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.io.gml2.GMLReader;
+import com.vividsolutions.jts.io.gml2.GMLWriter;
 
 import eu.earthobservatory.constants.GeoConstants;
 
@@ -42,7 +43,6 @@ import eu.earthobservatory.constants.GeoConstants;
  * of Java Topology Suite. 
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class JTSWrapper {
 	
@@ -73,6 +73,11 @@ public class JTSWrapper {
 	 */
 	private WKBWriter wkbw;
 	
+	/**
+	 * Writer for GML
+	 */
+	private GMLWriter gmlw;
+	
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
 		wktr = new WKTReader();
@@ -80,6 +85,7 @@ public class JTSWrapper {
 		wkbr = new WKBReader();
 		wkbw = new WKBWriter(); // PostGIS
 //		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
+		gmlw = new GMLWriter();
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -194,5 +200,9 @@ public class JTSWrapper {
 		
 		reader.close();
         return geometry;
+	}
+	
+	public synchronized String GMLWrite(Geometry geom) {
+		return gmlw.write(geom);
 	}
 }
