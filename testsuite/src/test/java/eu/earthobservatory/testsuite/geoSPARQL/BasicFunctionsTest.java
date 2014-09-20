@@ -3,9 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2012, 2013, 2014 Pyravlos Team
+ * Copyright (C) 2011, 2012, 2013, 2014 Pyravlos Team
  * 
- * http://www.sextant.di.uoa.gr/
+ * http://strabon.di.uoa.gr/
  */
 package eu.earthobservatory.testsuite.geoSPARQL;
 
