@@ -175,7 +175,7 @@ public class GeoConstants {
 	 * WGS 84 longitude-latitude
 	 */
 	public static final String WGS84_LONG_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
-
+	
 	/**
 	 * EPSG:4326
 	 */

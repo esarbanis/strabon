@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openrdf.query.algebra.QueryModelNode;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBLabelColumn;
@@ -959,14 +959,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
 		String raw = arg.getValue();
 
-		StrabonPolyhedron poly = null;
-		try{
-			poly = new StrabonPolyhedron(raw);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		filter.append(" GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
+		AbstractWKT wkt = new AbstractWKT(raw);
+		filter.append(" GeomFromText('" + wkt.getWKT() + "'," + String.valueOf(GeoConstants.defaultSRID) + ")");
 
 		return raw;
 	}

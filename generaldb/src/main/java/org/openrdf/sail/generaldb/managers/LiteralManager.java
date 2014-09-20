@@ -118,10 +118,6 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					{
 						table.insertGML(id, label, dt, null, null);
 					} 
-					else if(XMLGSDatatypeUtil.isSemiLinearPointSetDatatype(datatype)) // SemiLinearPointSet case
-					{
-						table.insertGeoSpatial(id, label,dt,null,null);
-					}
 				}
 				
 			}

@@ -95,15 +95,17 @@ public class StrabonPolyhedron implements Value {
 	 * @param geo
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(Geometry geo) throws Exception {
-		this.geometry = new StrabonPolyhedron(geo, 1).geometry;
+	public StrabonPolyhedron(Geometry geo) {
+		this.geometry = geo;
 		this.geometry.setSRID(geo.getSRID());
 	}
 	
 	/**
 	 * Creates a {@link StrabonPolyhedron} instance with a geometry given
 	 * in the representation of the argument. The representation could be
-	 * either in WKT or in GML.
+	 * either in WKT or in GML. Since, we construct the {@link Geometry}
+	 * object ourselves there is no way of knowing the SRID, so the
+	 * constructor requires it as well. 
 	 * 
 	 * NOTICE: whoever creates StrabonPolyhedron objects is responsible
 	 * for cleaning the representation of the geometry by removing any
@@ -112,7 +114,7 @@ public class StrabonPolyhedron implements Value {
 	 * @param representation
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(String representation) throws ParseException {
+	public StrabonPolyhedron(String representation, int srid) throws ParseException {
 		try {
 			// try first as WKT
 			geometry = jts.WKTread(representation);
@@ -126,6 +128,9 @@ public class StrabonPolyhedron implements Value {
 				throw new ParseException("The given WKT/GML representation is not valid.");
 			}
 		}
+		
+		// set its SRID
+		geometry.setSRID(srid);
 	}
 
 	/**
@@ -175,28 +180,9 @@ public class StrabonPolyhedron implements Value {
 		return false;
 	}
 	
-	@Deprecated
-	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		if(WKT.contains("gml"))
-		{
-			Geometry geo = jts.GMLread(WKT);
-			this.geometry = new StrabonPolyhedron(geo).geometry;
-		}
-		else
-		{
-			Geometry geo = jts.WKTread(WKT);
-			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
-		}
-	
-	}
-
-	@Deprecated
-	public StrabonPolyhedron(Geometry geo, int algorithm) throws Exception {
-		this.geometry = new StrabonPolyhedron(geo, algorithm, MAX_POINTS).geometry;
-	}
-
 	// unused
-	public StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
+	@Deprecated
+	private StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
 		if (geo.isEmpty()) {
 			this.geometry = geo;
 			return;
@@ -859,5 +845,23 @@ public class StrabonPolyhedron implements Value {
 									MultiPolygon.class.isInstance(geo) ? "MultiPolygon" :
 										GeometryCollection.class.isInstance(geo) ? "GeometryCollection" : 
 											"Unknown";
+	}
+	
+	
+	/***
+	 * Additions by charnik.
+	 * Why all the above operations (symdifference, boundary, etc.) are static methods
+	 * and not member methods?
+	 */
+	
+	/**
+	 * Returns the centroid of this StrabonPolyhedron as 
+	 * a new StrabonPolyhedron.
+	 * 
+	 * @return
+	 */
+	public StrabonPolyhedron getCentroid() {
+		Point point = geometry.getCentroid();
+		return new StrabonPolyhedron(point);
 	}
 }

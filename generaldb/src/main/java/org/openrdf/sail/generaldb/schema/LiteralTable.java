@@ -166,47 +166,6 @@ public class LiteralTable {
 		datatypes.insert(id, datatype);
 	}
 
-	/********************************************************************/
-	/**
-	 * @deprecated This method is called from {@link LiteralManager.insert} when 
-	 * the datatype of the label is a SemiLinearPointSet (that is http://stsparql.di.uoa.gr/SemiLinearPointSet). 
-	 * 
-	 * @param id
-	 * @param label
-	 * @param datatype
-	 * @param start
-	 * @param end
-	 * @throws SQLException
-	 * @throws InterruptedException
-	 */
-	public void insertGeoSpatial(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, InterruptedException
-	{
-		 
-		byte[] geomWKB = null;
-		 
-		try {
-		
-			/***XXX new stuff dictated by kkyzir's StrabonPolyhedron - will be added when the functionality is complete***/
-			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label);
-			geomWKB = polyhedron.toByteArray();
-			
-		
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			throw new SQLException("An issue occurred in the underlying StrabonPolyhedron's constructor!");
-			
-		}
-
-		//Removed 'value' field
-		Integer srid= findSRID(label);
-		geoSpatialTable.insert(id,srid/*,start,end*/, geomWKB);
-
-		//XXX not needed currently because this method is called AFTER an insertDatatype()
-		//		insertSimple(id, label);
-		//		datatypes.insert(id, datatype);
-	}
-	
 	//the new version will actually deal with WKB
 	public void insertWKT(Number id, String label, String datatype, Timestamp start, Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
@@ -292,53 +251,4 @@ public class LiteralTable {
 		bool |= geoSpatialTable.expunge(condition);
 		return bool;
 	}
-	
-	
-	/**
-	 * @deprecated To find the SRID for a geometry literal, one has to use the {@link AbstractWKT}
-	 * class. Luckily enough, this method is called only from method {@link LiteralTable.insertGeoSpatial}.
-	 *  
-	 * @param label
-	 * @return
-	 */
-	protected static Integer findSRID(String label){
-		String[] crs=label.split(";");
-		String crsUri=null;
-		
-		if((crs.length == 1))
-		{
-			if(label.contains("gml"))
-			{
-				try {
-					StrabonPolyhedron poly = new StrabonPolyhedron(label);
-					if(poly.getGeometry().getSRID()>0)
-						return poly.getGeometry().getSRID();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			else
-			{
-				return 4326;
-			} 
-		}
-		else
-			crsUri = crs[1];
-		
-		String prefix="http://www.opengis.net/def/crs/EPSG/0/";
-		if(crsUri.startsWith(prefix)){
-			int index=crsUri.lastIndexOf('/');
-			index++;
-			Integer srid = Integer.parseInt(crsUri.substring(index));
-			//System.out.println("The EPSG code: " + srid);
-					 
-			//System.out.println("SRS FOUND:"+srid);
-			 return srid;
-		}else{
-			throw new IllegalArgumentException("MALFORMED URI FOR SRID!!!");
-		
-	   }
-}
 }

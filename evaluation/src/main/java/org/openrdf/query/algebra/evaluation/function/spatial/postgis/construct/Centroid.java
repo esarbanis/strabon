@@ -27,5 +27,4 @@ public class Centroid extends SpatialConstructFunc {
 	public String getURI() {
 		return PostGIS.ST_CENTROID;
 	}
-
 }
