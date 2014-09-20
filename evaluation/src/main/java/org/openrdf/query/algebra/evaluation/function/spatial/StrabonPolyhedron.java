@@ -112,7 +112,7 @@ public class StrabonPolyhedron implements Value {
 	 * @param representation
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(String representation) throws IllegalArgumentException {
+	public StrabonPolyhedron(String representation) throws ParseException {
 		try {
 			// try first as WKT
 			geometry = jts.WKTread(representation);
@@ -123,7 +123,7 @@ public class StrabonPolyhedron implements Value {
 				geometry = jts.GMLread(representation);
 				
 			} catch (Exception e1) {
-				throw new IllegalArgumentException(e1);
+				throw new ParseException("The given WKT/GML representation is not valid.");
 			}
 		}
 	}

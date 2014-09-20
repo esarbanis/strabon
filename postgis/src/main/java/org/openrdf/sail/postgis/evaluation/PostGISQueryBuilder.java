@@ -986,9 +986,10 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
 	/**
 	 * 'helper' functions
+	 * @throws UnsupportedRdbmsOperatorException 
 	 */
 	@Override
-	protected String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
+	protected String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
 		String raw = arg.getValue();
@@ -1003,7 +1004,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			filter.append(" ST_GeomFromText('"+poly.toWKT() +"',"+String.valueOf(wkt.getSRID())+")");
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UnsupportedRdbmsOperatorException(e.getMessage());
 		}
 
 		return raw;
