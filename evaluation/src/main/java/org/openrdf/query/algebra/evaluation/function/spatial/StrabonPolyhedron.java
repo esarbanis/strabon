@@ -701,24 +701,15 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public static StrabonPolyhedron buffer(StrabonPolyhedron A, double B) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
-		poly.geometry = A.geometry.buffer(B);
-
-		return poly;
+		return new StrabonPolyhedron(A.geometry.buffer(B), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron envelope(StrabonPolyhedron A) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
-		poly.geometry = A.geometry.getEnvelope();
-
-		return poly;
+		return new StrabonPolyhedron(A.geometry.getEnvelope(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron convexHull(StrabonPolyhedron A) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
-		poly.geometry = A.geometry.convexHull();
-
-		return poly;
+		return new StrabonPolyhedron(A.getGeometry().convexHull(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron boundary(StrabonPolyhedron A) throws Exception {

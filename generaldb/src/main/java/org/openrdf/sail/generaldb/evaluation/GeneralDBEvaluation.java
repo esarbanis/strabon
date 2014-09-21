@@ -52,6 +52,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
+import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
@@ -527,7 +528,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			return StrabonPolyhedron.envelope(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull))
+		else if(function.getURI().equals(GeoConstants.stSPARQLconvexHull) ||
+				function instanceof GeoSparqlConvexHullFunc)
 		{
 			return StrabonPolyhedron.convexHull(leftArg);
 		}
