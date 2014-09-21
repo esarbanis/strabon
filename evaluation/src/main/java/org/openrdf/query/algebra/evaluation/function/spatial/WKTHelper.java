@@ -116,7 +116,7 @@ public class WKTHelper {
 			return plainWKT;
 			
 		} else {
-			return plainWKT + ";" + getURI_forSRID(srid);
+			return plainWKT + ";" + getEPSGURI_forSRID(srid);
 		}
 	}
 	
@@ -134,29 +134,25 @@ public class WKTHelper {
 			return plainWKT;
 			
 		} else {
-			return "<" + getURI_forSRID(srid) + "> " + plainWKT; 
+			return "<" + getEPSGURI_forSRID(srid) + "> " + plainWKT; 
 		}
 	}
 	
 	/**
 	 * Returns the URI corresponding to the given SRID.
-	 * The given SRID might be an EPSG one or our custom 84000
-	 * corresponding to CRS84. If the given SRID is less than
+	 * The given SRID might only be an EPSG one. 
+	 * If the given SRID is less than
 	 * or equal to 0, then an empty string is returned.
 	 * 
 	 * @param srid
 	 * @return
 	 */
-	public static String getURI_forSRID(int srid) {
-		String uri = "";
-		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
-			uri = GeoConstants.WGS84_LONG_LAT;
-			
-		} else if (srid > 0) { // assuming EPSG now
-			uri = GeoConstants.EPSG_URI_PREFIX + srid; 
+	public static String getEPSGURI_forSRID(int srid) {
+		if (srid > 0) { // assuming EPSG now
+			return GeoConstants.EPSG_URI_PREFIX + srid; 
 		}
 		
-		return uri;
+		return "";
 	}
 	
 	/**
@@ -169,8 +165,8 @@ public class WKTHelper {
 	public static int getSRID_forURI(String uriCRS) {
 		if (uriCRS == null) return -1;
 		
-		if (GeoConstants.WGS84_LONG_LAT.equals(uriCRS)) {
-			return GeoConstants.WGS84_LONG_LAT_SRID;
+		if (GeoConstants.CRS84_URI.equals(uriCRS)) {
+			return GeoConstants.EPSG4326_SRID;
 			
 		} else { // should be an EPSG one, need to parse
 			try {

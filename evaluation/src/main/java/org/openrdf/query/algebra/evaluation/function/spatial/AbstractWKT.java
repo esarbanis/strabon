@@ -144,8 +144,8 @@ public class AbstractWKT {
 			// FIXME: handle invalid URIs
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
-			if (GeoConstants.WGS84_LONG_LAT.equals(crs.toString())) {
-				srid = GeoConstants.WGS84_LONG_LAT_SRID;
+			if (GeoConstants.CRS84_URI.equals(crs.toString())) {
+				srid = GeoConstants.EPSG4326_SRID;
 				
 			} else { // parse it to get the srid
 				// FIXME: this code assumes an EPSG URI

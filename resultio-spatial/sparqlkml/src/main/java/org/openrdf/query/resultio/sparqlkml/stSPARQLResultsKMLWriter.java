@@ -353,8 +353,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				}
 			}
 			
-			// transform the geometry to {@link GeoConstants#WGS84_LONG_LAT_SRID}
-			geom = jts.transform(geom, srid, GeoConstants.WGS84_LONG_LAT_SRID);
+			// transform the geometry to {@link GeoConstants#EPSG4326_SRID}
+			geom = jts.transform(geom, srid, GeoConstants.EPSG4326_SRID);
 			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;

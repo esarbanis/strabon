@@ -168,43 +168,41 @@ public class GeoConstants {
 	
 	/**
 	 * WGS 84 latitude-longitude (EPSG:4326)
+	 * 
+	 * NOTICE: 
+	 *   We treat this CRS with long/lat semantics however, like
+	 *   most of the world does. This is in contrast to what EPSG considers.
 	 */
-	public static final String WGS84_LAT_LONG	= EPSG_URI_PREFIX + "4326";
+	public static final String EPSG4326_URI			= EPSG_URI_PREFIX + "4326";
 	
 	/**
 	 * WGS 84 longitude-latitude
+	 * 
+	 * NOTICE:
+	 *   Yes, since we treat EPSG:4326 with a long/lat ordering, then OGC CRS84
+	 *   is synonmous to EPSG:4326.
 	 */
-	public static final String WGS84_LONG_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+	public static final String CRS84_URI			= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 	
 	/**
 	 * EPSG:4326
 	 */
-	public static final Integer WGS84_LAT_LONG_SRID = 4326;
+	public static final Integer EPSG4326_SRID 		= 4326;
 	
 	/**
-	 * The SRID for WGS84 long/lat does not exist, because no such CRS
-	 * exist in the EPSG database. Geotools return the same code, i.e.,
-	 * EPSG:4326, but this is wrong to have here. Therefore, we use a
-	 * custom SRID inspired by the devil, and thus, it is our custom and
-	 * internal code for referencing the LONG/LAT version of EPSG:4326 
-	 * (i.e., WGS84 lat/long).
+	 * Default stRDF/stSPARQL SRID
 	 */
-	public static final Integer WGS84_LONG_LAT_SRID = 84000;
-
-	/**
-	 * Default stRDF/stSPARQL SRID (WGS84 longitude-latitude)
-	 */
-	public static final Integer default_stRDF_SRID = WGS84_LONG_LAT_SRID;
+	public static final Integer default_stRDF_SRID = EPSG4326_SRID;
 	
 	/**
-	 * Default GeoSPARQL SRID (WGS84 longitude-latitude)
+	 * Default GeoSPARQL SRID
 	 */
-	public static final Integer default_GeoSPARQL_SRID 	= WGS84_LONG_LAT_SRID;
+	public static final Integer default_GeoSPARQL_SRID 	= EPSG4326_SRID;
 	
 	/**
-	 * Default SRID (WGS84 longitude/latitude)
+	 * Default SRID
 	 */
-	public static final Integer defaultSRID 			= WGS84_LONG_LAT_SRID;
+	public static final Integer defaultSRID 			= EPSG4326_SRID;
 	
 	/**
 	 * Default datatype for creating new well-known text literals

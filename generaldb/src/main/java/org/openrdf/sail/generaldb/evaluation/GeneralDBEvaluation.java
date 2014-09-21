@@ -438,7 +438,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				ValueFactory localvf = ValueFactoryImpl.getInstance();
 				
 				if (function instanceof GeoSparqlGetSRIDFunc) {
-					return localvf.createURI(WKTHelper.getURI_forSRID(getSRIDFromValue(leftResult)));
+					return localvf.createURI(WKTHelper.getEPSGURI_forSRID(getSRIDFromValue(leftResult)));
 					
 				} else if (function instanceof SridFunc) {
 					return localvf.createLiteral(getSRIDFromValue(leftResult));

@@ -272,7 +272,7 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			// the result to a URI
 			// this is called for GeoSPARQL's getSRID, thus the column would be of type Integer
 			int srid = rs.getInt(index + 1);
-			uri = WKTHelper.getURI_forSRID(srid);
+			uri = WKTHelper.getEPSGURI_forSRID(srid);
 			
 		} else { // we get this as a string first, and then we shall construct the URI
 			uri = rs.getString(index + 1);

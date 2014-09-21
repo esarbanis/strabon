@@ -9,8 +9,6 @@ import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * Converts table names to lower-case and include the analyse optimisation.
  * 
@@ -20,7 +18,12 @@ import eu.earthobservatory.constants.GeoConstants;
  */
 public class PostGISSqlTable extends GeneralDBSqlTable {
 
-	public static final int DEFAULT_SRID = GeoConstants.WGS84_LONG_LAT_SRID;
+	/**
+	 * This value should not be changed whatever the semantics of Strabon
+	 * is for EPSG:4326. This number is hardcoded in PostGIS's SQL statements
+	 * that define several of their ST_ methods. 
+	 */
+	public static final int DEFAULT_SRID = 4326;
 	
 	public PostGISSqlTable(String name) {
 		super(name.toLowerCase());

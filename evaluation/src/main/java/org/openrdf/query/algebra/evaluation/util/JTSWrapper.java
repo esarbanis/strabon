@@ -17,7 +17,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -35,8 +34,6 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.io.gml2.GMLReader;
 import com.vividsolutions.jts.io.gml2.GMLWriter;
-
-import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * This class is a singleton and provides access to the readers/writers
@@ -95,14 +92,14 @@ public class JTSWrapper {
 		return instance;
 	}
 	
-	protected CoordinateReferenceSystem getCRS(int srid) throws NoSuchAuthorityCodeException, FactoryException {
-		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
-			return DefaultGeographicCRS.WGS84;
-			
-		} else { // otherwise lookup for EPSG code
+	protected CoordinateReferenceSystem getEPSG_CRS(int srid) throws NoSuchAuthorityCodeException, FactoryException {
+//		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
+//			return DefaultGeographicCRS.WGS84;
+//			
+//		} else { // otherwise lookup for EPSG code
 			// TODO: is there a way to be more general (than EPSG)?
 			return CRS.decode("EPSG:" + srid);
-		}
+//		}
 	}
 	
 	public synchronized Geometry WKTread(String wkt) throws ParseException {
@@ -156,8 +153,8 @@ public class JTSWrapper {
 			
 			MathTransform transform;
 			try {
-				sourceCRS = getCRS(sourceSRID);
-				targetCRS = getCRS(targetSRID);
+				sourceCRS = getEPSG_CRS(sourceSRID);
+				targetCRS = getEPSG_CRS(targetSRID);
 				transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
 
 				output = JTS.transform(input, transform);

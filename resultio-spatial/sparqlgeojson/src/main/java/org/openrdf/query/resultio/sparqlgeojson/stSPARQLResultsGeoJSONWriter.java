@@ -184,12 +184,12 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 					sftb.setName("Feature_" + nresults + "_" + nfeatures);
 					sftb.add("geometry", Geometry.class);
 					
-					// CRS84 (or EPSG:4326 Long/Lat) is the default CRS for GeoJSON features
+					// EPSG:4326 Long/Lat) is the default CRS for GeoJSON features
 					// we transform explicitly, because searching for "EPSG:<code>" CRSs is
 					// not the preferred way for GeoJSON (see here 
 					// http://geojson.org/geojson-spec.html#coordinate-reference-system-objects). 
 					// Instead the OGC CRS URNs should be preferred.
-					geom = jts.transform(geom, srid, GeoConstants.WGS84_LONG_LAT_SRID);
+					geom = jts.transform(geom, srid, GeoConstants.EPSG4326_SRID);
 					//sftb.setCRS(CRS.decode("EPSG:" + srid));
 					//sftb.setSRS("EPSG:" + srid);
 					
