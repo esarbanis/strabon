@@ -40,8 +40,6 @@ import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * A {@link TupleQueryResultWriter} that writes tuple query results in the <a
  * href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML
@@ -176,8 +174,8 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 			writeLiteral(new LiteralImpl(poly.stringValue(), poly.getDatatype()));
 			
 		} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
-			URI datatype = new URIImpl(GeoConstants.default_WKT_datatype);
-			Literal literal = new LiteralImpl(((StrabonPolyhedron) value).stringValue(), datatype);
+			StrabonPolyhedron poly = (StrabonPolyhedron) value;
+			Literal literal = new LiteralImpl(poly.stringValue(), new URIImpl(poly.getGeometryDatatype().toString()));
 			writeLiteral(literal);
 		}
 	}

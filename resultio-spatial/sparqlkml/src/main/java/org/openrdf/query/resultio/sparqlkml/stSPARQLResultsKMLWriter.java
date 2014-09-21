@@ -22,10 +22,13 @@ import org.geotools.xml.Encoder;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
@@ -330,6 +333,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				geom = dbpolyhedron.getPolyhedron().getGeometry();
 				srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
 				
+			} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
+					StrabonPolyhedron poly = (StrabonPolyhedron) value;
+					geom = poly.getGeometry();
+					srid = geom.getSRID();
+					
 			} else { // spatial literal
 				Literal spatial = (Literal) value;
 				String geomRep = spatial.stringValue();
@@ -339,9 +347,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 					AbstractWKT awkt = null;
 					if (spatial.getDatatype() == null) { // plain WKT literal
 						awkt = new AbstractWKT(geomRep);
+						
 					} else { // typed WKT literal
-						awkt = new AbstractWKT(geomRep, spatial.getDatatype()
-								.stringValue());
+						awkt = new AbstractWKT(geomRep, spatial.getDatatype().stringValue());
 					}
 
 					geom = jts.WKTread(awkt.getWKT());

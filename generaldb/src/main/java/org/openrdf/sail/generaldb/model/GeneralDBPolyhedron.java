@@ -3,6 +3,7 @@ package org.openrdf.sail.generaldb.model;
 import java.io.IOException;
 
 import org.openrdf.model.URI;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeometryDatatype;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
@@ -43,7 +44,7 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		super(id, version);
 
 		try {
-			this.polyhedron = new StrabonPolyhedron(polyhedron, srid);
+			this.polyhedron = new StrabonPolyhedron(polyhedron, srid, GeometryDatatype.fromString(datatype.stringValue()));
 			
 		} catch (ParseException e) {
 
@@ -62,14 +63,11 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 	}
 
 	public void setPolyhedronStringRep(StrabonPolyhedron polyhedron) throws IOException, ClassNotFoundException {
-		//TODO kkyzir prepares this method
-		// TODO add GML
-		
 		if (StrabonPolyhedron.EnableConstraintRepresentation) {
 			this.polyhedronStringRep = polyhedron.toConstraints();	
 			
 		} else {
-			this.polyhedronStringRep = polyhedron.toWKT();
+			this.polyhedronStringRep = polyhedron.stringValue();
 		}		
 	}
 

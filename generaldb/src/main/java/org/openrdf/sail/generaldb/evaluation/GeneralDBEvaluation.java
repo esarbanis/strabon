@@ -45,6 +45,7 @@ import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeometryDatatype;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
@@ -53,7 +54,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
-import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.MakeLine;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsGMLFunc;
@@ -131,7 +131,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 
 import eu.earthobservatory.constants.GeoConstants;
@@ -518,9 +517,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			else if(right instanceof RdbmsURI)
 			{
 				RdbmsURI srid = (RdbmsURI) right;
-				int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
+				int parsedSRID = WKTHelper.getSRID_forURI(srid.toString());
 				Geometry converted = JTSWrapper.getInstance().transform(leftArg.getGeometry(),leftArg.getGeometry().getSRID(), parsedSRID);
-				return new StrabonPolyhedron(converted);
+				return new StrabonPolyhedron(converted, leftArg.getGeometryDatatype());
 			}
 
 		}
@@ -1034,7 +1033,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				wkt = new AbstractWKT(literal.stringValue(), literal.getDatatype().stringValue());
 			}
 			
-			return new StrabonPolyhedron(wkt.getWKT(), wkt.getSRID());
+			return new StrabonPolyhedron(wkt.getWKT(), 
+										 wkt.getSRID(), 
+										 GeometryDatatype.fromString(literal.getDatatype().stringValue()));
 			
 		} else { // wrong case
 			throw new IllegalArgumentException("The provided argument is not a valid spatial value: " + value.getClass());

@@ -15,7 +15,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.datatypes.XMLDateTime;
 import org.openrdf.model.vocabulary.XMLSchema;
-import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 
 import eu.earthobservatory.constants.GeoConstants;
 import eu.earthobservatory.constants.WKTConstants;
@@ -56,7 +56,7 @@ public class XMLGSDatatypeUtil {
 				return true;
 			}
 			
-		} else if (value instanceof GeneralDBPolyhedron) {
+		} else if (value instanceof GeneralDBPolyhedron || value instanceof StrabonPolyhedron) {
 			return true;
 		}
 		

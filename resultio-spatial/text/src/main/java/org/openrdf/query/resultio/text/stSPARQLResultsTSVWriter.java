@@ -19,8 +19,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * 
@@ -40,7 +38,8 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			val = new LiteralImpl(dbpolyhedron.stringValue(), dbpolyhedron.getDatatype());
 			
 		} else if (val instanceof StrabonPolyhedron) { // might come from the construction of new constants in SELECT
-			val = new LiteralImpl(((StrabonPolyhedron) val).stringValue(), new URIImpl(GeoConstants.default_WKT_datatype));
+			StrabonPolyhedron poly = (StrabonPolyhedron) val;
+			val = new LiteralImpl(poly.stringValue(), new URIImpl(poly.getGeometryDatatype().toString()));
 		}
 		
 		// write value

@@ -52,6 +52,7 @@ import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeometryDatatype;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
@@ -245,6 +246,16 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 		private Map<String, FunctionCall> spatialAggregates;
 
 		private Map<FunctionCall, Geometry> spatialAggregatesResult;
+		
+		/**
+		 * Map holding the datatypes of the geometries. We do not use
+		 * a single map (like StrabonPolyhedron) for safety reasons of
+		 * the implementation of hashCode(), equals(), etc. We need this
+		 * to retain the datatype of the expression (or the constants) and
+		 * pass it to the final result. Hence, the output will be consistent
+		 * with the datatype of the input. 
+		 */
+		private Map<FunctionCall, GeometryDatatype> spatialAggregatesResultDatatype;
 
 		public Entry(BindingSet prototype)
 			throws ValueExprEvaluationException, QueryEvaluationException
@@ -253,6 +264,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 			this.aggregates = new LinkedHashMap<String, Aggregate>();
 			this.spatialAggregates = new LinkedHashMap<String, FunctionCall>();
 			this.spatialAggregatesResult = new LinkedHashMap<FunctionCall, Geometry>();
+			this.spatialAggregatesResultDatatype = new LinkedHashMap<FunctionCall, GeometryDatatype>();
 
 			for (GroupElem ge : group.getGroupElements()) {
 				if(ge.getName().endsWith("-aggregateInside-"))
@@ -402,7 +414,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					if(((FunctionCall) expr).getArgs().size()==1)
 					{
 						//Aggregate!!! => Value ready in spatialAggregatesResults
-						return new StrabonPolyhedron(spatialAggregatesResult.get(expr));
+						return new StrabonPolyhedron(spatialAggregatesResult.get(expr),
+													 spatialAggregatesResultDatatype.get(expr));
 					}
 					else
 					{
@@ -414,7 +427,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 				else if(function instanceof ExtentFunc)
 				{
 					//Aggregate!!! => Value ready in spatialAggregatesResults
-					return new StrabonPolyhedron(spatialAggregatesResult.get(expr));
+					return new StrabonPolyhedron(spatialAggregatesResult.get(expr),
+							 					 spatialAggregatesResultDatatype.get(expr));
 				}
 				else if(function instanceof BufferFunc)
 				{
@@ -451,7 +465,8 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					if(((FunctionCall) expr).getArgs().size()==1)
 					{
 						//Aggregate!!! => Value ready in spatialAggregatesResults
-						return new StrabonPolyhedron(spatialAggregatesResult.get(expr));
+						return new StrabonPolyhedron(spatialAggregatesResult.get(expr),
+								 					 spatialAggregatesResultDatatype.get(expr));
 					}
 					else
 					{
@@ -575,27 +590,35 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 					}
 					poly = (StrabonPolyhedron) val;
 					Geometry aggr = this.spatialAggregatesResult.get(expr);
+					
 					if(aggr==null)
 					{
 
 						if(function instanceof UnionFunc)
 						{
 							this.spatialAggregatesResult.put((FunctionCall) expr, poly.getGeometry());
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, poly.getGeometryDatatype());
 						}
 						else if(function instanceof IntersectionFunc)
 						{
 							this.spatialAggregatesResult.put((FunctionCall) expr, poly.getGeometry());
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, poly.getGeometryDatatype());
 						}
 						else if(function instanceof ExtentFunc)
 						{
 							Geometry env = poly.getGeometry().getEnvelope();
 							env.setSRID(poly.getGeometry().getSRID());
 							this.spatialAggregatesResult.put((FunctionCall) expr, env);
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, poly.getGeometryDatatype());
 						}
 					}
 					else
 					{
+						// get the geometry datatype of the already computed aggregate
+						GeometryDatatype aggrType = spatialAggregatesResultDatatype.get(expr);
+						
 						this.spatialAggregatesResult.remove(expr);
+						this.spatialAggregatesResultDatatype.remove(expr);
 						if(function instanceof UnionFunc)
 						{
 							//XXX possible issue with expressions like 
@@ -604,6 +627,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 							Geometry united = aggr.union(poly.getGeometry());
 							united.setSRID(poly.getGeometry().getSRID());
 							this.spatialAggregatesResult.put((FunctionCall) expr, united);
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, aggrType);
 						}
 						else if(function instanceof IntersectionFunc)
 						{
@@ -613,6 +637,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 							Geometry intersection = aggr.intersection(poly.getGeometry());
 							intersection.setSRID(poly.getGeometry().getSRID());
 							this.spatialAggregatesResult.put((FunctionCall) expr, intersection);
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, aggrType);
 						}
 						else if(function instanceof ExtentFunc)
 						{
@@ -622,6 +647,7 @@ public class StSPARQLGroupIterator extends CloseableIteratorIteration<BindingSet
 							Geometry env = aggr.union(poly.getGeometry().getEnvelope()).getEnvelope();
 							env.setSRID(poly.getGeometry().getSRID());
 							this.spatialAggregatesResult.put((FunctionCall) expr, env);
+							this.spatialAggregatesResultDatatype.put((FunctionCall) expr, aggrType);
 						}
 					}
 				}
