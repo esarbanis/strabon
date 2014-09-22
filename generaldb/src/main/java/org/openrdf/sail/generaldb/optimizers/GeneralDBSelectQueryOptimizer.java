@@ -996,13 +996,14 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			GeneralDBSqlExpr sqlExpr = null;
 			String name = elem.getName();
 			
-			if(expr instanceof FunctionCall && !isFuncExprGrounded(expr))
+			//if (expr instanceof FunctionCall)
+			if (expr instanceof FunctionCall && !isFuncExprGrounded(expr))
 			{ // if the expr is grounded we are going to evaluate it in Java 
 				if(!evaluateInJava(expr))
 				{
 					Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-					if(function instanceof SpatialPropertyFunc || function instanceof SpatialRelationshipFunc 
-							|| function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
+					if(function instanceof SpatialPropertyFunc  || function instanceof SpatialRelationshipFunc ||
+					   function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
 					{
 						try {
 							sqlExpr = sql.getBooleanExprFactory().spatialFunction((FunctionCall) expr);

@@ -308,7 +308,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		
 		// function call with 2 or more arguments, evaluate the second one now
 		// see distance function as example
-		if ( fc.getArgs().size() > 2 )
+		if ( fc.getArgs().size() >= 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
 			rightResult = evaluate(right, bindings);
@@ -502,7 +502,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		StrabonPolyhedron leftArg = getValueAsStrabonPolyhedron(left);
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
-			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
+			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
 		else if (function instanceof BufferFunc) {
@@ -556,17 +556,17 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
-			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
+			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
-			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
+			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
-			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
+			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.symDifference(leftArg, rightArg);
 			
 		} else if (function instanceof Centroid) {
