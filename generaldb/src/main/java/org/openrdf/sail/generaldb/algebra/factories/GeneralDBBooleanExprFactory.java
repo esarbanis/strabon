@@ -812,7 +812,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
-
+	/**
+	 * TODO check required number of arguments
+	 */
 	GeneralDBSqlExpr spatialRelationshipFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		ValueExpr left = functionCall.getArgs().get(0);
@@ -852,6 +854,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return spatialRelationshipPicker(function, leftArg, rightArg, thirdArg);
 	}
 
+	/**
+	 * TODO check required number of arguments
+	 */
 	GeneralDBSqlExpr spatialConstructFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -948,6 +953,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
+	/**
+	 * TODO check required number of arguments
+	 */
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -1188,6 +1196,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 
+	
+	/**
+	 * FIXME don't check function using getURI(); use instanceof instead 
+	 */
 	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
@@ -1278,6 +1290,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 * 
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
+	 * FIXME don't check function using getURI(); use instanceof instead
 	 */
 	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
@@ -1290,7 +1303,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 	
-	//TODO more to be added here probably
+	/**
+	 * TODO check required number of arguments
+	 * FIXME don't check function using getURI(); use instanceof instead 
+	 */
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLdistance))
@@ -1310,6 +1326,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
+	/**
+	 * FIXME don't check function using getURI(); use instanceof instead
+	 */
 	GeneralDBSqlExpr spatialPropertyPicker(Function function, GeneralDBSqlExpr arg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLdimension))

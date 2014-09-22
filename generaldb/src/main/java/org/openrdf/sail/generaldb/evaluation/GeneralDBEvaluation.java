@@ -375,6 +375,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			else if(function instanceof SpatialRelationshipFunc)	{
 				// Any boolean function present in HAVING - Must evaluate here!
 				
+				// check required number of arguments
+				checkArgs(leftResult, rightResult, thirdResult, 2);
+				
 				boolean funcResult = false;
 				
 				// get the geometries and the SRIDs of the left/right arguments
@@ -541,6 +544,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 	}
 
+	/**
+	 * FIXME don't check function using getURI(); use instanceof instead 
+	 */
 	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right, Value third) throws Exception
 	{
 		StrabonPolyhedron leftArg = getValueAsStrabonPolyhedron(left);
@@ -705,7 +711,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		return Long.MAX_VALUE;
 	}
 
-	//XXX brought it here to override it somehow..
+	// brought it here to override it somehow..
 	//	@Override
 	//	public CloseableIteration<BindingSet, QueryEvaluationException> evaluate(Extension extension,
 	//			BindingSet bindings)
@@ -714,7 +720,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	//		CloseableIteration<BindingSet, QueryEvaluationException> result;
 	//		
 	//		/**
-	//		 * XXX additions
+	//		 * additions
 	//		 */
 	//		Iterator<ExtensionElem> iter = extension.getElements().iterator();
 	//		//for(ExtensionElem elem : extension.getElements())
@@ -781,7 +787,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				for (String name : qb.getBindingNames(var)) {
 					if (!bindings.hasBinding(name)) {
 						var.setIndex(index);
-						//XXX if the variable is actually a GeoVar
+						// if the variable is actually a GeoVar
 						if(var.isSpatial())
 						{
 							this.geoNames.put(var.getName(), var.getIndex() + 2);
@@ -792,7 +798,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 						query.select(proj.getStringValue());
 						index += 2;
 						if (var.getTypes().isLiterals()) {
-							//FIXME changed  to remove extra unneeded joins + selections
+							// NOTE: changed to remove extra unneeded joins + selections
 							//Original:
 							//query.select(proj.getLanguage());
 							//query.select(proj.getDatatype());
@@ -816,7 +822,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 		}
 
-		//XXX Attention: Will try to add projections in select for the constructs
+		// Attention: Will try to add projections in select for the constructs
 		Iterator it = qb.getSpatialConstructs().entrySet().iterator();
 		while (it.hasNext()) {
 			@SuppressWarnings("rawtypes")
