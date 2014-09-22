@@ -56,6 +56,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopolo
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsGMLFunc;
@@ -136,6 +137,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 
 import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.OGCConstants;
 
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
@@ -298,15 +300,23 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		// evaluated second argument of function (if any)
 		Value rightResult = null;
 
+		// evaluated third argument of function (if any)
+		Value thirdResult = null;
+				
 		// evaluate first argument
 		leftResult = evaluate(left, bindings);
 		
-		// function call with 2 arguments, evaluate the second one now
+		// function call with 2 or more arguments, evaluate the second one now
 		// see distance function as example
-		if ( fc.getArgs().size() == 2 )
+		if ( fc.getArgs().size() > 2 )
 		{
 			ValueExpr right = fc.getArgs().get(1);
 			rightResult = evaluate(right, bindings);
+			
+			if (fc.getArgs().size() == 3) {
+				ValueExpr third = fc.getArgs().get(2);
+				thirdResult = evaluate(third, bindings);
+			}
 		}
 
 		// having evaluated the arguments of the function, evaluate the function
@@ -343,7 +353,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			// SPATIAL CONSTRUCT FUNCTIONS
 			//
 			else if (function instanceof SpatialConstructFunc) {
-				return spatialConstructPicker(function, leftResult, rightResult);
+				return spatialConstructPicker(function, leftResult, rightResult, thirdResult);
 			}
 			
 			//
@@ -487,7 +497,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 	}
 
-	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right) throws Exception
+	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right, Value thirdResult) throws Exception
 	{
 		StrabonPolyhedron leftArg = getValueAsStrabonPolyhedron(left);
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
@@ -495,19 +505,24 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			StrabonPolyhedron rightArg = ((GeneralDBPolyhedron) right).getPolyhedron();
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLbuffer))
-		{
+		else if (function instanceof BufferFunc) {
+			// TODO implement computation of the buffer in meters
+			// you'll get the type (degrees/meter) from the thirdResult, which
+			// would be a URI.
+			if (OGCConstants.OGCmetre.equals(thirdResult.stringValue())) {
+				logger.info("[GeneraDBEvaluation] Computation of {} will be done in degrees.", function.getURI());
+			}
+			
 			if(right instanceof LiteralImpl)
 			{
 				LiteralImpl radius = (LiteralImpl) right;
-				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
+				return StrabonPolyhedron.buffer(leftArg, radius.doubleValue());
 			}
-			else if(right instanceof RdbmsLiteral)
+			else if (right instanceof RdbmsLiteral)
 			{
 				RdbmsLiteral radius = (RdbmsLiteral) right;
-				return StrabonPolyhedron.buffer(leftArg,radius.doubleValue());
+				return StrabonPolyhedron.buffer(leftArg, radius.doubleValue());
 			}
-
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
@@ -537,6 +552,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		else if(function instanceof BoundaryFunc)
 		{
 			return StrabonPolyhedron.boundary(leftArg);
+			
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
@@ -556,7 +572,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		} else if (function instanceof Centroid) {
 			return leftArg.getCentroid();
 			
-		} //else if (function instanceof MakeLine) {
+		} //else if (function instanceof MakeLine) { // TODO add
 		//	return null;
 		//}
 		
