@@ -991,8 +991,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			GeneralDBSqlExpr sqlExpr = null;
 			String name = elem.getName();
 			
-			//if (expr instanceof FunctionCall)
-			if (expr instanceof FunctionCall && !isFuncExprGrounded(expr))
+			if (expr instanceof FunctionCall)
+			//if (expr instanceof FunctionCall && !isFuncExprGrounded(expr))
 			{ // if the expr is grounded we are going to evaluate it in Java 
 				if(!evaluateInJava(expr))
 				{
