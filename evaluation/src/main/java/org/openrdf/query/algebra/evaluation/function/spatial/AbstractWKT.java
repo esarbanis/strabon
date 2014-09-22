@@ -66,6 +66,12 @@ public class AbstractWKT {
 	 */
 	private int srid;
 	
+	/**
+	 * NOTICE: no check of the validity of the supplied WKT is done
+	 * 
+	 * @param literalValue
+	 * @param datatype
+	 */
 	public AbstractWKT(String literalValue, String datatype) {
 		this.datatype = datatype;
 		
@@ -86,9 +92,11 @@ public class AbstractWKT {
 	 * It should be used only when one does not have such information
 	 * available.
 	 * 
-	 * NOTICE: it is not guaranteed that guessing will fill-in the
+	 * NOTICE 1: it is not guaranteed that guessing will fill-in the
 	 * datatype, but it is guaranteed that parsing will be done
 	 * correctly in any case (well, except for illegal cases).
+	 * 
+	 * NOTICE 2: no check of the validity of the supplied WKT is done
 	 * 
 	 * @param literalValue
 	 */

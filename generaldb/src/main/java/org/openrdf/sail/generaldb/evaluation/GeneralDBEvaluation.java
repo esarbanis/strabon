@@ -492,7 +492,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			}
 			
 		} catch (Exception e) {
-			logger.error("[Strabon.evaluate(FunctionCall)] Error during evaluation of extension function.", e);
+			logger.error("[Strabon.evaluate(FunctionCall)] Error during evaluation of extension function {}: {}", function.getURI(), e.getMessage());
 			return null;
 		}
 	}
@@ -1004,8 +1004,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	 * 
 	 * @param value
 	 * @return
+	 * @throws ParseException
+	 * 			when the supplied value is a constant ({@link Literal}) and is not
+	 * 			a valid WKT literal
 	 */
-	public String getSRIDFromValue(Value value) {
+	public String getSRIDFromValue(Value value) throws ParseException {
 		boolean iswktLiteral = false;
 		int srid = -1;
 		
@@ -1025,7 +1028,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				iswktLiteral = true;
 			}
 			
-		} else if (value instanceof Literal) {
+		} else if (value instanceof Literal) { // this is actually a constant 
 			Literal literal = (Literal) value;
 			AbstractWKT wkt;
 			
@@ -1035,11 +1038,16 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			} else {
 				wkt = new AbstractWKT(literal.stringValue());
 			}
-			 
+			
 			srid = wkt.getSRID();
+			
 			if (!wkt.isstRDFWKT()) {
 				iswktLiteral = true;
 			}
+			
+			// we are constructing a {@link StrabonPolyhedron} now to check
+			// its validity
+			JTSWrapper.getInstance().WKTread(wkt.getWKT());
 		}
 		
 		if (iswktLiteral && srid == GeoConstants.EPSG4326_SRID) {
