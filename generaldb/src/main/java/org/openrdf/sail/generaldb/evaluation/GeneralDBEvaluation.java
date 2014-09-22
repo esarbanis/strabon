@@ -291,37 +291,41 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			throw new UnsupportedExtensionFunctionException("Extension function " + fc.getURI()+ " is not supported.");
 		}
 		
-		// get the first argument of the function call
-		ValueExpr left = fc.getArgs().get(0);
-
-		// evaluated first argument of function
-		Value leftResult = null;
-		
-		// evaluated second argument of function (if any)
-		Value rightResult = null;
-
-		// evaluated third argument of function (if any)
-		Value thirdResult = null;
-				
-		// evaluate first argument
-		leftResult = evaluate(left, bindings);
-		
-		// function call with 2 or more arguments, evaluate the second one now
-		// see distance function as example
-		if ( fc.getArgs().size() >= 2 )
-		{
-			ValueExpr right = fc.getArgs().get(1);
-			rightResult = evaluate(right, bindings);
-			
-			if (fc.getArgs().size() == 3) {
-				ValueExpr third = fc.getArgs().get(2);
-				thirdResult = evaluate(third, bindings);
-			}
-		}
-
-		// having evaluated the arguments of the function, evaluate the function
 		try {
-
+			if (fc.getArgs().size() == 0) {
+				throw new NoSuchMethodException("too few arguments");
+			}
+		
+			// get the first argument of the function call
+			ValueExpr left = fc.getArgs().get(0);
+		
+			// evaluated first argument of function
+			Value leftResult = null;
+			
+			// evaluated second argument of function (if any)
+			Value rightResult = null;
+		
+			// evaluated third argument of function (if any)
+			Value thirdResult = null;
+					
+			// evaluate first argument
+			leftResult = evaluate(left, bindings);
+			
+			// function call with 2 or more arguments, evaluate the second one now
+			// see distance function as example
+			if ( fc.getArgs().size() >= 2 )
+			{
+				ValueExpr right = fc.getArgs().get(1);
+				rightResult = evaluate(right, bindings);
+				
+				if (fc.getArgs().size() == 3) {
+					ValueExpr third = fc.getArgs().get(2);
+					thirdResult = evaluate(third, bindings);
+				}
+			}
+		
+			// having evaluated the arguments, evaluate the function now
+			
 			//
 			// SPATIAL METRIC FUNCTIONS
 			//
@@ -336,6 +340,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				} 
 				else if(function instanceof DistanceFunc)
 				{
+					// check required number of arguments
+					checkArgs(leftResult, rightResult, thirdResult, 3);
+					
 					// get the second geometry
 					Geometry rightGeom = getValueAsStrabonPolyhedron(rightResult).getGeometry();
 					
@@ -503,19 +510,56 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 	}
 
-	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right, Value thirdResult) throws Exception
+	/**
+	 * @param leftResult
+	 * @param rightResult
+	 * @param thirdResult
+	 * @param size
+	 * @throws NoSuchMethodException 
+	 */
+	private void checkArgs(Value leftResult, Value rightResult, Value thirdResult, int size) throws NoSuchMethodException {
+		if (size == 0) {
+			throw new NoSuchMethodException("too few arguments.");
+			
+		} else {
+			if (size >= 1 && leftResult == null) {
+				throw new NoSuchMethodException("expecting an argument.");
+			}
+			
+			if (size >= 2 && rightResult == null) {
+				throw new NoSuchMethodException("expecting a second argument.");
+			}
+			
+			if (size >= 3 && thirdResult == null) {
+				throw new NoSuchMethodException("expecting a third argument.");
+				
+			}
+			
+			if (size > 3) {
+				throw new NoSuchMethodException("too many arguments.");
+			}
+		}
+	}
+
+	public StrabonPolyhedron spatialConstructPicker(Function function, Value left, Value right, Value third) throws Exception
 	{
 		StrabonPolyhedron leftArg = getValueAsStrabonPolyhedron(left);
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
 		{
+			// check required number of arguments
+			checkArgs(left, right, third, 2);
+			
 			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.union(leftArg, rightArg);
 		}
 		else if (function instanceof BufferFunc) {
+			// check required number of arguments
+			checkArgs(left, right, third, 3);
+						
 			// TODO implement computation of the buffer in meters
 			// you'll get the type (degrees/meter) from the thirdResult, which
 			// would be a URI.
-			if (OGCConstants.OGCmetre.equals(thirdResult.stringValue())) {
+			if (OGCConstants.OGCmetre.equals(third.stringValue())) {
 				logger.info("[GeneraDBEvaluation] Computation of {} will be done in degrees.", function.getURI());
 			}
 			
@@ -532,6 +576,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))
 		{
+			// check required number of arguments
+			checkArgs(left, right, third, 2);
+						
 			if(right instanceof URIImpl)
 			{
 				URIImpl srid = (URIImpl) right;
@@ -562,16 +609,25 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLintersection))
 		{
+			// check required number of arguments
+			checkArgs(left, right, third, 2);
+			
 			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.intersection(leftArg, rightArg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLdifference))
 		{
+			// check required number of arguments
+			checkArgs(left, right, third, 2);
+			
 			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.difference(leftArg, rightArg);		
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLsymDifference))
 		{
+			// check required number of arguments
+			checkArgs(left, right, third, 2);
+			
 			StrabonPolyhedron rightArg = getValueAsStrabonPolyhedron(right);
 			return StrabonPolyhedron.symDifference(leftArg, rightArg);
 			
