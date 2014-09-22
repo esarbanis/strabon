@@ -339,6 +339,12 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					// get the second geometry
 					Geometry rightGeom = getValueAsStrabonPolyhedron(rightResult).getGeometry();
 					
+					// FIXME we have a third one as well, but
+					// TODO for the time being we do not support it if it is in meters
+					if (OGCConstants.OGCmetre.equals(thirdResult.stringValue())) {
+						logger.info("[GeneraDBEvaluation] Computation of {} will be done in degrees.", function.getURI());
+					}
+					
 					int targetSRID = leftGeom.getSRID();
 					int sourceSRID = rightGeom.getSRID();
 					Geometry rightConverted = JTSWrapper.getInstance().transform(rightGeom, sourceSRID, targetSRID);
