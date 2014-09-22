@@ -562,22 +562,22 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 			// check required number of arguments
 			checkArgs(left, right, third, 3);
 						
-			// TODO implement computation of the buffer in meters
+			// TODO implement computation of the buffer in degrees
 			// you'll get the type (degrees/meter) from the thirdResult, which
 			// would be a URI.
-			if (OGCConstants.OGCmetre.equals(third.stringValue())) {
-				logger.info("[GeneraDBEvaluation] Computation of {} will be done in degrees.", function.getURI());
+			if (OGCConstants.OGCdegree.equals(third.stringValue())) {
+				logger.info("[GeneraDBEvaluation] Computation of {} will be done in meters.", function.getURI());
 			}
 			
 			if(right instanceof LiteralImpl)
 			{
-				LiteralImpl radius = (LiteralImpl) right;
-				return StrabonPolyhedron.buffer(leftArg, radius.doubleValue());
+				LiteralImpl meters = (LiteralImpl) right;
+				return StrabonPolyhedron.buffer(leftArg, meters.doubleValue());
 			}
 			else if (right instanceof RdbmsLiteral)
 			{
-				RdbmsLiteral radius = (RdbmsLiteral) right;
-				return StrabonPolyhedron.buffer(leftArg, radius.doubleValue());
+				RdbmsLiteral meters = (RdbmsLiteral) right;
+				return StrabonPolyhedron.buffer(leftArg, meters.doubleValue());
 			}
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLtransform))

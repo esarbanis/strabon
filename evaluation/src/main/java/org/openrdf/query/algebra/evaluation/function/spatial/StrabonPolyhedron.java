@@ -700,6 +700,14 @@ public class StrabonPolyhedron implements Value {
 		return poly;
 	}
 
+	/**
+	 * Think that this computation is done in meters and there is no way of doing it
+	 * in degrees, except if one calculate the corresponding transformation, which
+	 * depends on the spatial reference system used!
+	 * 
+	 * A not so good approximation of meters for degrees:
+	 * 		double meters = (degrees * 6378137 * Math.PI) / 180;
+	 */
 	public static StrabonPolyhedron buffer(StrabonPolyhedron A, double B) throws Exception {
 		return new StrabonPolyhedron(A.geometry.buffer(B), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}

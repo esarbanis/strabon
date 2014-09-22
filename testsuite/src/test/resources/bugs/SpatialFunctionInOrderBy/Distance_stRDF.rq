@@ -9,5 +9,5 @@ WHERE
 
 FILTER(str(?x)  < str(?y))
 }
-ORDER BY DESC(strdf:distance(?g1,?g2))
+ORDER BY DESC(strdf:distance(?g1, ?g2, ogc:degree))
 LIMIT 2

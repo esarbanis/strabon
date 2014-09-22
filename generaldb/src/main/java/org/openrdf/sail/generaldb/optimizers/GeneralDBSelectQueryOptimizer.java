@@ -183,16 +183,15 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Distinct node)
-			throws RuntimeException
-			{
+	public void meet(Distinct node) throws RuntimeException
+	{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 			query.setDistinct(true);
 			node.replaceWith(query);
 		}
-			}
+	}
 
 	@Override
 	public void meet(Union node) throws RuntimeException
@@ -238,9 +237,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Join node)
-			throws RuntimeException
-			{
+	public void meet(Join node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -261,12 +259,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		 * This change was made before altering the spatial joins operation
 		 */
 		reference = left;
-			}
+	}
 
 	@Override
-	public void meet(LeftJoin node)
-			throws RuntimeException
-			{
+	public void meet(LeftJoin node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -297,7 +294,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 		node.replaceWith(left);
 		reference = left;
-			}
+	}
 
 	@Override
 	public void meet(StatementPattern sp) {
@@ -484,10 +481,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Filter node)
-			throws RuntimeException
-			{
-
+	public void meet(Filter node) throws RuntimeException
+	{
 		/**
 		 * XXX 21/09/2011 addition for spatial joins
 		 * Ekmetalleyomai to gegonos oti exw 'fytepsei' sta embolima filters twn joins mia statement pattern me to onoma -dummy-
