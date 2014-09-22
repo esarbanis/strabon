@@ -73,6 +73,7 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 				if (logger.isDebugEnabled()) {
 					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
 				}
+				//System.out.println(stmt);
 				GeneralDBBindingIteration result = new PostGISBindingIteration(stmt);
 				result.setProjections(proj);
 				result.setBindings(bindings);

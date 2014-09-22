@@ -9,14 +9,18 @@ import org.openrdf.query.algebra.QueryModelNode;
 import org.openrdf.query.algebra.QueryModelVisitor;
 import org.openrdf.query.algebra.helpers.QueryModelTreePrinter;
 import org.openrdf.sail.generaldb.optimizers.GeneralDBSqlConstantOptimizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An SQL operator with one argument.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author James Leigh
- * 
  */
 public abstract class UnaryGeneralDBOperator extends GeneralDBQueryModelNodeBase implements GeneralDBSqlExpr {
+
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator.class);
 
 	private GeneralDBSqlExpr arg;
 
@@ -51,7 +55,10 @@ public abstract class UnaryGeneralDBOperator extends GeneralDBQueryModelNodeBase
 			setArg((GeneralDBSqlExpr)replacement);
 		}
 		else {
-			super.replaceChildNode(current, replacement);
+			if (logger.isWarnEnabled()) {
+				logger.warn("[Strabon.GeneralDB] The next call will blow things up. I'll try to suppress it, but notify me in case anything goes wrong.");
+			}
+			//super.replaceChildNode(current, replacement);
 		}
 	}
 

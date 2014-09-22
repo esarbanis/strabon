@@ -35,6 +35,7 @@ import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
@@ -45,6 +46,7 @@ import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
  * href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML
  * Format</a>.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
@@ -175,7 +177,10 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 			
 		} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
 			StrabonPolyhedron poly = (StrabonPolyhedron) value;
-			Literal literal = new LiteralImpl(poly.stringValue(), new URIImpl(poly.getGeometryDatatype().toString()));
+			Literal literal = new LiteralImpl(WKTHelper.createWKT(poly.stringValue(), 
+																  poly.getGeometry().getSRID(),
+																  poly.getGeometryDatatype().toString()), 
+											  new URIImpl(poly.getGeometryDatatype().toString()));
 			writeLiteral(literal);
 		}
 	}

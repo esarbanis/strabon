@@ -371,6 +371,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		{
 			query.select();
 		}
+		
 		if(expr instanceof BinaryGeneralDBOperator)
 		{
 			dispatchBinarySqlOperator((BinaryGeneralDBOperator) expr, query.select);
@@ -902,21 +903,28 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 					else if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
-						String alias;
+						String colRef = null;
+						String alias = null;
 						if (((GeneralDBLabelColumn) tmp).getRdbmsVar()==null || ((GeneralDBLabelColumn) tmp).getRdbmsVar().isResource()) {
 							//Predicates used in triple patterns non-existent in db
-							alias="NULL";
+							colRef = "NULL";
 						}
 						else
 						{
 							//Reached the innermost left var -> need to capture its SRID
 							alias = getLabelAlias(((GeneralDBLabelColumn) tmp).getRdbmsVar());
-							alias=alias+".srid";
+							colRef = alias + ".srid";
 						}
-						sridExpr = alias;
+						sridExpr = colRef;
 						
 						filter.append(sridExpr);
 						filter.closeBracket();
+						
+						if (alias != null) { // append an alias for the column of the SRID, 
+							// replacing the part of the name corresponding to the geo_values table
+							filter.as((alias + "_srid").replace("l_", ""));
+						}
+						
 						return;
 					}
 					else if(tmp instanceof GeneralDBStringValue)
@@ -2886,7 +2894,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			throws UnsupportedRdbmsOperatorException
 			{
 		filter.openBracket();
-		System.out.println(expr.getLeftArg().getClass().getCanonicalName());
+		//System.out.println(expr.getLeftArg().getClass().getCanonicalName());
 		boolean check1 = expr.getLeftArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
 		if(check1)
 		{

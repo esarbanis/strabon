@@ -7,6 +7,7 @@ package org.openrdf.sail.generaldb.iteration;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +26,10 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.iteration.base.RdbmIterationBase;
 import org.openrdf.sail.rdbms.model.RdbmsResource;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
@@ -34,6 +39,8 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  */
 public abstract class GeneralDBBindingIteration extends RdbmIterationBase<BindingSet, QueryEvaluationException> {
 
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.generaldb.iteration.GeneralDBBindingIteration.class);
+	
 	protected BindingSet bindings;
 
 	protected Collection<GeneralDBColumnVar> projections;
@@ -42,7 +49,7 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 
 	protected IdSequence ids;
 
-	protected HashMap<Integer,String> geoNames = new HashMap<Integer, String>();
+	protected HashMap<String, Integer> geoNames = new HashMap<String, Integer>();
 
 	//protected HashMap<String, Integer> sp_ConstructIndexesAndNames = new HashMap<String, Integer>();
 	protected HashMap<GeneralDBSpatialFuncInfo, Integer> sp_ConstructIndexesAndNames = new HashMap<GeneralDBSpatialFuncInfo, Integer>();
@@ -71,11 +78,11 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 		this.sp_ConstructIndexesAndNames = indexesAndNames;
 	}
 
-	public HashMap<Integer,String> getGeoNames() {
+	public HashMap<String, Integer> getGeoNames() {
 		return geoNames;
 	}
 
-	public void setGeoNames(HashMap<Integer,String> geoNames) {
+	public void setGeoNames(HashMap<String, Integer> geoNames) {
 		this.geoNames = geoNames;
 	}
 
@@ -146,30 +153,35 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 			Value value = null;
 			switch(construct.getType())
 			{
-			case BOOLEAN: 
-				value = createBooleanGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case DOUBLE: 
-				value = createDoubleGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case INTEGER: 
-				value = createIntegerGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case STRING:
+				case BOOLEAN: 
+					value = createBooleanGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+					break;
+				case DOUBLE: 
+					value = createDoubleGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+					break;
+				case INTEGER: 
+					value = createIntegerGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+					break;
+				case STRING:
 					value = createStringGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case WKT: 
-				value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case WKTLITERAL: 
-				value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-				break;
-			case URI:
-				value = createURIGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct), construct.isSRIDFunc());				
-				break;
+					break;
+				case WKT: 
+					value = createWellKnownTextGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+					break;
+				case WKTLITERAL: 
+					value = createWellKnownTextLiteralGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
+					break;
+				case URI:
+					value = createURIGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct), construct.isSRIDFunc());				
+					break;
+				default:
+					logger.error("[GeneralDBBindingIteration] Unknown result type for function.");
+					break;
 			}
-			//Value value = createGeoValueForSelectConstructs(rs, sp_ConstructIndexesAndNames.get(construct));
-			result.addBinding(construct.getFieldName(), value);
+			
+			if (value != null) {
+				result.addBinding(construct.getFieldName(), value);
+			}
 		}
 
 		return result;
@@ -265,14 +277,39 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 	protected RdbmsResource createURIGeoValueForSelectConstructs(ResultSet rs, int index, boolean sridTransform)
 	throws SQLException
 	{
-		String uri;
+		String uri = null;
 		
 		if (sridTransform) {
 			// we have to differentiate here for geoSPARQL's getSRID function, since we need to transform
 			// the result to a URI
 			// this is called for GeoSPARQL's getSRID, thus the column would be of type Integer
 			int srid = rs.getInt(index + 1);
-			uri = WKTHelper.getEPSGURI_forSRID(srid);
+			
+			// NOTICE however, that in case of EPSG:4326 and wktLiterals it would be better to
+			// return CRS84. We have already brought that datatype earlier in the expression, so
+			// we will try to locate it
+			if (srid == GeoConstants.EPSG4326_SRID) {
+				// get the alias name for this column
+				ResultSetMetaData meta = rs.getMetaData();
+				String aliasSRID = meta.getColumnName(index + 1);
+	
+				// get the index of the column containing the exression for the reference geometry
+				Integer indexOfGeometry = geoNames.get(aliasSRID.replace("_srid", ""));
+				if (indexOfGeometry != null) { 
+					// index + 2 would have the datatype
+					String datatype = rs.getString(indexOfGeometry + 2);
+					//System.out.println(datatype);
+					
+					if (GeoConstants.WKTLITERAL.equals(datatype)) {
+						uri = GeoConstants.CRS84_URI;
+					}
+				}
+			}
+			
+			if (uri == null) { // default behavior if we fail to locate or is not
+							   // a wktLiteral
+				uri = WKTHelper.getEPSGURI_forSRID(srid);
+			}
 			
 		} else { // we get this as a string first, and then we shall construct the URI
 			uri = rs.getString(index + 1);

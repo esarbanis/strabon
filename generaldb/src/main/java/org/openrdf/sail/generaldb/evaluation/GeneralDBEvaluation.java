@@ -55,6 +55,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological.GeoSparqlConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct.Centroid;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BoundaryFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.DistanceFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.AsGMLFunc;
@@ -156,7 +157,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
 	protected IdSequence ids;
 
-	protected HashMap<Integer,String> geoNames = new HashMap<Integer,String>();
+	protected HashMap<String, Integer> geoNames = new HashMap<String, Integer>();
 
 	protected List<GeneralDBSqlExpr> thematicExpressions = new ArrayList<GeneralDBSqlExpr>(5);
 	
@@ -438,7 +439,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				ValueFactory localvf = ValueFactoryImpl.getInstance();
 				
 				if (function instanceof GeoSparqlGetSRIDFunc) {
-					return localvf.createURI(WKTHelper.getEPSGURI_forSRID(getSRIDFromValue(leftResult)));
+					return localvf.createURI(getSRIDFromValue(leftResult));
 					
 				} else if (function instanceof SridFunc) {
 					return localvf.createLiteral(getSRIDFromValue(leftResult));
@@ -533,7 +534,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		{
 			return StrabonPolyhedron.convexHull(leftArg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLboundary))
+		else if(function instanceof BoundaryFunc)
 		{
 			return StrabonPolyhedron.boundary(leftArg);
 		}
@@ -705,7 +706,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 						//XXX if the variable is actually a GeoVar
 						if(var.isSpatial())
 						{
-							this.geoNames.put(var.getIndex()+2,var.getName());
+							this.geoNames.put(var.getName(), var.getIndex() + 2);
 							//I am carrying SRID too! Therefore, shifting index one more position
 							index++;
 						}
@@ -742,12 +743,11 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		while (it.hasNext()) {
 			@SuppressWarnings("rawtypes")
 			Map.Entry pairs = (Map.Entry)it.next();
-			//System.out.println(pairs.getKey() + " = " + pairs.getValue());
-
-			//Trying to fill what's missing
+			
+			// Trying to fill what's missing
 			GeneralDBSqlExpr expr = (GeneralDBSqlExpr) pairs.getValue();
-			locateColumnVars(expr,qb.getVars());
-
+			locateColumnVars(expr, qb.getVars());
+			
 			//Assuming thematic aggregates and spatial expressions won't be combined
 			if(!this.thematicExpressions.contains(expr))
 			{
@@ -770,8 +770,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 					
 				}
 
-				//constructIndexesAndNames.put((String) pairs.getKey(),index++);
-				constructIndexesAndNames.put(info,index++);
+				constructIndexesAndNames.put(info, index++);
 				if(increaseIndex)
 				{
 					//Increasing index by one more because of SRID!
@@ -881,7 +880,7 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 		}
 		else if(expr instanceof GeneralDBLabelColumn)//ColumnVar at least
 		{
-			String name = ((GeneralDBLabelColumn) expr).getVarName().replace("?spatial","");;
+			String name = ((GeneralDBLabelColumn) expr).getVarName().replace("?spatial","");
 
 			for(GeneralDBColumnVar reference: allKnown)
 			{
@@ -977,18 +976,61 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 	}
 
 	
-	public int getSRIDFromValue(Value value) {
+	/**
+	 * Very customized method for taking the URI corresponding to the SRID of a
+	 * {@link Value} that may be one of {@link StrabonPolyhedron}, 
+	 * {@link GeneralDBPolyhedron}, or {@link Literal}.
+	 * 
+	 * The insight is that we would like to return the URI for CRS84 when the
+	 * SRID equals {@link GeoConstants.EPSG4326_SRID} and not the URI for 
+	 * EPSG:4326. Since, we have such information available, we choose to
+	 * do compute it.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public String getSRIDFromValue(Value value) {
+		boolean iswktLiteral = false;
+		int srid = -1;
+		
 		if (value instanceof GeneralDBPolyhedron) {
-			return ((GeneralDBPolyhedron) value).getPolyhedron().getGeometry().getSRID();
+			StrabonPolyhedron poly = ((GeneralDBPolyhedron) value).getPolyhedron(); 
+			srid = poly.getGeometry().getSRID();
+			
+			if (poly.getGeometryDatatype() == GeometryDatatype.wktLiteral) {
+				iswktLiteral = true;
+			}
 			
 		} else if (value instanceof StrabonPolyhedron) {
-			return ((StrabonPolyhedron) value).getGeometry().getSRID();
+			StrabonPolyhedron poly = ((StrabonPolyhedron) value); 
+			srid = poly.getGeometry().getSRID();
+			
+			if (poly.getGeometryDatatype() == GeometryDatatype.wktLiteral) {
+				iswktLiteral = true;
+			}
 			
 		} else if (value instanceof Literal) {
-			return (new AbstractWKT(((Literal) value).stringValue())).getSRID();
+			Literal literal = (Literal) value;
+			AbstractWKT wkt;
 			
-		} else { // default error SRID value 
-			return -1;
+			if (literal.getDatatype() != null) {
+				wkt = new AbstractWKT(literal.stringValue(), literal.getDatatype().stringValue());
+				
+			} else {
+				wkt = new AbstractWKT(literal.stringValue());
+			}
+			 
+			srid = wkt.getSRID();
+			if (!wkt.isstRDFWKT()) {
+				iswktLiteral = true;
+			}
+		}
+		
+		if (iswktLiteral && srid == GeoConstants.EPSG4326_SRID) {
+			return GeoConstants.CRS84_URI;
+			
+		} else {
+			return WKTHelper.getEPSGURI_forSRID(srid);
 		}
 	}
 	
@@ -1010,7 +1052,10 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				wkt = new AbstractWKT(literal.stringValue(), literal.getDatatype().stringValue());
 			}
 			
-			return JTSWrapper.getInstance().WKTread(wkt.getWKT());
+			Geometry geom = JTSWrapper.getInstance().WKTread(wkt.getWKT());
+			geom.setSRID(wkt.getSRID());
+			
+			return geom;
 			
 		} else {
 			return null;
