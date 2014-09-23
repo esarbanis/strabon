@@ -293,7 +293,7 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 				ResultSetMetaData meta = rs.getMetaData();
 				String aliasSRID = meta.getColumnName(index + 1);
 	
-				// get the index of the column containing the exression for the reference geometry
+				// get the index of the column containing the expression for the reference geometry
 				Integer indexOfGeometry = geoNames.get(aliasSRID.replace("_srid", ""));
 				if (indexOfGeometry != null) { 
 					// index + 2 would have the datatype
@@ -303,6 +303,12 @@ public abstract class GeneralDBBindingIteration extends RdbmIterationBase<Bindin
 					if (GeoConstants.WKTLITERAL.equals(datatype)) {
 						uri = GeoConstants.CRS84_URI;
 					}
+					
+				} else { // we didn't manage to locate the datatype column, so this is probably
+						 // a constant for which it is not possible to determine its datatype
+						 // since this function is geof:getSRID, we assume a geo:wktLiteral datatype, sorry
+					uri = GeoConstants.CRS84_URI;
+					
 				}
 			}
 			

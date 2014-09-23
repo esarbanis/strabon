@@ -944,6 +944,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			// we have to compute it
 			filter.appendFunction("ST_SRID");
 			filter.openBracket();
+			
 			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
 				appendWKT(expr.getArg(),filter);
@@ -963,7 +964,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 			else if(expr.getArg() instanceof GeneralDBSqlCase)
 			{
 				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
-				appendMBB(onlyLabel,filter); 
+				appendMBB(onlyLabel, filter); 
 			}
 			else
 			{
@@ -1004,7 +1005,7 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 		// parse raw WKT
 		AbstractWKT wkt = new AbstractWKT(raw);
 		filter.append(" ST_GeomFromText('" + wkt.getWKT() + "'," + String.valueOf(wkt.getSRID()) + ")");
-
+		
 		return raw;
 	}
 
