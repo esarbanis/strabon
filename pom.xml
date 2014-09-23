@@ -858,11 +858,13 @@
 		<system>Trac</system>
 		<url>http://bug.strabon.di.uoa.gr/</url>
 	</issueManagement>
-	
+
+	<!-- TODO: update this
 	<ciManagement>
 		<system>Jekins - Continuous Integration System</system>
 		<url>http://test.strabon.di.uoa.gr/cis</url>
 	</ciManagement>
+	-->
 	
 	<mailingLists>
 		<mailingList>
