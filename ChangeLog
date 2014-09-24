@@ -1,3 +1,32 @@
+	* Fixed a bug that would not return the correct spatial datatype of a
+	  projected geometry literal stored in the database.
+	  (bug #71: http://bug.strabon.di.uoa.gr/ticket/71)
+
+	* Now, geometries expressed in CRS84 and a `geo:wktLiteral' datatype
+	  are assigned the correct CRS, i.e., EPSG:4326 with a longitude
+	  latitude axis order.
+
+	* Now, we report a parse error when a constant geometry given in a
+	  SELECT or HAVING clause is not well-formed according to the WKT
+	  specification.
+	  (bug #69: http://bug.strabon.di.uoa.gr/ticket/69)
+
+	* Function `geof:convexHull' is now supported in a Having clause.
+
+	* Fixed older implementation of `strdf:distance' that would expect two
+	  arguments instead of three when present in a HAVING clause.
+
+	* Fixed a bug that would cause a class cast exception for grounded
+	  expressions with function nesting in the SELECT or HAVING clause.
+
+	* Fixed a bug in which `postgis:ST_Centroid' did not work in the SELECT
+	  clause with input geometries from the database.
+
+	* Fixed a bug that `geof:getSRID' would return an integer instead of a
+	  the URI corrresponding to the CRS that the input geometry was
+	  expressed.
+	  (bug #32:  http://bug.strabon.di.uoa.gr/ticket/32)
+
 	* Fixed a bug that would raise an exception for queries involving two
 	  UNION graph patterns and a projection to a predicate or a URI in
 	  general.
