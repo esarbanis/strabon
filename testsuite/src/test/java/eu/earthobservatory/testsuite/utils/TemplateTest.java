@@ -25,9 +25,10 @@ import org.junit.Test;
  * 2) stores a dataset
  * 3) poses a query
  * 4) checks if the results of the query are the expected 
+ * 	  If you use ORDER BY do NOT use this class.  
  * 5) drops the database
  * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public abstract class TemplateTest
 {	
@@ -35,7 +36,7 @@ public abstract class TemplateTest
 	protected ArrayList<String> queryFile;
 	protected ArrayList<String> resultsFile;
 	protected Boolean inference;
-
+	protected Boolean orderResults;
 	
 	public TemplateTest()
 	{
@@ -73,6 +74,7 @@ public abstract class TemplateTest
 		}
 		
 		inference=false;
+		orderResults=false;
 	}
 
 	@Before
@@ -91,7 +93,7 @@ public abstract class TemplateTest
 		while(queryFileIterator.hasNext() && resultsFileIterator.hasNext())
 		{
 		
-			Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next());
+			Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next(),orderResults);
 		}
 	}
 	

@@ -6,6 +6,7 @@
 package org.openrdf.sail.generaldb.algebra.factories;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
+import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geofSRID;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 
@@ -48,8 +49,8 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.ConvexHullFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.EnvelopeFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc;
@@ -861,7 +862,6 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 		return temporalRelationPicker(function, leftArg, rightArg, thirdArg);
 	}
-
 	GeneralDBSqlExpr spatialRelationshipFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		ValueExpr left = functionCall.getArgs().get(0);
@@ -901,6 +901,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return spatialRelationshipPicker(function, leftArg, rightArg, thirdArg);
 	}
 
+	/**
+	 * TODO check required number of arguments
+	 */
 	GeneralDBSqlExpr spatialConstructFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -997,6 +1000,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 
 	}
 
+	/**
+	 * TODO check required number of arguments
+	 */
 	GeneralDBSqlExpr spatialMetricFunction(FunctionCall functionCall, Function function) throws UnsupportedRdbmsOperatorException
 	{
 		GeneralDBSqlExpr leftArg = null;
@@ -1360,6 +1366,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	}
 
 
+	
+	/**
+	 * FIXME don't check function using getURI(); use instanceof instead 
+	 */
 	GeneralDBSqlExpr spatialConstructPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLunion))
@@ -1450,6 +1460,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	 * 
 	 * @author George Garbis <ggarbis@di.uoa.gr>
 	 * 
+	 * FIXME don't check function using getURI(); use instanceof instead
 	 */
 	GeneralDBSqlExpr dateTimeMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg)
 	{
@@ -1462,7 +1473,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 	
-	//TODO more to be added here probably
+	/**
+	 * TODO check required number of arguments
+	 * FIXME don't check function using getURI(); use instanceof instead 
+	 */
 	GeneralDBSqlExpr spatialMetricPicker(Function function,GeneralDBSqlExpr leftArg, GeneralDBSqlExpr rightArg, GeneralDBSqlExpr thirdArg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLdistance))
@@ -1482,6 +1496,9 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		return null;
 	}
 
+	/**
+	 * FIXME don't check function using getURI(); use instanceof instead
+	 */
 	GeneralDBSqlExpr spatialPropertyPicker(Function function, GeneralDBSqlExpr arg)
 	{
 		if(function.getURI().equals(GeoConstants.stSPARQLdimension))
@@ -1496,10 +1513,13 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		{
 			return asText(arg);
 		}
-		else if(function.getURI().equals(GeoConstants.stSPARQLsrid) ||
-				function.getURI().equals(GeoConstants.geoSparqlGetSRID))
+		else if(function.getURI().equals(GeoConstants.stSPARQLsrid))
 		{
 			return srid(arg);
+		} 
+		else if (function.getURI().equals(GeoConstants.geoSparqlGetSRID))
+		{
+			return geofSRID(arg);
 		}
 		else if(function.getURI().equals(GeoConstants.stSPARQLisEmpty))
 		{

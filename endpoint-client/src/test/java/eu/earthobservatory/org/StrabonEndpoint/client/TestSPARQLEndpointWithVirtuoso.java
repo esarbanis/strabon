@@ -23,7 +23,6 @@ import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
  * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  *
  */
-
 //Virtuso endpoint also needs to be tested for all formats included in stSPARQLQueryResultFormat
 //because some of them are not supported
 public class TestSPARQLEndpointWithVirtuoso {
@@ -35,7 +34,8 @@ public class TestSPARQLEndpointWithVirtuoso {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("dbpedia.org", 8890, "sparql");
+		endpoint = new SPARQLEndpoint("dbpedia.org", 80, "sparql");
+		//endpoint = new SPARQLEndpoint("lod.openlinksw.com", 80, "sparql");
 		
 		// set query
 		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
@@ -61,14 +61,12 @@ public class TestSPARQLEndpointWithVirtuoso {
 			try {
 				EndpointResult response = endpoint.query(query, stSPARQLQueryResultFormat.TSV);
 				
-			//	System.out.println(response.getResponse());
-				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
 					
 				}
 				
-			//	assertTrue(response.getStatusCode() == 200);
+				assertTrue(response.getStatusCode() == 200);
 				
 			} catch (IOException e) {
 				e.printStackTrace();

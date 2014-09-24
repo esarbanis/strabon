@@ -14,6 +14,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import eu.earthobservatory.constants.TemporalConstants;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
+import org.openrdf.sail.generaldb.managers.LiteralManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,42 +200,17 @@ public class LiteralTable {
 	}
 	
 	
-	/********************************************************************/
-	public void insertGeoSpatial(Number id, String label, String datatype,Timestamp start,Timestamp end) throws SQLException, InterruptedException
-	{
-		 
-		byte[] geomWKB = null;
-		 
-		try {
-		
-			/***XXX new stuff dictated by kkyzir's StrabonPolyhedron - will be added when the functionality is complete***/
-			StrabonPolyhedron polyhedron = new StrabonPolyhedron(label);
-			geomWKB = polyhedron.toByteArray();
-			
-		
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			throw new SQLException("An issue occurred in the underlying StrabonPolyhedron's constructor!");
-			
-		}
-
-		//Removed 'value' field
-		Integer srid= findSRID(label);
-		geoSpatialTable.insert(id,srid/*,start,end*/, geomWKB);
-
-		//XXX not needed currently because this method is called AFTER an insertDatatype()
-		//		insertSimple(id, label);
-		//		datatypes.insert(id, datatype);
-	}
-	
 	//the new version will actually deal with WKB
-	public void insertWKT(Number id, String label, String datatype, Timestamp start,Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
+	public void insertWKT(Number id, String label, String datatype, Timestamp start, Timestamp end) throws SQLException, NullPointerException,InterruptedException,IllegalArgumentException
 	{
 		try {
+			JTSWrapper JTS = JTSWrapper.getInstance();
+			
 			AbstractWKT awkt = new AbstractWKT(label, datatype);
-			Geometry geom = JTSWrapper.getInstance().WKTread(awkt.getWKT());
-			geoSpatialTable.insert(id, awkt.getSRID(),/* start,end,*/ JTSWrapper.getInstance().WKBwrite(geom));
+			Geometry geom = JTS.WKTread(awkt.getWKT());
+			int srid = awkt.getSRID();
+			
+			geoSpatialTable.insert(id, srid, /*start,end,*/ JTS.WKBwrite(geom));
 			
 		} catch (ParseException e) {
 			throw new IllegalArgumentException(e);
@@ -311,47 +287,4 @@ public class LiteralTable {
 		
 		return bool;
 	}
-	
-	
-	
-	public static Integer findSRID(String label){
-		String[] crs=label.split(";");
-		String crsUri=null;
-		
-		if((crs.length == 1))
-		{
-			if(label.contains("gml"))
-			{
-				try {
-					StrabonPolyhedron poly = new StrabonPolyhedron(label);
-					if(poly.getGeometry().getSRID()>0)
-						return poly.getGeometry().getSRID();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			else
-			{
-				return 4326;
-			} 
-		}
-		else
-			crsUri = crs[1];
-		
-		String prefix="http://www.opengis.net/def/crs/EPSG/0/";
-		if(crsUri.startsWith(prefix)){
-			int index=crsUri.lastIndexOf('/');
-			index++;
-			Integer srid = Integer.parseInt(crsUri.substring(index));
-			//System.out.println("The EPSG code: " + srid);
-					 
-			//System.out.println("SRS FOUND:"+srid);
-			 return srid;
-		}else{
-			throw new IllegalArgumentException("MALFORMED URI FOR SRID!!!");
-		
-	   }
-}
 }

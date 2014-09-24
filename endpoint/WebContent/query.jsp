@@ -147,7 +147,7 @@
 				var x2 = southWest.lng().toFixed(2);
 				var y2 = southWest.lat().toFixed(2);
 				
-				var polygon = "\"<http\://www.opengis.net/def/crs/EPSG/0/4326\> POLYGON((" +
+				var polygon = "\"POLYGON((" +
 				x1 + " " + y2 + ", " +
 				x2 + " " + y2 + ", " +
 				x2 + " " + y1 + ", " +

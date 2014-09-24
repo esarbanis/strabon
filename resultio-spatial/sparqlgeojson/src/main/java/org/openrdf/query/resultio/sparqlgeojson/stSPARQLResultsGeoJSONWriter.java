@@ -20,15 +20,17 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
@@ -39,6 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * A TupleQueryResultWriter that writes query results in the <a
@@ -156,6 +160,11 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 						geom = dbpolyhedron.getPolyhedron().getGeometry();
 						srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
 						
+					} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
+						StrabonPolyhedron poly = (StrabonPolyhedron) value;
+						geom = poly.getGeometry();
+						srid = geom.getSRID();
+							
 					} else { // spatial literal WKT or GML
 						// get the textual representation of the geometry (WKT or GML)
 						String geoText = value.stringValue();
@@ -181,9 +190,16 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 					
 					SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
 					sftb.setName("Feature_" + nresults + "_" + nfeatures);
-					sftb.setCRS(CRS.decode("EPSG:" + srid));
-					sftb.setSRS("EPSG:" + srid);
 					sftb.add("geometry", Geometry.class);
+					
+					// EPSG:4326 Long/Lat) is the default CRS for GeoJSON features
+					// we transform explicitly, because searching for "EPSG:<code>" CRSs is
+					// not the preferred way for GeoJSON (see here 
+					// http://geojson.org/geojson-spec.html#coordinate-reference-system-objects). 
+					// Instead the OGC CRS URNs should be preferred.
+					geom = jts.transform(geom, srid, GeoConstants.EPSG4326_SRID);
+					//sftb.setCRS(CRS.decode("EPSG:" + srid));
+					//sftb.setSRS("EPSG:" + srid);
 					
 					// add the feature in the list of features
 					features.add(sftb);

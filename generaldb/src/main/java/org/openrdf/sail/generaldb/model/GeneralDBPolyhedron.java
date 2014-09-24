@@ -3,12 +3,12 @@ package org.openrdf.sail.generaldb.model;
 import java.io.IOException;
 
 import org.openrdf.model.URI;
+import org.openrdf.query.algebra.evaluation.function.spatial.GeometryDatatype;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 import com.vividsolutions.jts.io.ParseException;
-
-import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * 
@@ -44,7 +44,8 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		super(id, version);
 
 		try {
-			this.polyhedron = new StrabonPolyhedron(polyhedron, srid);
+			this.polyhedron = new StrabonPolyhedron(polyhedron, srid, GeometryDatatype.fromString(datatype.stringValue()));
+			
 		} catch (ParseException e) {
 
 			e.printStackTrace();
@@ -57,38 +58,16 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		this.datatype = datatype;
 	}
 
-	//	public GeneralDBPolyhedron(Number id, Integer version, URI datatype, String polyhedron) throws IOException, ClassNotFoundException {
-	//		super(id, version);
-	//
-	//		try {
-	//			this.polyhedron = new StrabonPolyhedron(polyhedron);
-	//		} catch (ParseException e) {
-	//
-	//			e.printStackTrace();
-	//		} catch (Exception e) {
-	//
-	//			e.printStackTrace();
-	//		}
-	//		setPolyhedronStringRep(this.polyhedron);
-	//		this.datatype = datatype;
-	//	}
-	/**
-	 * METHODS
-	 */
-
 	public String getPolyhedronStringRep() {
 		return polyhedronStringRep;
 	}
 
 	public void setPolyhedronStringRep(StrabonPolyhedron polyhedron) throws IOException, ClassNotFoundException {
-		//TODO kkyzir prepares this method
-		// TODO add GML
-		
 		if (StrabonPolyhedron.EnableConstraintRepresentation) {
 			this.polyhedronStringRep = polyhedron.toConstraints();	
 			
 		} else {
-			this.polyhedronStringRep = polyhedron.toWKT();
+			this.polyhedronStringRep = polyhedron.stringValue();
 		}		
 	}
 
@@ -111,32 +90,18 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 
 
 	public String stringValue() {
-		if(String.valueOf(datatype) == GeoConstants.WKT)
-			return new String(this.polyhedronStringRep)+";http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID();
-		else
-			return new String("<http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep);
+		// TODO FIXME we miss GML here
+		return WKTHelper.createWKT(this.polyhedronStringRep, 
+								   this.getPolyhedron().getGeometry().getSRID(), 
+								   String.valueOf(datatype));
 	}
 
 	@Override
 	public String toString() {
-		if(String.valueOf(datatype) == GeoConstants.WKT)
-		{
-			return new String("\""+this.polyhedronStringRep+";http://www.opengis.net/def/crs/EPSG/0/"
-					+this.getPolyhedron().getGeometry().getSRID()+"\"" + "^^<" +
-					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
-							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
-							+">");
-		}
-		else if(String.valueOf(datatype) == GeoConstants.WKTLITERAL)
-		{
-			return new String("\""+"<"+"http://www.opengis.net/def/crs/EPSG/0/"+this.getPolyhedron().getGeometry().getSRID()+"> "+this.polyhedronStringRep
-					+"\"" + "^^<" +
-					((StrabonPolyhedron.EnableConstraintRepresentation)  ?
-							GeoConstants.stRDFSemiLinearPointset : String.valueOf(datatype))
-							+">");
-		}
-		//must not reach this place
-		return null;
+		// TODO FIXME we miss GML here
+		return "\"" + WKTHelper.createWKT(this.polyhedronStringRep, 
+				   						  this.getPolyhedron().getGeometry().getSRID(), 
+				   						  String.valueOf(datatype)) +"\"" + "^^<" + String.valueOf(datatype) + ">";
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -32,13 +33,13 @@ import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.io.gml2.GMLReader;
+import com.vividsolutions.jts.io.gml2.GMLWriter;
 
 /**
  * This class is a singleton and provides access to the readers/writers
  * of Java Topology Suite. 
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class JTSWrapper {
 	
@@ -69,6 +70,11 @@ public class JTSWrapper {
 	 */
 	private WKBWriter wkbw;
 	
+	/**
+	 * Writer for GML
+	 */
+	private GMLWriter gmlw;
+	
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
 		wktr = new WKTReader();
@@ -76,6 +82,7 @@ public class JTSWrapper {
 		wkbr = new WKBReader();
 		wkbw = new WKBWriter(); // PostGIS
 //		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
+		gmlw = new GMLWriter();
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -83,6 +90,16 @@ public class JTSWrapper {
 			instance = new JTSWrapper();
 		}
 		return instance;
+	}
+	
+	protected CoordinateReferenceSystem getEPSG_CRS(int srid) throws NoSuchAuthorityCodeException, FactoryException {
+//		if (srid == GeoConstants.WGS84_LONG_LAT_SRID) {
+//			return DefaultGeographicCRS.WGS84;
+//			
+//		} else { // otherwise lookup for EPSG code
+			// TODO: is there a way to be more general (than EPSG)?
+			return CRS.decode("EPSG:" + srid);
+//		}
 	}
 	
 	public synchronized Geometry WKTread(String wkt) throws ParseException {
@@ -130,15 +147,14 @@ public class JTSWrapper {
 		// the geometry to return
 		Geometry output = input;
 		
-		if(sourceSRID != targetSRID) {
+		if (sourceSRID != targetSRID) {
 			CoordinateReferenceSystem sourceCRS = null;
 			CoordinateReferenceSystem targetCRS = null;
 			
 			MathTransform transform;
 			try {
-				//TODO: EPSG supported currently - is there a way to be more general??
-				sourceCRS = CRS.decode("EPSG:" + sourceSRID);
-				targetCRS = CRS.decode("EPSG:" + targetSRID);
+				sourceCRS = getEPSG_CRS(sourceSRID);
+				targetCRS = getEPSG_CRS(targetSRID);
 				transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
 
 				output = JTS.transform(input, transform);
@@ -157,7 +173,7 @@ public class JTSWrapper {
 		}
 		
 		return output;
-	}		
+	}
 	
 	/**
 	 * Parses and returns a {@link Geometry} object constructed from the given GML representation.
@@ -181,5 +197,9 @@ public class JTSWrapper {
 		
 		reader.close();
         return geometry;
+	}
+	
+	public synchronized String GMLWrite(Geometry geom) {
+		return gmlw.write(geom);
 	}
 }

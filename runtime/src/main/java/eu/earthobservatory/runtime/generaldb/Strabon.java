@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.Resource;
+import org.geotools.factory.Hints;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -133,6 +134,7 @@ public abstract class Strabon {
 		//Setting up store
 
 		//Used for the conversions taking place involving JTS + WGS84 (4326)
+		//Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.FALSE);
 		System.setProperty("org.geotools.referencing.forceXY", "true");
 		
 		//our repository

@@ -51,7 +51,6 @@ public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements
 	 * XXX addition for spatial constructs in select
 	 * cloned behaviour to apply for the temporal case, too
 	 */
-	
 	private Map<String, GeneralDBSqlExpr> spatialConstructs = new HashMap<String, GeneralDBSqlExpr>();
 	
 	private Map<String, GeneralDBSqlExpr> temporalConstructs = new HashMap<String, GeneralDBSqlExpr>();

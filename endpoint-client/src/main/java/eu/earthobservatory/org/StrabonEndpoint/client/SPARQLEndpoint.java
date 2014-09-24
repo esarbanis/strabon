@@ -66,7 +66,7 @@ public class SPARQLEndpoint extends HTTPClient {
 		// set the query parameter
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("query", sparqlQuery));
-		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.defaultCharset());
+		UrlEncodedFormEntity encodedEntity = new UrlEncodedFormEntity(params, Charset.forName("UTF-8"));
 		method.setEntity(encodedEntity);
 		
 		// set the content type

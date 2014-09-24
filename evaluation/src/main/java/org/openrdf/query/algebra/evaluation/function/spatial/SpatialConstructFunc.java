@@ -28,9 +28,7 @@ import org.openrdf.query.algebra.evaluation.function.Function;
 public abstract class SpatialConstructFunc implements Function {
 
 	//No need for any implementation, I will have replaced this class's presence before reaching this place
-	public Value evaluate(ValueFactory valueFactory, Value... args)
-	throws ValueExprEvaluationException {
-
+	public Value evaluate(ValueFactory valueFactory, Value... args) throws ValueExprEvaluationException {
 		return null;
 	}
 

@@ -35,6 +35,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
@@ -145,7 +146,6 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
  * 
  */
 public abstract class GeneralDBQueryBuilder {
-
 
 	protected GeneralDBSqlQueryBuilder query;
 
@@ -827,8 +827,8 @@ public abstract class GeneralDBQueryBuilder {
 			}
 
 	protected void dispatchUnarySqlOperator(UnaryGeneralDBOperator expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	throws UnsupportedRdbmsOperatorException
+	{
 		if (expr instanceof GeneralDBSqlAbs) {
 			append((GeneralDBSqlAbs)expr, filter);
 		}
@@ -857,6 +857,9 @@ public abstract class GeneralDBQueryBuilder {
 		else if (expr instanceof GeneralDBSqlGeoBoundary) {
 			append((GeneralDBSqlGeoBoundary)expr, filter);
 		}
+		else if (expr instanceof GeneralDBSqlST_Centroid) {
+			append((GeneralDBSqlST_Centroid)expr, filter);
+		}
 		else if (expr instanceof GeneralDBSqlPeriodStart) {
 			append((GeneralDBSqlPeriodStart)expr, filter);
 		}
@@ -882,6 +885,9 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if (expr instanceof GeneralDBSqlGeoSrid) {
 			append((GeneralDBSqlGeoSrid)expr, filter);
+			
+		} else if (expr instanceof GeneralDBSqlGeoSPARQLSrid) {
+			append((GeneralDBSqlGeoSPARQLSrid)expr, filter);
 		}
 		else if (expr instanceof GeneralDBSqlGeoIsEmpty) {
 			append((GeneralDBSqlGeoIsEmpty)expr, filter);
@@ -893,7 +899,7 @@ public abstract class GeneralDBQueryBuilder {
 		else {
 			throw unsupported(expr);
 		}
-			}
+	}
 
 	/**
 	 * @param expr
@@ -1228,6 +1234,9 @@ public abstract class GeneralDBQueryBuilder {
 	
 	protected abstract void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
+	
+	protected abstract void append(GeneralDBSqlGeoSPARQLSrid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException;
 
 	protected abstract void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException;
@@ -1244,7 +1253,7 @@ public abstract class GeneralDBQueryBuilder {
 	{
 		//I seriously doubt it will ever visit this case
 
-		if (var.getRdbmsVar().isResource()) {
+		if (var.getRdbmsVar()==null || var.getRdbmsVar().isResource()) {
 			filter.appendNull();
 
 		}
@@ -1255,7 +1264,8 @@ public abstract class GeneralDBQueryBuilder {
 
 		}
 	}
-	
+
+	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException;
 	protected void appendPeriod(GeneralDBLabelColumn var, GeneralDBSqlExprBuilder filter)
 	{
 		//I seriously doubt it will ever visit this case
@@ -1273,7 +1283,6 @@ public abstract class GeneralDBQueryBuilder {
 	}
 
 
-	protected abstract String appendWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter);
 
 	protected void appendConstructFunction(GeneralDBSqlExpr constr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
 	{

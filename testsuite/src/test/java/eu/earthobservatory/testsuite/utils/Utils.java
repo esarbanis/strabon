@@ -49,6 +49,7 @@ import eu.earthobservatory.utils.Format;
  * A class with useful methods for the tests.
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
+ * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class Utils
 {
@@ -141,7 +142,8 @@ public class Utils
 	    	strabon.storeInRepo(datasetFile, "NQUADS", inference);
 	}
 	
-	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
+	
+	public static void testQuery(String queryFile, String resultsFile,boolean orderOn) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
 		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
@@ -180,17 +182,19 @@ public class Utils
 		
 		assertFalse("Results are not the expected. QueryFile: "+queryFile, expectedResults.hasNext() || actualResults.hasNext());
 		
-		//Sort bindings alphabetically
-		Collections.sort(eBindingList);
-		Collections.sort(aBindingList);
-		
+		if(!orderOn)
+		{
+			//Sort bindings alphabetically
+			Collections.sort(eBindingList);
+			Collections.sort(aBindingList);
+		}
 		//Check bindings one by one
 		Iterator<String> eBindingListIterator = eBindingList.iterator();
 		Iterator<String> aBindingListIterator = aBindingList.iterator();
 
 		while(eBindingListIterator.hasNext() && aBindingListIterator.hasNext())
 		{
-			assertEquals("Results are not the expected. QueryFile: "+queryFile, eBindingListIterator.next(), aBindingListIterator.next());
+			assertEquals("Results are not the expected. QueryFile: "+queryFile,eBindingListIterator.next(), aBindingListIterator.next() );
 		}
 		
 		actualResults.close();

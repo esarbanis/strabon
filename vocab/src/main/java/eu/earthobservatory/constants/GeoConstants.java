@@ -162,31 +162,52 @@ public class GeoConstants {
 	public static final String stSPARQLextent 		= stRDF + "extent";
 	
 	/**
-	 * WGS 84 latitude-longitude (EPSG:4326)
+	 * Prefix used in EPSG URIs
 	 */
-	public static final String WGS84_LAT_LON	= "http://www.opengis.net/def/crs/EPSG/0/4326";
+	public static final String EPSG_URI_PREFIX		= "http://www.opengis.net/def/crs/EPSG/0/";
 	
 	/**
-	 * WGS 84 longitude-longitude
-	 * (used as the default CRS for GeoSPARQL geometries)
+	 * WGS 84 latitude-longitude (EPSG:4326)
+	 * 
+	 * NOTICE: 
+	 *   We treat this CRS with long/lat semantics however, like
+	 *   most of the world does. This is in contrast to what EPSG considers.
 	 */
-	public static final String WGS84_LON_LAT	= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
-
+	public static final String EPSG4326_URI			= EPSG_URI_PREFIX + "4326";
+	
+	/**
+	 * WGS 84 longitude-latitude
+	 * 
+	 * NOTICE:
+	 *   Yes, since we treat EPSG:4326 with a long/lat ordering, then OGC CRS84
+	 *   is synonmous to EPSG:4326.
+	 */
+	public static final String CRS84_URI			= "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+	
 	/**
 	 * EPSG:4326
 	 */
-	public static final Integer WGS84_LAT_LON_SRID = 4326;
+	public static final Integer EPSG4326_SRID 		= 4326;
 	
 	/**
-	 * EPSG:3857 (not sure whether this is correct for WGS84_LON_LAT)
-	 * http://spatialreference.org/ref/sr-org/7483/
+	 * Default stRDF/stSPARQL SRID
 	 */
-	public static final Integer WGS84_LON_LAT_SRID = 3857;
-
+	public static final Integer default_stRDF_SRID = EPSG4326_SRID;
+	
 	/**
-	 * Default SRID (WGS84 latitude-longitude)
+	 * Default GeoSPARQL SRID
 	 */
-	public static final Integer defaultSRID 	= WGS84_LAT_LON_SRID;
+	public static final Integer default_GeoSPARQL_SRID 	= EPSG4326_SRID;
+	
+	/**
+	 * Default SRID
+	 */
+	public static final Integer defaultSRID 			= EPSG4326_SRID;
+	
+	/**
+	 * Default datatype for creating new well-known text literals
+	 */
+	public static final String default_WKT_datatype 	= WKTLITERAL; 
 	
 	/**																		*
 	 *  						Extended functions 							*

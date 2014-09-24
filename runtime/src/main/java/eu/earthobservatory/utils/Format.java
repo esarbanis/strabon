@@ -17,7 +17,6 @@ import java.util.Map;
  * for the results of the evaluation of a SPARQL query.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public enum Format {
 

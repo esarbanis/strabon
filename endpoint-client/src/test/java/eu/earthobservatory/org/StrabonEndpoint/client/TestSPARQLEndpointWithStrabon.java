@@ -32,19 +32,16 @@ public class TestSPARQLEndpointWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 9090, "gag-endpoint/Query");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 80, "gag-endpoint/Query");
 		
 		// set query
 		query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
 				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
 				"PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/> " +
 
-				"SELECT ?geometry " +
+				"SELECT ?g " +
 				"WHERE {" +
-
-  				"	?m rdf:type gag:Δήμος . " +
-  				"	?m rdfs:label \"ΔΗΜΟΣ ΑΘΗΝΑΙΩΝ\" . " +
-  				"	?m gag:έχει_γεωμετρία ?geometry. " +
+  				"	<http://geo.linkedopendata.gr/gag/id/9186> rdf:έχει_γεωμετρία ?g . " +
 				" } "  ;
 		
 		// initialized formats
@@ -67,10 +64,9 @@ public class TestSPARQLEndpointWithStrabon {
 				
 				if (response.getStatusCode() != 200) {
 					System.err.println("Status code ("+response.getStatusCode()+"):" + response.getStatusText());
-					
 				}
 				
-			//	assertTrue(response.getStatusCode() == 200);
+				assertTrue(response.getStatusCode() == 200);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -84,7 +80,7 @@ public class TestSPARQLEndpointWithStrabon {
 	 * returns an IOException when it should do so.
 	 */
 	@Test(expected= IOException.class)
-	public void testIOException() throws Exception {
+	public void testIOException() throws IOException {
 		SPARQLEndpoint ep = new SPARQLEndpoint("blabla.dgr", 80, "bla");
 		ep.query(query, formats.get(0));
 	}

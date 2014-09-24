@@ -6,8 +6,6 @@
 package org.openrdf.sail.generaldb.algebra;
 
  
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator; 
-import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlDisjoint extends GeneralDBSqlGeoSpatial{
@@ -15,6 +13,4 @@ public class GeneralDBSqlDisjoint extends GeneralDBSqlGeoSpatial{
 	public GeneralDBSqlDisjoint(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
 	}
-
- 
 }

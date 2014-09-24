@@ -22,6 +22,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCast;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlConcat;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
@@ -542,6 +543,10 @@ public class GeneralDBExprSupport {
 
 	public static GeneralDBSqlExpr srid(GeneralDBSqlExpr expr) {
 		return new GeneralDBSqlGeoSrid(expr);
+	}
+	
+	public static GeneralDBSqlExpr geofSRID(GeneralDBSqlExpr expr) {
+		return new GeneralDBSqlGeoSPARQLSrid(expr);
 	}
 
 	public static GeneralDBSqlExpr isEmpty(GeneralDBSqlExpr expr) {

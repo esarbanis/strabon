@@ -16,5 +16,4 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class AggregateFunctionsTest extends TemplateTest {}

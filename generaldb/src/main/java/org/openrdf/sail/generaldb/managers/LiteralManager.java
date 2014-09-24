@@ -119,10 +119,6 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 					{
 						table.insertGML(id, label, dt, null, null);
 					} 
-					else if(XMLGSDatatypeUtil.isSemiLinearPointSetDatatype(datatype)) // SemiLinearPointSet case
-					{
-						table.insertGeoSpatial(id, label,dt,null,null);
-					}
 					else if(XMLGSDatatypeUtil.isPeriodDatatype(datatype)) // valid period  case- Constant
 					{ //TODO remember that the period should be validated, haven't decided the level yet though
 

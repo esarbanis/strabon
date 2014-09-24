@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openrdf.query.algebra.QueryModelNode;
-import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDoubleValue;
 import org.openrdf.sail.generaldb.algebra.GeneralDBLabelColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBNumericColumn;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbove;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAbstractGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
@@ -37,6 +38,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoGeometryType;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIntersection;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsEmpty;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoIsSimple;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSymDifference;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoTransform;
@@ -391,9 +393,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 	//FIXME my addition from here on
 	@Override
-	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr)
-			throws UnsupportedRdbmsOperatorException
-			{
+	public GeneralDBQueryBuilder construct(GeneralDBSqlExpr expr) throws UnsupportedRdbmsOperatorException
+	{
 		if(!(expr instanceof GeneralDBSqlSpatialMetricBinary) 
 				&&!(expr instanceof GeneralDBSqlSpatialMetricUnary)
 				&&!(expr instanceof GeneralDBSqlMathExpr)
@@ -417,7 +418,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
 		//SRID support must be explicitly added!
 		return this;
-			}
+	}
 
 	
 	@Override
@@ -833,13 +834,27 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_AsGML);
 	}	
 
+	/**
+	 * This will call the method below: 
+	 * {@link org.openrdf.sail.postgis.evaluation.MonetDBQueryBuilder.append#(org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid, org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder)}
+	 */
 	@Override
-	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
-			throws UnsupportedRdbmsOperatorException
-			{
+	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendSrid(expr, filter);
+	}
+	
+	/**
+	 * This will call the method below: 
+	 * {@link org.openrdf.sail.postgis.evaluation.MonetDBQueryBuilder.append#(org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSrid, org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder)}
+	 */
+	@Override
+	protected void append(GeneralDBSqlGeoSPARQLSrid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException {
+		appendSrid(expr, filter);
+	}
+	
+	protected void appendSrid(GeneralDBSqlAbstractGeoSrid expr, GeneralDBSqlExprBuilder filter) throws UnsupportedRdbmsOperatorException
+	{
 		//		appendMonetDBSpatialFunctionUnary(expr, filter, SpatialFunctionsMonetDB.ST_SRID);
-
-		boolean sridNeeded = true;
 		filter.openBracket();
 
 		boolean check1 = expr.getArg().getClass().getCanonicalName().equals("org.openrdf.sail.generaldb.algebra.GeneralDBSqlNull");
@@ -879,15 +894,7 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					{
 						child = ((UnaryGeneralDBOperator) tmp).getArg();
 					}
-					else if(tmp instanceof GeneralDBStringValue)
-					{
-						//Constant!!
-						sridNeeded  = false;
-						break;
-					}
-
-					tmp = child;
-					if(tmp instanceof GeneralDBLabelColumn)
+					else if(tmp instanceof GeneralDBLabelColumn)
 					{
 						//Reached the innermost left var -> need to capture its SRID
 						String alias;
@@ -909,51 +916,43 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 					}
 					else if(tmp instanceof GeneralDBStringValue)
 					{
-						//Constant!!
-						sridNeeded  = false;
+						// see why at PostGISQueryBuilder.appendSrid
 						break;
 					}
-
+					
+					tmp = child;
 				}
 			}
 
-			if(sridNeeded)
+			filter.appendFunction("ST_SRID");
+			filter.openBracket();
+			if(expr.getArg() instanceof GeneralDBStringValue)
 			{
-				filter.appendFunction("ST_SRID");
-				filter.openBracket();
-				if(expr.getArg() instanceof GeneralDBStringValue)
-				{
-					appendWKT(expr.getArg(),filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
-				{
-					appendConstructFunction(expr.getArg(), filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
-				{
-					appendConstructFunction(expr.getArg(), filter);
-				}
-				else if(expr.getArg() instanceof GeneralDBSqlCase)
-				{
-					GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
-					appendMBB(onlyLabel,filter); 
-				}
-				else
-				{
-					appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
-				}
-
-				filter.closeBracket();
+				appendWKT(expr.getArg(),filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructBinary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlSpatialConstructUnary)
+			{
+				appendConstructFunction(expr.getArg(), filter);
+			}
+			else if(expr.getArg() instanceof GeneralDBSqlCase)
+			{
+				GeneralDBLabelColumn onlyLabel = (GeneralDBLabelColumn)((GeneralDBSqlCase)expr.getArg()).getEntries().get(0).getResult();
+				appendMBB(onlyLabel,filter); 
 			}
 			else
 			{
-				//4326 by default - Software House additions
-				filter.append(String.valueOf(GeoConstants.defaultSRID));
+				appendMBB((GeneralDBLabelColumn)(expr.getArg()),filter);
 			}
+
+			filter.closeBracket();
 		}
 
 		filter.closeBracket();
-			}
+	}
 
 	@Override
 	protected void append(GeneralDBSqlGeoIsSimple expr, GeneralDBSqlExprBuilder filter)
@@ -980,14 +979,8 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
 		String raw = arg.getValue();
 
-		StrabonPolyhedron poly = null;
-		try{
-			poly = new StrabonPolyhedron(raw);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		filter.append(" GeomFromText('"+poly.toWKT() +"',"+String.valueOf(GeoConstants.defaultSRID)+")");
+		AbstractWKT wkt = new AbstractWKT(raw);
+		filter.append(" GeomFromText('" + wkt.getWKT() + "'," + String.valueOf(GeoConstants.defaultSRID) + ")");
 
 		return raw;
 	}

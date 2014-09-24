@@ -2,8 +2,9 @@
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. Copyright (C) 2010, 2011, 2012,
- * Pyravlos Team http://www.strabon.di.uoa.gr/
+ * 2013, 2014 Pyravlos Team http://www.strabon.di.uoa.gr/
  */
+
 package org.openrdf.query.resultio.sparqlkml;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.apache.xerces.xni.grammars.XMLGrammarDescription;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
@@ -26,8 +26,8 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
-import org.openrdf.query.algebra.IsLiteral;
 import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.query.algebra.evaluation.util.JTSWrapper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
@@ -56,7 +56,7 @@ import eu.earthobservatory.constants.TemporalConstants;
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  * @author George Garbis <ggarbis@di.uoa.gr>
- * 
+ * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter.class);
@@ -69,9 +69,9 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final String PLACEMARK_TAG 		= "Placemark";
 	private static final String TIMESTAMP_TAG 		= "TimeStamp";
 	private static final String TIMESPAN_TAG 		= "TimeSpan";
-	private static final String BEGIN_TAG 		= "begin";
-	private static final String END_TAG 		= "end";
-	private static final String WHEN_TAG 		= "when";
+	private static final String BEGIN_TAG 			= "begin";
+	private static final String END_TAG 			= "end";
+	private static final String WHEN_TAG 			= "when";
 	private static final String NAME_TAG 			= "name";
 	private static final String DESC_TAG 			= "description";
 	private static final String EXT_DATA_TAG 		= "ExtendedData";
@@ -96,6 +96,11 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 */
 	private stSPARQLXMLWriter xmlWriter;
 
+	/**
+	 * The ordered list of binding names of the result.
+	 */
+	private List<String> bindingNames;
+	
 	/**
 	 * The number of results seen.
 	 */
@@ -169,6 +174,8 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	@Override
 	public void startQueryResult(List<String> bindingNames) throws TupleQueryResultHandlerException {
 		try {
+			// keep the order of binding names
+			this.bindingNames = bindingNames;
 			xmlWriter.startDocument();
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
 			xmlWriter.startTag(ROOT_TAG);
@@ -240,7 +247,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		try {
 			// true if there are bindings that do not correspond to geometries
 			boolean hasDesc = false;
-			String timeValue;
 			
 			Hashtable<String, String> extData = new Hashtable<String, String>();
 
@@ -292,34 +298,37 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
 			
 			// parse binding set
-			for (Binding binding : bindingSet) {
-
-				Value value = binding.getValue();
+			for (String bindingName : bindingNames) {
 				
-				// check for geometry value
-				if (XMLGSDatatypeUtil.isGeometryValue(value)) {
-					hasGeometry=true;
-
-					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon] Found geometry: {}", value);
+				Binding binding = bindingSet.getBinding(bindingName);
+				if(binding != null) {
+					Value value = binding.getValue();
+					
+					// check for geometry value
+					if (XMLGSDatatypeUtil.isGeometryValue(value)) {
+						hasGeometry=true;
+	
+						if (logger.isDebugEnabled()) {
+							logger.debug("[Strabon] Found geometry: {}", value);
+						}
+						
+						xmlWriter.unescapedText(getKML(value));
+						
+					} else { // URI, BlankNode, or Literal other than spatial literal
+						
+						if (logger.isDebugEnabled()) {
+							logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
+						}
+						
+						// mark that we found sth corresponding to the description
+						hasDesc = true;
+						
+						// write description
+						writeDesc(binding);
+						
+						// fill also the extended data attribute of the Placemark
+						extData.put(binding.getName(), getBindingValue(binding));
 					}
-					
-					xmlWriter.unescapedText(getKML(value));
-					
-				} else { // URI, BlankNode, or Literal other than spatial literal
-					
-					if (logger.isDebugEnabled()) {
-						logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
-					}
-					
-					// mark that we found sth corresponding to the description
-					hasDesc = true;
-					
-					// write description
-					writeDesc(binding);
-					
-					// fill also the extended data attribute of the Placemark
-					extData.put(binding.getName(), getBindingValue(binding));
 				}
 			}
 			
@@ -402,24 +411,36 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				geom = dbpolyhedron.getPolyhedron().getGeometry();
 				srid = dbpolyhedron.getPolyhedron().getGeometry().getSRID();
 				
+			} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
+					StrabonPolyhedron poly = (StrabonPolyhedron) value;
+					geom = poly.getGeometry();
+					srid = geom.getSRID();
+					
 			} else { // spatial literal
 				Literal spatial = (Literal) value;
 				String geomRep = spatial.stringValue();
 				
 				if (XMLGSDatatypeUtil.isWKTLiteral(spatial)) { // WKT
-					AbstractWKT awkt = new AbstractWKT(geomRep, spatial.getDatatype().stringValue());
-					
+
+					AbstractWKT awkt = null;
+					if (spatial.getDatatype() == null) { // plain WKT literal
+						awkt = new AbstractWKT(geomRep);
+						
+					} else { // typed WKT literal
+						awkt = new AbstractWKT(geomRep, spatial.getDatatype().stringValue());
+					}
+
 					geom = jts.WKTread(awkt.getWKT());
 					srid = awkt.getSRID();
-					
+
 				} else { // GML
 					geom = jts.GMLread(geomRep);
 					srid = geom.getSRID();
 				}
 			}
 			
-			// transform the geometry to {@link GeoConstants#defaultSRID}
-			geom = jts.transform(geom, srid, GeoConstants.defaultSRID);
+			// transform the geometry to {@link GeoConstants#EPSG4326_SRID}
+			geom = jts.transform(geom, srid, GeoConstants.EPSG4326_SRID);
 			
 			if (geom instanceof Point) {
 				geometryType = KML.Point;

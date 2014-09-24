@@ -9,15 +9,16 @@ import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author George Garbis <ggarbis@di.uoa.gr>
- * 
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class MonetDBSqlTable extends GeneralDBSqlTable {
 
+	public static final int DEFAULT_SRID = 4326;
+	
 	public MonetDBSqlTable(String name) {
 		super(name.toLowerCase());
 	}
@@ -48,8 +49,7 @@ public class MonetDBSqlTable extends GeneralDBSqlTable {
 	
 	@Override
 	public String buildInsertGeometryValue() {
-		Integer srid=  GeoConstants.defaultSRID;
-		return " (id, strdfgeo,srid) VALUES (CAST(? AS INTEGER), Transform(GeomFromWKB(CAST(? AS BLOB),CAST(? AS INTEGER)),"+srid+"), CAST(? AS INTEGER))";
+		return " (id, strdfgeo, srid) VALUES (CAST(? AS INTEGER), Transform(GeomFromWKB(CAST(? AS BLOB), CAST(? AS INTEGER)),"+DEFAULT_SRID+"), CAST(? AS INTEGER))";
 	}
 	
 	@Override

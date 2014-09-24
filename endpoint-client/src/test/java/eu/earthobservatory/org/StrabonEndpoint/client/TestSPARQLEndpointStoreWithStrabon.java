@@ -14,12 +14,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.query.resultio.TupleQueryResultFormat;
-import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -60,12 +57,7 @@ public class TestSPARQLEndpointStoreWithStrabon {
 			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
 			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
 			
-			if (response != true) 
-				System.err.println("Error");
-			
-			
-		//	assertTrue(response == true);
-		
+			assertTrue(response == true);
 	}
 	
 	
@@ -80,11 +72,7 @@ public class TestSPARQLEndpointStoreWithStrabon {
 			String data = "<http://geo.linkedopendata.gr/map/id/l22> <http://geo.linkedopendata.gr/map/hasName> \"layer22\" . ";
 			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
 			
-			if (response != true) 
-				System.err.println("Error");
-			
-			
-		//	assertTrue(response == true);
+			assertTrue(response == true);
 		
 	}
 }

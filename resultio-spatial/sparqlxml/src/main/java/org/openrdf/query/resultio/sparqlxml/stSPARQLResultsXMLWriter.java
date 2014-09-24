@@ -34,19 +34,19 @@ import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
-
-
-import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * A {@link TupleQueryResultWriter} that writes tuple query results in the <a
  * href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML
  * Format</a>.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
@@ -60,6 +60,11 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 	 */
 	private XMLWriter xmlWriter;
 
+	/**
+	 * The ordered list of binding names of the result.
+	 */
+	private List<String> bindingNames;
+	
 	/*--------------*
 	 * Constructors *
 	 *--------------*/
@@ -92,6 +97,9 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		throws TupleQueryResultHandlerException
 	{
 		try {
+			// keep the order of binding names
+			this.bindingNames = bindingNames;	
+			
 			xmlWriter.startDocument();
 
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
@@ -133,13 +141,17 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 		try {
 			xmlWriter.startTag(RESULT_TAG);
 
-			for (Binding binding : bindingSet) {
-				xmlWriter.setAttribute(BINDING_NAME_ATT, binding.getName());
-				xmlWriter.startTag(BINDING_TAG);
-
-				writeValue(binding.getValue());
-
-				xmlWriter.endTag(BINDING_TAG);
+			for (String bindingName : bindingNames) {
+				Binding binding = bindingSet.getBinding(bindingName);
+				if(binding != null)
+				{
+					xmlWriter.setAttribute(BINDING_NAME_ATT, binding.getName());
+					xmlWriter.startTag(BINDING_TAG);
+	
+					writeValue(binding.getValue());
+	
+					xmlWriter.endTag(BINDING_TAG);
+				}
 			}
 
 			xmlWriter.endTag(RESULT_TAG);
@@ -152,16 +164,23 @@ public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 	private void writeValue(Value value) throws IOException {
 		if (value instanceof URI) {
 			writeURI((URI) value);
+			
 		} else if (value instanceof BNode) {
 			writeBNode((BNode) value);
+			
 		} else if (value instanceof Literal) {
 			writeLiteral((Literal) value);
-		} 
-		else { // spatial literal
-			// else if (value instanceof RdbmsPolyhedron)
-			URI datatype = new URIImpl(GeoConstants.WKT);
-			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) value;
-			Literal literal = new LiteralImpl(value.stringValue(), dbpolyhedron.getDatatype());
+			
+		} else if (value instanceof GeneralDBPolyhedron) { // spatial case from database
+			GeneralDBPolyhedron poly = (GeneralDBPolyhedron) value;
+			writeLiteral(new LiteralImpl(poly.stringValue(), poly.getDatatype()));
+			
+		} else if (value instanceof StrabonPolyhedron) { // spatial case from new geometry construction (SELECT) 
+			StrabonPolyhedron poly = (StrabonPolyhedron) value;
+			Literal literal = new LiteralImpl(WKTHelper.createWKT(poly.stringValue(), 
+																  poly.getGeometry().getSRID(),
+																  poly.getGeometryDatatype().toString()), 
+											  new URIImpl(poly.getGeometryDatatype().toString()));
 			writeLiteral(literal);
 		}
 	}

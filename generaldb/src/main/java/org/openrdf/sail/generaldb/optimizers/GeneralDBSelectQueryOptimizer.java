@@ -114,7 +114,7 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * Rewrites the core algebra model with a relation optimised model, using SQL.
  * 
- * @author James Leigh
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Konstantina Bereta   <Konstantina.Bereta@di.uoa.gr>
  * 
@@ -154,7 +154,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	//Counter used to enumerate expressions in having
 	private int havingID = 1;
-	/**
+
+	/*
 	 * addition by constant
 	 */
 	private List<String> temporalVars = new ArrayList<String>(15);
@@ -164,10 +165,6 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	private List<Var> existingTemporalJoins = new ArrayList<Var>();
 
 
-	/**
-	 * 
-	 */
-	
 	private static final String ALIAS = "t";
 
 	private GeneralDBSqlExprFactory sql;
@@ -211,21 +208,19 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Distinct node)
-			throws RuntimeException
-			{
+	public void meet(Distinct node) throws RuntimeException
+	{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 			query.setDistinct(true);
 			node.replaceWith(query);
 		}
-			}
+	}
 
 	@Override
-	public void meet(Union node)
-			throws RuntimeException
-			{
+	public void meet(Union node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -245,7 +240,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		mergeSelectClause(query, right);
 		addProjectionsFromUnion(query, union);
 		node.replaceWith(query);
-			}
+	}
 
 	/**
 	 * This happens when both sides of the union have the same variable name with
@@ -267,9 +262,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Join node)
-			throws RuntimeException
-			{
+	public void meet(Join node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -290,12 +284,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		 * This change was made before altering the spatial joins operation
 		 */
 		reference = left;
-			}
+	}
 
 	@Override
-	public void meet(LeftJoin node)
-			throws RuntimeException
-			{
+	public void meet(LeftJoin node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -326,7 +319,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 		node.replaceWith(left);
 		reference = left;
-			}
+	}
 
 	@Override
 	public void meet(StatementPattern sp) {
@@ -479,12 +472,14 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				proj.setVar(var);
 				proj.setId(new GeneralDBRefIdColumn(var));
 
-
 				if(geoNames.contains(var.getName()))
 				{
 					proj.setStringValue(new GeneralDBLabelColumn(var));
 					//13/09/2011 my addition in order to create a spatial join in the meet(Filter) call that will follow
 					previousAlias = var;
+					
+					// add the corresponding datatype (see {@link GeneralDBValueJoinOptimizer.GeneralDBLabelColumn})
+					proj.setDatatype(new GeneralDBDatatypeColumn(var));
 				}
 				else if(temporalVars.contains(var.getName()))
 				{
@@ -493,13 +488,10 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				}
 				else
 				{
-
-
 					proj.setStringValue(coalesce(new GeneralDBURIColumn(var), new GeneralDBBNodeColumn(var), new GeneralDBLabelColumn(var),
 							new GeneralDBLongLabelColumn(var), new GeneralDBLongURIColumn(var)));
 					proj.setDatatype(new GeneralDBDatatypeColumn(var));
 					proj.setLanguage(new GeneralDBLanguageColumn(var));
-
 				}
 				query.addSqlSelectVar(proj);
 			}
@@ -527,15 +519,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			from.addFilter(in);
 		}
 		sp.replaceWith(query);
-
-
 	}
 
 	@Override
-	public void meet(Filter node)
-			throws RuntimeException
-			{
-
+	public void meet(Filter node) throws RuntimeException
+	{
 		/**
 		 * XXX 21/09/2011 addition for spatial joins
 		 * Ekmetalleyomai to gegonos oti exw 'fytepsei' sta embolima filters twn joins mia statement pattern me to onoma -dummy-
@@ -1236,13 +1224,15 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			ValueExpr expr = elem.getExpr();
 			GeneralDBSqlExpr sqlExpr = null;
 			String name = elem.getName();
-			if(expr instanceof FunctionCall)
-			{
+			
+			if (expr instanceof FunctionCall)
+			//if (expr instanceof FunctionCall && !isFuncExprGrounded(expr))
+			{ // if the expr is grounded we are going to evaluate it in Java 
 				if(!evaluateInJava(expr))
 				{
 					Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-					if(function instanceof SpatialPropertyFunc || function instanceof SpatialRelationshipFunc 
-							|| function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
+					if(function instanceof SpatialPropertyFunc  || function instanceof SpatialRelationshipFunc ||
+					   function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
 					{
 						try {
 							sqlExpr = sql.getBooleanExprFactory().spatialFunction((FunctionCall) expr);
@@ -1318,14 +1308,37 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					}
 				}
 			}
-			/**
-			 * 
-			 */
-
-
 		}
 	}
 
+	/**
+	 * Checks whether the given value expression contains only grounded
+	 * terms (constants). 
+	 * 
+	 * This should work for the spatial case, but I am not 100% sure whether
+	 * it is going to work for whole SPARQL 1.1.
+	 * 
+	 * @param funcExpr
+	 * @return
+	 */
+	private boolean isFuncExprGrounded(ValueExpr funcExpr) {
+		if (funcExpr instanceof FunctionCall) {
+			// recursively check its arguments
+			boolean groundedChildren = true;
+			for (int i = 0; i < ((FunctionCall) funcExpr).getArgs().size(); i++) {
+				groundedChildren &= isFuncExprGrounded(((FunctionCall) funcExpr).getArgs().get(i));
+			}
+			
+			return groundedChildren;
+			
+		} else if (funcExpr instanceof Var) { // variable
+			return false;
+			
+		} else { // all other cases (constant, UnaryExpressions, etc...) -> dodgy!
+			return true;
+		}
+	}
+	
 	//Checking that no spatial function exists in this metric expression
 	private boolean thematicExpression(ValueExpr expr)
 	{
@@ -1450,7 +1463,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	/**
 	 * Function used recursively to specify whether the function call present in the select clause contains an aggregate
-	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue). 
+	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue).
+	 *  
 	 * @param expr 
 	 * @return true if no aggregate is present, false otherwise.
 	 */
@@ -1489,9 +1503,6 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 
 	}
-	/**
-	 * 
-	 */
 
 	@Override
 	public void meet(Slice node)

@@ -9,16 +9,22 @@ import java.sql.SQLException;
 
 import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
-import eu.earthobservatory.constants.GeoConstants;
-
 /**
  * Converts table names to lower-case and include the analyse optimisation.
  * 
- * @author James Leigh
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * 
  */
 public class PostGISSqlTable extends GeneralDBSqlTable {
 
+	/**
+	 * This value should not be changed whatever the semantics of Strabon
+	 * is for EPSG:4326. This number is hardcoded in PostGIS's SQL statements
+	 * that define several of their ST_ methods. 
+	 */
+	public static final int DEFAULT_SRID = 4326;
+	
 	public PostGISSqlTable(String name) {
 		super(name.toLowerCase());
 	}
@@ -37,7 +43,7 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	
 	@Override
 	public String buildGeometryCollumn() {
-		return "SELECT AddGeometryColumn('','geo_values','strdfgeo',4326,'GEOMETRY',2)";
+		return "SELECT AddGeometryColumn('', 'geo_values', 'strdfgeo', " + DEFAULT_SRID + ", 'GEOMETRY', 2)";
 	}
 	
 	@Override
@@ -46,6 +52,13 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 		return "CREATE INDEX test_period_idx ON period_values USING GiST (period)";
 	}
 	
+	/**
+	 * SQL arguments
+	 * 	arg1: hash
+	 * 	arg2: geometry (binary)
+	 * 	arg3: SRID of the given geometry (used to transform it to PostGIS' 4326 long/lat CRS)
+	 * 	arg4: SRID of the given geometry to save to the database
+	 */
 	@Override
 	public String buildInsertPeriodValue() {
 		return " (id, period) VALUES (?,period_in(textout(?)))";
@@ -54,13 +67,12 @@ public class PostGISSqlTable extends GeneralDBSqlTable {
 	
 	@Override
 	public String buildInsertGeometryValue() {
-		Integer srid=  GeoConstants.defaultSRID;
-		return " (id, strdfgeo,srid) VALUES (?,ST_Transform(ST_GeomFromWKB(?,?),"+srid+"),?)";
+		return " (id, strdfgeo, srid) VALUES (?, ST_Transform(ST_GeomFromWKB(?, ?),"+DEFAULT_SRID+"), ?)";
 	}
 	
 	@Override
 	public String buildInsertValue(String type) {
-		return " (id, value) VALUES ( ?, ?) ";
+		return " (id, value) VALUES (?, ?) ";
 	}
 	
 	@Override

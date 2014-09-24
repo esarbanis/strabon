@@ -1,6 +1,76 @@
-	* Fixed a bug that occured when storing quads from endpoint.
+	* Fixed a bug that would not return the correct spatial datatype of a
+	  projected geometry literal stored in the database.
+	  (bug #71: http://bug.strabon.di.uoa.gr/ticket/71)
+
+	* Now, geometries expressed in CRS84 and a `geo:wktLiteral' datatype
+	  are assigned the correct CRS, i.e., EPSG:4326 with a longitude
+	  latitude axis order.
+
+	* Now, we report a parse error when a constant geometry given in a
+	  SELECT or HAVING clause is not well-formed according to the WKT
+	  specification.
+	  (bug #69: http://bug.strabon.di.uoa.gr/ticket/69)
+
+	* Function `geof:convexHull' is now supported in a Having clause.
+
+	* Fixed older implementation of `strdf:distance' that would expect two
+	  arguments instead of three when present in a HAVING clause.
+
+	* Fixed a bug that would cause a class cast exception for grounded
+	  expressions with function nesting in the SELECT or HAVING clause.
+
+	* Fixed a bug in which `postgis:ST_Centroid' did not work in the SELECT
+	  clause with input geometries from the database.
+
+	* Fixed a bug that `geof:getSRID' would return an integer instead of a
+	  the URI corrresponding to the CRS that the input geometry was
+	  expressed.
+	  (bug #32:  http://bug.strabon.di.uoa.gr/ticket/32)
+	* Fixed a bug that would raise an exception for queries involving two
+	  UNION graph patterns and a projection to a predicate or a URI in
+	  general.
+	  (bug #53: http://bug.strabon.di.uoa.gr/ticket/53)
+
+Wed Sep 17 20:14:12 2014   Pyravlos Team
 
 	* Version 3.2.10 released.
+
+	* The test suite of Strabon has now reached a mature level. It
+	  contains tests for both stSPARQL and GeoSPARQL query languages and
+	  most of the compliance tests covered in the specification of
+	  GeoSPARQL (well, only those tests for the components that we have
+	  chosen to implement). 
+
+	* The endpoint now parses Accept headers with multiple values and uses
+	  the first mimetype corresponding to a valid stSPARQLQueryResultFormat.
+	  (bug #64: http://bug.strabon.di.uoa.gr/ticket/64)
+
+	* The endpoint now registers a handler for SIGTERM signals, so that if
+	  it is run from the command-line (endpoint-exec), then the closing of
+	  the connection will be ultimately called.
+	  (bug #40: http://bug.strabon.di.uoa.gr/ticket/40)
+
+	* Strabon goes debian v1. the endpoint-exec jar is now given in a .deb 
+          format. By dpkg-ing it, one can run a stand alone strabon endpoint
+          locally.
+	  (bug #45 http://bug.strabon.di.uoa.gr/ticket/58)
+
+	* Fixed a bug in which Strabon hanged when a unary spatial construct 
+	  had a ternary spatial construct as argument. 
+	  (bug #45 http://bug.strabon.di.uoa.gr/ticket/45)
+
+	* Fixed a bug according to which spatial functions in ORDER BY were not
+	  evaluated at all.
+	  (bug #62: http://bug.strabon.di.uoa.gr/ticket/62)
+
+	* Fixed a bug according to which spatial boolean functions appearing
+	  in the SELECT clause were raising a NULL pointer exception.
+	  (bug #34: http://bug.strabon.di.uoa.gr/ticket/34)
+
+	* Fixed a bug in queries that contain variables that exist inside 
+	  spatial functions in select and do not exist in the where clause 
+	  made Strabon throw a NULL pointer exception.
+	  (bug #51 https://bug.strabon.di.uoa.gr/ticket/51)
 
 	* Various changes in the interface and behavior of Strabon Endpoint:
 	  - Revised the logos and the sample queries.
@@ -16,8 +86,9 @@
 	  - The DESCRIBE functionality can now be accessed through the menu bar.
 	
 	* Fixed a bug where strdf:intersection function did not work as an
-	aggregate when used without 'GROUP BY'.
-	(bug #46 https://bug.strabon.di.uoa.gr/ticket/46)
+	  aggregate when used without 'GROUP BY'.
+	  (bug #46 https://bug.strabon.di.uoa.gr/ticket/46)
+
 
 Sat Oct 19 23:37:23 2013   Pyravlos Team
 

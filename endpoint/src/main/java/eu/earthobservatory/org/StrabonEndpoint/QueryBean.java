@@ -16,10 +16,11 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -33,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
@@ -115,9 +115,6 @@ public class QueryBean extends HttpServlet {
 		// get the name of this web application
 		appName = context.getContextPath().replace("/", "");
 		
-	
-		
-	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -173,26 +170,30 @@ public class QueryBean extends HttpServlet {
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		ServletOutputStream out = response.getOutputStream();
 		
-		// get the stSPARQL Query Result format (we check only the Accept header)
-        stSPARQLQueryResultFormat format = stSPARQLQueryResultFormat.forMIMEType(request.getHeader("accept"));
-        
-        // get the query
+		// get desired formats (we check only the Accept header)
+		List<stSPARQLQueryResultFormat> formats = parseMultiValuedAcceptHeader(request.getHeader("accept"));
+		
+		// get the query and the limit
 		String query = request.getParameter("query");
 		String maxLimit = request.getParameter("maxLimit");
-    	
-    	// check for required parameters
-    	if (format == null || query == null) {
-    		logger.error("[StrabonEndpoint.QueryBean] {}", PARAM_ERROR);
-    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		
+		// check for required parameters
+		if (formats.size() == 0 || query == null) {
+	    	logger.error("[StrabonEndpoint.QueryBean] {}", PARAM_ERROR);
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			out.print(ResponseMessages.getXMLHeader());
 			out.print(ResponseMessages.getXMLException(PARAM_ERROR));
 			out.print(ResponseMessages.getXMLFooter());
-    		
-    	} else {
-    		// decode the query
-    		query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
-    		
+			
+		} else {
+			// just use the first specified format
+			stSPARQLQueryResultFormat format = formats.get(0);
+		
+			// decode the query
+			query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			
 	    	response.setContentType(format.getDefaultMIMEType());
+	    	
 	    	try {
 				query = strabonWrapper.addLimit(query, maxLimit);
 				strabonWrapper.query(query, format.getName(), out);
@@ -205,11 +206,11 @@ public class QueryBean extends HttpServlet {
 				out.print(ResponseMessages.getXMLException(e.getMessage()));
 				out.print(ResponseMessages.getXMLFooter());
 			}
-    	}
-    	
-    	out.flush();
+		}
+	    	
+		out.flush();
 	}
-
+	
 	/**
      * Processes the request made from the HTML visual interface of Strabon Endpoint.
      * 
@@ -385,4 +386,43 @@ public class QueryBean extends HttpServlet {
 			}
 		}
 	}
+	
+	/**
+	 * Given an Accept header, it parses it and extracts the mime types for the accepted formats.
+	 * The header might contain multiple accepted values and qvalues as well, however, qvalues
+	 * are ignored. The extracted mime types are then transformed to stSPARQLQueryResultFormat
+	 * and a list of such objects is returned. If a mimetype is not valid, then it is ignored.
+	 * If all mimetypes are invalid, then the returned list has zero elements, but it is not
+	 * null.
+	 * 
+	 * @param header
+	 * @return
+	 */
+	private List<stSPARQLQueryResultFormat> parseMultiValuedAcceptHeader(String header) {
+		List<stSPARQLQueryResultFormat> formats = new ArrayList<stSPARQLQueryResultFormat>();
+		
+		StringTokenizer token = new StringTokenizer(header, ", ");
+		
+		while (token.hasMoreTokens()) {
+			String value = token.nextToken();
+			
+			// value might contain qvalues (e.g., "text/plain; q=0.2")
+			// for the time being, we just discard them
+			int idx_sep_cut = value.indexOf(';');
+			if (idx_sep_cut > 0) {
+				value = value.substring(0, idx_sep_cut);
+			}
+			
+			// get the stSPARQL Query Result format 
+	        stSPARQLQueryResultFormat format = stSPARQLQueryResultFormat.forMIMEType(value);
+	        
+	        // keep only the valid formats (non-null)
+	        if (format != null) {
+	        	formats.add(format);
+	        }
+		}
+
+        return formats;
+	}
+
 }

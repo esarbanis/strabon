@@ -11,6 +11,7 @@ package eu.earthobservatory.runtime.postgis;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sail.generaldb.exceptions.UnsupportedExtensionFunctionException;
+import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,10 @@ public class QueryOp {
 			logger.error("[Strabon.QueryOp] {}", e.getMessage());
 			
 		} catch (MalformedQueryException e) {
-			logger.error("[Strabon.QueryOp] {}", e.getMessage());
+			logger.error("[Strabon.QueryOp] Malformed query: {}", e.getMessage());
+		
+		} catch (UnsupportedRdbmsOperatorException e) {
+			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query: {}", e.getMessage());
 			
 		} catch (Exception e) {
 			logger.error("[Strabon.QueryOp] Error during execution of SPARQL query.", e);			

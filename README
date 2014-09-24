@@ -63,6 +63,12 @@ to the above command. The complete command is the following:
 
 	$ mvn -DskipTests=false clean package
 
+Alternatively, it is possible to run a specific test. Supposing that the name of
+the corresponding class is `TestName', then you can run only this
+test using the following command:
+
+	$ mvn test -DfailIfNoTests=false -DskipTests=false -Dtest=TestName
+
 In case of an error during building of Strabon and assuming that the error does
 not come from the JUnit tests, please have a look at the `Known Issues' section
 below. If none of the known issues of that section applies, please contact the
@@ -481,31 +487,6 @@ the Strabon-devel mailing-list Strabon-devel@di.uoa.gr.
 
 Known Issues
 ============
-* Strabon depends on a version of Sesame OpenRDF that is not hosted at the central
-  repository of Maven. These artifacts resided on the Maven repository of Aduna 
-  which is not maintained any more. For this reason, you can use a mirror repository 
-  hosted by Ontotext. To configure maven to use the Ontotext mirror for the Aduna 
-  repository, you append to your settings file ${user.home}/.m2/settings.xml) the 
-  following:
-
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-...
-...
-  <mirrors>
-    <mirror>
-      <id>aduna-mirror</id>
-      <name>Aduna Maven Repository - Mirror</name>
-      <url>http://maven.ontotext.com/content/repositories/aduna/</url>
-      <mirrorOf>aduna-opensource.releases</mirrorOf>
-    </mirror>
-  </mirrors>
-...
-...
-</settings>
-
  * By default, Tomcat uses ISO-8859-1 character encoding when decoding URLs received 
    from a browser. This can cause problems when encoding is UTF-8, and you are using 
    international characters. In order to fix this, edit conf/server.xml and find the 

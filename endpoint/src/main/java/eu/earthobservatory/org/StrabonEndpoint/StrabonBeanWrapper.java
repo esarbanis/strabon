@@ -19,7 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +28,6 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import eu.earthobservatory.constants.TemporalConstants;
@@ -164,7 +162,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					// use PostGIS as the default database backend
 					this.strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, user, password, port, serverName, checkForLockTable);	
 				}
-				
+
+				installSIGTERMHandler(this.strabon);
 				
 			} catch (Exception e) {
 				logger.error("[StrabonEndpoint] Exception occured while creating Strabon. {}\n{}", e.getMessage(), this.getDetails());
@@ -175,6 +174,33 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return true;
 	}
 
+	/**
+	 * Registers a handler for SIGTERM signals, like Ctrl-C. One may send such a signal
+	 * at the command prompt, when running Strabon Endpoint from the command line, i.e.,
+	 * using the endpoint-exec module.   
+	 * 
+	 * @param strabon The strabon instance
+	 */
+	private static void installSIGTERMHandler(final Strabon strabon) {
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Installing handler for SIGTERM signals...");
+		}
+		
+		// register the handler
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			
+			@Override
+			public void run() {
+				// just call the Strabon.close() method
+				strabon.close();
+			}
+		});
+		
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Handler for SIGTERM signals installed successfully.");
+		}
+	}
+	
 	public Strabon getStrabon() {
 		return strabon;
 	}
@@ -223,8 +249,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
 					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
 					
-					int i=1;
-					int index=0;
 					while(result.hasNext()){
 						BindingSet bindings = result.next();
 						arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
@@ -232,7 +256,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 						
 						gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
 								arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
-								i++;	
 					}
 					gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
 					gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
@@ -243,7 +266,6 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					
 					String chartType;
 					int varNum = bindingNames.size();
-					ArrayList<String> arr = new ArrayList<String>(varNum);
 
 					gChartString = "var data = google.visualization.arrayToDataTable([[";
 					for(int j=0; j<varNum; j++){

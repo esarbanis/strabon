@@ -19,8 +19,8 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
  * 
- * @author James Leigh
- * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr.
+ * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 
@@ -39,8 +39,8 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 			Blob labelBlob = rs.getBlob(index + 1);
     		byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
     		int srid = rs.getInt(index + 2);
-			return vf.getRdbmsPolyhedron(id, GeoConstants.WKT, label, srid);
-
+    		String datatype = rs.getString(index + 3);
+			return vf.getRdbmsPolyhedron(id, datatype, label, srid);
 		}
 
 		return createResource(rs, index);
@@ -63,7 +63,7 @@ public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 		Blob labelBlob = rs.getBlob(index + 1); 
 		byte[] label = labelBlob.getBytes((long)1, (int)labelBlob.length());
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
+		return vf.getRdbmsPolyhedron(114, GeoConstants.WKTLITERAL, label, srid);
 	}
 
 	@Override
