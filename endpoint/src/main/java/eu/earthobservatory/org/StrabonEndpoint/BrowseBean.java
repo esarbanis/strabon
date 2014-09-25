@@ -11,7 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -77,8 +76,7 @@ public class BrowseBean extends HttpServlet {
 				.getWebApplicationContext(context);
 
 		// the the strabon wrapper
-		strabonWrapper = (StrabonBeanWrapper) applicationContext
-				.getBean("strabonBean");
+		strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 
 	}
 
@@ -146,7 +144,9 @@ public class BrowseBean extends HttpServlet {
 
 		} else {
 			// decode the query
-			query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			// do not decode the SPARQL query (see bugs #65 and #49)
+			//query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			query = request.getParameter("query");
 
 			response.setContentType(format.getDefaultMIMEType());
 			try {
@@ -176,7 +176,9 @@ public class BrowseBean extends HttpServlet {
 	private void processVIEWRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher dispatcher;
 
-		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		// do not decode the SPARQL query (see bugs #65 and #49)
+		//String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		String query = request.getParameter("query");
 		String format = request.getParameter("format");
 		
 		// get stSPARQLQueryResultFormat from given format name

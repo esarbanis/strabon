@@ -145,7 +145,12 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 								         "(?predicate = <"+ boundValue.toString()+ ">)  || "+
 								         "(?object = <"+ boundValue.toString()+ ">)) " +  
 								"}";
-							href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");						
+							
+							// FIXME maybe using URLEncoder.encode() for encoding the query and the "boundValue" 
+							// is not the proper way to encode the final URL (see related bugs #65 and #49), but
+							// I am not 100% sure
+							href = "Browse?view=HTML&query="+URLEncoder.encode(query, "UTF-8")+"&format=HTML&resource="+URLEncoder.encode(boundValue.toString(), "UTF-8");
+							
 						}
 						else{							
 							href = boundValue.toString();

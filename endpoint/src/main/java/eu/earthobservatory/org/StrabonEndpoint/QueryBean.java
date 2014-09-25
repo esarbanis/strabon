@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
- * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ * Copyright (C) 2010, 2011, 2012, 2013, 2014 Pyravlos Team
  * 
  * http://www.strabon.di.uoa.gr/
  */
@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URLDecoder;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
@@ -189,8 +188,9 @@ public class QueryBean extends HttpServlet {
 			// just use the first specified format
 			stSPARQLQueryResultFormat format = formats.get(0);
 		
-			// decode the query
-			query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			// do not decode the SPARQL query (see bugs #65 and #49)
+			//query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			query = request.getParameter("query");
 			
 	    	response.setContentType(format.getDefaultMIMEType());
 	    	
@@ -231,7 +231,10 @@ public class QueryBean extends HttpServlet {
 			dispatcher.forward(request, response);
 			
 		} else {
-			String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			// do not decode the SPARQL query (see bugs #65 and #49)
+			//String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+			
+			String query = request.getParameter("query");
 			String format = request.getParameter("format");
 			String handle = request.getParameter("handle");
 			String maxLimit = request.getParameter("maxLimit");
