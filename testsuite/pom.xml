@@ -19,7 +19,7 @@
 			<groupId>eu.earthobservatory</groupId>
 			<artifactId>strabon-runtime</artifactId>
 		</dependency>
-
+ 
 		<!-- Testing: JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

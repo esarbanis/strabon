@@ -154,9 +154,8 @@ public class SPARQLEndpoint extends HTTPClient{
 	 * @return <code>true</code> if store was successful, <code>false</code> otherwise
 	 * @throws IOException 
 	 */
-	
 	public boolean store(String data, RDFFormat format, URL namedGraph) throws IOException {
-assert(format != null);
+		assert(format != null);
 		
 		// create a post method to execute
 		HttpPost method = new HttpPost(getConnectionURL());

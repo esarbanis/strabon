@@ -143,21 +143,28 @@ public class Utils
 	}
 	
 	
-	public static void testQuery(String queryFile, String resultsFile,boolean orderOn) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
+	public static void testQuery(String queryFile, String resultsFile, boolean orderOn) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
 		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
 		//Pose the query
 		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);
-
+		
 		//Check if the results of the query are the expected
-		TupleQueryResult expectedResults = QueryResultIO.parse(Utils.class.getResourceAsStream(resultsFile), TupleQueryResultFormat.SPARQL);
-		TupleQueryResult actualResults = QueryResultIO.parse((new ByteArrayInputStream(resultsStream.toByteArray())), TupleQueryResultFormat.SPARQL);
-
+		compareResults(queryFile, orderOn, 
+					   QueryResultIO.parse(Utils.class.getResourceAsStream(resultsFile), TupleQueryResultFormat.SPARQL),
+					   QueryResultIO.parse((new ByteArrayInputStream(resultsStream.toByteArray())), TupleQueryResultFormat.SPARQL));
+	}
+	
+	protected static void compareResults(String queryFile, boolean orderOn, 
+															 TupleQueryResult expectedResults, 
+															 TupleQueryResult actualResults) throws QueryEvaluationException {
+		
 		List<String> eBindingNames = expectedResults.getBindingNames();
 		List<String> aBindingNames = actualResults.getBindingNames();
-		assertTrue("Results are not the expected. QueryFile: "+queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
+		
+		assertTrue("Results are not the expected. QueryFile: " + queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
 		
 		//Sort each binding's values
 		List<String> eBindingList = new ArrayList<String>();
