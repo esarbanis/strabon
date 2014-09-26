@@ -51,7 +51,8 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
+		
+		return vf.getRdbmsPolyhedron(GeoConstants.WKT, label, srid);
 	}
 	
 	@Override
@@ -60,6 +61,6 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, GeoConstants.WKTLITERAL, label, srid);
+		return vf.getRdbmsPolyhedron(GeoConstants.WKTLITERAL, label, srid);
 	}
 }

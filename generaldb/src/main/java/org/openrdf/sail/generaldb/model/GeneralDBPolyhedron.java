@@ -58,6 +58,34 @@ public class GeneralDBPolyhedron extends RdbmsValue {
 		this.datatype = datatype;
 	}
 
+	/**
+	 * this method is called from the method:
+	 * {@link GeneralDBValueFactory.getRdbmsPolyhedron}
+	 * for SELECT constructs 
+	 * 
+	 * @param datatype
+	 * @param polyhedron
+	 * @param srid
+	 */
+	public GeneralDBPolyhedron(URI datatype, byte[] polyhedron, int srid) throws IOException, ClassNotFoundException {
+		//set null id and version in the RdbmsSValue
+		super(null, null);
+		
+		try {
+			this.polyhedron = new StrabonPolyhedron(polyhedron, srid, GeometryDatatype.fromString(datatype.stringValue()));
+			
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		
+		setPolyhedronStringRep(this.polyhedron);
+		this.datatype = datatype;
+	}
+
 	public String getPolyhedronStringRep() {
 		return polyhedronStringRep;
 	}
