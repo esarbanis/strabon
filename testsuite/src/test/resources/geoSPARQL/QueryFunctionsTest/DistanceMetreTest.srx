@@ -6,7 +6,7 @@
 	<results>
 		<result>
 			<binding name='dist'>
-				<literal datatype='http://www.w3.org/2001/XMLSchema#double'>2.0</literal>
+				<literal datatype='http://www.w3.org/2001/XMLSchema#double'>222605.28125</literal>
 			</binding>
 		</result>
 	</results>

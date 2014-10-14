@@ -386,4 +386,31 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 		}
 		return null;
 	}
+	
+	/**
+	 * This function is called only for SELECT constructs, thus we do not create an id
+	 * for the resulting geometry because we don't push it in the database since
+	 * there is small possibility to meet this geometry in the future.
+	 * {@link PostGISBindingIteration.createWellKnownTextGeoValueForSelectConstructs},
+	 * {@link PostGISBindingIteration.createWellKnownTextLiteralGeoValueForSelectConstructs},
+	 * {@link and MonetDBBindingIteration.createWellKnownTextGeoValueForSelectConstructs},
+	 * {@link and MonetDBBindingIteration.createWellKnownTextLiteralGeoValueForSelectConstructs}
+	 * @param datatype
+	 * @param wkb
+	 * @param srid
+	 * @return
+	 */
+	public GeneralDBPolyhedron getRdbmsPolyhedron(String datatype, byte[] wkb, int srid)  {
+
+		try {
+			if(wkb != null) {
+				return new GeneralDBPolyhedron(vf.createURI(datatype), wkb, srid);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -249,10 +249,22 @@
 				<artifactId>strabon-endpoint</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>strabon-endpoint-client</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>eu.earthobservatory</groupId>
 				<artifactId>strabon-vocabulary</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>eu.earthobservatory</groupId>
+				<artifactId>strabon-testsuite</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 

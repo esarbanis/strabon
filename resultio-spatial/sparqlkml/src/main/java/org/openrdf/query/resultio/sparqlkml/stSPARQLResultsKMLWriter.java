@@ -62,33 +62,33 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter.class);
 
 	// KML tags/attributes
-	private static final String ROOT_TAG 			= "kml";
-	private static final String NAMESPACE 			= "http://www.opengis.net/kml/2.2";
-	private static final String RESULT_SET_TAG 		= "Folder";
-	private static final String DOCUMENT_TAG 		= "Document";
-	private static final String PLACEMARK_TAG 		= "Placemark";
-	private static final String TIMESTAMP_TAG 		= "TimeStamp";
-	private static final String TIMESPAN_TAG 		= "TimeSpan";
-	private static final String BEGIN_TAG 			= "begin";
-	private static final String END_TAG 			= "end";
-	private static final String WHEN_TAG 			= "when";
-	private static final String NAME_TAG 			= "name";
-	private static final String DESC_TAG 			= "description";
-	private static final String EXT_DATA_TAG 		= "ExtendedData";
-	private static final String DATA_TAG 			= "Data";
-	private static final String VALUE_TAG			= "value";
-	private static final String NAME_ATTR			= NAME_TAG;
+	protected static final String ROOT_TAG 			= "kml";
+	protected static final String NAMESPACE 		= "http://www.opengis.net/kml/2.2";
+	protected static final String RESULT_SET_TAG 	= "Folder";
+	protected static final String PLACEMARK_TAG 	= "Placemark";
+	protected static final String DOCUMENT_TAG 	= "Document";
+	protected static final String TIMESTAMP_TAG 	= "TimeStamp";
+	protected static final String TIMESPAN_TAG 		= "TimeSpan";
+	protected static final String BEGIN_TAG 		= "begin";
+	protected static final String END_TAG 			= "end";
+	protected static final String WHEN_TAG 			= "when";
+	protected static final String NAME_TAG 			= "name";
+	protected static final String DESC_TAG 			= "description";
+	protected static final String EXT_DATA_TAG 		= "ExtendedData";
+	protected static final String DATA_TAG 			= "Data";
+	protected static final String VALUE_TAG			= "value";
+	protected static final String NAME_ATTR			= NAME_TAG;
 	
-	private static final String STYLE_TAG			= "Style";
-	private static final String POLY_STYLE_TAG	= "PolyStyle";
+	protected static final String STYLE_TAG		= "Style";
+	protected static final String POLY_STYLE_TAG	= "PolyStyle";
 
-	private static final String TABLE_ROW_BEGIN 		= "<TR>";
-	private static final String TABLE_ROW_END 		= "</TR>";
-	private static final String TABLE_DATA_BEGIN 		= "<TD>";
-	private static final String TABLE_DATA_END 		= "</TD>";
-	private static final String NEWLINE 			= "\n";
-	private static final String TABLE_DESC_BEGIN 		= "<![CDATA[<TABLE border=\"1\">"+ NEWLINE;
-	private static final String TABLE_DESC_END 		= "</TABLE>]]>" + NEWLINE;
+	protected static final String TABLE_ROW_BEGIN 	= "<TR>";
+	protected static final String TABLE_ROW_END 	= "</TR>";
+	protected static final String TABLE_DATA_BEGIN 	= "<TD>";
+	protected static final String TABLE_DATA_END 	= "</TD>";
+	protected static final String NEWLINE 			= "\n";
+	protected static final String TABLE_DESC_BEGIN 	= "<![CDATA[<TABLE border=\"1\">"+ NEWLINE;
+	protected static final String TABLE_DESC_END 	= "</TABLE>]]>" + NEWLINE;
 
 	
 	/**
