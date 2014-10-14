@@ -94,55 +94,55 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	/**
 	 * The underlying XML formatter.
 	 */
-	private stSPARQLXMLWriter xmlWriter;
+	protected stSPARQLXMLWriter xmlWriter;
 
 	/**
 	 * The ordered list of binding names of the result.
 	 */
-	private List<String> bindingNames;
+	protected List<String> bindingNames;
 	
 	/**
 	 * The number of results seen.
 	 */
-	private int nresults;
+	protected int nresults;
 
 	/**
 	 * True if results have at least one geometry.
 	 */
-	private Boolean hasGeometry;
+	protected Boolean hasGeometry;
 
 	/**
 	 * True if results have at least one temporal element.
 	 * This element can be either an instant (xsd:dateTime value) or a period (strdf:period)
 	 */
-	private Boolean hasTimestamp;
+	protected Boolean hasTimestamp;
     
-	private Boolean hasTimespan;
+	protected Boolean hasTimespan;
 	/**
 	 * The JTS wrapper
 	 */
-	private JTSWrapper jts;
+	protected JTSWrapper jts;
 
 	/**
 	 * Stream for manipulating geometries
 	 */
-	private ByteArrayOutputStream baos;
+	protected ByteArrayOutputStream baos;
 
 	/**
 	 * Description string holding the projected variables of the SPARQL query
 	 */
-	private StringBuilder descHeader;
+	protected StringBuilder descHeader;
 
 	/**
 	 * Description string holding the values for the projected variables of the
 	 * SPARQL query
 	 */
-	private StringBuilder descData;
+	protected StringBuilder descData;
 
 	/**
 	 * Indentation used in tags that are constructed manually
 	 */
-	private int depth;
+	protected int depth;
 
 	/**
 	 * List of names of predefined KML styles
@@ -388,7 +388,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		}
 	}
 	
-	private String getKML(Value value) {
+	protected String getKML(Value value) {
 		String kml = "";
 		
 		QName geometryType = null;
@@ -492,7 +492,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 * 
 	 * @param binding
 	 */
-	private void writeDesc(Binding binding) {
+	protected void writeDesc(Binding binding) {
 		descData.append(NEWLINE);
 		indent(descData, depth + 1);
 		descData.append(TABLE_ROW_BEGIN);
@@ -508,7 +508,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		descData.append(TABLE_ROW_END);
 	}
 
-	private String getBindingValue(Binding binding) {
+	protected String getBindingValue(Binding binding) {
 		String val = binding.getValue().stringValue();
 		if (binding.getValue() instanceof BNode) {
 			val = "_:" + val;
@@ -529,7 +529,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 	 * @param sb
 	 * @param depth
 	 */
-	private void indent(StringBuilder sb, int depth) {
+	protected void indent(StringBuilder sb, int depth) {
 		for (int i = 0; i < depth; i++) {
 			sb.append(xmlWriter.getIndentString());
 		}
