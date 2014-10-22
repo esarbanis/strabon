@@ -965,6 +965,19 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 		return raw;
 	}
 
+	protected String appendConstantWKT(GeneralDBSqlExpr expr, GeneralDBSqlExprBuilder filter)
+	{
+		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
+		String raw = arg.getValue();
+
+		AbstractWKT wkt = new AbstractWKT(raw);
+		filter.append("Transform(");
+		filter.append(" GeomFromText('" + wkt.getWKT() + "'," + String.valueOf(GeoConstants.defaultSRID) + ")");
+		filter.append(", "+GeoConstants.defaultSRID +")");
+
+		return raw;
+	}
+	
 	//Used in all the generaldb stsparql boolean spatial functions of the form ST_Function(?GEO1,?GEO2) 
 	protected void appendTransformFunc(GeneralDBSqlGeoTransform expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
@@ -1319,7 +1332,9 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			}
 			/////
 
-
+			//case where both arguments are constnats
+			boolean constantArgs = false;	
+ 
 			switch(func)
 			{
 			//XXX Careful: ST_Transform support MISSING!!!
@@ -1340,7 +1355,15 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			filter.openBracket();
 			if(expr.getLeftArg() instanceof GeneralDBStringValue)
 			{
-				appendWKT(expr.getLeftArg(),filter);
+				if(expr.getRightArg() instanceof GeneralDBStringValue)
+				{	
+					//both arguments are constants so we do not need
+					//to transform the geometries to WGS84
+					constantArgs = true;
+					appendWKT(expr.getLeftArg(), filter);
+				}
+				else
+					appendConstantWKT(expr.getLeftArg(), filter);
 			}
 			else if(expr.getLeftArg() instanceof GeneralDBSqlSpatialConstructBinary)
 			{
@@ -1369,7 +1392,12 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 			{
 				if(expr.getRightArg() instanceof GeneralDBStringValue)
 				{
-					appendWKT(expr.getRightArg(),filter);
+					if(constantArgs == true)
+						// both arguments are constants, so we do not need
+						// to transform the geometries to WGS84
+						appendWKT(expr.getRightArg(), filter);
+					else
+						appendConstantWKT(expr.getRightArg(),filter);
 				}
 				else if(expr.getRightArg() instanceof GeneralDBSqlSpatialConstructUnary)
 				{
