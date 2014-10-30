@@ -215,7 +215,6 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 					
 					properties.add(binding.getName());
 					values.add(value);
-					System.out.println(value.getClass());
 				}
 			}
 			
@@ -232,15 +231,12 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 						URI datatype = lit.getDatatype();
 						
 						if (XMLGSDatatypeUtil.isNumericDatatype(datatype)) {
-							System.out.println("is number");
 							sftb.add(properties.get(p), Number.class);
 							
 						} else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {
-							System.out.println("is calendar");
 							sftb.add(properties.get(p), Calendar.class);
 							
 						} else if (XMLGSDatatypeUtil.isBooleanDatatype(datatype)) {
-							System.out.println("is boolean");
 							sftb.add(properties.get(p), Boolean.class);
 							
 						} else { // fallback to String
