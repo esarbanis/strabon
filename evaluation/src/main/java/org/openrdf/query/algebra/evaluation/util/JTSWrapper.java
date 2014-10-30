@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
@@ -75,6 +76,12 @@ public class JTSWrapper {
 	 */
 	private GMLWriter gmlw;
 	
+	/**
+	 * Stores the number of decimal places for the
+	 * default precision model of JTS. 
+	 */
+	private int numDecimalPlaces;
+
 	private JTSWrapper() {
 		// use a private constructor to force call of getInstance method and forbid subclassing
 		wktr = new WKTReader();
@@ -83,6 +90,8 @@ public class JTSWrapper {
 		wkbw = new WKBWriter(); // PostGIS
 //		wkbw = new WKBWriter(2, WKBConstants.wkbXDR); // MonetDB
 		gmlw = new GMLWriter();
+
+		numDecimalPlaces = (new PrecisionModel()).getMaximumSignificantDigits();
 	}
 	
 	public static synchronized JTSWrapper getInstance() {
@@ -201,5 +210,15 @@ public class JTSWrapper {
 	
 	public synchronized String GMLWrite(Geometry geom) {
 		return gmlw.write(geom);
+	}
+
+	/**
+	 * Returns the number of decimal places corresponding to the
+	 * precision model that is used by default by the JTS library.
+	 * 
+	 * @return
+	 */
+	public int getPrecision() {
+		return numDecimalPlaces;
 	}
 }

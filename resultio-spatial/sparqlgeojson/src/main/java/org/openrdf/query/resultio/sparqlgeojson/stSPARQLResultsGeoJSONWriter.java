@@ -20,6 +20,7 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.openrdf.model.Literal;
@@ -101,7 +102,7 @@ public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 
 	@Override
 	public void startQueryResult(List<String> bindingNames) throws TupleQueryResultHandlerException {
-		fjson = new FeatureJSON();
+		fjson = new FeatureJSON(new GeometryJSON(jts.getPrecision()));
 		fjson.setEncodeFeatureCRS(true);
 	}
 
