@@ -1,3 +1,11 @@
+	* Fixed the precision of the geometry literals in GeoJSON writer. Now,
+	  this defaults to the precision model of JTS (equals to 16). Prior to
+	  this it was fixed to 4.
+
+	* Now the GeoJSON writer is aware of the kind of typed literals (e.g.,
+	  numeric, boolean, calendar, etc.) and prints the corresponding
+	  values according to these types. 
+
 	* Fixed a bug that would not return the correct result or would fail 
 	  when a spatial function involved a constant and a variable.
 	  (bug #74: http://bug.strabon.di.uoa.gr/ticket/74)
