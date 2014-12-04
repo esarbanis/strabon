@@ -113,7 +113,7 @@ public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 			String href;
 			
 			// if set to FALSE, urls link to web. if set to TRUE, urls are described //
-			boolean linkURL = false; 
+			boolean linkURL = true; 
 			///////////////////////////////////////////////////////////////////////////
 			
 			
