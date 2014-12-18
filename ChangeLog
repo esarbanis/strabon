@@ -1,3 +1,8 @@
+	* Fixed a bug that would return no results when a variable that results 
+	  from a BIND clause appears in the FILTER or in the projection of a
+	  query and is inside a spatial function.
+	  (bug #78: http://bug.strabon.di.uoa.gr/ticket/78)
+
 	* Fixed the precision of the geometry literals in GeoJSON writer. Now,
 	  this defaults to the precision model of JTS (equals to 16). Prior to
 	  this it was fixed to 4.
