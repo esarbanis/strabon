@@ -341,6 +341,9 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				
 				if(function instanceof AreaFunc)
 				{
+					// check required number of arguments
+					checkArgs(leftResult, rightResult, thirdResult, 1);
+					
 					funcResult = leftGeom.getArea();
 				} 
 				else if(function instanceof DistanceFunc)
@@ -559,8 +562,15 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 				throw new NoSuchMethodException("expecting a third argument.");
 				
 			}
-			
+
 			if (size > 3) {
+				throw new NoSuchMethodException("too many arguments.");
+			}
+
+			if (size == 1 && (rightResult !=null || thirdResult != null) ) {
+				throw new NoSuchMethodException("too many arguments.");
+			}
+			if (size == 2 && thirdResult != null) {
 				throw new NoSuchMethodException("too many arguments.");
 			}
 		}
