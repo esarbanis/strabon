@@ -786,7 +786,7 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 	{
 		Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
 		//FIXME more cases to be added later. E.g, for the temporal construct functions and temporal metric functions
-		if(function instanceof SpatialRelationshipFunc)
+		if(function instanceof TemporalRelationFunc)
 		{
 			return temporalRelationFunction(functionCall,function);	
 		}
