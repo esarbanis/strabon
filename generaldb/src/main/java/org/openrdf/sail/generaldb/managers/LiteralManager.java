@@ -18,6 +18,8 @@ import org.openrdf.sail.generaldb.model.XMLGSDatatypeUtil;
 import org.openrdf.sail.generaldb.schema.LiteralTable;
 import org.openrdf.sail.rdbms.model.RdbmsLiteral;
 
+import eu.earthobservatory.constants.TemporalConstants;
+
 /**
  * Manages RDBMS Literals. Including creation, id lookup, and inserting them
  * into the database.
@@ -100,6 +102,9 @@ public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 				else if (XMLGSDatatypeUtil.isCalendarDatatype(datatype)) {
 					long value = getCalendarValue(literal.calendarValue());
 					table.insertDateTime(id, label, dt, value);
+					//transform the date to period in order to insert it into the period_values table
+					String validPeriod = "[" + label + "," + label + "]";
+					table.insertTemporal(id, validPeriod);
 				}
 				else {
 					table.insertDatatype(id, label, dt);
