@@ -1,3 +1,5 @@
+	* Completed implementation of the period function, that constructs
+	  a period with start and end points the given arguments
 	* Fixed a bug that would not return the correct spatial datatype of a
 	  projected geometry literal stored in the database.
 	  (bug #71: http://bug.strabon.di.uoa.gr/ticket/71)
