@@ -6,9 +6,6 @@
 package org.openrdf.sail.generaldb.algebra.factories;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.geofSRID;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_Centroid;
-import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.st_MakeLine;
 
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
@@ -54,6 +51,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric.AreaFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation.RelateFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodEndsFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodIntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodMinusFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.PeriodStartsFunc;
@@ -70,7 +68,9 @@ import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainedByFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodContainsFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodIntersectsFunc;
+
 import eu.earthobservatory.constants.TemporalConstants;
+
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.finishesFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.PeriodOverlapsFunc;
@@ -1080,6 +1080,10 @@ public class GeneralDBBooleanExprFactory extends QueryModelVisitorBase<Unsupport
 		else if(function instanceof PeriodEndsFunc)
 		{
 			return periodEnd(leftArg);
+		}
+		else if(function instanceof PeriodFunc)
+		{
+			return period(leftArg, rightArg);
 		}
 		else
 			return null;

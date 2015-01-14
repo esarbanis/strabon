@@ -1113,7 +1113,14 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 
 				String instant =period.substring(period.indexOf('[')+1, period.indexOf(']'));
-				filter.append("period(to_timestamp('"+instant+ "','YYYY-MM-DD HH:MI:SS.MS'))");
+				if (expr.getParentNode() instanceof GeneralDBSqlPeriod)
+				{
+					filter.append("to_timestamp('"+instant+ "','YYYY-MM-DD HH:MI:SS.MS')");
+				}
+				else
+				{
+					filter.append("period(to_timestamp('"+instant+ "','YYYY-MM-DD HH:MI:SS.MS'))");
+				}
 			}
 		
 		}
@@ -1231,6 +1238,12 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 	
 	@Override
 	protected void append(GeneralDBSqlPeriodMinus expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
+			}
+	@Override
+	protected void append(GeneralDBSqlPeriod expr, GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException
 			{
 		appendGeneralDBTemporalFunctionBinary(expr, filter, expr.getPostgresFunction());
@@ -1763,6 +1776,14 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			/////
 			filter.appendFunction(func); //postgres temporal operators get deprecated. I will use the function names instead- constant
 			filter.openBracket();
+			if(expr instanceof GeneralDBSqlPeriod)
+			{
+				filter.append("first");
+				filter.openBracket();
+				appendPeriod((GeneralDBLabelColumn)(tmp),filter);
+				filter.closeBracket();
+				
+			}
 			if (expr.getLeftArg() instanceof GeneralDBSqlTemporalConstructBinary)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
@@ -1772,9 +1793,13 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 				appendPeriodConstant(expr.getLeftArg(), filter);
 			}
 			else
-			{			
-				appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
-
+			{	
+				if(expr.getParentNode() instanceof GeneralDBSqlPeriod)
+				{
+					filter.openBracket();
+					appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);	
+					filter.closeBracket();
+				}
 			}
 		
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
@@ -1811,6 +1836,14 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			else if(expr.getRightArg() instanceof GeneralDBStringValue)
 			{
 				appendPeriodConstant(expr.getRightArg(), filter);
+			}
+			else if (expr instanceof GeneralDBSqlPeriod)
+			{
+				filter.append("first");
+				filter.openBracket();
+				appendPeriod((GeneralDBLabelColumn)(expr.getRightArg()),filter);
+				filter.closeBracket();
+
 			}
 			else
 			{

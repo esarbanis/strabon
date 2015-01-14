@@ -124,6 +124,7 @@ import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlMeets;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlNequalsPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverleftPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlOverrightPeriod;
+import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriod;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContainedBy;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodContains;
 import org.openrdf.sail.generaldb.algebra.temporal.GeneralDBSqlPeriodEnd;
@@ -655,6 +656,9 @@ public abstract class GeneralDBQueryBuilder {
 		}
 		else if(expr instanceof GeneralDBSqlPeriodMinus){
 			append((GeneralDBSqlPeriodMinus)expr, filter);
+		}
+		else if(expr instanceof GeneralDBSqlPeriod){
+			append((GeneralDBSqlPeriod)expr, filter);
 		}
 	
 		
@@ -1342,6 +1346,10 @@ public abstract class GeneralDBQueryBuilder {
 		{
 			append((GeneralDBSqlPeriodEnd)constr, filter);
 		}
+		else if(constr instanceof GeneralDBSqlPeriod)
+		{
+			append((GeneralDBSqlPeriod)constr, filter);
+		}
 		/* PostGIS functions */
 		else if(constr instanceof GeneralDBSqlST_MakeLine)
 		{
@@ -1411,6 +1419,11 @@ protected abstract void append(GeneralDBSqlPeriodIntersection expr,
 protected abstract void append(GeneralDBSqlPeriodMinus expr,
 		GeneralDBSqlExprBuilder filter)
 		throws UnsupportedRdbmsOperatorException;
+
+protected abstract void append(GeneralDBSqlPeriod expr,
+		GeneralDBSqlExprBuilder filter)
+		throws UnsupportedRdbmsOperatorException;
+
 
 protected abstract void append(GeneralDBSqlPeriodStart expr,
 		GeneralDBSqlExprBuilder filter)
