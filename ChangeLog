@@ -1,3 +1,9 @@
+	* Bug #58: Added dependencies - java, postgresql, tomcat. Also, added
+	  a strabon-init script that detects the postgis installation path
+	  and sets up the template_postgis. Finally the script creates a db
+	  called "endpoint" (assuming it does not already exist) that is used
+	  for the strabon-endpoint command.
+
 	* Fixed a bug that would return no results when a variable that results 
 	  from a BIND clause appears in the FILTER or in the projection of a
 	  query and is inside a spatial function.

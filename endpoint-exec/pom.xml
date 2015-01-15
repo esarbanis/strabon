@@ -125,6 +125,17 @@
                                                                         <filemode>755</filemode>
                                                                 </mapper>
                                                         </data>
+							<data>
+                                                                <src>${basedir}/strabon-init</src>
+                                                                <type>file</type>
+                                                                <mapper>
+                                                                        <type>perm</type>
+                                                                        <prefix>/usr/local/bin</prefix>
+                                                                        <user>root</user>
+                                                                        <group>root</group>
+                                                                        <filemode>755</filemode>
+                                                                </mapper>
+                                                        </data>
                                                 </dataSet>
                                         </configuration>
                                 </execution>
