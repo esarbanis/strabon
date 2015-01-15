@@ -1,3 +1,6 @@
+	* Bug #58: Maven creates the debian package conditionally. Use
+	  -Ddebian=true in the mvn package command. 
+
 	* Bug #58: Added dependencies - java, postgresql, tomcat. Also, added
 	  a strabon-init script that detects the postgis installation path
 	  and sets up the template_postgis. Finally the script creates a db
