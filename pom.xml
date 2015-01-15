@@ -96,14 +96,14 @@
 		</developer>
 		<developer>
 			<id>psmeros</id>
-			<name>Panagiotis Smeros</name>
+			<name>Panayiotis Smeros</name>
 			<email>psmeros@di.uoa.gr</email>
 			<url>http://users.uoa.gr/~psmeros/</url>
 			<organization>Management of Data, Information and Knowledge Group, Dept. of Informatics and Telecommunications, School of Sciences, National and Kapodistrian University of Athens</organization>
 			<organizationUrl>http://www.madgik.di.uoa.gr/</organizationUrl>
 			<timezone>+2</timezone>
 			<properties>
-				<picUrl>http://users.uoa.gr/~psmeros/images/me%20and%20plastic%20yiayia.JPG</picUrl>
+				<picUrl>http://users.uoa.gr/~psmeros/images/psmeros.jpg</picUrl>
 			</properties>
 		</developer>
 		<developer>
@@ -129,8 +129,8 @@
 		<module>evaluation</module>
 		<module>runtime</module>
 		<module>postgis</module>
-		<module>sqlite</module>
 		<module>monetdb</module>
+		<module>sqlite</module>
 		<module>generaldb</module>
 		<module>resultio-spatial</module>
 		<module>endpoint</module>
@@ -250,10 +250,22 @@
 				<artifactId>strabon-endpoint</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>strabon-endpoint-client</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>eu.earthobservatory</groupId>
 				<artifactId>strabon-vocabulary</artifactId>
+				<version>${eu.earthobservatory.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>eu.earthobservatory</groupId>
+				<artifactId>strabon-testsuite</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
 
@@ -262,12 +274,12 @@
 				<artifactId>sesame-sail-postgis</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-sail-sqlite</artifactId>
 				<version>${eu.earthobservatory.version}</version>
 			</dependency>
-
 
 			<!-- Sesame dependencies -->
 			<dependency>
@@ -482,11 +494,14 @@
 				<version>${geotools.version}</version>
 			</dependency>
 
+			<!--
+			     One epsg jar file suffices. Read this: http://docs.geotools.org/latest/userguide/faq.html#q-how-to-choose-an-epsg-authority
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-epsg-wkt</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
+			-->
 
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -752,6 +767,44 @@
 		        <skipTests>${skipTests}</skipTests>
 			    </configuration>
 		    </plugin>
+
+<!--			<plugin>
+                                <artifactId>jdeb</artifactId>
+                                <groupId>org.vafer</groupId>
+                                <version>1.3</version>
+                                <executions>
+                                        <execution>
+                                                <phase>package</phase>
+                                                <goals>
+                                                        <goal>jdeb</goal>
+                                                </goals>
+                                        <configuration>
+                                                <dataSet>
+                                                        <data>
+                                                                <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                                                <type>file</type>
+                                                                <mapper>
+                                                                        <type>perm</type>
+                                                                        <prefix>/usr/share/jdeb/lib</prefix>
+                                                                </mapper>
+                                                        </data>
+                                                        <data>
+                                                                <src>${project.build.directory}/strabon-endpoint</src>
+                                                                <type>file</type>
+                                                                <mapper>
+                                                                        <type>perm</type>
+                                                                        <prefix>/usr/local/bin</prefix>
+                                                                        <user>root</user>
+                                                                        <group>root</group>
+                                                                        <filemode>755</filemode>
+                                                                </mapper>
+                                                        </data>
+                                                </dataSet>
+                                        </configuration>
+                                </execution>
+                        </executions>
+                        </plugin>
+-->
 		</plugins>
 	</build>
 
@@ -766,6 +819,7 @@
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
+
 			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -823,11 +877,13 @@
 		<system>Trac</system>
 		<url>http://bug.strabon.di.uoa.gr/</url>
 	</issueManagement>
-	
+
+	<!-- TODO: update this
 	<ciManagement>
 		<system>Jekins - Continuous Integration System</system>
 		<url>http://test.strabon.di.uoa.gr/cis</url>
 	</ciManagement>
+	-->
 	
 	<mailingLists>
 		<mailingList>
@@ -882,21 +938,20 @@
 			<name>Strabon - maven repository - snapshots</name>
 			<url>http://maven.strabon.di.uoa.gr/content/repositories/snapshots</url>
 		</repository>
-        <repository>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>strabon.sesame</id>
-            <name>Strabon - maven repository - sesame artifacts (temporary)</name>
-            <url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame/</url>
-        </repository>
-		<!--
+	        <repository>
+	            <releases>
+	                <enabled>true</enabled>
+	            </releases>
+	            <snapshots>
+	                <enabled>false</enabled>
+	            </snapshots>
+	            <id>strabon.sesame</id>
+	            <name>Strabon - maven repository - sesame artifacts (temporary)</name>
+	            <url>http://maven.strabon.di.uoa.gr/content/repositories/strabon.sesame/</url>
+	        </repository>
 		<repository>
 			<releases>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
@@ -910,13 +965,12 @@
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 			<id>aduna-opensource.snapshots</id>
 			<name>Aduna Open Source - Maven snapshots</name>
 			<url>http://repo.aduna-software.org/maven2/snapshots</url>
 		</repository>
-		-->
 		<repository>
 			<snapshots>
 				<enabled>true</enabled>
@@ -935,6 +989,17 @@
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
 		</repository>
 		-->
+                <repository>
+                        <releases>
+                                <enabled>true</enabled>
+                        </releases>
+                        <snapshots>
+                                <enabled>false</enabled>
+                        </snapshots>
+                        <id>aduna-mirror-ontotext</id>
+                        <name>Aduna Maven Repository - Ontotext Mirror</name>
+                        <url>http://maven.ontotext.com/content/repositories/aduna/</url>
+                </repository>
 	</repositories>
 
 	<distributionManagement>

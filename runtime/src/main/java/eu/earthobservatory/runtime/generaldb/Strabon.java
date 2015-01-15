@@ -230,6 +230,8 @@ public abstract class Strabon {
 	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		boolean status = true;
 		
+		System.out.println(queryString);
+		
 		logger.info("[Strabon.query] Executing query: {}", queryString);
 		
 		// check for null stream
@@ -347,7 +349,7 @@ public abstract class Strabon {
 		} else {
 			throw new InvalidDatasetFormatFault();
 		}
-
+		
 		try{
 			URL source = new URL(src);
 			storeURL(source, baseURI, uriContext, realFormat);
@@ -359,7 +361,10 @@ public abstract class Strabon {
 				storeURL(fromClasspath, baseURI, uriContext, realFormat);
 				
 			} else {
+				
 				File file = new File(src);
+				System.out.println(file.getAbsolutePath());
+				System.out.println(src);
 				if (file.exists()) {
 					storeURL(new URL("file://" + src), baseURI, uriContext, realFormat);
 
@@ -384,6 +389,7 @@ public abstract class Strabon {
 			
 		} else {
 			con.add(url, baseURI, format, context);
+				
 		}
 		
 		logger.info("[Strabon.storeURL] Storing was successful.");

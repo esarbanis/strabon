@@ -76,10 +76,10 @@ public class StoreOp {
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, false);
-			if (graph == null) {
+			if (graph == null) {//System.out.println("graph = null");System.out.println(src);
 				strabon.storeInRepo(src, format, inference);
 				
-			} else {
+			} else {System.out.println("graph!=null");
 				strabon.storeInRepo(src, null, graph, format, inference);
 			}
 			
