@@ -31,11 +31,11 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8080, "sextant-endpoint/Store");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 80, "teststrabon-endpoint/Store");
 		
 		// set url data
 		try {
-			data = new URL("http://luna.di.uoa.gr:8080/strabon-endpoint-gwt/mapontology/map.nt");
+			data = new URL("http://geo.linkedopendata.gr/teststrabon-endpoint/map.nt");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,7 +56,6 @@ public class TestSPARQLEndpointStoreWithStrabon {
 		
 			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
 			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
-			
 			assertTrue(response == true);
 	}
 	

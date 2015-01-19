@@ -15,7 +15,7 @@ public class TestSPARQLEndpointUpdateWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8080, "sextant-endpoint/Update");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 80, "teststrabon-endpoint/Update");
 		
 		// set url data
 		query = "insert data" +
