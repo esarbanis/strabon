@@ -13,8 +13,8 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 
 /**
- * A simple store test. It tests if triples with GML serialization are stored and retrieved correctly.
+ * A simple store test. It tests if triples with WKT serialization are stored and retrieved correctly.
  * 
- * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
+ * @author Stella Giannakopoulou <sgian@di.uoa.gr
  */
-public class TemporalRelationBefore extends TemplateTest{}
+public class TemporalConstants extends TemplateTest{}

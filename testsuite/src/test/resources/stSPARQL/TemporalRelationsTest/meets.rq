@@ -1,0 +1,5 @@
+SELECT distinct ?x1 ?x2 
+			WHERE { 
+				?x1 ?y1 ?z1 ?t1 .
+				?x2 ?y2 ?z2 ?t2 .
+				FILTER(strdf:meets(?t1, ?t2) && str(?x1) < str(?x2)).}

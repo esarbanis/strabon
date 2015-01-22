@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='x1'/>
+		<variable name='t1'/>
+	</head>
+	<results>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item1</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T12:41:00,2012-11-19T13:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item3</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T12:41:00,2012-11-19T13:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item2</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T12:41:00,2012-11-19T13:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item2</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T10:41:00,2012-11-19T15:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item7</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T13:41:00,2012-11-19T14:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item1</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T10:41:00,2012-11-19T11:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item5</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-01-19T11:41:00,2012-01-19T11:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item6</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-01-19T12:41:00,2012-01-19T12:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item4</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-01-19T10:41:00,2012-01-19T10:41:00]</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='x1'>
+				<uri>http://example.org/item8</uri>
+			</binding>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T14:41:00.000001,2012-11-19T15:41:00]</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>

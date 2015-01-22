@@ -1,8 +1,4 @@
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
-
-	SELECT distinct ?x1 ?t1  
-	 WHERE { 
-			?x1 ?y1 ?z1 ?t1
-		    }
+SELECT distinct ?x1 ?t1  
+WHERE { 
+	?x1 ?y1 ?z1 ?t1
+}

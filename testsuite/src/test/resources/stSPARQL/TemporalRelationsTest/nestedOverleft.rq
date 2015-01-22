@@ -1,6 +1,3 @@
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#> 
 select distinct ?node 
 where{
 SELECT distinct (?x1 as ?node) ?x2 
