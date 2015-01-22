@@ -1800,6 +1800,10 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 					appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);	
 					filter.closeBracket();
 				}
+				else
+				{
+					appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+				}
 			}
 		
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
