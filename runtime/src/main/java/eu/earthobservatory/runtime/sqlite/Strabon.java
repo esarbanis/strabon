@@ -36,7 +36,8 @@ import org.sqlite.SQLiteConfig;
 public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 	
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.postgis.Strabon.class);
-	
+	private String spatiaLiteLib;
+	private String pcreLib;
 	public Strabon(String databaseName, String spatialite, String regex, boolean checkForLockTable) 
 	throws Exception {
 		super(databaseName, spatialite, regex, 0, "", checkForLockTable);
@@ -50,6 +51,8 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
 	private void createSpatialAndDeleteTemp(String databaseName, String libspatial, String regex) throws SQLException, ClassNotFoundException {
 		String url = "";
+		this.spatiaLiteLib=libspatial;
+		this.pcreLib=regex;
 		try {
 			logger.info("[Strabon] Cleaning...");
 			Class.forName("org.sqlite.JDBC");
@@ -61,6 +64,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		Statement st=c.createStatement();
 		//st.execute("SELECT load_extension('/usr/local/lib/libspatialite.so')");
 		//st.execute("SELECT load_extension('/usr/lib/sqlite3/pcre.so')");
+		System.out.println(libspatial);
 		st.execute("SELECT load_extension('"+libspatial+"')");
 		try{
 		st.execute("SELECT load_extension('"+regex+"')");
@@ -210,6 +214,8 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		SpatiaLiteSqlStore spatialLite_store = (SpatiaLiteSqlStore) db_store;
 		
 		spatialLite_store.setDatabaseName(databaseName);
+		spatialLite_store.setSpatiaLiteLib(spatiaLiteLib);
+		spatialLite_store.setPcreLib(pcreLib);
 		spatialLite_store.setMaxNumberOfTripleTables(2048);
 		init();
 		logger.info("[Strabon] Initialization completed.");

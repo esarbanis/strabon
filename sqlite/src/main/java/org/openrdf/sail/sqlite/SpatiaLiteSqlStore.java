@@ -16,6 +16,8 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 public class SpatiaLiteSqlStore extends org.openrdf.sail.generaldb.GeneralDBStore{
 
 	protected String databaseName;
+	protected String spatiaLiteLib;
+	protected String pcreLib;
 
 	@Override
 	protected GeneralDBConnectionFactory newFactory(DatabaseMetaData metaData)
@@ -47,6 +49,8 @@ public class SpatiaLiteSqlStore extends org.openrdf.sail.generaldb.GeneralDBStor
         }
     		
 		SqliteConnectionFactory factory = new SqliteConnectionFactory();
+		factory.setPcre(pcreLib);
+		factory.setSpatiaLite(spatiaLiteLib);
 		factory.setSail(this);
 		factory.setDataSource(ds);
 		setBasicDataSource(ds);
@@ -59,6 +63,13 @@ public class SpatiaLiteSqlStore extends org.openrdf.sail.generaldb.GeneralDBStor
 
 	public void setDatabaseName(String databaseName2) {
 		this.databaseName = databaseName2;		
+	}
+	public void setSpatiaLiteLib(String spatiaLiteLib) {
+		this.spatiaLiteLib = spatiaLiteLib;
+	}
+
+	public void setPcreLib(String pcreLib) {
+		this.pcreLib = pcreLib;
 	}
 
 }

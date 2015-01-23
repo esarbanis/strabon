@@ -73,7 +73,12 @@ public class StoreOp {
 	}
 
 	private static void help() {
-		System.err.println("Usage: eu.earthobservatory.runtime.postgis.StoreOp <HOST> <PORT> <DATABASE> <USERNAME> <PASSWORD> <FILE> [-f <FORMAT>] [-g <NAMED_GRAPH>]");	
+		System.err.println("Usage: eu.earthobservatory.runtime.sqlite.StoreOp "
+				+ "<DATABASE_FILE> "
+				+ "<SPATIALITE_LIB_PATH> "
+				+ "<PCRE_PATH> "
+				+ "<FILE> "
+				+ " [-f <FORMAT>]");	
 		System.err.println("             <DATABASE>   		 is the spatially enabled postgis database that Strabon will use as a backend, ");
 		System.err.println("             [-f <FORMAT>] 		 is the format of the file (default: NTRIPLES)");
 		System.err.println("             [-g <NAMED_GRAPH>]  is the URI of the named graph to store the input file (default: default graph)");

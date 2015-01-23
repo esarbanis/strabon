@@ -45,6 +45,8 @@ import org.openrdf.sail.rdbms.schema.TableFactory;
 import org.openrdf.sail.generaldb.schema.IntegerIdSequence;
 import org.openrdf.sail.generaldb.schema.LongIdSequence;
 import org.openrdf.sail.generaldb.schema.ValueTableFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Responsible to initialise and wire all components together that will be
@@ -53,7 +55,9 @@ import org.openrdf.sail.generaldb.schema.ValueTableFactory;
  * @author James Leigh
  */
 public class SqliteConnectionFactory extends GeneralDBConnectionFactory {
-	
+	private String spatiaLite;
+	private String pcre;
+	private static Logger logger = LoggerFactory.getLogger(org.openrdf.sail.sqlite.SqliteConnectionFactory.class);
 	protected Connection singleSQLiteCon;
 //	protected SqliteTripleTableManager sqliteTripleTableManager;
 
@@ -163,9 +167,12 @@ public class SqliteConnectionFactory extends GeneralDBConnectionFactory {
 		      stmt.setQueryTimeout(30); // set timeout to 30 sec.
 
 		      // loading SpatiaLite
-		      stmt.execute("SELECT load_extension('/usr/local/lib/libspatialite.so')");
-		      stmt.execute("SELECT load_extension('/usr/lib/sqlite3/pcre.so')");
-		      
+		      stmt.execute("SELECT load_extension('" +this.spatiaLite+"')");
+		      try{
+		      stmt.execute("SELECT load_extension('" +this.pcre+"')");
+		      }catch(Exception e){
+					logger.warn("Error loading regex library. Regular expressions will not be supported.");
+					}
 
 			return conn;
 //			return new net.sf.log4jdbc.ConnectionSpy(conn);
@@ -312,5 +319,12 @@ public class SqliteConnectionFactory extends GeneralDBConnectionFactory {
 				databaseLock.release();
 			}
 		}
+	}
+	public void setSpatiaLite(String spatiaLite) {
+		this.spatiaLite = spatiaLite;
+	}
+
+	public void setPcre(String pcre) {
+		this.pcre = pcre;
 	}
 }

@@ -229,9 +229,7 @@ public abstract class Strabon {
 	public Object query(String queryString, Format resultsFormat, SailRepositoryConnection con, OutputStream out)
 	throws MalformedQueryException, QueryEvaluationException, IOException, TupleQueryResultHandlerException {
 		boolean status = true;
-		
-		System.out.println(queryString);
-		
+						
 		logger.info("[Strabon.query] Executing query: {}", queryString);
 		
 		// check for null stream
@@ -271,7 +269,7 @@ public abstract class Strabon {
 				long t3 = System.nanoTime();
 	
 				return new long[]{t2-t1, t3-t2, t3-t1, results};
-//				break;
+				//break;
 				
 		default:
 			// get the writer for the specified format
@@ -362,9 +360,7 @@ public abstract class Strabon {
 				
 			} else {
 				
-				File file = new File(src);
-				System.out.println(file.getAbsolutePath());
-				System.out.println(src);
+				File file = new File(src);			
 				if (file.exists()) {
 					storeURL(new URL("file://" + src), baseURI, uriContext, realFormat);
 

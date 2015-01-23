@@ -30,8 +30,8 @@ public class SpatialiteSample
       stmt.setQueryTimeout(30); // set timeout to 30 sec.
 
       // loading SpatiaLite
-      stmt.execute("SELECT load_extension('/usr/local/lib/libspatialite.so')");
-      stmt.execute("SELECT load_extension('/usr/lib/sqlite3/pcre.so')");
+      stmt.execute("SELECT load_extension('/usr/lib/x86_64-linux-gnu/libspatialite.so')");
+      stmt.execute("SELECT load_extension(' /usr/lib/x86_64-linux-gnu/libpcre.so')");
       // enabling Spatial Metadata
       // using v.2.4.0 this automatically initializes SPATIAL_REF_SYS and GEOMETRY_COLUMNS
       String sql = "SELECT InitSpatialMetadata()";

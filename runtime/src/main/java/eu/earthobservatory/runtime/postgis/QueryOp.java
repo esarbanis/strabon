@@ -54,7 +54,7 @@ public class QueryOp {
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, forceDelete);
-			System.out.println(queryString);
+	
 			strabon.query(queryString, Format.fromString(resultsFormat), strabon.getSailRepoConnection(), System.out);
 			
 		} catch (UnsupportedExtensionFunctionException e) {

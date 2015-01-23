@@ -37,6 +37,7 @@ public class StoreOp {
 		String graph = null;
 		Boolean inference = false;
 		
+		
 		for (int i = 6; i < args.length; i += 2) {
 			if (args[i].equals("-f")) {
 				if (i + 1 >= args.length) {
@@ -76,10 +77,10 @@ public class StoreOp {
 		Strabon strabon = null;
 		try {
 			strabon = new Strabon(db, user, passwd, port, host, false);
-			if (graph == null) {//System.out.println("graph = null");System.out.println(src);
+			if (graph == null) {
 				strabon.storeInRepo(src, format, inference);
 				
-			} else {System.out.println("graph!=null");
+			} else {
 				strabon.storeInRepo(src, null, graph, format, inference);
 			}
 			
