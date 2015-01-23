@@ -36,7 +36,7 @@ public class GeneralDBSqlFinishes extends GeneralDBSqlTemporal{
 	@Override
 	public String getPostgresFunction() {
 		// TODO Auto-generated method stub
-		return "finishesAllen";
+		return "finishes";
 	}
 
 }

@@ -9,7 +9,6 @@
  */
 package org.openrdf.sail.generaldb.algebra.temporal;
 
-import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSpatial;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
