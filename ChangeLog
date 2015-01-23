@@ -1,3 +1,8 @@
+	* Related to bug #58, but it generally enhances Strabon; The runtime
+	  component has also been debianized. Dependencies are added to
+	  /usr/share/jdeb/lib/strabon-runtime. ClassPath and strabon script
+	  have also been updated accordingly (strabon-cmd)
+
 	* Bug #58: Maven creates the debian package conditionally. Use
 	  -Ddebian=true in the mvn package command. 
 
