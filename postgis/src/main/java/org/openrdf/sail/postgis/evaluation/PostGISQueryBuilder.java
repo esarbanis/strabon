@@ -1776,14 +1776,7 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			/////
 			filter.appendFunction(func); //postgres temporal operators get deprecated. I will use the function names instead- constant
 			filter.openBracket();
-			if(expr instanceof GeneralDBSqlPeriod)
-			{
-				filter.append("first");
-				filter.openBracket();
-				appendPeriod((GeneralDBLabelColumn)(tmp),filter);
-				filter.closeBracket();
-				
-			}
+			
 			if (expr.getLeftArg() instanceof GeneralDBSqlTemporalConstructBinary)
 			{
 				appendConstructFunction(expr.getLeftArg(), filter);
@@ -1792,18 +1785,18 @@ else if(expr instanceof GeneralDBSqlSpatialMetricTriple)
 			{
 				appendPeriodConstant(expr.getLeftArg(), filter);
 			}
+			else if(expr instanceof GeneralDBSqlPeriod)
+			{
+				filter.append("first");
+				filter.openBracket();
+				appendPeriod((GeneralDBLabelColumn)(tmp),filter);
+				filter.closeBracket();
+				
+			}
 			else
 			{	
-				if(expr.getParentNode() instanceof GeneralDBSqlPeriod)
-				{
-					filter.openBracket();
-					appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);	
-					filter.closeBracket();
-				}
-				else
-				{
-					appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
-				}
+				appendPeriod((GeneralDBLabelColumn)(expr.getLeftArg()),filter);
+				
 			}
 		
 			if(func.equals("=")|| func.equals("!=")|| func.equals("-")|| func.equals("+")|| func.equals("~")|| 
