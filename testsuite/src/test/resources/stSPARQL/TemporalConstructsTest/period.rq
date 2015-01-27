@@ -1,0 +1,5 @@
+SELECT ?t1 ?t2 (strdf:period(?t1, ?t2) as ?p)
+WHERE { 
+	ex:item4 ?y1 ?z1 ?t1 .
+	ex:item5 ?y2 ?z2 ?t2 .
+ }

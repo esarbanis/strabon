@@ -1,0 +1,4 @@
+SELECT distinct ?t1  (strdf:period_start(?t1) as ?start)
+WHERE { 
+	?x1 ?y1 ?z1 ?t1 .
+ }

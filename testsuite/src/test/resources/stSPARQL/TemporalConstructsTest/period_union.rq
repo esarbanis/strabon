@@ -1,0 +1,5 @@
+SELECT ?t1 ?t2  (strdf:period_union(?t1, ?t2) as ?union)
+			WHERE { 
+				ex:item7 ?y1 ?z1 ?t1 .
+				ex:item8 ?y2 ?z2 ?t2 . 
+}

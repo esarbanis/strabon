@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='t1'/>
+		<variable name='end'/>
+	</head>
+	<results>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T12:41:00,2012-11-19T13:41:00)</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-11-19T13:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T13:41:00,2012-11-19T14:41:00)</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-11-19T14:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T14:41:00,2012-11-19T15:41:00)</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-11-19T15:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T10:41:00,2012-11-19T11:41:00)</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-11-19T11:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://strdf.di.uoa.gr/ontology#period'>[2012-11-19T10:41:00,2012-11-19T15:41:00)</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-11-19T15:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://www.w3.org/2001/XMLSchema#dateTime'>2012-01-19T10:41:00</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-01-19T10:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://www.w3.org/2001/XMLSchema#dateTime'>2012-01-19T11:41:00</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-01-19T11:41:00+02</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='t1'>
+				<literal datatype='http://www.w3.org/2001/XMLSchema#dateTime'>2012-01-19T12:41:00</literal>
+			</binding>
+			<binding name='end'>
+				<literal datatype='&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;'>2012-01-19T12:41:00+02</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>

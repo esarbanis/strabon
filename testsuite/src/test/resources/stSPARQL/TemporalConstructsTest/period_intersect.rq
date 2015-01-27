@@ -1,0 +1,5 @@
+SELECT ?t1 ?t2  (strdf:period_intersect(?t1, ?t2) as ?intersection)
+			WHERE { 
+				ex:item1 ?y1 ?z1 ?t1 .
+				ex:item7 ?y2 ?z2 ?t2 . 
+}

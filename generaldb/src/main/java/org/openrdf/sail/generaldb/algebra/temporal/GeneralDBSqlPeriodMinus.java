@@ -36,7 +36,7 @@ public class GeneralDBSqlPeriodMinus extends GeneralDBSqlTemporalConstructBinary
 	@Override
 	public String getOperator() {
 
-		return "+";
+		return "-";
 	}
 
 	/* (non-Javadoc)
