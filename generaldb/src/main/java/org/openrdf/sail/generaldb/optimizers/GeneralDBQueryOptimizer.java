@@ -18,7 +18,6 @@ import org.openrdf.query.algebra.evaluation.impl.CompareOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.ConjunctiveConstraintSplitter;
 import org.openrdf.query.algebra.evaluation.impl.DisjunctiveConstraintOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.SameTermFilterOptimizer;
-import org.openrdf.query.algebra.evaluation.impl.SpatialJoinOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.TemporalJoinOptimizer;
 import org.openrdf.query.algebra.evaluation.impl.stSPARQLConstantOptimizer;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
@@ -118,9 +117,9 @@ public class GeneralDBQueryOptimizer {
 
 		//XXX
 	
-		new TemporalJoinOptimizer().optimize(expr, dataset, bindings, temporalJoins);
+		new TemporalJoinOptimizer().optimize(expr, dataset, bindings, spatialJoins, temporalJoins);
 		
-		new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
+		//new SpatialJoinOptimizer().optimize(expr, dataset, bindings,spatialJoins);
 		
 	}
 
@@ -139,5 +138,4 @@ public class GeneralDBQueryOptimizer {
 
 		new GeneralDBRegexFlagsInliner().optimize(expr, dataset, bindings);
 	}
-
 }

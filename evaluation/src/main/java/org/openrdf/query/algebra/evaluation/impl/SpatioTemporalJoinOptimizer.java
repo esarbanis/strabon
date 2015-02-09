@@ -35,10 +35,7 @@ import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.function.Function;
 import org.openrdf.query.algebra.evaluation.function.FunctionRegistry;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc;
-import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
+import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.construct.TemporalConstructFunc;
 import org.openrdf.query.algebra.evaluation.function.temporal.stsparql.relation.TemporalRelationFunc;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import org.openrdf.query.algebra.helpers.StatementPatternCollector;
@@ -68,26 +65,29 @@ public abstract class SpatioTemporalJoinOptimizer
 	
 	public  abstract String getClassName();
 
-	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings, List<TupleExpr> spatialJoins) {
-		tupleExpr.visit(new JoinVisitor(spatialJoins));
+	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings, List<TupleExpr> spatialJoins, List<TupleExpr> temporalJoins) {
+		tupleExpr.visit(new JoinVisitor(spatialJoins, temporalJoins));
 	}
 
 	protected class JoinVisitor extends QueryModelVisitorBase<RuntimeException> {
 		
 		
 		
-		public JoinVisitor(List<TupleExpr> spatialJoins) {
+		public JoinVisitor(List<TupleExpr> spatialJoins, List<TupleExpr> temporalJoins) {
 			super();
 			this.spatialJoins = spatialJoins;
+			this.temporalJoins = temporalJoins;
 		}
 
 		
 		private List<TupleExpr> spatialJoins;
+		private List<TupleExpr> temporalJoins;
 		//buffer with a var as a second argument
 		private boolean problematicBuffer = false;
 
 		//indicates whether a metric expression contains a spatial function call	
 		private boolean containsSpatial = false;
+		private boolean containsTemporal = false;
 		private boolean optimizableMetricOrProperty = true;
 
 		private int thematicJoinsSize = 0;
@@ -271,7 +271,6 @@ public abstract class SpatioTemporalJoinOptimizer
 									{
 										int reduced = finalList.get(fix) - 1;
 										finalList.set(fix, reduced);
-
 									}
 								}
 								break;
@@ -288,6 +287,7 @@ public abstract class SpatioTemporalJoinOptimizer
 					{
 						{
 							Map.Entry entry = (Map.Entry)it.next();
+							
 							if(count == position - varsMapSize)
 							{
 								//If I keep record of this entry, I can use the info later to avoid duplicate filters
@@ -369,8 +369,10 @@ public abstract class SpatioTemporalJoinOptimizer
 				{
 					if(node.getCondition() instanceof FunctionCall)
 					{
+						FunctionCall functionCall = (FunctionCall) node.getCondition();
+						Function function = FunctionRegistry.getInstance().get(functionCall.getURI());
 						//Only interested in spatial ones
-						if(isRelevantSTFunc((FunctionCall) node.getCondition()))
+						if(isRelevantSTFunc(functionCall))
 						{
 							//Have to retrieve all nested variables and other info
 
@@ -402,8 +404,10 @@ public abstract class SpatioTemporalJoinOptimizer
 									 */
 
 									StatementPattern t = new StatementPattern();
-									String className = getClassName();
-									if(className.equals("org.openrdf.query.algebra.evaluation.impl.SpatialJoinOptimizer"))
+									
+									//String className = getClassName();
+									if(!(function instanceof TemporalConstructFunc) && !(function instanceof TemporalRelationFunc))
+									//if(className.equals("org.openrdf.query.algebra.evaluation.impl.SpatialJoinOptimizer"))
 									{
 										t.setSubjectVar(new Var("-dummy-"));
 										t.setPredicateVar(new Var("-dummy-"));
@@ -435,8 +439,9 @@ public abstract class SpatioTemporalJoinOptimizer
 					else if(node.getCondition() instanceof Compare)
 					{
 						containsSpatial = false;
+						containsTemporal = false;
 						List<Var> allVars = new ArrayList<Var>(getVarsInMetricOrProperty(node.getCondition()));
-						if(containsSpatial&&optimizableMetricOrProperty)
+						if((containsSpatial  || containsTemporal) && optimizableMetricOrProperty)
 						{
 							//if the arguments are not 2, I am essentially doing a selection!
 							//No reason to push into optimizer then
@@ -448,10 +453,20 @@ public abstract class SpatioTemporalJoinOptimizer
 								Filter toEnter = node.clone();
 
 								StatementPattern t = new StatementPattern();
-								t.setSubjectVar(new Var("-dummy-"));
-								t.setPredicateVar(new Var("-dummy-"));
-								t.setObjectVar(new Var("-dummy-"));
+								if(containsSpatial)
+								{	
+									t.setSubjectVar(new Var("-dummy-"));
+									t.setPredicateVar(new Var("-dummy-"));
+									t.setObjectVar(new Var("-dummy-"));
+								}
+								else if(containsTemporal)
+								{
+									t.setSubjectVar(new Var("-dummy-temporal"));
+									t.setPredicateVar(new Var("-dummy-temporal"));
+									t.setObjectVar(new Var("-dummy-temporal"));
+								}	
 								t.setScope(Scope.DEFAULT_CONTEXTS);
+								
 								toEnter.setArg(t);
 
 								if(!allSFilters.containsKey(toEnter))
@@ -460,6 +475,7 @@ public abstract class SpatioTemporalJoinOptimizer
 								}
 							}
 							containsSpatial = false;
+							containsTemporal = false;
 						}
 						optimizableMetricOrProperty = true;
 					}
@@ -556,9 +572,13 @@ public abstract class SpatioTemporalJoinOptimizer
 					/**
 					 * There is a point in continuing the search recursively ONLY 
 					 * if I reach this case. Otherwise, the function call
-					 * may not refer to a spatial function
+					 * may not refer to a spatial or temporal function
 					 */
-					this.containsSpatial = true;
+					Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
+					if(!(function instanceof TemporalRelationFunc) && !(function instanceof TemporalConstructFunc))
+						this.containsSpatial = true;
+					else
+						this.containsTemporal = true;
 					allVars.addAll(getFunctionCallVars((FunctionCall) expr));
 
 				}
@@ -648,7 +668,7 @@ public abstract class SpatioTemporalJoinOptimizer
 		private boolean createOrderedJoins(int table[][], int lineToScan,int columnToSkip, 
 				int pathLen, Set<Var> varsTillNow, List<Integer> tempList, List<Integer> pathList, List<Integer> finalList)
 		{
-			boolean success = false;
+ 			boolean success = false;
 			int dims = table.length;
 
 			int j;
@@ -660,7 +680,6 @@ public abstract class SpatioTemporalJoinOptimizer
 				{
 					continue;
 				}
-
 				//A connection exists!
 				if(table[lineToScan][j]>0)
 				{
