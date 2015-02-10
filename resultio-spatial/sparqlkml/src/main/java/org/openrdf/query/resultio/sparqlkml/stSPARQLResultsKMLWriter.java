@@ -335,6 +335,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				} else { // GML
 					geom = jts.GMLread(geomRep);
 					srid = geom.getSRID();
+					System.out.println("SRDI: " + srid + "\nGEOMETRY: " + geom.toText());
 				}
 			}
 			
