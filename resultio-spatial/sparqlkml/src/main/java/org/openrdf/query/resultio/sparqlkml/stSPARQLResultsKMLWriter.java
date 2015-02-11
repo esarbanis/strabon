@@ -205,7 +205,7 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			// write placemark tag
 			xmlWriter.startTag(PLACEMARK_TAG);
 			for (Binding binding : bindingSet) {
-				
+				System.out.println("PLACEMARK binding: " + binding.getName());
 				if(!binding.getValue().toString().contains("^^")|| (binding.getValue() instanceof org.openrdf.sail.generaldb.model.GeneralDBPolyhedron)){
 					continue;
 				}
