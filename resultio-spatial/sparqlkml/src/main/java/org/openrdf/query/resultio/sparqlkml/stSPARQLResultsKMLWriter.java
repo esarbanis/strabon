@@ -163,7 +163,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 		try {
 			// keep the order of binding names
 			this.bindingNames = bindingNames;
-			//System.out.println("ALL BINDING NAMES: " + this.bindingNames.toString());
 			
 			xmlWriter.startDocument();
 			xmlWriter.setAttribute("xmlns", NAMESPACE);
@@ -219,18 +218,14 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 			xmlWriter.textElement(NAME_TAG, "Result" + nresults);
 			
 			// parse binding set
-			for (String bindingName : bindingNames) {
-				//System.out.println("@@ Current binding name: " + bindingName);
-				
+			for (String bindingName : bindingNames) {				
 				Binding binding = bindingSet.getBinding(bindingName);
-				//System.out.println("New Binding: " + binding.getName() + "\n value: " + binding.getValue().stringValue());
 				
 				if(binding != null) {
 					Value value = binding.getValue();
 					
 					// check for geometry value
 					if (XMLGSDatatypeUtil.isGeometryValue(value)) {
-						//System.out.println("geometry FOUND");
 						hasGeometry=true;
 	
 						if (logger.isDebugEnabled()) {
@@ -240,7 +235,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 						xmlWriter.unescapedText(getKML(value));
 						
 					} else { // URI, BlankNode, or Literal other than spatial literal
-						//System.out.println("URI, BlankNode, or Literal other than spatial literal FOUND");
 						if (logger.isDebugEnabled()) {
 							logger.debug("[Strabon.KMLWriter] Found URI/BlankNode/Literal ({}): {}", value.getClass(), value);
 						}
@@ -361,7 +355,6 @@ public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
 				} else { // GML
 					geom = jts.GMLread(geomRep);
 					srid = geom.getSRID();
-					System.out.println("SRDI: " + srid + "\nGEOMETRY : " + geom.toText());
 				}
 			}
 			

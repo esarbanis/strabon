@@ -198,14 +198,30 @@ public class JTSWrapper {
 	 * @throws JAXBException
 	 */
 	public Geometry GMLread(String gml) throws JAXBException {
-        StringReader reader = new StringReader(gml);
-		
+		StringReader reader = new StringReader(gml);
+
         JAXBContext context = JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Geometry geometry = (Geometry) unmarshaller.unmarshal(reader);
 		
 		reader.close();
+		
+		//get the geometry srdi from the xml input
+		geometry.setSRID(getSRIDfromGMLString(gml));
+		
         return geometry;
+	}
+	
+	/**
+	 * Parse the gml string to find the SRID of the represented geometry.
+	 * 
+	 * @param gml
+	 * @return
+	 */
+	private int getSRIDfromGMLString(String gml) {
+		String[] srs = gml.split("srsName=\"http://www.opengis.net/def/crs/EPSG/0/");
+		String[] num = srs[1].split("\"");
+		return Integer.parseInt(num[0]);
 	}
 	
 	public synchronized String GMLWrite(Geometry geom) {
