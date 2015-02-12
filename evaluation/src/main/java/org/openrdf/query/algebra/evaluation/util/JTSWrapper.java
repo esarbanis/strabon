@@ -36,6 +36,8 @@ import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.io.gml2.GMLReader;
 import com.vividsolutions.jts.io.gml2.GMLWriter;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
  * This class is a singleton and provides access to the readers/writers
  * of Java Topology Suite. 
@@ -206,22 +208,50 @@ public class JTSWrapper {
 		
 		reader.close();
 		
-		//get the geometry srdi from the xml input
-		geometry.setSRID(getSRIDfromGMLString(gml));
+		/**
+		 * When unmarshalling GML, GML-JTS tries to parse srsName as EPSG code using the following patterns:
+		 * 	EPSG:{0,number,integer}
+         *  urn:ogc:def:crs:EPSG::{0,number,#}
+         *  urn:ogc:def:crs:EPSG:{1}:{0,number,#}
+         *  urn:x-ogc:def:crs:EPSG::{0,number,#}
+         *  urn:x-ogc:def:crs:EPSG:{1}:{0,number,#}
+         *  http://www.opengis.net/gml/srs/epsg.xml#\{0,number,#}
+		 * If srsName matched one of the pattern, it will be parsed as assigned to the SRID property of the JTS geometry.
+         * If none of the patterns matched, srsName will be simply saved to the UserData property of the JTS geometry.
+		 */
 		
-        return geometry;
+		/**
+		 * SOLUTION: To deal with the fact that the srsName might not come in one of the supported formats,
+		 * we check the userData variable of the geometry after the unmarshal call. If it is not null,
+		 * then we have the string that represents the srid and we need to extract it and set it in the geometry inastance.
+		 */
+		if (geometry.getUserData() != null) {
+			geometry.setSRID(getSRIDfromGMLString((String)geometry.getUserData()));
+	        return geometry;
+		}
+		else {
+			return geometry;
+		}		
 	}
 	
 	/**
-	 * Parse the gml string to find the SRID of the represented geometry.
+	 * Parse the userData string to find the SRID of the represented geometry.
+	 * We assume that the string represents an EPSG srid as defined in http://www.opengis.net/def/crs/EPSG/0
 	 * 
 	 * @param gml
 	 * @return
 	 */
-	private int getSRIDfromGMLString(String gml) {
-		String[] srs = gml.split("srsName=\"http://www.opengis.net/def/crs/EPSG/0/");
-		String[] num = srs[1].split("\"");
-		return Integer.parseInt(num[0]);
+	private int getSRIDfromGMLString(String reference) {
+		int srid = GeoConstants.defaultSRID;
+		
+		try {
+			srid = Integer.parseInt(reference.substring(reference.lastIndexOf('/') + 1));
+			
+		} catch (NumberFormatException e) {
+			logger.warn("[Strabon.AbstractWKT] Was expecting an integer. The URL of the EPSG SRID was {}. Continuing with the default SRID, {}", reference, srid);			
+		}
+		
+		return srid;
 	}
 	
 	public synchronized String GMLWrite(Geometry geom) {
