@@ -23,6 +23,8 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,32 +228,12 @@ public class JTSWrapper {
 		 * then we have the string that represents the srid and we need to extract it and set it in the geometry inastance.
 		 */
 		if (geometry.getUserData() != null) {
-			geometry.setSRID(getSRIDfromGMLString((String)geometry.getUserData()));
+			geometry.setSRID(WKTHelper.getSRID((String)geometry.getUserData()));
 	        return geometry;
 		}
 		else {
 			return geometry;
 		}		
-	}
-	
-	/**
-	 * Parse the userData string to find the SRID of the represented geometry.
-	 * We assume that the string represents an EPSG srid as defined in http://www.opengis.net/def/crs/EPSG/0
-	 * 
-	 * @param gml
-	 * @return
-	 */
-	private int getSRIDfromGMLString(String reference) {
-		int srid = GeoConstants.defaultSRID;
-		
-		try {
-			srid = Integer.parseInt(reference.substring(reference.lastIndexOf('/') + 1));
-			
-		} catch (NumberFormatException e) {
-			logger.warn("[Strabon.AbstractWKT] Was expecting an integer. The URL of the EPSG SRID was {}. Continuing with the default SRID, {}", reference, srid);			
-		}
-		
-		return srid;
 	}
 	
 	public synchronized String GMLWrite(Geometry geom) {

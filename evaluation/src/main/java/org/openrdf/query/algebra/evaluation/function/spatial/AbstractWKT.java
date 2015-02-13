@@ -152,15 +152,17 @@ public class AbstractWKT {
 			// FIXME: handle invalid URIs
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
+			/*
 			if (GeoConstants.CRS84_URI.equals(crs.toString())) {
 				srid = GeoConstants.EPSG4326_SRID;
-				
-			} else { // parse it to get the srid
-				// FIXME: this code assumes an EPSG URI
-				srid = getEPSG_SRID(crs.toString());
-				
 			}
+			else {
+				srid = getEPSG_SRID(crs.toString());
+			}*/
 			
+			// FIXME: this code assumes an EPSG URI or CRS84
+			srid = WKTHelper.getSRID(crs.toString());
+							
 			// trim spaces after URI and get the WKT value
 			wkt = wkt.substring(uriIndx + 1).trim();
 		}
@@ -190,13 +192,13 @@ public class AbstractWKT {
 	 * 
 	 * @param wkt
 	 * @return
-	 */
-	protected int getEPSG_SRID(String wkt) {
+	 
+	protected Integer getEPSG_SRID(String wkt) {
 		int srid = GeoConstants.defaultSRID;
 		
 		try {
 			srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf('/') + 1).replace(">", ""));
-			
+
 		} catch (NumberFormatException e) {
 			logger.warn("[Strabon.AbstractWKT] Was expecting an integer. The URL of the EPSG SRID was {}. Continuing with the default SRID, {}", wkt, srid);
 			
@@ -204,4 +206,5 @@ public class AbstractWKT {
 		
 		return srid;
 	}
+	*/
 }

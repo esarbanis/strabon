@@ -63,14 +63,20 @@ public class WKTHelper {
 		
 		if (wkt == null) return srid;
 		
-		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
-		if (pos != -1) {
-			try {
+		try {
+			if (GeoConstants.CRS84_URI.equals(wkt)) {
+				srid = GeoConstants.EPSG4326_SRID;
+			}
+			else {
 				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
-				
-			} catch (NumberFormatException e) {
+			}
+		} catch (NumberFormatException e) {
+			int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
+			if (pos != -1) {
 				logger.warn("[Strabon.WKTHelper] Was expecting an integer. The URL of the SRID was {}. Continuing with the default SRID, {}", wkt.substring(pos + 1), srid);
-				
+			}
+			else {
+				logger.warn("[Strabon.WKTHelper] Was expecting an integer. The URL of the SRID was {}. Continuing with the default SRID, {}", wkt, srid);
 			}
 		}
 		
