@@ -11,6 +11,7 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
 
 import java.net.URI;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,15 +153,17 @@ public class AbstractWKT {
 			// FIXME: handle invalid URIs
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
+			/*
 			if (GeoConstants.CRS84_URI.equals(crs.toString())) {
 				srid = GeoConstants.EPSG4326_SRID;
-				
-			} else { // parse it to get the srid
-				// FIXME: this code assumes an EPSG URI
-				srid = getEPSG_SRID(crs.toString());
-				
 			}
+			else {
+				srid = getEPSG_SRID(crs.toString());
+			}*/
 			
+			// FIXME: this code assumes an EPSG URI or CRS84
+			srid = WKTHelper.getSRID(crs.toString());
+							
 			// trim spaces after URI and get the WKT value
 			wkt = wkt.substring(uriIndx + 1).trim();
 		}
@@ -190,7 +193,7 @@ public class AbstractWKT {
 	 * 
 	 * @param wkt
 	 * @return
-	 */
+	 
 	protected int getEPSG_SRID(String wkt) {
 		int srid = GeoConstants.defaultSRID;
 		
@@ -203,5 +206,5 @@ public class AbstractWKT {
 		}
 		
 		return srid;
-	}
+	}*/
 }

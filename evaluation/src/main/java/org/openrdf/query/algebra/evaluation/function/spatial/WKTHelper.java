@@ -53,24 +53,40 @@ public class WKTHelper {
 	 * Returns the SRID of the given WKT (if any). If the WKT
 	 * does not contain any, then the default is returned.
 	 * 
-	 * FIXME I think that this works only for stRDF. If this is its purpose, rename it to reflect it.
+	 * The given string can also be just a plain URI of the SRID:
+	 * 	1.If it is an EPSG URI the SRID of it is returned.
+	 * 	2.If it is CRS84 URI then SRID 4326 is returned.
+	 * 	3.If none of the above two, the default SRID(4326) is returned.
 	 * 
-	 * @param wkt
+	 * @param wktOrCrs
 	 * @return
 	 */
-	public static Integer getSRID(String wkt) {
+	public static Integer getSRID(String wktOrCrs) {
 		int srid = GeoConstants.default_stRDF_SRID;
 		
-		if (wkt == null) return srid;
+		if (wktOrCrs == null) return srid;
 		
-		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
+		int pos = wktOrCrs.lastIndexOf(STRDF_SRID_DELIM);
 		if (pos != -1) {
+			//Input is a string with the geometry and the srid URI
 			try {
-				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
-				
+				srid = Integer.parseInt(wktOrCrs.substring(wktOrCrs.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
 			} catch (NumberFormatException e) {
-				logger.warn("[Strabon.WKTHelper] Was expecting an integer. The URL of the SRID was {}. Continuing with the default SRID, {}", wkt.substring(pos + 1), srid);
+				logger.warn("[Strabon.WKTHelper] Was expecting an integer. The URL of the SRID was {}. Continuing with the default SRID, {}", wktOrCrs.substring(pos + 1), srid);			
+			}
+		}
+		else {
+			//Input is a string with srid URI
+			if (GeoConstants.CRS84_URI.equals(wktOrCrs)) {
+				return GeoConstants.EPSG4326_SRID;
 				
+			} else { // should be an EPSG one, need to parse
+				try {
+					srid = Integer.parseInt(wktOrCrs.substring(wktOrCrs.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
+					
+				} catch (NumberFormatException e) {
+					logger.warn("[Strabon.WKTHelper] Malformed URI for CRS. The URL was {}.", wktOrCrs);
+				}
 			}
 		}
 		

@@ -23,6 +23,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,14 +190,38 @@ public class JTSWrapper {
 	 * @throws JAXBException
 	 */
 	public Geometry GMLread(String gml) throws JAXBException {
-        StringReader reader = new StringReader(gml);
-		
+		StringReader reader = new StringReader(gml);
+
         JAXBContext context = JAXBContext.newInstance("org.jvnet.ogc.gml.v_3_1_1.jts");	
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Geometry geometry = (Geometry) unmarshaller.unmarshal(reader);
 		
 		reader.close();
-        return geometry;
+		
+		/**
+		 * When unmarshalling GML, GML-JTS tries to parse srsName as EPSG code using the following patterns:
+		 * 	EPSG:{0,number,integer}
+         *  urn:ogc:def:crs:EPSG::{0,number,#}
+         *  urn:ogc:def:crs:EPSG:{1}:{0,number,#}
+         *  urn:x-ogc:def:crs:EPSG::{0,number,#}
+         *  urn:x-ogc:def:crs:EPSG:{1}:{0,number,#}
+         *  http://www.opengis.net/gml/srs/epsg.xml#\{0,number,#}
+		 * If srsName matched one of the pattern, it will be parsed as assigned to the SRID property of the JTS geometry.
+         * If none of the patterns matched, srsName will be simply saved to the UserData property of the JTS geometry.
+		 */
+		
+		/**
+		 * SOLUTION: To deal with the fact that the srsName might not come in one of the supported formats,
+		 * we check the userData variable of the geometry after the unmarshal call. If it is not null,
+		 * then we have the string that represents the srid and we need to extract it and set it in the geometry inastance.
+		 */
+		if (geometry.getUserData() != null) {
+			geometry.setSRID(WKTHelper.getSRID((String)geometry.getUserData()));
+	        return geometry;
+		}
+		else {
+			return geometry;
+		}		
 	}
 	
 	public synchronized String GMLWrite(Geometry geom) {
