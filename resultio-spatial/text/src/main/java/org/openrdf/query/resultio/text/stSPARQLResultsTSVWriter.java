@@ -14,6 +14,9 @@ import java.io.OutputStream;
 
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
+import org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper;
 import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriter;
 import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 
@@ -33,7 +36,14 @@ public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 			// catch the spatial case and create a new literal
 			// constructing a new literal is the only way if we want to reuse the {@link #writeValue(Value)} method
 			GeneralDBPolyhedron dbpolyhedron = (GeneralDBPolyhedron) val;
-			val = new LiteralImpl(dbpolyhedron.getPolyhedronStringRep(), dbpolyhedron.getDatatype());
+			val = new LiteralImpl(dbpolyhedron.stringValue(), dbpolyhedron.getDatatype());
+			
+		} else if (val instanceof StrabonPolyhedron) { // might come from the construction of new constants in SELECT
+			StrabonPolyhedron poly = (StrabonPolyhedron) val;
+			val = new LiteralImpl(WKTHelper.createWKT(poly.stringValue(), 
+					  								  poly.getGeometry().getSRID(),
+					  								  poly.getGeometryDatatype().toString()), 
+					  			  new URIImpl(poly.getGeometryDatatype().toString()));
 		}
 		
 		// write value

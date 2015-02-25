@@ -33,8 +33,9 @@ import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 import org.openrdf.sail.rdbms.exceptions.RdbmsQueryEvaluationException;
 import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 import org.openrdf.sail.generaldb.schema.IdSequence;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating
@@ -45,9 +46,10 @@ import org.slf4j.LoggerFactory;
  */
 public class PostGISEvaluation extends GeneralDBEvaluation {
 
-	private static final Logger logger = LoggerFactory.getLogger(org.openrdf.sail.postgis.evaluation.PostGISEvaluation.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostGISEvaluation.class);
 
-	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset, IdSequence ids)
+	public PostGISEvaluation(GeneralDBQueryBuilderFactory factory, GeneralDBTripleRepository triples, Dataset dataset,
+			IdSequence ids)
 	{
 		super(factory, triples, dataset, ids);
 		this.factory = factory;
@@ -68,19 +70,19 @@ public class PostGISEvaluation extends GeneralDBEvaluation {
 					stmt.setObject(++p, o);
 				}
 				Collection<GeneralDBColumnVar> proj = qb.getProjections();
-//				System.out.println("In PostGIS Evaluation, query is: \n" + stmt);
+				if (logger.isDebugEnabled()) {
+					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
+				}
+				//System.out.println(stmt);
 				GeneralDBBindingIteration result = new PostGISBindingIteration(stmt);
 				result.setProjections(proj);
 				result.setBindings(bindings);
 				result.setValueFactory(vf);
 				result.setIdSequence(ids);
-				// addition
+				//XXX addition
 				result.setGeoNames(this.geoNames);
 				result.setConstructIndexesAndNames(this.constructIndexesAndNames);
 				
-				if (logger.isDebugEnabled()) {
-					logger.debug("In PostGIS Evaluation, query is: \n{}", stmt);
-				}
 				return result;
 			}
 			catch (SQLException e) {

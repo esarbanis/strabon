@@ -33,13 +33,6 @@ public class GeoValueTable {
 
 	private static final String[] PKEY = { "id" };
 
-	//used to be named "value"
-	//private static final String[] VALUE_INDEX = { "original" };
-
-	//private static final String[] MINIMUM_BOUNDING_BOX = { "value" };
-
-	private static final String[] CONSTRAINT = { "constr" };
-
 	private int length = -1;
 
 	private int sqlType;
@@ -182,88 +175,21 @@ public class GeoValueTable {
 		table.close();
 	}
 
-
 	/**
-	 * FIXME careful here !!!!!!!!!!!!
-	 * this is the one I am using
-	 */
-
-	/**
+	 * Stores the given tuple into the geo_values table.  
 	 * 
-	 * @param constraint the field contained in "value" --> currently string
-	 * @param geom the field contained in "strdfgeo"
+	 * @param id hash
+	 * @param srid a *PostGIS/MonetDB* EPSG code
+	 * @param geom the geometry in bytes expressed in the above srid
+	 * @param originalSRID the official SRID of this geometry (e.g., EPSG:4326 lat/long, the custom 66666 WGS84 long/lat)
+	 *   
+	 * @throws SQLException
+	 * @throws InterruptedException
+	 * @throws NullPointerException
 	 */
-	//	public synchronized void insert(Number id, /*String constraint,*/ Timestamp interval_start, Timestamp interval_end, byte[] geom)
-	//		throws SQLException, InterruptedException
-	//	{
-	//		/*ValueBatch batch = getValueBatch();
-	//		if (isExpired(batch)) {
-	//			batch = newValueBatch();
-	//			initBatch(batch);
-	//		}
-	//		batch.setObject(1, id);
-	//		batch.setObject(2, value);
-	//		batch.setObject(3, constraint);
-	//		batch.setString(4, mbb);
-	//		
-	//		batch.addBatch();
-	//		queue(batch);
-	//		*/
-	//		//tests
-	//		
-	////		if (geom.equals("")) {
-	////			throw new SQLException("The formula does not describe a finite point set.");
-	////		}
-	//		
-	////		if (geom.equals(ConvexPolyhedron.INCONSISTENT)) {
-	//		if (geom.length==0) {
-	//			String psqlInsertLine =  "INSERT INTO geo_values (id,  interval_start, interval_end,strdfgeo) VALUES (?, ? , ?, NULL)";
-	//			Connection conn = table.getConnection();
-	//			PreparedStatement insertStmt = conn.prepareStatement(psqlInsertLine);
-	//			
-	//			System.out.println("//////////////////////// INCONSISTENT" + geom);
-	//			
-	//			[B@62f4739
-	//			insertStmt.setLong(1, id.longValue());
-	//			//insertStmt.setString(2, constraint);
-	//			//insertStmt.setBytes(2, constraint);
-	//			insertStmt.setTimestamp(2,interval_start);
-	//			insertStmt.setTimestamp(3,interval_end);
-	//			//insertStmt.setString(4, geom);
-	//	
-	//			insertStmt.executeUpdate();
-	//		} else {	
-	//			//String psqlInsertLine =  "INSERT INTO geo_values (id, value,interval_start, interval_end, strdfgeo) VALUES (?, ?, ?, ?, ST_GeometryFromText(?,-1))";
-	//			String psqlInsertLine =  "INSERT INTO geo_values (id, interval_start, interval_end, strdfgeo) VALUES (?, ?, ?, ST_GeomFromWKB(?,-1))";
-	//			
-	//			Connection conn = table.getConnection();
-	//			PreparedStatement insertStmt = conn.prepareStatement(psqlInsertLine);
-	//			
-	//			//System.out.println("//////////////////////// STR  " + value);
-	//			//System.out.println("//////////////////////// GEOM " + geom);
-	//			
-	//			insertStmt.setLong(1, id.longValue());
-	//			//insertStmt.setString(2, value);
-	//			//insertStmt.setString(2, constraint);
-	//			//insertStmt.setBytes(2, constraint);
-	//			
-	//			insertStmt.setTimestamp(2,interval_start);
-	//			insertStmt.setTimestamp(3,interval_end);
-	//			
-	//			
-	//			//insertStmt.setString(5, geom);//not using wkt any more -switched to WKB
-	//			insertStmt.setBytes(4, geom);
-	//			
-	//			insertStmt.executeUpdate();
-	//		}
-	//	}
-
-
 	public synchronized void insert(Number id, Integer srid,/*String constraint, Timestamp interval_start, Timestamp interval_end,*/ byte[] geom)
 		throws SQLException, InterruptedException, NullPointerException
 	{
-
-	
 		ValueBatch batch = getValueBatch();
 		if (isExpired(batch)) {
 			batch = newValueBatch();
@@ -273,10 +199,9 @@ public class GeoValueTable {
 		//batch.setObject(2, interval_start);
 		//batch.setObject(3, interval_end);
 
-
 		if(geom.length==0)
 		{
-			batch.setObject(2,null); 
+			batch.setObject(2, null); 
 		}
 		else
 		{
@@ -285,7 +210,7 @@ public class GeoValueTable {
 //			String hexString = new String(Hex.encodeHex(geom));
 //			System.err.println(id+", "+hexString);
 			///
-			batch.setBytes(2,geom);
+			batch.setBytes(2, geom);
 		}
 		batch.setObject(3, srid); //adding original srid-constant
 		batch.setObject(4, srid);
@@ -295,30 +220,6 @@ public class GeoValueTable {
 
 	}
 	
-	/**
-	 * FIXME careful here 
-	 * Haven't used it yet
-	 */
-	/*public synchronized void insert(Number id, Number value, String strdfgeo, byte[] constraint)
-		throws SQLException, InterruptedException
-	{
-		ValueBatch batch = getValueBatch();
-		if (isExpired(batch)) {
-			batch = newValueBatch();
-			initBatch(batch);
-		}
-		batch.setObject(1, id);
-		//batch.setObject(2, value);
-		batch.setObject(2, constraint);
-		batch.setString(3, strdfgeo);
-		//batch.setString(4, constraint);
-
-		batch.addBatch();
-		queue(batch);
-
-
-	}*/
-
 	public ValueBatch getValueBatch() {
 		return this.batch;
 	}

@@ -18,18 +18,21 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  *
  */
 public class WKTHelper {
 
 	private static Logger logger = LoggerFactory.getLogger(org.openrdf.query.algebra.evaluation.function.spatial.WKTHelper.class);
 	
-	private static String SRID_DELIM 	= ";";
-	private static String CUT_DELIM 	= "/";
-	private static String URI_ENDING	= ">";
+	public static String  STRDF_SRID_DELIM 	= ";";
+	private static String CUT_DELIM 		= "/";
+	private static String URI_ENDING		= ">";
 	
 	/**
 	 * Returns the given WKT without the SRID (if any).
+	 *
+	 * FIXME I think that this works only for stRDF. If this is its purpose, rename it to reflect it.
 	 * 
 	 * @param wkt
 	 * @return
@@ -37,7 +40,7 @@ public class WKTHelper {
 	public static String getWithoutSRID(String wkt) {
 		if (wkt == null) return wkt;
 		
-		int pos = wkt.indexOf(SRID_DELIM);
+		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
 		if (pos != -1) {
 			return wkt.substring(0, pos);
 			
@@ -48,18 +51,19 @@ public class WKTHelper {
 	
 	/**
 	 * Returns the SRID of the given WKT (if any). If the WKT
-	 * does not contain any, then the default is returned (specified in
-	 * org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron.defaultSRID).
+	 * does not contain any, then the default is returned.
+	 * 
+	 * FIXME I think that this works only for stRDF. If this is its purpose, rename it to reflect it.
 	 * 
 	 * @param wkt
 	 * @return
 	 */
 	public static Integer getSRID(String wkt) {
-		int srid = GeoConstants.defaultSRID;
+		int srid = GeoConstants.default_stRDF_SRID;
 		
 		if (wkt == null) return srid;
 		
-		int pos = wkt.indexOf(SRID_DELIM);
+		int pos = wkt.lastIndexOf(STRDF_SRID_DELIM);
 		if (pos != -1) {
 			try {
 				srid = Integer.parseInt(wkt.substring(wkt.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
@@ -71,6 +75,107 @@ public class WKTHelper {
 		}
 		
 		return srid;
-
+	}
+	
+	/**
+	 * Given the WKT representation of a geometry, a SRID, and a datatype, it
+	 * creates a WKT literal conforming to the syntax implied by the given
+	 * datatype. If the given datatype is NULL or different than one of the
+	 * standard ones (e.g., {@link GeoConstants.WKT} or
+	 * {@link GeoConstants.WKTLITERAL}), then the default literal is returned,
+	 * which is determined by {@link GeoConstants.default_WKT_datatype}.  
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @param datatype
+	 * @return
+	 */
+	public static String createWKT(String plainWKT, int srid, String datatype) {
+		if (GeoConstants.WKTLITERAL.equals(datatype)) {
+			return createWKTLiteral(plainWKT, srid);
+			
+		} else if (GeoConstants.WKT.equals(datatype)) {
+			return createstRDFWKT(plainWKT, srid);
+			
+		} else { // no datatype, create default
+			return createWKT(plainWKT, srid, GeoConstants.default_WKT_datatype);
+		}
+	}
+	
+	/**
+	 * Given the well-known representation of a geometry and a SRID, it creates
+	 * a stRDF WKT literal. If the given SRID is the default for that type, then
+	 * it is ignored. 
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @return
+	 */
+	public static String createstRDFWKT(String plainWKT, int srid) {
+		if (srid == GeoConstants.default_stRDF_SRID) {
+			return plainWKT;
+			
+		} else {
+			return plainWKT + ";" + getEPSGURI_forSRID(srid);
+		}
+	}
+	
+	/**
+	 * Given the well-known representation of a geometry and a SRID, it creates
+	 * a GeoSPARQL wktLiteral literal. If the given SRID is the default for that type, then
+	 * it is ignored.
+	 * 
+	 * @param plainWKT
+	 * @param srid
+	 * @return
+	 */
+	public static String createWKTLiteral(String plainWKT, int srid) {
+		if (srid == GeoConstants.default_GeoSPARQL_SRID) {
+			return plainWKT;
+			
+		} else {
+			return "<" + getEPSGURI_forSRID(srid) + "> " + plainWKT; 
+		}
+	}
+	
+	/**
+	 * Returns the URI corresponding to the given SRID.
+	 * The given SRID might only be an EPSG one. 
+	 * If the given SRID is less than
+	 * or equal to 0, then an empty string is returned.
+	 * 
+	 * @param srid
+	 * @return
+	 */
+	public static String getEPSGURI_forSRID(int srid) {
+		if (srid > 0) { // assuming EPSG now
+			return GeoConstants.EPSG_URI_PREFIX + srid; 
+		}
+		
+		return "";
+	}
+	
+	/**
+	 * Returns the SRID corresponding to the given URI identifying a CRS.
+	 * In case of a malformed URI, it returns -1.
+	 * 
+	 * @param uriCRS
+	 * @return
+	 */
+	public static int getSRID_forURI(String uriCRS) {
+		if (uriCRS == null) return -1;
+		
+		if (GeoConstants.CRS84_URI.equals(uriCRS)) {
+			return GeoConstants.EPSG4326_SRID;
+			
+		} else { // should be an EPSG one, need to parse
+			try {
+				return Integer.parseInt(uriCRS.substring(uriCRS.lastIndexOf(CUT_DELIM) + 1).replace(URI_ENDING, ""));
+				
+			} catch (NumberFormatException e) {
+				logger.warn("[Strabon.WKTHelper] Malformed URI for CRS. The URL was {}.", uriCRS);
+				return -1;
+			}
+		}
 	}
 }

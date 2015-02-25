@@ -24,6 +24,7 @@ import eu.earthobservatory.constants.GeoConstants;
  * might not be valid.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class AbstractWKT {
 
@@ -65,6 +66,12 @@ public class AbstractWKT {
 	 */
 	private int srid;
 	
+	/**
+	 * NOTICE: no check of the validity of the supplied WKT is done
+	 * 
+	 * @param literalValue
+	 * @param datatype
+	 */
 	public AbstractWKT(String literalValue, String datatype) {
 		this.datatype = datatype;
 		
@@ -78,6 +85,41 @@ public class AbstractWKT {
 			
 		} // naturally, whoever creates AbstractWKT instances, 
 		// should have either of the two datatypes, thus we don't check for errors
+	}
+	
+	/**
+	 * This constructor tries to guess the datatype of the WKT literal.
+	 * It should be used only when one does not have such information
+	 * available.
+	 * 
+	 * NOTICE 1: it is not guaranteed that guessing will fill-in the
+	 * datatype, but it is guaranteed that parsing will be done
+	 * correctly in any case (well, except for illegal cases).
+	 * 
+	 * NOTICE 2: no check of the validity of the supplied WKT is done
+	 * 
+	 * @param literalValue
+	 */
+	public AbstractWKT(String literalValue) {
+		datatype = null;
+		
+		if (literalValue.lastIndexOf(WKTHelper.STRDF_SRID_DELIM) > 0) { // strdf:WKT
+			datatype = GeoConstants.WKT;
+		
+			isstRDFWKT = true;
+			parsestRDFWKT(literalValue);
+			
+		} else { // wktLiteral or plain WKT
+			if (literalValue.charAt(0) == '<') { // starts with a URI, assume wktLiteral
+				datatype = GeoConstants.WKTLITERAL;
+				
+				isstRDFWKT = false;
+				parseWKTLITERAL(literalValue);
+				
+			} else { // cannot guess, only WKT representation was given
+				parsestRDFWKT(literalValue);	
+			}
+		}
 	}
 	
 	/**
@@ -98,7 +140,7 @@ public class AbstractWKT {
 	
 	private void parseWKTLITERAL(String literalValue) {
 		wkt = literalValue.trim();
-		srid = GeoConstants.WGS84_LON_LAT_SRID;
+		srid = GeoConstants.default_GeoSPARQL_SRID;
 		
 		if (wkt.length() == 0) { // empty geometry
 			wkt = EMPTY_GEOM;
@@ -110,9 +152,8 @@ public class AbstractWKT {
 			// FIXME: handle invalid URIs
 			URI crs = URI.create(wkt.substring(1, uriIndx));
 			
-			// FIXME: get the SRID for crs properly. HOW??
-			if (GeoConstants.WGS84_LON_LAT.equals(crs.toString())) {
-				srid = GeoConstants.WGS84_LON_LAT_SRID;
+			if (GeoConstants.CRS84_URI.equals(crs.toString())) {
+				srid = GeoConstants.EPSG4326_SRID;
 				
 			} else { // parse it to get the srid
 				// FIXME: this code assumes an EPSG URI
@@ -137,7 +178,7 @@ public class AbstractWKT {
 		return datatype;
 	}
 	
-	boolean isstRDFWKT() {
+	public boolean isstRDFWKT() {
 		return isstRDFWKT;
 	}
 	

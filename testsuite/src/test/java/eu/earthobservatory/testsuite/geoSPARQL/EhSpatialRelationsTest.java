@@ -17,11 +17,4 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
-public class EhSpatialRelationsTest extends TemplateTest
-{
-	public EhSpatialRelationsTest() 
-	{
-		super();
-		this.inference=true;
-	}
-}
+public class EhSpatialRelationsTest extends TemplateTest {}

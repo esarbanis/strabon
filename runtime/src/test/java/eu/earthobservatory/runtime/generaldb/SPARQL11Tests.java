@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -22,7 +23,6 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
-
 
 public class SPARQL11Tests {
 	public static Strabon strabon;
@@ -49,14 +49,12 @@ public class SPARQL11Tests {
 		"PREFIX dc11: <"+DC11_NS+"> \n";
 	
 //	@BeforeClass
-//	public static void initialize() throws SQLException, ClassNotFoundException
+//	public static void initialize() throws Exception
 //	{
-//		strabon = new Strabon("sparql11-tests","postgres","p1r3as", 5432, "localhost", true);
+//		strabon = new eu.earthobservatory.runtime.postgis.Strabon("test", "postgres", "postgres", 5432, "localhost", true);
 //
 //	}
 
-
-	
 	@Test
 	public void testRetrieveEveryEntry() throws MalformedQueryException, RepositoryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException
 	{		

@@ -38,21 +38,29 @@ public class PostGISBindingIteration extends GeneralDBBindingIteration {
 		{
 			byte[] label = rs.getBytes(index + 1);
 			int srid = rs.getInt(index + 2);
-			return vf.getRdbmsPolyhedron(id, GeoConstants.WKT, label, srid);
-
+			String datatype = rs.getString(index + 3);
+			return vf.getRdbmsPolyhedron(id, datatype, label, srid);
 		}
 
 		return createResource(rs, index);
 	}
-
+	
 	@Override
-	protected RdbmsValue createBinaryGeoValueForSelectConstructs(ResultSet rs, int index)
-	throws SQLException
+	protected RdbmsValue createWellKnownTextGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
 	{		
 		//Case of spatial constructs
 		byte[] label = rs.getBytes(index + 1);
 		int srid = rs.getInt(index + 2);
-		return vf.getRdbmsPolyhedron(114, GeoConstants.WKT, label, srid);
-
+		
+		return vf.getRdbmsPolyhedron(GeoConstants.WKT, label, srid);
+	}
+	
+	@Override
+	protected RdbmsValue createWellKnownTextLiteralGeoValueForSelectConstructs(ResultSet rs, int index) throws SQLException
+	{		
+		//Case of spatial constructs
+		byte[] label = rs.getBytes(index + 1);
+		int srid = rs.getInt(index + 2);
+		return vf.getRdbmsPolyhedron(GeoConstants.WKTLITERAL, label, srid);
 	}
 }

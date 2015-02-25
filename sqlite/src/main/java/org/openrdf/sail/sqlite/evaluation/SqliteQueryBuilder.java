@@ -12,6 +12,7 @@ package org.openrdf.sail.sqlite.evaluation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.query.algebra.evaluation.function.spatial.AbstractWKT;
 import org.openrdf.query.algebra.evaluation.function.spatial.StrabonPolyhedron;
 import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 import org.openrdf.sail.generaldb.algebra.GeneralDBDateTimeColumn;
@@ -24,6 +25,7 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlAnd;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlBelow;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCase;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlContains;
+import org.openrdf.sail.generaldb.algebra.GeneralDBSqlGeoSPARQLSrid;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlMbbContains;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCrosses;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlDiffDateTime;
@@ -811,6 +813,12 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 		appendGeneralDBSpatialFunctionUnary(expr, filter, SpatialFunctionsPostGIS.ST_AsGML);
 			}
 
+	/*@Override
+	protected void append(GeneralDBSqlGeoSPARQLSrid expr, GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException
+			{
+			}*/
+
 	//	@Override
 	//	protected void append(GeneralDBSqlGeoSrid expr, GeneralDBSqlExprBuilder filter)
 	//	throws UnsupportedRdbmsOperatorException
@@ -966,16 +974,11 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 	{
 		GeneralDBStringValue arg = (GeneralDBStringValue) expr;
 		String raw = arg.getValue();
-
-		StrabonPolyhedron poly = null;
-		try{
-			poly = new StrabonPolyhedron(raw);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		filter.append(" ST_GeomFromText('"+poly.toWKT() +"',4326)");
-
+		
+		// parse raw WKT
+		AbstractWKT wkt = new AbstractWKT(raw);
+		filter.append(" ST_GeomFromText('" + wkt.getWKT() + "'," + String.valueOf(wkt.getSRID()) + ")");
+		
 		return raw;
 	}
 
@@ -2506,6 +2509,14 @@ public class SqliteQueryBuilder extends GeneralDBQueryBuilder {
 
 	@Override
 	protected void append(GeneralDBSqlST_Centroid expr,
+			GeneralDBSqlExprBuilder filter)
+			throws UnsupportedRdbmsOperatorException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void append(GeneralDBSqlGeoSPARQLSrid expr,
 			GeneralDBSqlExprBuilder filter)
 			throws UnsupportedRdbmsOperatorException {
 		// TODO Auto-generated method stub

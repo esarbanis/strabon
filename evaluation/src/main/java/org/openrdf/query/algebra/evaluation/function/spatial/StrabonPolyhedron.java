@@ -30,9 +30,11 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.ParseException;
 
+import eu.earthobservatory.constants.GeoConstants;
+
 /**
- * A {@link StrabonPolyhedron} is a @{link Value} that is used to represent geometries.
- * Therefore, a {@link StrabonPolyhedron} wraps around the construct of an RDF @{link Value}
+ * A {@link StrabonPolyhedron} is a {@link Value} that is used to represent geometries.
+ * Therefore, a {@link StrabonPolyhedron} wraps around the construct of an RDF {@link Value}
  * the notion of geometry. This geometry can be expressed in different kinds of
  * representations, such as linear constraints over the reals with addition
  * (Semi-linear point sets), Well-Known Text (WKT), or Geography Markup Language (GML).
@@ -53,6 +55,7 @@ import com.vividsolutions.jts.io.ParseException;
  * {@link StrabonPolyhedron} instance through any kind of representation and of course
  * getting a {@link StrabonPolyhedron} instance in a specific representation.
  * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
  * @author Kostis Kyzirakos <kk@di.uoa.gr>
  *
@@ -68,8 +71,8 @@ public class StrabonPolyhedron implements Value {
 
 	public static final boolean EnableConstraintRepresentation = false;
 
-	private static int MAX_POINTS = Integer.MAX_VALUE;//40000;//Integer.MAX_VALUE;//10000;
-
+	//private static int MAX_POINTS = Integer.MAX_VALUE;//40000;//Integer.MAX_VALUE;//10000;
+	
 	/**
 	 * Get the Java Topology Suite wrapper instance.
 	 */
@@ -80,13 +83,22 @@ public class StrabonPolyhedron implements Value {
 	 */
 	private Geometry geometry;
 
+	private GeometryDatatype datatype;
+	
 	/**
 	 * Creates a {@link StrabonPolyhedron} instance with an empty geometry.
 	 */
-	public StrabonPolyhedron() {
+	public StrabonPolyhedron(GeometryDatatype datatype) {
 		this.geometry = null;
-
+		this.datatype = datatype;
 	}
+	
+	public StrabonPolyhedron(Geometry geo, int srid, GeometryDatatype datatype) {
+		this(datatype);
+		this.geometry = geo;
+		this.geometry.setSRID(srid);
+	}
+	
 	
 	/**
 	 * Creates a {@link StrabonPolyhedron} instance with the given geometry.
@@ -94,20 +106,27 @@ public class StrabonPolyhedron implements Value {
 	 * @param geo
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(Geometry geo) throws Exception {
-		this.geometry = new StrabonPolyhedron(geo, 1).geometry;
-		this.geometry.setSRID(geo.getSRID());
+	public StrabonPolyhedron(Geometry geo, GeometryDatatype datatype) {
+		this(geo, geo.getSRID(), datatype);
 	}
 	
 	/**
 	 * Creates a {@link StrabonPolyhedron} instance with a geometry given
 	 * in the representation of the argument. The representation could be
-	 * either in WKT or in GML.
+	 * either in WKT or in GML. Since, we construct the {@link Geometry}
+	 * object ourselves there is no way of knowing the SRID, so the
+	 * constructor requires it as well. 
+	 * 
+	 * NOTICE: whoever creates StrabonPolyhedron objects is responsible
+	 * for cleaning the representation of the geometry by removing any
+	 * stRDF/GeoSPARQL specific information, such as the SRID.
 	 * 
 	 * @param representation
 	 * @throws Exception
 	 */
-	public StrabonPolyhedron(String representation) throws IllegalArgumentException {
+	public StrabonPolyhedron(String representation, int srid, GeometryDatatype datatype) throws ParseException {
+		this(datatype);
+		
 		try {
 			// try first as WKT
 			geometry = jts.WKTread(representation);
@@ -117,10 +136,19 @@ public class StrabonPolyhedron implements Value {
 				// try as GML
 				geometry = jts.GMLread(representation);
 				
+				// set datatype (to be on the safe side, when the specified datatype
+				// was unknown; after all, there is no other case for GML
+				if (datatype == GeometryDatatype.UNKNOWN) {
+					datatype = GeometryDatatype.GML;
+				}
+				
 			} catch (Exception e1) {
-				throw new IllegalArgumentException(e1);
+				throw new ParseException("The given WKT/GML representation is not valid.");
 			}
 		}
+		
+		// set its SRID
+		geometry.setSRID(srid);
 	}
 
 	/**
@@ -130,7 +158,8 @@ public class StrabonPolyhedron implements Value {
 	 * @param byteArray
 	 * @throws ParseException
 	 */
-	public StrabonPolyhedron(byte[] byteArray) throws ParseException {
+	public StrabonPolyhedron(byte[] byteArray, GeometryDatatype datatype) throws ParseException {
+		this(datatype);
 		this.geometry = jts.WKBread(byteArray);
 	}
 
@@ -142,9 +171,13 @@ public class StrabonPolyhedron implements Value {
 	 * @param srid
 	 * @throws ParseException
 	 */
-	public StrabonPolyhedron(byte[] byteArray, int srid) throws ParseException {
-		this(byteArray);
+	public StrabonPolyhedron(byte[] byteArray, int srid, GeometryDatatype datatype) throws ParseException {
+		this(byteArray, datatype);
 		this.geometry.setSRID(srid);
+	}
+	
+	public GeometryDatatype getGeometryDatatype() {
+		return datatype;
 	}
 	
 	/**
@@ -153,7 +186,17 @@ public class StrabonPolyhedron implements Value {
 	 * is the same to the one of method {@link #toWKT()}.
 	 */
 	public String stringValue() {
-		return toWKT();
+		switch (datatype) {
+			case GML:
+				return toGML();
+				
+			case stRDFWKT:
+			case wktLiteral:
+				return toWKT();
+				
+			default: // UNKNOWN
+				return toWKT();	
+		}
 	}
 
 	@Override
@@ -170,28 +213,9 @@ public class StrabonPolyhedron implements Value {
 		return false;
 	}
 	
-	@Deprecated
-	public StrabonPolyhedron(String WKT, int algorithm) throws Exception {
-		if(WKT.contains("gml"))
-		{
-			Geometry geo = jts.GMLread(WKT);
-			this.geometry = new StrabonPolyhedron(geo).geometry;
-		}
-		else
-		{
-			Geometry geo = jts.WKTread(WKT);
-			this.geometry = new StrabonPolyhedron(geo, algorithm).geometry;
-		}
-	
-	}
-
-	@Deprecated
-	public StrabonPolyhedron(Geometry geo, int algorithm) throws Exception {
-		this.geometry = new StrabonPolyhedron(geo, algorithm, MAX_POINTS).geometry;
-	}
-
 	// unused
-	public StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
+	@Deprecated
+	private StrabonPolyhedron(Geometry geo, int algorithm, int maxPoints) throws Exception {		
 		if (geo.isEmpty()) {
 			this.geometry = geo;
 			return;
@@ -382,6 +406,10 @@ public class StrabonPolyhedron implements Value {
 	 */
 	public String toWKT() {
 		return jts.WKTwrite(this.geometry);		
+	}
+	
+	protected String toGML() {
+		return jts.GMLWrite(this.geometry);
 	}
 
 	/**
@@ -664,7 +692,7 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public static StrabonPolyhedron union(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
+		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
 
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
@@ -675,32 +703,28 @@ public class StrabonPolyhedron implements Value {
 		return poly;
 	}
 
+	/**
+	 * Think that this computation is done in meters and there is no way of doing it
+	 * in degrees, except if one calculate the corresponding transformation, which
+	 * depends on the spatial reference system used!
+	 * 
+	 * A not so good approximation of meters for degrees:
+	 * 		double meters = (degrees * 6378137 * Math.PI) / 180;
+	 */
 	public static StrabonPolyhedron buffer(StrabonPolyhedron A, double B) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
-		poly.geometry = A.geometry.buffer(B);
-
-		return poly;
+		return new StrabonPolyhedron(A.geometry.buffer(B), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron envelope(StrabonPolyhedron A) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
-		poly.geometry = A.geometry.getEnvelope();
-
-		return poly;
+		return new StrabonPolyhedron(A.geometry.getEnvelope(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron convexHull(StrabonPolyhedron A) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
-		poly.geometry = A.geometry.convexHull();
-
-		return poly;
+		return new StrabonPolyhedron(A.getGeometry().convexHull(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron boundary(StrabonPolyhedron A) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
-		poly.geometry = A.geometry.getBoundary();
-
-		return poly;
+		return new StrabonPolyhedron(A.geometry.getBoundary(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron intersection(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
@@ -709,12 +733,11 @@ public class StrabonPolyhedron implements Value {
 		int sourceSRID = B.getGeometry().getSRID();
 		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
 		Geometry geo = A.geometry.intersection(x);
-		geo.setSRID(targetSRID);
-		return new StrabonPolyhedron(geo);
+		return new StrabonPolyhedron(geo, targetSRID, A.getGeometryDatatype());
 	}
 
 	public static StrabonPolyhedron difference(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
+		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
 
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
@@ -726,7 +749,7 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public static StrabonPolyhedron symDifference(StrabonPolyhedron A, StrabonPolyhedron B) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
+		StrabonPolyhedron poly = new StrabonPolyhedron(A.getGeometryDatatype());
 		int targetSRID = A.getGeometry().getSRID();
 		int sourceSRID = B.getGeometry().getSRID();
 		Geometry x = JTSWrapper.getInstance().transform(B.getGeometry(), sourceSRID, targetSRID);
@@ -747,19 +770,16 @@ public class StrabonPolyhedron implements Value {
 	}
 
 	public static StrabonPolyhedron project(StrabonPolyhedron A, int[] dims) throws Exception {
-		StrabonPolyhedron poly = new StrabonPolyhedron();
 		ProjectionsFilter filter = new ProjectionsFilter(dims);
 		A.geometry.apply(filter);
 		A.geometry.geometryChanged();
-		poly.geometry = A.geometry;
-		return poly;
+		return new StrabonPolyhedron(A.getGeometry(), A.getGeometry().getSRID(), A.getGeometryDatatype());
 	}
 	
 	public static StrabonPolyhedron transform(StrabonPolyhedron A, URI srid) throws Exception {
-		
-		int parsedSRID = Integer.parseInt(srid.toString().substring(srid.toString().lastIndexOf('/')+1));
+		int parsedSRID = WKTHelper.getSRID_forURI(srid.toString());
 		Geometry converted = JTSWrapper.getInstance().transform(A.getGeometry(), A.getGeometry().getSRID(), parsedSRID);
-		return new StrabonPolyhedron(converted);
+		return new StrabonPolyhedron(converted, A.getGeometryDatatype());
 	}
 
 	/**
@@ -774,7 +794,6 @@ public class StrabonPolyhedron implements Value {
 		System.out.println("Merging polyhedrons: A.coordinates=" + A.getGeometry().getCoordinates().length + 
 				", B.coordinates=" + B.getGeometry().getCoordinates().length);
 
-		StrabonPolyhedron poly = new StrabonPolyhedron();
 		int polygons = 0;
 		if (Polygon.class.isInstance(A.geometry)) {			
 			polygons++;
@@ -815,24 +834,24 @@ public class StrabonPolyhedron implements Value {
 			}
 		}
 
-		poly.geometry = new MultiPolygon(polys, new GeometryFactory());
-
-		return poly;
+		return new StrabonPolyhedron(new MultiPolygon(polys, new GeometryFactory()), 
+									 A.getGeometry().getSRID(), 
+									 A.getGeometryDatatype());
 	}
 
 	public StrabonPolyhedron getBuffer(double distance) throws Exception {
 		Geometry geo = this.geometry.buffer(distance);
-		return new StrabonPolyhedron(geo);
+		return new StrabonPolyhedron(geo, this.geometry.getSRID(), datatype);
 	}
 
 	public StrabonPolyhedron getBoundary() throws Exception {
 		Geometry geo = this.geometry.getBoundary();
-		return new StrabonPolyhedron(geo);
+		return new StrabonPolyhedron(geo, this.geometry.getSRID(), datatype);
 	}
 
 	public StrabonPolyhedron getEnvelope() throws Exception {
 		Geometry geo = this.geometry.getEnvelope();
-		return new StrabonPolyhedron(geo);
+		return new StrabonPolyhedron(geo, this.geometry.getSRID(), datatype);
 	}
 
 	public double getArea() throws Exception {
@@ -854,5 +873,23 @@ public class StrabonPolyhedron implements Value {
 									MultiPolygon.class.isInstance(geo) ? "MultiPolygon" :
 										GeometryCollection.class.isInstance(geo) ? "GeometryCollection" : 
 											"Unknown";
+	}
+	
+	
+	/***
+	 * Additions by charnik.
+	 * Why all the above operations (symdifference, boundary, etc.) are static methods
+	 * and not member methods?
+	 */
+	
+	/**
+	 * Returns the centroid of this StrabonPolyhedron as 
+	 * a new StrabonPolyhedron.
+	 * 
+	 * @return
+	 */
+	public StrabonPolyhedron getCentroid() {
+		Point point = geometry.getCentroid();
+		return new StrabonPolyhedron(point, geometry.getSRID(), datatype);
 	}
 }

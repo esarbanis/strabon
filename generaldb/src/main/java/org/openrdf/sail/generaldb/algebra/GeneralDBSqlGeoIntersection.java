@@ -5,14 +5,14 @@
  */
 package org.openrdf.sail.generaldb.algebra;
 
-  
+
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlGeoIntersection extends GeneralDBSqlSpatialConstructBinary{
 
-	public GeneralDBSqlGeoIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
-		super(left, right);
+	public GeneralDBSqlGeoIntersection(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {
+		super(left, right, resultType);
 	}
 
 	@Override

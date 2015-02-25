@@ -372,12 +372,13 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 	 * FIXME my addition
 	 * @throws ParseException 
 	 */
-
 	public GeneralDBPolyhedron getRdbmsPolyhedron(Number num, String datatype, byte[] wkb, int srid)  {
 
 		Number id = ids.idOf(num);
 		try {
-			return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), wkb, srid);
+			if(wkb != null) {
+				return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), wkb, srid);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -386,19 +387,30 @@ public class GeneralDBValueFactory extends ValueFactoryBase {
 		return null;
 	}
 	
-//	public GeneralDBPolyhedron getRdbmsPolyhedron(Number num, String datatype, String pointSet) {
-//
-//		Number id = ids.idOf(num);
-//		try {
-//			return new GeneralDBPolyhedron(id, literals.getIdVersion(), vf.createURI(datatype), pointSet);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 	/**
-	 * 
+	 * This function is called only for SELECT constructs, thus we do not create an id
+	 * for the resulting geometry because we don't push it in the database since
+	 * there is small possibility to meet this geometry in the future.
+	 * {@link PostGISBindingIteration.createWellKnownTextGeoValueForSelectConstructs},
+	 * {@link PostGISBindingIteration.createWellKnownTextLiteralGeoValueForSelectConstructs},
+	 * {@link and MonetDBBindingIteration.createWellKnownTextGeoValueForSelectConstructs},
+	 * {@link and MonetDBBindingIteration.createWellKnownTextLiteralGeoValueForSelectConstructs}
+	 * @param datatype
+	 * @param wkb
+	 * @param srid
+	 * @return
 	 */
+	public GeneralDBPolyhedron getRdbmsPolyhedron(String datatype, byte[] wkb, int srid)  {
+
+		try {
+			if(wkb != null) {
+				return new GeneralDBPolyhedron(vf.createURI(datatype), wkb, srid);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -5,14 +5,14 @@
  */
 package org.openrdf.sail.generaldb.algebra;
 
-  
+
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlGeoConvexHull extends GeneralDBSqlSpatialConstructUnary{
 
-	public GeneralDBSqlGeoConvexHull(GeneralDBSqlExpr expr) {
-		super(expr);
+	public GeneralDBSqlGeoConvexHull(GeneralDBSqlExpr expr, String resultType) {
+		super(expr, resultType);
 	}
 
 	@Override

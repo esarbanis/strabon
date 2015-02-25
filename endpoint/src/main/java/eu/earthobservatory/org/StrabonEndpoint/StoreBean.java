@@ -11,9 +11,8 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -29,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
 
 /**
  * 
@@ -65,7 +63,23 @@ public class StoreBean extends HttpServlet {
 	 * The context of the servlet
 	 */
 	private ServletContext context;
-			
+	
+	//Check for localHost. Works with ipV4 and ipV6
+	public static boolean isLocalClient(HttpServletRequest request) { 
+	    HttpServletRequest testRequest = request; 
+	    try { 
+	    	InetAddress remote = InetAddress.getByName(testRequest.getRemoteAddr()); 
+	        if (remote.isLoopbackAddress()) { 
+	            return true;
+	        } 
+	        InetAddress localHost = InetAddress.getLocalHost(); 
+	        String localAddress = localHost.getHostAddress(); 
+	        String remoteAddress = remote.getHostAddress(); 
+	        return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress)); 
+	    } catch (Exception e) { } 
+	    return false; 
+	} 
+	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
@@ -78,7 +92,6 @@ public class StoreBean extends HttpServlet {
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-   	         	
 		doPost(request, response);	
 	}
 	
@@ -86,23 +99,26 @@ public class StoreBean extends HttpServlet {
 		// check whether we read from INPUT or URL
 		boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false:true;
 		
-		// return "data" value accordingly
-		return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA), "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
+		// return "data" value accordingly, but do not decode the RDF input data (see bugs #65 and #49)
+		//return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA), "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
+		return input ? request.getParameter(Common.PARAM_DATA):request.getParameter(Common.PARAM_DATA_URL);
 	}
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-						 
+		request.setCharacterEncoding("UTF-8");
+		
 		boolean authorized;
 		
-		if(!request.getLocalAddr().equals("127.0.0.1")) {
+		if(!isLocalClient(request)) {
 			Authenticate authenticate = new Authenticate();
 			String authorization = request.getHeader("Authorization");
 	   		
 			authorized = authenticate.authenticateUser(authorization, context);
-		}
-		else
+			
+		} else {
 			authorized = true;
+		}
 				
 	   	 if (!authorized) {	   		 
 	   		 // not allowed, so report he's unauthorized
@@ -112,7 +128,8 @@ public class StoreBean extends HttpServlet {
 	   	 else {	 		
 			// check whether the request was from store.jsp
 			if (Common.VIEW_TYPE.equals(request.getParameter(Common.VIEW))) {
-				processVIEWRequest(request, response);				
+				processVIEWRequest(request, response);
+				
 			} else {
 				processRequest(request, response);
 			}
@@ -137,6 +154,7 @@ public class StoreBean extends HttpServlet {
     			
     	// RDF data to store
     	String data = getData(request);
+    	System.out.println(data);
     			
     	// the format of the data
     	RDFFormat format = (request.getParameter(Common.PARAM_FORMAT) != null) ? RDFFormat.valueOf(request.getParameter(Common.PARAM_FORMAT)):null;

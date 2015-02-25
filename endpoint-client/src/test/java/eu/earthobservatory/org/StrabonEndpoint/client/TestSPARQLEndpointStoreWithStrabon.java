@@ -14,12 +14,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.query.resultio.TupleQueryResultFormat;
-import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -34,11 +31,11 @@ public class TestSPARQLEndpointStoreWithStrabon {
 	@Before
 	public void init() {
 		// initialize endpoint
-		endpoint = new SPARQLEndpoint("luna.di.uoa.gr", 8080, "sextant-endpoint/Store");
+		endpoint = new SPARQLEndpoint("geo.linkedopendata.gr", 80, "teststrabon-endpoint/Store");
 		
 		// set url data
 		try {
-			data = new URL("http://luna.di.uoa.gr:8080/strabon-endpoint-gwt/mapontology/map.nt");
+			data = new URL("http://geo.linkedopendata.gr/teststrabon-endpoint/map.nt");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,13 +56,7 @@ public class TestSPARQLEndpointStoreWithStrabon {
 		
 			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
 			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
-			
-			if (response != true) 
-				System.err.println("Error");
-			
-			
 			assertTrue(response == true);
-		
 	}
 	
 	
@@ -79,10 +70,6 @@ public class TestSPARQLEndpointStoreWithStrabon {
 			URL namedGraph = new URL("http://geo.linkedopendata.gr/map/example");
 			String data = "<http://geo.linkedopendata.gr/map/id/l22> <http://geo.linkedopendata.gr/map/hasName> \"layer22\" . ";
 			Boolean response = endpoint.store(data, RDFFormat.NTRIPLES , namedGraph);
-			
-			if (response != true) 
-				System.err.println("Error");
-			
 			
 			assertTrue(response == true);
 		

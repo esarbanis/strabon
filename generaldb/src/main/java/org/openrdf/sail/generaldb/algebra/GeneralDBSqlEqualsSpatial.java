@@ -6,8 +6,6 @@
 package org.openrdf.sail.generaldb.algebra;
 
  
-import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator; 
-import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 public class GeneralDBSqlEqualsSpatial extends GeneralDBSqlGeoSpatial{
@@ -15,6 +13,4 @@ public class GeneralDBSqlEqualsSpatial extends GeneralDBSqlGeoSpatial{
 	public GeneralDBSqlEqualsSpatial(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 		super(left, right);
 	}
-
-
 }

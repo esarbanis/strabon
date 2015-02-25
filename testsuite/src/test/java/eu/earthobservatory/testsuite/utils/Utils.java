@@ -12,6 +12,7 @@ package eu.earthobservatory.testsuite.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,15 +20,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.commons.io.FileUtils;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -41,6 +45,8 @@ import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.sqlite.SQLiteConfig;
+
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
@@ -49,6 +55,7 @@ import eu.earthobservatory.utils.Format;
  * A class with useful methods for the tests.
  * 
  * @author Panayiotis Smeros <psmeros@di.uoa.gr>
+ * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class Utils
 {
@@ -133,6 +140,7 @@ public class Utils
 	    strabon = new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
 	}
 	
+	
 	public static void storeDataset(String datasetFile, Boolean inference) throws RDFParseException, RepositoryException, RDFHandlerException, IOException, InvalidDatasetFormatFault
 	{
 	    if(datasetFile.endsWith(".nt"))
@@ -141,21 +149,29 @@ public class Utils
 	    	strabon.storeInRepo(datasetFile, "NQUADS", inference);
 	}
 	
-	public static void testQuery(String queryFile, String resultsFile) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
+	
+	public static void testQuery(String queryFile, String resultsFile, boolean orderOn) throws IOException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, URISyntaxException, QueryResultParseException, UnsupportedQueryResultFormatException
 	{
 		ByteArrayOutputStream resultsStream = new ByteArrayOutputStream();
 		String query = FileUtils.readFileToString(new File(Utils.class.getResource(prefixesFile).toURI()))+"\n"+FileUtils.readFileToString(new File(Utils.class.getResource(queryFile).toURI()));
 		
 		//Pose the query
 		strabon.query(query, Format.XML, strabon.getSailRepoConnection(), resultsStream);
-
+		
 		//Check if the results of the query are the expected
-		TupleQueryResult expectedResults = QueryResultIO.parse(Utils.class.getResourceAsStream(resultsFile), TupleQueryResultFormat.SPARQL);
-		TupleQueryResult actualResults = QueryResultIO.parse((new ByteArrayInputStream(resultsStream.toByteArray())), TupleQueryResultFormat.SPARQL);
-
+		compareResults(queryFile, orderOn, 
+					   QueryResultIO.parse(Utils.class.getResourceAsStream(resultsFile), TupleQueryResultFormat.SPARQL),
+					   QueryResultIO.parse((new ByteArrayInputStream(resultsStream.toByteArray())), TupleQueryResultFormat.SPARQL));
+	}
+	
+	protected static void compareResults(String queryFile, boolean orderOn, 
+															 TupleQueryResult expectedResults, 
+															 TupleQueryResult actualResults) throws QueryEvaluationException {
+		
 		List<String> eBindingNames = expectedResults.getBindingNames();
 		List<String> aBindingNames = actualResults.getBindingNames();
-		assertTrue("Results are not the expected. QueryFile: "+queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
+		
+		assertTrue("Results are not the expected. QueryFile: " + queryFile, aBindingNames.containsAll(aBindingNames) && eBindingNames.containsAll(aBindingNames));		
 		
 		//Sort each binding's values
 		List<String> eBindingList = new ArrayList<String>();
@@ -180,17 +196,19 @@ public class Utils
 		
 		assertFalse("Results are not the expected. QueryFile: "+queryFile, expectedResults.hasNext() || actualResults.hasNext());
 		
-		//Sort bindings alphabetically
-		Collections.sort(eBindingList);
-		Collections.sort(aBindingList);
-		
+		if(!orderOn)
+		{
+			//Sort bindings alphabetically
+			Collections.sort(eBindingList);
+			Collections.sort(aBindingList);
+		}
 		//Check bindings one by one
 		Iterator<String> eBindingListIterator = eBindingList.iterator();
 		Iterator<String> aBindingListIterator = aBindingList.iterator();
 
 		while(eBindingListIterator.hasNext() && aBindingListIterator.hasNext())
 		{
-			assertEquals("Results are not the expected. QueryFile: "+queryFile, eBindingListIterator.next(), aBindingListIterator.next());
+			assertEquals("Results are not the expected. QueryFile: "+queryFile,eBindingListIterator.next(), aBindingListIterator.next() );
 		}
 		
 		actualResults.close();

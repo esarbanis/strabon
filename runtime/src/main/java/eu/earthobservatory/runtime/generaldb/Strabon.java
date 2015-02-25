@@ -18,6 +18,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.geotools.factory.Hints;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.BindingSet;
@@ -48,17 +49,6 @@ import eu.earthobservatory.utils.stSPARQLQueryResultToFormatAdapter;
 public abstract class Strabon {
 
 	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.runtime.generaldb.Strabon.class);
-
-	public static final String FORMAT_DEFAULT	= "";
-	public static final String FORMAT_XML		= "XML";
-	public static final String FORMAT_KML		= "KML";
-	public static final String FORMAT_KMZ		= "KMZ";
-	public static final String FORMAT_GEOJSON	= "GeoJSON";
-	public static final String FORMAT_EXP		= "EXP";
-	public static final String FORMAT_HTML		= "HTML";
-	
-	public static final String NEWLINE		= "\n";
-	
 	/**
 	 * Connection details (shared with subclasses)
 	 */
@@ -87,7 +77,11 @@ public abstract class Strabon {
 			
 		}
 
+		long start = System.currentTimeMillis();
 		initiate(databaseName, user, password, port, serverName);
+		long end = System.currentTimeMillis();
+		
+		logger.info("[Strabon] Initialization took {} ms.", (end - start));
 	}
 
 
@@ -121,6 +115,7 @@ public abstract class Strabon {
 		//Setting up store
 
 		//Used for the conversions taking place involving JTS + WGS84 (4326)
+		//Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.FALSE);
 		System.setProperty("org.geotools.referencing.forceXY", "true");
 		
 		//our repository
@@ -267,21 +262,35 @@ public abstract class Strabon {
 				}
 				
 				long t3 = System.nanoTime();
-	
+
+				logger.info((t2-t1)+" + "+(t3-t2)+" = "+(t3-t1)+" | "+results);
 				return new long[]{t2-t1, t3-t2, t3-t1, results};
 				//break;
+			
+			case TUQU:
 				
-		default:
-			// get the writer for the specified format
-			TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
-			
-			// check for null format
-			if (resultWriter == null) {
-				logger.error("[Strabon.query] Invalid format.");
-				return false;
-			}
-			
-			tupleQuery.evaluate(resultWriter);
+				return tupleQuery;
+//				break;	
+			case PIECHART:
+				return tupleQuery.evaluate();
+				
+			case AREACHART:
+				return tupleQuery.evaluate();
+
+			case COLUMNCHART:
+				return tupleQuery.evaluate();
+				
+			default:
+				// get the writer for the specified format
+				TupleQueryResultWriter resultWriter = stSPARQLQueryResultToFormatAdapter.createstSPARQLQueryResultWriter(resultsFormat, out);
+				
+				// check for null format
+				if (resultWriter == null) {
+					logger.error("[Strabon.query] Invalid format.");
+					return false;
+				}
+				
+				tupleQuery.evaluate(resultWriter);
 		}
 
 		return status;

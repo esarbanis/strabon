@@ -11,7 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -109,7 +108,10 @@ public class DescribeBean extends HttpServlet{
 		// get the dispatcher for forwarding the rendering of the response
 		RequestDispatcher dispatcher = request.getRequestDispatcher("describe.jsp");
 		
-		String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		// do not decode the SPARQL query (see bugs #65 and #49)
+		//String query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+		String query = request.getParameter("query");
+		
 		String format = request.getParameter("format");
 		String handle = request.getParameter("handle");
 		RDFFormat rdfFormat = RDFFormat.valueOf(format);
@@ -188,8 +190,8 @@ public class DescribeBean extends HttpServlet{
 			out.print(ResponseMessages.getXMLFooter());
     		
     	} else {
-    		// decode the query
-    		query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
+    		// do not decode the SPARQL query (see bugs #65 and #49)
+    		//query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
     		
 	    	response.setContentType(format.getDefaultMIMEType());
 		    response.setHeader("Content-Disposition", 

@@ -68,6 +68,7 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregate.ExtentFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.BufferFunc;
+import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.IntersectionFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.TransformFunc;
 import org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct.UnionFunc;
 import org.openrdf.sail.generaldb.GeneralDBValueFactory;
@@ -103,8 +104,8 @@ import eu.earthobservatory.constants.GeoConstants;
 /**
  * Rewrites the core algebra model with a relation optimised model, using SQL.
  * 
- * @author James Leigh
- * 
+ * @author Charalampos Nikolaou <charnik@di.uoa.gr>
+ * @author Manos Karpathiotakis <mk@di.uoa.gr.
  */
 public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> 
 //implements QueryOptimizer //removed it consciously
@@ -139,11 +140,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	private Group referenceGroupBy = null;
 
+	//used to keep the names used in a BIND clause
+	private Set<String> namesInBind = new HashSet<String>();
+
 	//Counter used to enumerate expressions in having
 	private int havingID = 1;
-	/**
-	 * 
-	 */
 
 	private static final String ALIAS = "t";
 
@@ -185,21 +186,19 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Distinct node)
-			throws RuntimeException
-			{
+	public void meet(Distinct node) throws RuntimeException
+	{
 		super.meet(node);
 		if (node.getArg() instanceof GeneralDBSelectQuery) {
 			GeneralDBSelectQuery query = (GeneralDBSelectQuery)node.getArg();
 			query.setDistinct(true);
 			node.replaceWith(query);
 		}
-			}
+	}
 
 	@Override
-	public void meet(Union node)
-			throws RuntimeException
-			{
+	public void meet(Union node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -219,7 +218,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		mergeSelectClause(query, right);
 		addProjectionsFromUnion(query, union);
 		node.replaceWith(query);
-			}
+	}
 
 	/**
 	 * This happens when both sides of the union have the same variable name with
@@ -241,9 +240,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 	}
 
 	@Override
-	public void meet(Join node)
-			throws RuntimeException
-			{
+	public void meet(Join node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -264,12 +262,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		 * This change was made before altering the spatial joins operation
 		 */
 		reference = left;
-			}
+	}
 
 	@Override
-	public void meet(LeftJoin node)
-			throws RuntimeException
-			{
+	public void meet(LeftJoin node) throws RuntimeException
+	{
 		super.meet(node);
 		TupleExpr l = node.getLeftArg();
 		TupleExpr r = node.getRightArg();
@@ -300,7 +297,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 		node.replaceWith(left);
 		reference = left;
-			}
+	}
 
 	@Override
 	public void meet(StatementPattern sp) {
@@ -442,22 +439,21 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				proj.setVar(var);
 				proj.setId(new GeneralDBRefIdColumn(var));
 
-
 				if(geoNames.contains(var.getName()))
 				{
 					proj.setStringValue(new GeneralDBLabelColumn(var));
 					//13/09/2011 my addition in order to create a spatial join in the meet(Filter) call that will follow
 					previousAlias = var;
+					
+					// add the corresponding datatype (see {@link GeneralDBValueJoinOptimizer.GeneralDBLabelColumn})
+					proj.setDatatype(new GeneralDBDatatypeColumn(var));
 				}
 				else
 				{
-
-
 					proj.setStringValue(coalesce(new GeneralDBURIColumn(var), new GeneralDBBNodeColumn(var), new GeneralDBLabelColumn(var),
 							new GeneralDBLongLabelColumn(var), new GeneralDBLongURIColumn(var)));
 					proj.setDatatype(new GeneralDBDatatypeColumn(var));
 					proj.setLanguage(new GeneralDBLanguageColumn(var));
-
 				}
 				query.addSqlSelectVar(proj);
 			}
@@ -485,15 +481,11 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			from.addFilter(in);
 		}
 		sp.replaceWith(query);
-
-
 	}
 
 	@Override
-	public void meet(Filter node)
-			throws RuntimeException
-			{
-
+	public void meet(Filter node) throws RuntimeException
+	{
 		/**
 		 * XXX 21/09/2011 addition for spatial joins
 		 * Ekmetalleyomai to gegonos oti exw 'fytepsei' sta embolima filters twn joins mia statement pattern me to onoma -dummy-
@@ -1001,13 +993,17 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 			ValueExpr expr = elem.getExpr();
 			GeneralDBSqlExpr sqlExpr = null;
 			String name = elem.getName();
-			if(expr instanceof FunctionCall)
-			{
-				if(!evaluateInJava(expr))
+			
+			if (expr instanceof FunctionCall)
+			//if (expr instanceof FunctionCall && !isFuncExprGrounded(expr))
+			{ // if the expr is grounded we are going to evaluate it in Java
+				//also if the function involves variables from a BIND clause
+				//we evaluate it in java
+				if(!evaluateInJava(expr) && !varInBind(expr))
 				{
 					Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-					if(function instanceof SpatialPropertyFunc || function instanceof SpatialRelationshipFunc 
-							|| function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
+					if(function instanceof SpatialPropertyFunc  || function instanceof SpatialRelationshipFunc ||
+					   function instanceof SpatialConstructFunc || function instanceof SpatialMetricFunc)
 					{
 						try {
 							sqlExpr = sql.getBooleanExprFactory().spatialFunction((FunctionCall) expr);
@@ -1018,7 +1014,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 						iter.remove();
 					}
 				}
-				else //Union (or Extent) is used as an aggregate function on Select Clause!
+				else if(!varInBind(expr)) //Union (or Extent) is used as an aggregate function on Select Clause!
 				{
 					//must add as aggregate
 					if(this.referenceGroupBy != null)
@@ -1028,7 +1024,10 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					}
 					iter.remove();
 				}
-
+				//if the name of the new variable is not present in the projection
+				//then it results from a BIND
+				if(!(node.getParentNode() instanceof Projection))
+					namesInBind.add(name+"?spatial");
 			}
 			//Issue: MathExpr is not exclusively met in spatial cases!
 			//Need to distinguish thematic and spatial!!
@@ -1071,14 +1070,37 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 					}
 				}
 			}
-			/**
-			 * 
-			 */
-
-
 		}
 	}
 
+	/**
+	 * Checks whether the given value expression contains only grounded
+	 * terms (constants). 
+	 * 
+	 * This should work for the spatial case, but I am not 100% sure whether
+	 * it is going to work for whole SPARQL 1.1.
+	 * 
+	 * @param funcExpr
+	 * @return
+	 */
+	private boolean isFuncExprGrounded(ValueExpr funcExpr) {
+		if (funcExpr instanceof FunctionCall) {
+			// recursively check its arguments
+			boolean groundedChildren = true;
+			for (int i = 0; i < ((FunctionCall) funcExpr).getArgs().size(); i++) {
+				groundedChildren &= isFuncExprGrounded(((FunctionCall) funcExpr).getArgs().get(i));
+			}
+			
+			return groundedChildren;
+			
+		} else if (funcExpr instanceof Var) { // variable
+			return false;
+			
+		} else { // all other cases (constant, UnaryExpressions, etc...) -> dodgy!
+			return true;
+		}
+	}
+	
 	//Checking that no spatial function exists in this metric expression
 	private boolean thematicExpression(ValueExpr expr)
 	{
@@ -1203,7 +1225,8 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 
 	/**
 	 * Function used recursively to specify whether the function call present in the select clause contains an aggregate
-	 * of the form strdf:union(?aggrValue). 
+	 * of the form strdf:union(?aggrValue) or strdf:intersection(?aggrValue).
+	 *  
 	 * @param expr 
 	 * @return true if no aggregate is present, false otherwise.
 	 */
@@ -1212,18 +1235,20 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		if(expr instanceof FunctionCall)
 		{
 			Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
-			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))&&!(function instanceof ExtentFunc))
+			if((!(function instanceof UnionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&(!(function instanceof IntersectionFunc) || !(((FunctionCall) expr).getArgs().size()==1))
+					&&!(function instanceof ExtentFunc))
 			{
 				//Recursively check arguments
-				boolean unionPresent = false;
+				boolean aggregatePresent = false;
 				for(int i = 0 ; i< ((FunctionCall) expr).getArgs().size(); i++)
 				{
 					//ValueExpr tmp = ((FunctionCall) expr).getArgs().get(i);
 					//containsAggregateUnion = containsAggregateUnion || evaluateInDB(tmp);
 					//					noUnionPresent = noUnionPresent ^ evaluateInJava(((FunctionCall) expr).getArgs().get(i));
-					unionPresent = unionPresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
+					aggregatePresent = aggregatePresent || evaluateInJava(((FunctionCall) expr).getArgs().get(i));
 				}
-				return unionPresent;
+				return aggregatePresent;
 			}
 			else
 			{
@@ -1236,9 +1261,32 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 		}
 
 	}
+
 	/**
-	 * 
+	 *
+	 * @param expr
+	 * @return true if the variable occurs inside a BIND clause
+	 * false otherwise
 	 */
+	private boolean varInBind(ValueExpr expr)
+	{
+		if(expr instanceof FunctionCall)
+		{
+			for(int i = 0 ; i< ((FunctionCall) expr).getArgs().size(); i++)
+			{
+				return varInBind(((FunctionCall) expr).getArgs().get(i));
+			}
+			return false;
+		}
+		else if(expr instanceof Var) //Var
+		{
+			if(namesInBind.contains(((Var)expr).getName()))
+				return true;
+			return false;
+		}
+		else
+			return false;
+	}
 
 	@Override
 	public void meet(Slice node)
@@ -1738,6 +1786,7 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
 				Function function = FunctionRegistry.getInstance().get(((FunctionCall) expr).getURI());
 				//Aggregate Function
 				if(((function instanceof UnionFunc) && (((FunctionCall) expr).getArgs().size()==1))
+						|| ((function instanceof IntersectionFunc) && (((FunctionCall) expr).getArgs().size()==1))
 						|| (function instanceof ExtentFunc))
 				{
 					GroupElem groupElem = new GroupElem("havingCondition"+(havingID++)+"-aggregateInside-", new Avg(expr));

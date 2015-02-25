@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
@@ -45,16 +47,19 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 	private String password;
 	private String dbBackend;
 	private int maxLimit;
+	private boolean loadFromFile;
 	private String prefixes;
 	
 	private Strabon strabon = null;
+		
+	private String gChartString =" ";
 	
 	private boolean checkForLockTable;
 	private List<StrabonBeanWrapperConfiguration> entries;
 
 	public StrabonBeanWrapper(String databaseName, String user, String password, 
 			int port, String serverName, boolean checkForLockTable, String dbBackend, 
-			int maxLimit, String prefixes, 	List<List<String>> args) {
+			int maxLimit, boolean loadFromFile,String prefixes, 	List<List<String>> args) {
 		this.serverName = serverName;
 		this.port = port;
 		this.databaseName = databaseName;
@@ -62,7 +67,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		this.password = password;
 		this.checkForLockTable = checkForLockTable;
 		this.dbBackend = dbBackend;
-		this.maxLimit = maxLimit;		
+		this.maxLimit = maxLimit;	
+		this.loadFromFile = loadFromFile;
 		this.prefixes = prefixes;
 		this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 		
@@ -144,7 +150,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 					// use PostGIS as the default database backend
 					this.strabon = new eu.earthobservatory.runtime.postgis.Strabon(databaseName, user, password, port, serverName, checkForLockTable);	
 				}
-				
+
+				installSIGTERMHandler(this.strabon);
 				
 			} catch (Exception e) {
 				logger.error("[StrabonEndpoint] Exception occured while creating Strabon. {}\n{}", e.getMessage(), this.getDetails());
@@ -155,6 +162,33 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return true;
 	}
 
+	/**
+	 * Registers a handler for SIGTERM signals, like Ctrl-C. One may send such a signal
+	 * at the command prompt, when running Strabon Endpoint from the command line, i.e.,
+	 * using the endpoint-exec module.   
+	 * 
+	 * @param strabon The strabon instance
+	 */
+	private static void installSIGTERMHandler(final Strabon strabon) {
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Installing handler for SIGTERM signals...");
+		}
+		
+		// register the handler
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			
+			@Override
+			public void run() {
+				// just call the Strabon.close() method
+				strabon.close();
+			}
+		});
+		
+		if (logger.isDebugEnabled()) {
+			logger.info("[StrabonEndpoint] Handler for SIGTERM signals installed successfully.");
+		}
+	}
+	
 	public Strabon getStrabon() {
 		return strabon;
 	}
@@ -185,7 +219,87 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		if ((this.strabon == null) && (!init())) {
 			throw new RepositoryException("Could not connect to Strabon.");
 		} 
-		strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString()) || answerFormatStrabon.equalsIgnoreCase( Format.AREACHART.toString())|| 
+				answerFormatStrabon.equalsIgnoreCase( Format.COLUMNCHART.toString())){
+			TupleQueryResult result = (TupleQueryResult) strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+			List<String> bindingNames = result.getBindingNames();
+			if(bindingNames.size() !=2 && answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+				logger.error("Strabon endpoint: to display results in a pie chart, exactly TWO variables must be projected");
+			}
+			else{
+				if(answerFormatStrabon.equalsIgnoreCase(Format.PIECHART.toString())){
+					
+					ArrayList<String> arr = new ArrayList<String>(2);
+					arr.add(0, bindingNames.get(0));
+					arr.add(1, bindingNames.get(1));
+
+					gChartString ="var data = new google.visualization.DataTable();";
+					gChartString += "data.addColumn('string',\'"+arr.get(0)+"');\n";
+					gChartString += "data.addColumn('number',\'"+arr.get(1)+"');\n";
+					
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						arr.add(0, bindings.getValue(bindingNames.get(0)).stringValue());
+						arr.add(1, bindings.getValue(bindingNames.get(1)).stringValue());
+						
+						gChartString += "data.addRow([\'"+withoutPrefix(arr.get(0))+"\', "+
+								arr.get(1).replace("\"", "").replace("^^","").replace("<http://www.w3.org/2001/XMLSchema#integer>","")+"]);\n";
+					}
+					gChartString += "var options = {'title':'','width':1000, 'height':1000, is3D: true};\n";
+					gChartString += "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));\n";
+		
+						
+				}
+				else {
+					
+					String chartType;
+					int varNum = bindingNames.size();
+
+					gChartString = "var data = google.visualization.arrayToDataTable([[";
+					for(int j=0; j<varNum; j++){
+						String chartValue =bindingNames.get(j);
+							gChartString += "'"+chartValue+"'";
+					
+						if(j != varNum-1){
+							gChartString+=",";
+						}
+					}
+					gChartString += "],";
+					
+					while(result.hasNext()){
+						BindingSet bindings = result.next();
+						gChartString += "[";
+						for(int j=0; j<varNum; j++){
+							
+							String chartValue =bindings.getValue(bindingNames.get(j)).stringValue();
+							if(j==0){ //the first variable is a string variable.
+								gChartString += "'"+withoutPrefix(chartValue).replace("\"", "")+"'";
+							}
+							else{ //numeric value
+								gChartString += withoutPrefix(chartValue).replace("\"", "");
+							}
+							if(j != varNum-1){
+								gChartString+=",";
+							}
+						}
+						gChartString += "],";
+					}
+					if(answerFormatStrabon.equalsIgnoreCase(Format.AREACHART.toString())){
+						 chartType = "AreaChart";
+					}else{
+						 chartType = "ColumnChart";
+					}
+					gChartString += "]);";
+					gChartString += " var options = {title: '', hAxis: {title:'"+ bindingNames.get(0) +"',  titleTextStyle: {color: \'red\'}}};";
+					gChartString += "var chart = new google.visualization."+chartType+"(document.getElementById('chart_div')); \n";
+				
+				}
+				
+				
+			}}
+		else{
+			strabon.query(queryString, Format.fromString(answerFormatStrabon), strabon.getSailRepoConnection(), out);
+		}
 		
 	}
 	
@@ -256,10 +370,11 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
 		if (url) {
 			URL source = new URL(src);
-			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL)) {
+			if (source.getProtocol().equalsIgnoreCase(FILE_PROTOCOL) && !loadFromFile) {
 				// it would be a security issue if we read from the server's filesystem
 				throw new IllegalArgumentException("The protocol of the URL should be one of http or ftp.");
 			}
+			
 		}
 
 		strabon.storeInRepo(src, null, context, format, inference);
@@ -377,5 +492,36 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 		return prefixes;
 	}
 
+	
+
+	public String getgChartString() {
+		return gChartString;
+	}
+
+	public void setgChartString(String gChartString) {
+		this.gChartString = gChartString;
+	}
+	
+	
+	public String withoutPrefix(String inputURI){
+		int index;
+	
+		if(!inputURI.contains("http") ){ //plain literal case- no prefixes to remove
+			return inputURI;
+		}
+		else{ //URI case
+			//removing prefixes so that they will not be displayed in the chart
+			if(inputURI.lastIndexOf('#') > inputURI.lastIndexOf('/')){
+				index = inputURI.lastIndexOf('#')+1;
+			}
+			else{
+				index = inputURI.lastIndexOf("/")+1;
+			}
+			
+			int endIndex= inputURI.length();
+			return  inputURI.substring(index, endIndex );
+
+	}
+	}
 }
 

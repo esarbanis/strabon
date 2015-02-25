@@ -64,7 +64,6 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 		Statement st=c.createStatement();
 		//st.execute("SELECT load_extension('/usr/local/lib/libspatialite.so')");
 		//st.execute("SELECT load_extension('/usr/lib/sqlite3/pcre.so')");
-		System.out.println(libspatial);
 		st.execute("SELECT load_extension('"+libspatial+"')");
 		try{
 		st.execute("SELECT load_extension('"+regex+"')");

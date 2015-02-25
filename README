@@ -61,10 +61,16 @@ directory of Strabon, issue the following command to build it from command line:
 
 	$ mvn clean package
 
-In order to run automatically the JUnit tests, pass the option `-DskipTests=true' 
+In order to run automatically the JUnit tests, pass the option `-DskipTests=false' 
 to the above command. The complete command is the following:
 
 	$ mvn -DskipTests=false clean package
+
+Alternatively, it is possible to run a specific test. Supposing that the name of
+the corresponding class is `TestName', then you can run only this
+test using the following command:
+
+	$ mvn test -DfailIfNoTests=false -DskipTests=false -Dtest=TestName
 
 In case of an error during building of Strabon and assuming that the error does
 not come from the JUnit tests, please have a look at the `Known Issues' section
@@ -439,13 +445,13 @@ Contributors
 The system Strabon has been developed by the following members of our team:
 
 * Manos Karpathiotakis	<mk@di.uoa.gr>
-* Kostis Kyzirakos	<kkyzir@di.uoa.gr>
+* Kostis Kyzirakos	<Kostis.Kyzirakos@cwi.nl>
 * Manolis Koubarakis	<koubarak@di.uoa.gr>
 * Giorgos Garbis	<ggarbis@di.uoa.gr>
 * Konstantina Bereta	<konstantina.bereta@di.uoa.gr>
 * Charalampos Nikolaou	<charnik@di.uoa.gr>
 * Stella Gianakopoulou	<sgian@di.uoa.gr>
-* Panagiotis Smeros	<psmeros@di.uoa.gr>
+* Panayiotis Smeros	<psmeros@di.uoa.gr>
 * Kallirroi Dogani	<kallirroi@di.uoa.gr>
 
 

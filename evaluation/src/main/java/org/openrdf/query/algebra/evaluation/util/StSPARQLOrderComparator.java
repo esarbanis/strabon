@@ -14,12 +14,14 @@ import java.util.Comparator;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.algebra.BindingSetAssignment;
 import org.openrdf.query.algebra.FunctionCall;
 import org.openrdf.query.algebra.Order;
 import org.openrdf.query.algebra.OrderElem;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.evaluation.EvaluationStrategy;
+import org.openrdf.query.algebra.evaluation.QueryBindingSet;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import eu.earthobservatory.constants.GeoConstants;
 
 /**
  * @author Manos Karpathiotakis <mk@di.uoa.gr>
+ * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class StSPARQLOrderComparator implements Comparator<BindingSet> {
 
@@ -63,10 +66,23 @@ public class StSPARQLOrderComparator implements Comparator<BindingSet> {
 						//I know it is a var cause I 'planted' it earlier
 						Var lastArg = (Var) fc.getArgs().get(1);
 						String bindingName = lastArg.getName();
-
-						v1 = o1.getValue(bindingName);
-						v2 = o2.getValue(bindingName);
+						
+						//avoid function encapsulation @see GeneralDBSelectQueryOptimizer meet(Order)
+						if(bindingName.startsWith("-mbb-"))
+						{
+							//get the encapsulated function 
+							v1=evaluate(expr.getArgs().get(0), o1);
+							v2=evaluate(expr.getArgs().get(0), o2);
+						}
+						else
+						{
+							v1 = o1.getValue(bindingName);
+							v2 = o2.getValue(bindingName);
+						}
+						
+						
 						//XXX unfinished
+						
 						int compare = cmp.compare(v1, v2);
 
 						if (compare != 0) {
