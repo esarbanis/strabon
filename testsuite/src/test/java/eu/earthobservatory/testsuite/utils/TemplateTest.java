@@ -32,6 +32,7 @@ import org.junit.Test;
  */
 public abstract class TemplateTest
 {	
+    private final static String TEST_PATH_TEMPLATE = "/%s/%s/";
 	protected String datasetFile;
 	protected ArrayList<String> queryFile;
 	protected ArrayList<String> resultsFile;
@@ -50,7 +51,7 @@ public abstract class TemplateTest
 		
 		try 
 		{
-			testfolder = new File(this.getClass().getResource(File.separator+testpackage+File.separator+testname+File.separator).toURI());
+			testfolder = new File(this.getClass().getResource(String.format(TEST_PATH_TEMPLATE, testpackage, testname)).toURI());
 		} 
 		catch (URISyntaxException e) 
 		{
