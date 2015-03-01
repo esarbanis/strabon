@@ -84,20 +84,12 @@
 			<artifactId>jdbcclient</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
- 		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!--	    
-		<dependency>
-			<groupId>net.sf</groupId>
-			<artifactId>log4jdbc4</artifactId>
-		</dependency>
-		-->
 
 		<dependency>
 			<groupId>commons-codec</groupId>

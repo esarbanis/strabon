@@ -18,14 +18,11 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryresultio-spatial-api</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryresultio-spatial-sparqlxml</artifactId>
 		</dependency>
-        <dependency> <!-- TO BE REMOVED -->
-                <groupId>org.openrdf.sesame</groupId>
-                <artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-        </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -37,23 +34,5 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-query</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-util</artifactId>
-		</dependency>
-		-->
 	</dependencies>
 </project>

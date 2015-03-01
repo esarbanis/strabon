@@ -18,10 +18,12 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryresultio-spatial-api</artifactId>
 		</dependency>
+        
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryresultio-spatial-sparqlxml</artifactId>
 		</dependency>
+        
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -37,33 +39,5 @@
 			<groupId>org.geotools.xsd</groupId>
 			<artifactId>gt-xsd-kml</artifactId>
 		</dependency>
-
-		<dependency> <!-- TO BE REMOVED -->
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
-		</dependency>
-		<dependency> <!-- TO BE REMOVED ? -->
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-sail-generaldb</artifactId>
-		</dependency>
-
-		<!--
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-query</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-rio-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-util</artifactId>
-		</dependency>
-		-->
 	</dependencies>
 </project>
