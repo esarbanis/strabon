@@ -20,6 +20,16 @@
             <groupId>org.openrdf.sesame</groupId>
             <artifactId>sesame-queryresultio-spatial-api</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-queryalgebra-evaluation-spatial</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-sail-generaldb</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

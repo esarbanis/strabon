@@ -16,3 +16,4 @@ endpoint-client/dependency-reduced-pom\.xml
 WEB-INF/faces-config.xml
 .idea
 .*\.iml$
+\.DS_Store
