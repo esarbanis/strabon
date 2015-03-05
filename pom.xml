@@ -159,6 +159,7 @@
         <module>endpoint</module>
         <module>endpoint-client</module>
         <module>endpoint-exec</module>
+        <module>testdb</module>
         <module>testsuite</module>
         <module>vocab</module>
     </modules>
@@ -262,6 +263,12 @@
             <dependency>
                 <groupId>org.openrdf.sesame</groupId>
                 <artifactId>sesame-sail-monetdb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.openrdf.sesame</groupId>
+                <artifactId>sesame-sail-h2</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -551,6 +558,12 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>5.1.15</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.185</version>
             </dependency>
 
             <!--  LOG4J -->
