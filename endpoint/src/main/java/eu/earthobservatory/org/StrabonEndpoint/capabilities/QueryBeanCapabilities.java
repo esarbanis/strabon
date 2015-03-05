@@ -1,7 +1,6 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+ * the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
  * Copyright (C) 2012, Pyravlos Team
  * 
@@ -18,33 +17,33 @@ import java.util.List;
  */
 public class QueryBeanCapabilities implements RequestCapabilities {
 
-	private static QueryBeanCapabilities caps;
-	
-	protected QueryBeanCapabilities() {
-		
-	}
-	
-	public static synchronized QueryBeanCapabilities getInstance() {
-		if (caps == null) {
-			caps = new QueryBeanCapabilities();
-		}
-		
-		return caps;
-	}
-	
-	@Override
-	public Parameters getParametersObject() {
-		return null;
-	}
+  private static QueryBeanCapabilities caps;
 
-	@Override
-	public List<String> getAcceptedValues(String param) {
-		return null;
-	}
+  protected QueryBeanCapabilities() {
 
-	@Override
-	public boolean isOptional(String param) {
-		return false;
-	}
+  }
+
+  public static synchronized QueryBeanCapabilities getInstance() {
+    if (caps == null) {
+      caps = new QueryBeanCapabilities();
+    }
+
+    return caps;
+  }
+
+  @Override
+  public Parameters getParametersObject() {
+    return null;
+  }
+
+  @Override
+  public List<String> getAcceptedValues(String param) {
+    return null;
+  }
+
+  @Override
+  public boolean isOptional(String param) {
+    return false;
+  }
 
 }

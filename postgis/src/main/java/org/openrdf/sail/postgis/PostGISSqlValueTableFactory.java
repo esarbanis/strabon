@@ -5,7 +5,7 @@ import org.openrdf.sail.generaldb.GeneralDBSqlValueTableFactory;
 
 public class PostGISSqlValueTableFactory extends GeneralDBSqlValueTableFactory {
 
-	public PostGISSqlValueTableFactory() {
-		super(new PostGISSqlTableFactory());
-	}
+  public PostGISSqlValueTableFactory() {
+    super(new PostGISSqlTableFactory());
+  }
 }

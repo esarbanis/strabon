@@ -1,7 +1,6 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+ * the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * 
  * Copyright (C) 2012, Pyravlos Team
  * 
@@ -9,140 +8,146 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
+import eu.earthobservatory.constants.GeoConstants;
+import eu.earthobservatory.constants.OGCConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.earthobservatory.constants.GeoConstants;
-import eu.earthobservatory.constants.OGCConstants;
-
 
 /**
- * This class implements the {@link Capabilities} interface and
- * shall be used only for versions of Strabon Endpoint newer than
- * version 3.2.4.
+ * This class implements the {@link Capabilities} interface and shall be used only for versions of
+ * Strabon Endpoint newer than version 3.2.4.
  * 
  * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class EndpointCapabilities implements Capabilities {
 
-	private static Logger logger = LoggerFactory.getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.EndpointCapabilities.class);
-	
-	private static final String VERSION_PROPERTIES_FILE = "/version.properties";
-	private static final Properties PROPERTIES = new Properties();
+  private static Logger logger = LoggerFactory
+      .getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.EndpointCapabilities.class);
 
-	private static String VERSION;
-	
-	// load the properties file to get the version
-	static {
-		InputStream vin = Capabilities.class.getResourceAsStream(VERSION_PROPERTIES_FILE);
-		if (vin != null) {
-			try {
-				PROPERTIES.load(vin);
-				vin.close();
-				
-			} catch (IOException e) {
-				logger.error("[StrabonEndpoint.EndpointCapabilities] Error during reading of {} file.", VERSION_PROPERTIES_FILE, e);
-			}
-		} else {
-			logger.warn("[StrabonEndpoint.EndpointCapabilities] Could not read version file.");
-		}
-		
-		VERSION = PROPERTIES.getProperty("version");
-	}
-	
-	@Override
-	public String getVersion() {
-		return VERSION;
-	}
-	
-	@Override
-	public boolean supportsLimit() {
-		return true;
-	}
+  private static final String VERSION_PROPERTIES_FILE = "/version.properties";
+  private static final Properties PROPERTIES = new Properties();
 
-	@Override
-	public boolean supportsAuthentication() {
-		return true;
-	}
+  private static String VERSION;
 
-	@Override
-	public boolean supportsConnectionModification() {
-		return true;
-	}
-	
-	@Override
-	public boolean supportsQuerying() {
-		return true;
-	}
+  // load the properties file to get the version
+  static {
+    InputStream vin = Capabilities.class.getResourceAsStream(VERSION_PROPERTIES_FILE);
+    if (vin != null) {
+      try {
+        PROPERTIES.load(vin);
+        vin.close();
 
-	@Override
-	public boolean supportsUpdating() {
-		return true;
-	}
+      } catch (IOException e) {
+        logger.error("[StrabonEndpoint.EndpointCapabilities] Error during reading of {} file.",
+            VERSION_PROPERTIES_FILE, e);
+      }
+    } else {
+      logger.warn("[StrabonEndpoint.EndpointCapabilities] Could not read version file.");
+    }
 
-	@Override
-	public boolean supportsStoring() {
-		return true;
-	}
+    VERSION = PROPERTIES.getProperty("version");
+  }
 
-	@Override
-	public boolean supportsDescribing() {
-		return true;
-	}
+  @Override
+  public String getVersion() {
+    return VERSION;
+  }
 
-	@Override
-	public boolean supportsBrowsing() {
-		return true;
-	}
+  @Override
+  public boolean supportsLimit() {
+    return true;
+  }
 
-	@Override
-	public RequestCapabilities getQueryCapabilities() {
-		return QueryBeanCapabilities.getInstance();
-	}
+  @Override
+  public boolean supportsAuthentication() {
+    return true;
+  }
 
-	@Override
-	public RequestCapabilities getUpdateCapabilities() {
-		return UpdateBeanCapabilities.getInstance();
-	}
+  @Override
+  public boolean supportsConnectionModification() {
+    return true;
+  }
 
-	@Override
-	public RequestCapabilities getStoreCapabilities() {
-		return StoreBeanCapabilities.getInstance();
-	}
+  @Override
+  public boolean supportsQuerying() {
+    return true;
+  }
 
-	@Override
-	public RequestCapabilities getBrowseCapabilities() {
-		return BrowseBeanCapabilities.getInstance();
-	}
+  @Override
+  public boolean supportsUpdating() {
+    return true;
+  }
 
-	@Override
-	public RequestCapabilities getConnectionCapabilities() {
-		return ConnectionBeanCapabilities.getInstance();
-	}
+  @Override
+  public boolean supportsStoring() {
+    return true;
+  }
 
-	/* (non-Javadoc)
-	 * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#getstSPARQLSpatialExtensionFunctions()
-	 */
-	@Override
-	public List<String> getstSPARQLSpatialExtensionFunctions() {
-		return GeoConstants.STSPARQLSpatialExtFunc;
-	}
+  @Override
+  public boolean supportsDescribing() {
+    return true;
+  }
 
-	/* (non-Javadoc)
-	 * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#getGeoSPARQLSpatialExtensionFunctions()
-	 */
-	@Override
-	public List<String> getGeoSPARQLSpatialExtensionFunctions() {
-		return GeoConstants.GEOSPARQLExtFunc;
-	}
+  @Override
+  public boolean supportsBrowsing() {
+    return true;
+  }
 
-	@Override
-	public List<String> getUnitsOfMeasure() {
-		return OGCConstants.supportedUnitsOfMeasure;
-	}
+  @Override
+  public RequestCapabilities getQueryCapabilities() {
+    return QueryBeanCapabilities.getInstance();
+  }
+
+  @Override
+  public RequestCapabilities getUpdateCapabilities() {
+    return UpdateBeanCapabilities.getInstance();
+  }
+
+  @Override
+  public RequestCapabilities getStoreCapabilities() {
+    return StoreBeanCapabilities.getInstance();
+  }
+
+  @Override
+  public RequestCapabilities getBrowseCapabilities() {
+    return BrowseBeanCapabilities.getInstance();
+  }
+
+  @Override
+  public RequestCapabilities getConnectionCapabilities() {
+    return ConnectionBeanCapabilities.getInstance();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#
+   * getstSPARQLSpatialExtensionFunctions()
+   */
+  @Override
+  public List<String> getstSPARQLSpatialExtensionFunctions() {
+    return GeoConstants.STSPARQLSpatialExtFunc;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see eu.earthobservatory.org.StrabonEndpoint.capabilities.Capabilities#
+   * getGeoSPARQLSpatialExtensionFunctions()
+   */
+  @Override
+  public List<String> getGeoSPARQLSpatialExtensionFunctions() {
+    return GeoConstants.GEOSPARQLExtFunc;
+  }
+
+  @Override
+  public List<String> getUnitsOfMeasure() {
+    return OGCConstants.supportedUnitsOfMeasure;
+  }
 }

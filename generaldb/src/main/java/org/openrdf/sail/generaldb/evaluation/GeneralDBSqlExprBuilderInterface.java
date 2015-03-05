@@ -1,15 +1,15 @@
 /*
  * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
+ * 
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.evaluation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openrdf.query.algebra.MathExpr;
 import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Assemblies an SQL expression.
@@ -19,125 +19,125 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBSqlCompare;
  * 
  */
 public interface GeneralDBSqlExprBuilderInterface {
-	public void appendBoolean(boolean booleanValue);
+  public void appendBoolean(boolean booleanValue);
 
-	public GeneralDBSqlExprBuilder appendNull();
+  public GeneralDBSqlExprBuilder appendNull();
 
-	public abstract GeneralDBSqlExprBuilder appendNumeric(Number doubleValue);
+  public abstract GeneralDBSqlExprBuilder appendNumeric(Number doubleValue);
 
-	public void appendOperator(GeneralDBSqlCompare.Operator op);
+  public void appendOperator(GeneralDBSqlCompare.Operator op);
 
-	public void as(String column);
+  public void as(String column);
 
-	public GeneralDBSqlExprBuilder number(Number time);
+  public GeneralDBSqlExprBuilder number(Number time);
 
-	public GeneralDBSqlCaseBuilder caseBegin();
+  public GeneralDBSqlCaseBuilder caseBegin();
 
-	public GeneralDBSqlCastBuilder cast(int jdbcType);
+  public GeneralDBSqlCastBuilder cast(int jdbcType);
 
-	public GeneralDBSqlExprBuilder column(String alias, String column);
+  public GeneralDBSqlExprBuilder column(String alias, String column);
 
-	public GeneralDBSqlExprBuilder columnEquals(String alias, String column, Number id);
+  public GeneralDBSqlExprBuilder columnEquals(String alias, String column, Number id);
 
-	public GeneralDBSqlExprBuilder columnEquals(String alias, String column, String label);
+  public GeneralDBSqlExprBuilder columnEquals(String alias, String column, String label);
 
-	public GeneralDBSqlExprBuilder columnIn(String alias, String column, Number[] ids);
-	
-	public GeneralDBSqlExprBuilder columnsEqual(String al1, String col1, String al2, String col2);
+  public GeneralDBSqlExprBuilder columnIn(String alias, String column, Number[] ids);
 
-	public void concat();
+  public GeneralDBSqlExprBuilder columnsEqual(String al1, String col1, String al2, String col2);
 
-	public GeneralDBSqlExprBuilder eq();
+  public void concat();
 
-	public List<Object> getParameters();
+  public GeneralDBSqlExprBuilder eq();
 
-	public boolean isEmpty();
+  public List<Object> getParameters();
 
-	public GeneralDBSqlExprBuilder isNotNull();
+  public boolean isEmpty();
 
-	public GeneralDBSqlExprBuilder isNull();
+  public GeneralDBSqlExprBuilder isNotNull();
 
-	public void like();
+  public GeneralDBSqlExprBuilder isNull();
 
-	public GeneralDBSqlBracketBuilder lowerCase();
-	
-	public void math(MathExpr.MathOp op);
+  public void like();
 
-	public GeneralDBSqlBracketBuilder mod(int value);
+  public GeneralDBSqlBracketBuilder lowerCase();
 
-	public GeneralDBSqlBracketBuilder not();
+  public void math(MathExpr.MathOp op);
 
-	public GeneralDBSqlExprBuilder notEqual();
+  public GeneralDBSqlBracketBuilder mod(int value);
 
-	public GeneralDBSqlBracketBuilder open();
+  public GeneralDBSqlBracketBuilder not();
 
-	public GeneralDBSqlExprBuilder or();
-	
-	public GeneralDBSqlExprBuilder and();
+  public GeneralDBSqlExprBuilder notEqual();
 
-	public void plus(int range);
+  public GeneralDBSqlBracketBuilder open();
 
-	public GeneralDBSqlRegexBuilder regex();
+  public GeneralDBSqlExprBuilder or();
 
-	public void rightShift(int rightShift);
+  public GeneralDBSqlExprBuilder and();
 
-	public CharSequence toSql();
+  public void plus(int range);
 
-	public String toString();
+  public GeneralDBSqlRegexBuilder regex();
 
-	public GeneralDBSqlExprBuilder varchar(String stringValue);
+  public void rightShift(int rightShift);
 
-	public void addParameters(List<Object> params);
+  public CharSequence toSql();
 
-	/**
-	 * my additions
-	 * FIXME
-	 */
-	public void appendFunction(String functionName);
+  public String toString();
 
-	public void appendComma();
-	
-	public void openBracket();
-	
-	public void closeBracket();
+  public GeneralDBSqlExprBuilder varchar(String stringValue);
 
-	public void intersectsMBB();
-	
-	public void equalsMBB();
-	
-	public void containsMBB();
-	
-	public void insideMBB();
-	
-	public void leftMBB();
-	
+  public void addParameters(List<Object> params);
 
-	public void rightMBB();
-	
-	public void aboveMBB();
-	
-	public void belowMBB();
-	
-	public void doubleCast();
-	
-	//	public void overlap();
+  /**
+   * my additions FIXME
+   */
+  public void appendFunction(String functionName);
 
-	public void appendProjections(String relName, String attrName, String rawDimensions);
-	
+  public void appendComma();
 
-	/**
-	 * Used to enable projections along with spatial constructs. 
-	 * This function constructs the first part of the GeneralDB statement needed
-	 * @param dims
-	 */
-	public void initConstructProjection(ArrayList<Integer> dims);
+  public void openBracket();
 
-	public void endConstructProjection(ArrayList<Integer> dims);
-	
-	//	public void appendChar(char c);
-	/**
-	 * end of my addition
-	 */
+  public void closeBracket();
+
+  public void intersectsMBB();
+
+  public void equalsMBB();
+
+  public void containsMBB();
+
+  public void insideMBB();
+
+  public void leftMBB();
+
+
+  public void rightMBB();
+
+  public void aboveMBB();
+
+  public void belowMBB();
+
+  public void doubleCast();
+
+  // public void overlap();
+
+  public void appendProjections(String relName, String attrName, String rawDimensions);
+
+
+  /**
+   * Used to enable projections along with spatial constructs. This function constructs the first
+   * part of the GeneralDB statement needed
+   * 
+   * @param dims
+   */
+  public void initConstructProjection(ArrayList<Integer> dims);
+
+  public void endConstructProjection(ArrayList<Integer> dims);
+
+  // public void appendChar(char c);
+  /**
+   * end of my addition
+   */
 
 
 

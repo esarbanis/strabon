@@ -1,6 +1,6 @@
 /*
  * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
+ * 
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.algebra;
@@ -18,21 +18,19 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  */
 public class GeneralDBSqlMathExpr extends BinaryGeneralDBOperator {
 
-	private MathOp op;
+  private MathOp op;
 
-	public GeneralDBSqlMathExpr(GeneralDBSqlExpr leftArg, MathOp op, GeneralDBSqlExpr rightArg) {
-		super(leftArg, rightArg);
-		this.op = op;
-	}
+  public GeneralDBSqlMathExpr(GeneralDBSqlExpr leftArg, MathOp op, GeneralDBSqlExpr rightArg) {
+    super(leftArg, rightArg);
+    this.op = op;
+  }
 
-	public MathOp getOperator() {
-		return op;
-	}
+  public MathOp getOperator() {
+    return op;
+  }
 
-	@Override
-	public <X extends Exception> void visit(GeneralDBQueryModelVisitorBase<X> visitor)
-		throws X
-	{
-		visitor.meet(this);
-	}
+  @Override
+  public <X extends Exception> void visit(GeneralDBQueryModelVisitorBase<X> visitor) throws X {
+    visitor.meet(this);
+  }
 }

@@ -1,34 +1,33 @@
-<%@page import="java.net.URLEncoder"%>
+<%@page import="eu.earthobservatory.org.StrabonEndpoint.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
-<%@page import="java.util.List"%>
+<%@page import="org.springframework.web.context.WebApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
+<%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.Iterator"%>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<head>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" href="style.css" type="text/css"/> 
-		<script type="text/javascript">
-			function toggleMe(a) {
-				var e = document.getElementById(a);
-				if (!e) {
-					return true;
-				}
-				if (e.style.display == "none") {
-					e.style.display = "block";
-				} else {
-					e.style.display = "none";
-				}
-				return true;
-			}
-		</script>
-		
-		<%String handle = "";
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <script type="text/javascript">
+        function toggleMe(a) {
+            var e = document.getElementById(a);
+            if (!e) {
+                return true;
+            }
+            if (e.style.display == "none") {
+                e.style.display = "block";
+            } else {
+                e.style.display = "none";
+            }
+            return true;
+        }
+    </script>
+
+    <%String handle = "";
 		if (request.getParameter("handle") != null) 
 		{
 			handle = request.getParameter("handle");

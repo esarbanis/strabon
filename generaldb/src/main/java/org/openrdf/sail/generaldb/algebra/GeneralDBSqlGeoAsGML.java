@@ -12,7 +12,7 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  */
 public class GeneralDBSqlGeoAsGML extends GeneralDBSqlSpatialProperty {
 
-	public GeneralDBSqlGeoAsGML(GeneralDBSqlExpr expr) {
-		super(expr);
-	}
+  public GeneralDBSqlGeoAsGML(GeneralDBSqlExpr expr) {
+    super(expr);
+  }
 }

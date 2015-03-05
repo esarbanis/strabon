@@ -1,79 +1,76 @@
-<%@page import="java.net.URLEncoder"%>
+<%@page import="eu.earthobservatory.org.StrabonEndpoint.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
-<%@page import="java.util.List"%>
+<%@page import="org.springframework.web.context.WebApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
+<%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="org.openrdf.query.TupleQueryResult"%>
-<%@page import="org.openrdf.query.BindingSet"%>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<script type="text/javascript" src="js/more_link.js"></script>
-	<link rel="stylesheet" href="style.css" type="text/css" />
-	    <script type="text/javascript" src="js/timemap/jquery-1.6.2.min.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript" src="js/more_link.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <script type="text/javascript" src="js/timemap/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="js/timemap/mxn.js?(googlev3)"></script>
     <script type="text/javascript" src="js/timemap/timeline-1.2.js"></script>
     <script src="js/timemap/timemap.js" type="text/javascript"></script>
     <script src="js/timemap/param.js" type="text/javascript"></script>
     <script src="js/timemap/xml.js" type="text/javascript"></script>
     <script src="js/timemap/kml.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		function toggleMe(a) {
-			var e = document.getElementById(a);
-			if (!e) {
-				return true;
-			}
-			if (e.style.display == "none") {
-				e.style.display = "block";
-			} else {
-				e.style.display = "none";
-			}
-			return true;
-		}
-	</script>
-	<script>
-		$(document).ready(function() {
-		var showChar = 100;
-		var ellipsestext = "...";
-		var moretext = "more";
-		var lesstext = "less";
-		$('.more').each(function() {
-			var content = $(this).html();
-	
-			if(content.length > showChar) {
-	
-				var c = content.substr(0, showChar);
-				var h = content.substr(showChar-1, content.length - showChar);
-	
-				var html = c + '<span class="moreelipses">'+ellipsestext+'</span>&nbsp;<span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">'+moretext+'</a></span>';
-	
-				$(this).html(html);
-			}
-	
-		});
-	
-		$(".morelink").click(function(){
-			if($(this).hasClass("less")) {
-				$(this).removeClass("less");
-				$(this).html(moretext);
-			} else {
-				$(this).addClass("less");
-				$(this).html(lesstext);
-			}
-			$(this).parent().prev().toggle();
-			$(this).prev().toggle();
-			return false;
-		});
-	});
-</script>
-	<%
+    <script type="text/javascript">
+        function toggleMe(a) {
+            var e = document.getElementById(a);
+            if (!e) {
+                return true;
+            }
+            if (e.style.display == "none") {
+                e.style.display = "block";
+            } else {
+                e.style.display = "none";
+            }
+            return true;
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var showChar = 100;
+            var ellipsestext = "...";
+            var moretext = "more";
+            var lesstext = "less";
+            $('.more').each(function () {
+                var content = $(this).html();
+
+                if (content.length > showChar) {
+
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar - 1, content.length - showChar);
+
+                    var html = c + '<span class="moreelipses">' + ellipsestext + '</span>&nbsp;<span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+                    $(this).html(html);
+                }
+
+            });
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+    <%
 	// get the reference to StrabonBeanWrapper
 	StrabonBeanWrapper strabonWrapper;
 	//String arr = new String[2];

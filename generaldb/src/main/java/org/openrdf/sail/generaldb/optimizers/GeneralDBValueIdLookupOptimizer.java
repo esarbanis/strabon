@@ -1,6 +1,6 @@
 /*
  * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
+ * 
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.optimizers;
@@ -21,24 +21,24 @@ import org.openrdf.sail.generaldb.GeneralDBValueFactory;
  */
 public class GeneralDBValueIdLookupOptimizer implements QueryOptimizer {
 
-	GeneralDBValueFactory vf;
+  GeneralDBValueFactory vf;
 
-	public GeneralDBValueIdLookupOptimizer(GeneralDBValueFactory vf) {
-		super();
-		this.vf = vf;
-	}
+  public GeneralDBValueIdLookupOptimizer(GeneralDBValueFactory vf) {
+    super();
+    this.vf = vf;
+  }
 
-	public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings) {
-		tupleExpr.visit(new VarVisitor());
-	}
+  public void optimize(TupleExpr tupleExpr, Dataset dataset, BindingSet bindings) {
+    tupleExpr.visit(new VarVisitor());
+  }
 
-	protected class VarVisitor extends QueryModelVisitorBase<RuntimeException> {
+  protected class VarVisitor extends QueryModelVisitorBase<RuntimeException> {
 
-		@Override
-		public void meet(Var var) {
-			if (var.hasValue()) {
-				var.setValue(vf.asRdbmsValue(var.getValue()));
-			}
-		}
-	}
+    @Override
+    public void meet(Var var) {
+      if (var.hasValue()) {
+        var.setValue(vf.asRdbmsValue(var.getValue()));
+      }
+    }
+  }
 }

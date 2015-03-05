@@ -1,12 +1,11 @@
 /*
  * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
+ * 
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.evaluation;
 
 import info.aduna.iteration.CloseableIteration;
-
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -27,31 +26,29 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
  */
 public class GeneralDBTripleSource implements TripleSource {
 
-	private GeneralDBTripleRepository triples;
+  private GeneralDBTripleRepository triples;
 
-	public GeneralDBTripleSource(GeneralDBTripleRepository triples) {
-		super();
-		this.triples = triples;
-	}
+  public GeneralDBTripleSource(GeneralDBTripleRepository triples) {
+    super();
+    this.triples = triples;
+  }
 
-	public GeneralDBValueFactory getValueFactory() {
-		return triples.getValueFactory();
-	}
+  public GeneralDBValueFactory getValueFactory() {
+    return triples.getValueFactory();
+  }
 
-	public CloseableIteration getStatements(Resource subj, URI pred, Value obj, Resource... contexts)
-		throws QueryEvaluationException
-	{
-		try {
-			GeneralDBValueFactory vf = triples.getValueFactory();
-			RdbmsResource s = vf.asRdbmsResource(subj);
-			RdbmsURI p = vf.asRdbmsURI(pred);
-			RdbmsValue o = vf.asRdbmsValue(obj);
-			RdbmsResource[] c = vf.asRdbmsResource(contexts);
-			return triples.find(s, p, o, c);
-		}
-		catch (SailException e) {
-			throw new QueryEvaluationException(e);
-		}
-	}
+  public CloseableIteration getStatements(Resource subj, URI pred, Value obj, Resource... contexts)
+      throws QueryEvaluationException {
+    try {
+      GeneralDBValueFactory vf = triples.getValueFactory();
+      RdbmsResource s = vf.asRdbmsResource(subj);
+      RdbmsURI p = vf.asRdbmsURI(pred);
+      RdbmsValue o = vf.asRdbmsValue(obj);
+      RdbmsResource[] c = vf.asRdbmsResource(contexts);
+      return triples.find(s, p, o, c);
+    } catch (SailException e) {
+      throw new QueryEvaluationException(e);
+    }
+  }
 
 }

@@ -1,65 +1,106 @@
-<%@page import="java.net.URLEncoder"%>
+<%@page import="eu.earthobservatory.org.StrabonEndpoint.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
 <%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
-<%@page import="java.util.List"%>
+<%@page import="org.springframework.web.context.WebApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
+<%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.Iterator"%>
-<jsp:directive.page import="eu.earthobservatory.org.StrabonEndpoint.Common"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<head>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-		<link rel="stylesheet" href="style.css" type="text/css" />
-		 
-		<script type="text/javascript">
-			function toggleMe(a) {
-				var e = document.getElementById(a);
-				if (!e) {
-					return true;
-				}
-				if (e.style.display == "none") {
-					e.style.display = "block";
-				} else {
-					e.style.display = "none";
-				}
-				return true;
-			}
-		</script>
-		<!-- jQuery start  -->
-		<link type="text/css" href="style-menu.css" rel="stylesheet" />
-		<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
-		<script type="text/javascript">
-		$(function(){
-				// Accordion
-				$("#accordion").accordion({ 
-					header: "h3",
-					fillSpace: true,
-					navigation: true,
-					collapsible: true
-				});
-				//hover states on the static widgets
-				$('#dialog_link, ul#icons li').hover(
-					function() { $(this).addClass('ui-state-hover'); },
-					function() { $(this).removeClass('ui-state-hover'); }
-				);
-		});
-		</script>
-		<style type="text/css">
-		/*demo page css*/
-		body{ font: 90% "Trebuchet MS", sans-serif; margin: 50px;}
-		.container { height:410px; width:165px;}
-		.demoHeaders { margin-top: 1em;}
-		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-		ul#icons {margin: 0; padding: 0;}
-		ul#icons li {margin: 1px; position: relative; padding: 1px 0; cursor: pointer; float: left;  list-style: none;}
-		ul#icons span.ui-icon {float: left; margin: 0 1px;}
-	</style>
-		<title>Strabon Endpoint</title>
-	</head>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+
+    <script type="text/javascript">
+        function toggleMe(a) {
+            var e = document.getElementById(a);
+            if (!e) {
+                return true;
+            }
+            if (e.style.display == "none") {
+                e.style.display = "block";
+            } else {
+                e.style.display = "none";
+            }
+            return true;
+        }
+    </script>
+    <!-- jQuery start  -->
+    <link type="text/css" href="style-menu.css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // Accordion
+            $("#accordion").accordion({
+                header: "h3",
+                fillSpace: true,
+                navigation: true,
+                collapsible: true
+            });
+            //hover states on the static widgets
+            $('#dialog_link, ul#icons li').hover(
+                    function () {
+                        $(this).addClass('ui-state-hover');
+                    },
+                    function () {
+                        $(this).removeClass('ui-state-hover');
+                    }
+            );
+        });
+    </script>
+    <style type="text/css">
+        /*demo page css*/
+        body {
+            font: 90% "Trebuchet MS", sans-serif;
+            margin: 50px;
+        }
+
+        .container {
+            height: 410px;
+            width: 165px;
+        }
+
+        .demoHeaders {
+            margin-top: 1em;
+        }
+
+        #dialog_link {
+            padding: .4em 1em .4em 20px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        #dialog_link span.ui-icon {
+            margin: 0 5px 0 0;
+            position: absolute;
+            left: .2em;
+            top: 50%;
+            margin-top: -8px;
+        }
+
+        ul#icons {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul#icons li {
+            margin: 1px;
+            position: relative;
+            padding: 1px 0;
+            cursor: pointer;
+            float: left;
+            list-style: none;
+        }
+
+        ul#icons span.ui-icon {
+            float: left;
+            margin: 0 1px;
+        }
+    </style>
+    <title>Strabon Endpoint</title>
+</head>
 <body topmargin="0" leftmargin="0" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
 
 <!-- include TELEIOS header and description -->

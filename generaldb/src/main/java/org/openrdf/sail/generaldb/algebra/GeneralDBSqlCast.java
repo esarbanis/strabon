@@ -1,6 +1,6 @@
 /*
  * Copyright Aduna (http://www.aduna-software.com/) (c) 2008.
- *
+ * 
  * Licensed under the Aduna BSD-style license.
  */
 package org.openrdf.sail.generaldb.algebra;
@@ -17,27 +17,25 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
  */
 public class GeneralDBSqlCast extends UnaryGeneralDBOperator {
 
-	private int type;
+  private int type;
 
-	public GeneralDBSqlCast(GeneralDBSqlExpr arg, int type) {
-		super(arg);
-		this.type = type;
-	}
+  public GeneralDBSqlCast(GeneralDBSqlExpr arg, int type) {
+    super(arg);
+    this.type = type;
+  }
 
-	@Override
-	public <X extends Exception> void visit(GeneralDBQueryModelVisitorBase<X> visitor)
-		throws X
-	{
-		visitor.meet(this);
-	}
+  @Override
+  public <X extends Exception> void visit(GeneralDBQueryModelVisitorBase<X> visitor) throws X {
+    visitor.meet(this);
+  }
 
-	public int getType() {
-		return type;
-	}
+  public int getType() {
+    return type;
+  }
 
-	@Override
-	public String getSignature() {
-		return super.getSignature() + " AS " + type;
-	}
+  @Override
+  public String getSignature() {
+    return super.getSignature() + " AS " + type;
+  }
 
 }

@@ -1,7 +1,6 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+ * the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  * Copyright (C) 2013, Pyravlos Team
  *
@@ -17,8 +16,8 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  */
 public class GeneralDBSqlST_Centroid extends GeneralDBSqlSpatialConstructUnary {
 
-	public GeneralDBSqlST_Centroid(GeneralDBSqlExpr expr, String resultType) {
-		super(expr, resultType);
-	}
+  public GeneralDBSqlST_Centroid(GeneralDBSqlExpr expr, String resultType) {
+    super(expr, resultType);
+  }
 
 }
