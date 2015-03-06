@@ -147,15 +147,15 @@ stRDF and stSPARQL tutorial
 	http://www.strabon.di.uoa.gr/files/stSPARQL_tutorial.pdf
 
 
-stSPARQL Reference
-~~~~~~~~~~~~~~~~~~
+### stSPARQL Reference
+
 The reference for the spatial and temporal extension functions defined in 
 stSPARQL can be found at http://www.strabon.di.uoa.gr/stSPARQL#spatial and
 http://www.strabon.di.uoa.gr/stSPARQL#temporals respectively.
 
 
-User Guide
-~~~~~~~~~~
+### User Guide
+
 Assuming that you are familiar with Maven, the following steps need to be
 followed in order to use Strabon using Eclipse:
 
@@ -179,13 +179,13 @@ followed in order to use Strabon using Eclipse:
    project, download any dependencies and build the project. 
 
 
-	Storing stRDF graphs and evaluating stSPARQL queries
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### Storing stRDF graphs and evaluating stSPARQL queries
+
 You can see some examples in the classes gr.uoa.di.strabon.example.PostgisExample
 and gr.uoa.di.strabon.example.PostgisExample2.
 
-	Tuning PostgreSQL
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### Tuning PostgreSQL
+
 The default settings of Postgres are rather conservative. As a result, parameter 
 tuning is neccessary for speeding up Postgres, therefore Strabon. If you are 
 using Strabon to compare its performance against your implementation of 
@@ -197,86 +197,86 @@ Ubuntu machine that is dedicated to PostgreSQL and Strabon.
 
 1. Append the following text at the end of postgresql.conf. 
 *Uncomment* the appropriate lines.
-
-\### RAM
-\## 4 GB of RAM
-\#shared_buffers       =  3GB
-\#effective_cache_size =  3GB
-\#maintenance_work_mem =  1GB
-\#work_mem             =  2GB
-\## 8 GB of RAM
-\#shared_buffers       =  5GB
-\#effective_cache_size =  6GB
-\#maintenance_work_mem =  2GB
-\#work_mem             =  5GB
-\## 16 GB of RAM
-\#shared_buffers       = 10GB
-\#effective_cache_size = 14GB
-\#maintenance_work_mem =  4GB
-\#work_mem             = 10GB
-\## 24 GB of RAM
-\#shared_buffers       = 16GB
-\#effective_cache_size = 22GB
-\#maintenance_work_mem =  6GB
-\#work_mem             = 15GB
-\## 48 GB of RAM
-\#shared_buffers       = 32GB
-\#effective_cache_size = 46GB
-\#maintenance_work_mem =  8GB
-\#work_mem             = 30GB
-\## 64 GB of RAM
-\# contact us to find out!
-\### HD
-\## RAID with ordinary 7.200 disks
-\#random_page_cost = 3.5 #3.0-3.5
-\## High-End NAS/SAN
-\#random_page_cost = 2 #1.5-2.5
-\## Amazon EBS/Heroku
-\#random_page_cost = 1.3 #1.1-2.0
-\## SSD array
-\#random_page_cost = 2.0 #1.5-2.5
-\### Planner options
-\# Increase the following values in order to avoid using the GEQO planner.
-\# Small values (<8) reduce planning time but may produce inferior query plans
-\#
+```
+### RAM
+## 4 GB of RAM
+#shared_buffers       =  3GB
+#effective_cache_size =  3GB
+#maintenance_work_mem =  1GB
+#work_mem             =  2GB
+## 8 GB of RAM
+#shared_buffers       =  5GB
+#effective_cache_size =  6GB
+#maintenance_work_mem =  2GB
+#work_mem             =  5GB
+## 16 GB of RAM
+#shared_buffers       = 10GB
+#effective_cache_size = 14GB
+#maintenance_work_mem =  4GB
+#work_mem             = 10GB
+## 24 GB of RAM
+#shared_buffers       = 16GB
+#effective_cache_size = 22GB
+#maintenance_work_mem =  6GB
+#work_mem             = 15GB
+## 48 GB of RAM
+#shared_buffers       = 32GB
+#effective_cache_size = 46GB
+#maintenance_work_mem =  8GB
+#work_mem             = 30GB
+## 64 GB of RAM
+# contact us to find out!
+### HD
+## RAID with ordinary 7.200 disks
+#random_page_cost = 3.5 #3.0-3.5
+## High-End NAS/SAN
+#random_page_cost = 2 #1.5-2.5
+## Amazon EBS/Heroku
+#random_page_cost = 1.3 #1.1-2.0
+## SSD array
+#random_page_cost = 2.0 #1.5-2.5
+### Planner options
+# Increase the following values in order to avoid using the GEQO planner.
+# Small values (<8) reduce planning time but may produce inferior query plans
+#
 geqo_threshold = 15 # keep this value larger that the following two parameters
 from_collapse_limit = 14
 join_collapse_limit = 14
-\### Misc
+### Misc
 default_statistics_target    = 10000 
 constraint_exclusion         = on 
 checkpoint_completion_target = 0.9 
 wal_buffers                  = 32MB 
 checkpoint_segments          = 64 
-\### Connections
+### Connections
 max_connections              = 10
-
+````
 2. Append the following lines at the end of /etc/sysctl.conf
 *Uncomment* the appropriate lines.
-
-\## 4 GB of RAM
-\#kernel.shmmax = 3758096384
-\#kernel.shmall = 3758096384
-\#kernel.shmmni = 4096
-\## 8 GB of RAM
-\#kernel.shmmax = 5905580032
-\#kernel.shmall = 5905580032
-\#kernel.shmmni = 4096
-\## 16 GB of RAM
-\#kernel.shmmax = 11274289152
-\#kernel.shmall = 11274289152
-\#kernel.shmmni = 4096
-\## 24 GB of RAM
-\#kernel.shmmax = 17716740096
-\#kernel.shmall = 17716740096
-\#kernel.shmmni = 4096
-\## 48 GB of RAM
-\#kernel.shmmax = 35433480192
-\#kernel.shmall = 35433480192
-\#kernel.shmmni = 4224
-\## 64 GB of RAM
-\# contact us to find out!
-
+```
+## 4 GB of RAM
+#kernel.shmmax = 3758096384
+#kernel.shmall = 3758096384
+#kernel.shmmni = 4096
+## 8 GB of RAM
+#kernel.shmmax = 5905580032
+#kernel.shmall = 5905580032
+#kernel.shmmni = 4096
+## 16 GB of RAM
+#kernel.shmmax = 11274289152
+#kernel.shmall = 11274289152
+#kernel.shmmni = 4096
+## 24 GB of RAM
+#kernel.shmmax = 17716740096
+#kernel.shmall = 17716740096
+#kernel.shmmni = 4096
+## 48 GB of RAM
+#kernel.shmmax = 35433480192
+#kernel.shmall = 35433480192
+#kernel.shmmni = 4224
+## 64 GB of RAM
+# contact us to find out!
+```
 3. Apply all changes by executing
 
 $ sudo sysctl -p
@@ -293,8 +293,8 @@ $ psql -c 'VACUUM ANALYZE;' db
 where db is the name of the Postgres database that Strabon will use.
 
 
-Developer Guide
-~~~~~~~~~~~~~~~
+### Developer Guide
+
 Assuming that you are familiar with Maven, the following steps need to be
 followed in order to use Strabon using Eclipse:
 
@@ -318,8 +318,8 @@ followed in order to use Strabon using Eclipse:
    project, download any dependencies and build the project. 
 
 
-Tester Guide
-~~~~~~~~~~~~
+### Tester Guide
+
 Assuming again that you are familiar with Maven and Junit these are the steps
 you need to follow to test the functionality of Strabon:
 
@@ -331,9 +331,9 @@ you need to follow to test the functionality of Strabon:
 	1. Import Strabon into Eclipse as explained in the Developer Guide.
 	2. Go to strabon-testsuite project.
 	3. Create a new folder (Recommended folder name: <test's name>) and place inside the following files:
-		3.1. An ntriples or nquads file with the test dataset (with .nt or .nq extension).
-		3.2. Pairs of files with sparql test queries and expected test results in xml format.
-			 Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
+	  1. An ntriples or nquads file with the test dataset (with .nt or .nq extension).
+	  2. Pairs of files with sparql test queries and expected test results in xml format.
+	     Notice that each pair must have the same name and .rq extension for the queryFile and .srx extension for the resultsFile.
 	4. Create a test class that extends TemplateTest class.
 	5. If you have followed the recommendations the test is ready. If you have different names or location for your
 	files, insert them explicitly in the constructor of the class. WARNING: All prefixes must be placed in file "prefixes" so that
@@ -356,8 +356,8 @@ you need to follow to test the functionality of Strabon:
 	3. Optionally you can pass an environment variable with "-DvariableName=variableValue".
 
 
-Storing stRDF graphs and evaluating stSPARQL queries
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### Storing stRDF graphs and evaluating stSPARQL queries
+
 You can see some examples in the classes
 eu.earthobservatory.runtime.postgis.StoreOp and
 eu.earthobservatory.runtime.postgis.QueryOp.
@@ -490,7 +490,7 @@ Known Issues
                   redirectPort="8443" />
 
  * Building and executing any maven goals fails for maven versions <3.0 due to a
-   dependency to the `shade' plugin that is available only for maven version 3.0
+   dependency to the 'shade' plugin that is available only for maven version 3.0
    (http://maven.apache.org/plugins/maven-shade-plugin/). In such systems, you may
    disable execution of this plugin by setting the environmental variable
    `shade.skip'. For example, to build Strabon using maven version 2.0 you may
@@ -518,33 +518,37 @@ How to apply the license
 ------------------------
  * In the beginning of script files (after the shell directive) paste the
    following statement:
-\#
-\# This Source Code Form is subject to the terms of the Mozilla Public
-\# License, v. 2.0. If a copy of the MPL was not distributed with this
-\# file, You can obtain one at http://mozilla.org/MPL/2.0/.
-\#
-\# Copyright (C) 2010, 2011, 2012, Pyravlos Team
-\#
-\# http://www.strabon.di.uoa.gr/
-\#
-
+```
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (C) 2010, 2011, 2012, Pyravlos Team
+#
+# http://www.strabon.di.uoa.gr/
+#
+```
  * In the beginning of Java source code files paste the following statement:
+```
 /**
- \* This Source Code Form is subject to the terms of the Mozilla Public
- \* License, v. 2.0. If a copy of the MPL was not distributed with this
- \* file, You can obtain one at http://mozilla.org/MPL/2.0/.
- \*
- \* Copyright (C) 2010, 2011, 2012, Pyravlos Team
- \*
- \* http://www.strabon.di.uoa.gr/
- \*/
-
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (C) 2010, 2011, 2012, Pyravlos Team
+ *
+ * http://www.strabon.di.uoa.gr/
+ */
+```
  * In the beginning of HTML/XML files paste the following statement:
-\<!-- This Source Code Form is subject to the terms of the Mozilla Public
-   \- License, v. 2.0. If a copy of the MPL was not distributed with this
-   \- file, You can obtain one at http://mozilla.org/MPL/2.0/.
-   \-
-   \- Copyright (C) 2010, 2011, 2012, Pyravlos Team
-   \-
-   \- http://www.strabon.di.uoa.gr/
-\-->
+```
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
+   -
+   - Copyright (C) 2010, 2011, 2012, Pyravlos Team
+   -
+   - http://www.strabon.di.uoa.gr/
+-->
+```
