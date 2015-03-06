@@ -1,4 +1,5 @@
-/target
+target
+.h2
 .project
 .settings
 .classpath
