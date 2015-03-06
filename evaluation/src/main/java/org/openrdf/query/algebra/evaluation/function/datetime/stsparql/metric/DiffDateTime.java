@@ -13,10 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.DateTimeMetricFunc;
 
 /**
  * Addition for datetime metric functions
- * 
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
- * 
  */
 public class DiffDateTime extends DateTimeMetricFunc {
 

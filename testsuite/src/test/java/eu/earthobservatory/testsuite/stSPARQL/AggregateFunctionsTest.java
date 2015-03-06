@@ -12,8 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the aggregate functions of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class AggregateFunctionsTest extends TemplateTest {
 }

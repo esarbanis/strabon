@@ -9,9 +9,6 @@ import java.util.List;
 
 /**
  * Facilitates the building of a SQL query.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlQueryBuilder {
 

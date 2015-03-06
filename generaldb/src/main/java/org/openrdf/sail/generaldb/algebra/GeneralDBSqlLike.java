@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL LIKE operator.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlLike extends BinaryGeneralDBOperator {
 

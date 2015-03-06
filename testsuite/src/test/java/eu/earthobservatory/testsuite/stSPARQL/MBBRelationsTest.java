@@ -12,9 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the mbb relations of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class MBBRelationsTest extends TemplateTest {
 }

@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The regular SQL expression - notation varies between databases.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlRegex extends BinaryGeneralDBOperator {
 

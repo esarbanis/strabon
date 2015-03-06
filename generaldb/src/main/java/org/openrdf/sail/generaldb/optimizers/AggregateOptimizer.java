@@ -18,11 +18,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 
 import java.util.Iterator;
 
-/**
- *
- * @author Stella Giannakopoulou <sgian@di.uoa.gr>
- */
-
 public class AggregateOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException> {
   public void optimize(TupleExpr tupleExpr) {
     tupleExpr.visit(this);

@@ -18,9 +18,6 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  * for a geometry, or the distance between two geometries).
  * 
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public abstract class SpatialMetricFunc implements Function {
 

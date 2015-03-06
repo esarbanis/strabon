@@ -26,8 +26,6 @@ import java.util.Properties;
 
 /**
  * A set of simple tests on SPARQL query functionality
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class TemplateTests extends eu.earthobservatory.runtime.generaldb.SimpleTests {
 

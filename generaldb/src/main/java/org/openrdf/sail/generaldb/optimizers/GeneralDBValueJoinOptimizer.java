@@ -25,11 +25,6 @@ import java.util.List;
 
 /**
  * Adds LEFT JOINs to the query for value tables.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author James Leigh
- * 
  */
 public class GeneralDBValueJoinOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException>
     implements QueryOptimizer {

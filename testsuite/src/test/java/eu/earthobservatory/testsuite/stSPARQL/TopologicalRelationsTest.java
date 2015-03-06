@@ -12,9 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the topological relations of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class TopologicalRelationsTest extends TemplateTest {
 }

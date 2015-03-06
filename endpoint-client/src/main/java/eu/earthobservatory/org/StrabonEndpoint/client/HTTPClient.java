@@ -13,10 +13,6 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public abstract class HTTPClient {
 
   /**

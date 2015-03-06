@@ -13,11 +13,6 @@ import org.junit.BeforeClass;
 
 import java.sql.SQLException;
 
-/**
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
- *
- */
 public class HavingTests extends eu.earthobservatory.runtime.generaldb.HavingTests {
 
   @BeforeClass

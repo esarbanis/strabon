@@ -40,9 +40,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates an SQL expression of a literal's numeric value.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBNumericExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {
@@ -206,9 +203,6 @@ public class GeneralDBNumericExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall)
       throws UnsupportedRdbmsOperatorException {
@@ -282,9 +276,6 @@ public class GeneralDBNumericExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function)
       throws UnsupportedRdbmsOperatorException {
@@ -403,9 +394,6 @@ public class GeneralDBNumericExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   GeneralDBSqlExpr dateTimeMetricPicker(Function function, GeneralDBSqlExpr leftArg,
       GeneralDBSqlExpr rightArg) {

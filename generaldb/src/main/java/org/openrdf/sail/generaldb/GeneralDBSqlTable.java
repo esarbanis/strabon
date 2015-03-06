@@ -11,9 +11,6 @@ import java.sql.SQLException;
 
 /**
  * Converts table names to lower-case and include the analyse optimisation.
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBSqlTable extends RdbmsTable {
 

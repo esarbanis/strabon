@@ -20,10 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 
-/**
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Dimitrianos Savva <dimis@di.uoa.gr>
- */
 public class StSPARQLOrderComparator implements Comparator<BindingSet> {
 
   private final Logger logger = LoggerFactory.getLogger(StSPARQLOrderComparator.class);

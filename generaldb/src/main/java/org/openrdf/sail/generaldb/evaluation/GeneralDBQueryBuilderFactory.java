@@ -9,9 +9,6 @@ import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 
 /**
  * Creates the SQL query building components.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBQueryBuilderFactory {
 

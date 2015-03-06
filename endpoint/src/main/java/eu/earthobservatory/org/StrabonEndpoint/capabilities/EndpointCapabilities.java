@@ -22,8 +22,6 @@ import java.util.Properties;
 /**
  * This class implements the {@link Capabilities} interface and shall be used only for versions of
  * Strabon Endpoint newer than version 3.2.4.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class EndpointCapabilities implements Capabilities {
 

@@ -11,9 +11,6 @@ import java.sql.SQLException;
 
 /**
  * Empty iteration that extends {@link GeneralDBResourceIteration}.
- * 
- * @author James Leigh
- * 
  */
 public class EmptyGeneralDBResourceIteration extends GeneralDBResourceIteration {
 

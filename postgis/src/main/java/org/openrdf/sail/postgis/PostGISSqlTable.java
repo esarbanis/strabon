@@ -11,10 +11,6 @@ import java.sql.SQLException;
 
 /**
  * Converts table names to lower-case and include the analyse optimisation.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public class PostGISSqlTable extends GeneralDBSqlTable {
 

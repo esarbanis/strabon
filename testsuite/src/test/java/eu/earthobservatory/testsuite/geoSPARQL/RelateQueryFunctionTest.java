@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL relate query function test (DE-9IM intersection pattern for equality).
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class RelateQueryFunctionTest extends TemplateTest {
 }

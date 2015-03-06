@@ -38,9 +38,6 @@ import java.util.List;
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating them on a
  * database.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public class PostGISEvaluation extends GeneralDBEvaluation {
 

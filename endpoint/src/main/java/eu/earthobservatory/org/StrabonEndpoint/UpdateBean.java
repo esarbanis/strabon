@@ -25,9 +25,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class UpdateBean extends HttpServlet {
 
   private static final long serialVersionUID = -633279376188071670L;

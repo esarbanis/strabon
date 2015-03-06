@@ -13,8 +13,6 @@ import org.openrdf.query.QueryEvaluationException;
 /**
  * This exception is raised when a SPARQL query contains an extension function that is not supported
  * by Strabon.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class UnsupportedExtensionFunctionException extends QueryEvaluationException {
   private static final long serialVersionUID = -5926890463141193859L;

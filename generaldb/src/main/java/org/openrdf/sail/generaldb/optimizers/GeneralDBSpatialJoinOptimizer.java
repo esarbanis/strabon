@@ -20,8 +20,8 @@ import java.util.List;
 
 /**
  * 
- * @author manolee Only responsibility of this optimizer: Append spatial filters to the last
- *         occurrence of geo_values
+ * Only responsibility of this optimizer: Append spatial filters to the last occurrence of
+ * geo_values
  */
 // XXX not used currently. may be reused - altered in a bit. 09/09/2011
 public class GeneralDBSpatialJoinOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException>

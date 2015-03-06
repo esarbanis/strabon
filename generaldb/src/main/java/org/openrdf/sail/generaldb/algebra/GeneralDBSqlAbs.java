@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
  * The SQL ABS expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlAbs extends UnaryGeneralDBOperator {
 

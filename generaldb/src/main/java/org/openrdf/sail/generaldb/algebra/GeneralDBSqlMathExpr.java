@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL subtraction (-) expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlMathExpr extends BinaryGeneralDBOperator {
 

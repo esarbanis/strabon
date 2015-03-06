@@ -35,9 +35,6 @@ import java.sql.SQLException;
  * addition that they also include an internal id and a version associated with that id. The
  * internal ids should not be accessed directly, but rather either through this class or the
  * corresponding manager class.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBValueFactory extends ValueFactoryBase {
 

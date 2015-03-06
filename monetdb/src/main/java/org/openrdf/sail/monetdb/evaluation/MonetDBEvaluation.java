@@ -34,9 +34,6 @@ import java.util.List;
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating them on a
  * database.
- * 
- * @author James Leigh
- * 
  */
 public class MonetDBEvaluation extends GeneralDBEvaluation {
 

@@ -19,12 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/**
- * *
- * 
- * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
- * 
- */
 public class DiffTime extends DateTimeMetricFunc {
 
   // This functions returns the difference in msecs of two xsd:dateTimes

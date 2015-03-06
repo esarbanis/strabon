@@ -7,9 +7,6 @@ package org.openrdf.sail.generaldb.algebra.base;
 
 /**
  * A constant SQL value, like a varchar or number.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBSqlConstant<T> extends GeneralDBQueryModelNodeBase implements
     GeneralDBSqlExpr {

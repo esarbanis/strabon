@@ -12,8 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * Test for Bug 78 (http://bug.strabon.di.uoa.gr/ticket/78)
- * 
- * @author Stella Giannakopoulou <sgian@di.uoa.gr>
  */
 public class BindBug78 extends TemplateTest {
 }

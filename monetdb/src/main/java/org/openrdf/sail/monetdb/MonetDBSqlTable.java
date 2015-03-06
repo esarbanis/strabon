@@ -9,12 +9,6 @@ import org.openrdf.sail.generaldb.GeneralDBSqlTable;
 
 import java.sql.SQLException;
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author George Garbis <ggarbis@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class MonetDBSqlTable extends GeneralDBSqlTable {
 
   public static final int DEFAULT_SRID = 4326;

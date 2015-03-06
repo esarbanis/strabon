@@ -13,9 +13,6 @@ import java.sql.SQLException;
 
 /**
  * Manages BNodes. Including creating, inserting, and looking up their IDs.
- * 
- * @author James Leigh
- * 
  */
 public class BNodeManager extends ValueManagerBase<RdbmsBNode> {
 

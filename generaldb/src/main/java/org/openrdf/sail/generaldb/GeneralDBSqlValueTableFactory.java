@@ -12,9 +12,6 @@ import java.sql.Connection;
 
 /**
  * Overrides PostgreSQL specific table commands.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBSqlValueTableFactory extends ValueTableFactory {
 

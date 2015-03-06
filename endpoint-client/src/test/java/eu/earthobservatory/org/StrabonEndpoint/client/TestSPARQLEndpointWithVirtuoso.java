@@ -18,10 +18,6 @@ import java.util.Vector;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
- *
- */
 // Virtuso endpoint also needs to be tested for all formats included in stSPARQLQueryResultFormat
 // because some of them are not supported
 public class TestSPARQLEndpointWithVirtuoso {

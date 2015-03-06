@@ -24,8 +24,6 @@ import java.io.OutputStream;
  * Factory class for creating instances of RDFHandler class based on the given format, which should
  * be one of the formats mentioned in {@link org.openrdf.rio.RDFFormat} class, and an OutputStream
  * to which the handler should write to.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class RDFHandlerFactory {
 

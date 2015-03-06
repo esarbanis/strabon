@@ -14,8 +14,6 @@ import java.util.Map;
 /**
  * This enumeration type represents the available formats for the results of the evaluation of a
  * SPARQL query.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public enum Format {
 

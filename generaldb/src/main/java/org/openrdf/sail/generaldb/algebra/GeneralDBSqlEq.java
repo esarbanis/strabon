@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL equals expression (=).
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlEq extends BinaryGeneralDBOperator {
 

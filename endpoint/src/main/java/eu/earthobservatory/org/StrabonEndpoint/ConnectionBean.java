@@ -28,10 +28,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Properties;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class ConnectionBean extends HttpServlet {
 
   private static final long serialVersionUID = 2237815345608023368L;

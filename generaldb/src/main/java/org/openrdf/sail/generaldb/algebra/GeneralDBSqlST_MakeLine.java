@@ -11,9 +11,6 @@ package org.openrdf.sail.generaldb.algebra;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class GeneralDBSqlST_MakeLine extends GeneralDBSqlSpatialConstructBinary {
 
   public GeneralDBSqlST_MakeLine(GeneralDBSqlExpr left, GeneralDBSqlExpr right, String resultType) {

@@ -21,9 +21,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates an SQL expression for a URI's string value.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBURIExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

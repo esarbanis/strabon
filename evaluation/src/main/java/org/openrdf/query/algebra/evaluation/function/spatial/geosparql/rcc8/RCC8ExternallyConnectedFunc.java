@@ -11,10 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.rcc8;
 import eu.earthobservatory.constants.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class RCC8ExternallyConnectedFunc extends GeoSparqlRelation {
 
   @Override

@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.*;
 
 /**
  * Base class for RDBMS visitor classes. This class is extended with additional meet methods.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryModelVisitorBase<X> {
 
@@ -227,9 +224,6 @@ public class GeneralDBQueryModelVisitorBase<X extends Exception> extends QueryMo
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public void meet(GeneralDBSqlDateTimeMetricBinary node) throws X {
     meetBinarySqlOperator(node);

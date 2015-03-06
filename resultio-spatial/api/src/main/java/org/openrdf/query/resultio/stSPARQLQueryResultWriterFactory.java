@@ -14,8 +14,6 @@ import java.io.OutputStream;
  * Returns {@link stSPARQLQueryResultWriter}s for a specific tuple query result format.
  * 
  * @see {@link TupleQueryResultWriterFactory}
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public interface stSPARQLQueryResultWriterFactory {
 

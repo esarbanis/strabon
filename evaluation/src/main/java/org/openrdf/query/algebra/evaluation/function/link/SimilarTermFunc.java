@@ -14,10 +14,6 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.query.algebra.evaluation.ValueExprEvaluationException;
 import org.openrdf.query.algebra.evaluation.function.Function;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class SimilarTermFunc implements Function {
 
   protected static String name = "similarTerm";

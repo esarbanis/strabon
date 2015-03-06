@@ -19,9 +19,6 @@ import java.sql.Timestamp;
 /**
  * A Facade to the five literal value tables. Which are labels, languages, datatypes, numeric
  * values, and dateTime values.
- * 
- * @author James Leigh
- * 
  */
 public class LiteralTable {
 

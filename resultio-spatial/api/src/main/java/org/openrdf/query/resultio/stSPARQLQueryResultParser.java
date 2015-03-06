@@ -19,8 +19,6 @@ import java.io.InputStream;
  * A general interface for stSPARQL tuple query result parsers.
  * 
  * @see {@link TupleQueryResultParser}
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public interface stSPARQLQueryResultParser {
 

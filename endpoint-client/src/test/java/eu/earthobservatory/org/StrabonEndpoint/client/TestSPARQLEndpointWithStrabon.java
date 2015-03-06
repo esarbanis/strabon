@@ -18,10 +18,6 @@ import java.util.Vector;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class TestSPARQLEndpointWithStrabon {
 
   private SPARQLEndpoint endpoint;

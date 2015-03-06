@@ -42,10 +42,6 @@ import org.openrdf.query.impl.EmptyBindingSet;
 
 import java.util.*;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class StSPARQLGroupIterator extends
     CloseableIteratorIteration<BindingSet, QueryEvaluationException> {
 
@@ -150,8 +146,6 @@ public class StSPARQLGroupIterator extends
 
   /**
    * A unique key for a set of existing bindings.
-   * 
-   * @author David Huynh
    */
   protected class Key {
 

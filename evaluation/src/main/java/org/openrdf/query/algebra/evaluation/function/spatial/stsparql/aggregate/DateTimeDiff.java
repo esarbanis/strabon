@@ -17,10 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/**
- * @author Garmpis Georgios <ggarbis@di.uoa.gr>
- *
- */
 public class DateTimeDiff implements Function {
 
   protected static String name = "diffDatetime";

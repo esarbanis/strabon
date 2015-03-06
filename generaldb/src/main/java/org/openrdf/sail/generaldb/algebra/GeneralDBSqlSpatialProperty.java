@@ -9,8 +9,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
  * geometry.
  * 
  * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeneralDBSqlSpatialProperty extends UnaryGeneralDBOperator {
 

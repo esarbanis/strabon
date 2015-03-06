@@ -39,9 +39,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Rewrites the core algebra model with a relation optimised model, using SQL.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr.
  */
 public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException>
 // implements QueryOptimizer //removed it consciously
@@ -849,9 +846,6 @@ public class GeneralDBSelectQueryOptimizer extends GeneralDBQueryModelVisitorBas
     }
     /**
      * Addition for datetime metric functions
-     * 
-     * @author George Garbis <ggarbis@di.uoa.gr>
-     * 
      */
     else if (function instanceof DateTimeMetricFunc) {
       List<ValueExpr> allArgs = node.getArgs();

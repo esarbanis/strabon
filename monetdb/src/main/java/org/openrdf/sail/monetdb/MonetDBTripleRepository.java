@@ -21,8 +21,6 @@ import java.sql.SQLException;
 /**
  * Facade to {@link GeneralDBTransTableManager}, {@link URITable}, {@link BNodeTable} and
  * {@link LiteralTable} for adding, removing, and retrieving statements from the database.
- * 
- * @author James Leigh
  */
 public class MonetDBTripleRepository extends GeneralDBTripleRepository {
 

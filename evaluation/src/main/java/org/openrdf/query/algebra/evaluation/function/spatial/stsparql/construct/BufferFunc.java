@@ -11,9 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct
 import eu.earthobservatory.constants.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFunc;
 
-/**
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class BufferFunc extends SpatialConstructFunc {
 
   @Override

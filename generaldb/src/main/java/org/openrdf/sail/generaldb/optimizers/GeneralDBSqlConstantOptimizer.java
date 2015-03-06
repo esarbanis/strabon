@@ -21,9 +21,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Optimises SQL constants, include operations with static values and null operations.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlConstantOptimizer extends GeneralDBQueryModelVisitorBase<RuntimeException>
     implements QueryOptimizer {

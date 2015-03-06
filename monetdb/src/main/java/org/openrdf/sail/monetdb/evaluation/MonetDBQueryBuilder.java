@@ -23,9 +23,6 @@ import java.util.List;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
- * 
- * @author James Leigh
- * 
  */
 public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
@@ -77,9 +74,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public enum DateTimeFunctionMonetDB {
     Difference;
@@ -575,9 +569,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   @Override
   protected void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
@@ -894,9 +885,6 @@ public class MonetDBQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   protected void appendGeneralDBDateTimeFunctionBinary(BinaryGeneralDBOperator expr,
       GeneralDBSqlExprBuilder filter, DateTimeFunctionMonetDB func)

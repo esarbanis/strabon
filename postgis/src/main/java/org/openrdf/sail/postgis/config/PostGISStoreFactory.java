@@ -15,8 +15,6 @@ import org.openrdf.sail.postgis.PostGISStore;
 
 /**
  * A {@link SailFactory} that creates {@link GeneralDBStore}s based on RDF configuration data.
- * 
- * @author James Leigh
  */
 public class PostGISStoreFactory extends GeneralDBStoreFactory {
 

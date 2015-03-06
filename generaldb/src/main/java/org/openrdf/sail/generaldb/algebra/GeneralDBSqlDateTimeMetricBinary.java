@@ -6,9 +6,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * Addition for datetime metric functions
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
- * 
  */
 
 public class GeneralDBSqlDateTimeMetricBinary extends BinaryGeneralDBOperator {

@@ -12,11 +12,9 @@ package eu.earthobservatory.vocabulary;
 /**
  * RDFi vocabulary.
  * 
- * TODO: update the ontology at <a>http://rdfi.di.uoa.gr/ontology#</a> *) what will be the supported
  * properties? *) or we will have only extension functions?
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
+// TODO: update the ontology at <a>http://rdfi.di.uoa.gr/ontology#</a> *) what will be the supported
 public class RDFi {
 
   /**

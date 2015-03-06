@@ -12,9 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the metric functions of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class MetricFunctionsTest extends TemplateTest {
 }

@@ -8,11 +8,6 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class StrabonBeanWrapperConfiguration {
   private String label;
   private String bean;

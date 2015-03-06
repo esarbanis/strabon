@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlConstant;
 
 /**
  * An SQL VARCHAR expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBStringValue extends GeneralDBSqlConstant<String> {
 

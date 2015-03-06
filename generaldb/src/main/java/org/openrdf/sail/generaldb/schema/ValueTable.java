@@ -21,9 +21,6 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Manages the rows in a value table. These tables have two columns: an internal id column and a
  * value column.
- * 
- * @author James Leigh
- * 
  */
 public class ValueTable {
 

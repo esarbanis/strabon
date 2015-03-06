@@ -12,10 +12,6 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 
- * @author James Leigh
- */
 public class HashTable {
 
   private static final int CHUNK_SIZE = 15;

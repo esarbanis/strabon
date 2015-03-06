@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
 
 /**
  * Keeps common variables shared by beans and .jsp pages.
- *
- * @author Stella Giannakopoulou <sgian@di.uoa.gr>
  */
 public class Authenticate {
 

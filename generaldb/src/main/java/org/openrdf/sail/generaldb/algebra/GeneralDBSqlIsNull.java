@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
  * The SQL IS NULL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlIsNull extends UnaryGeneralDBOperator {
 

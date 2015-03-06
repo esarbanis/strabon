@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * Test for Bug #62 (http://bug.strabon.di.uoa.gr/ticket/62).
- * 
- * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class SpatialFunctionInOrderBy extends TemplateTest {
   public SpatialFunctionInOrderBy() {

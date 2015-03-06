@@ -20,9 +20,6 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 /**
  * Proxies request to a {@link GeneralDBTripleRepository}.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBTripleSource implements TripleSource {
 

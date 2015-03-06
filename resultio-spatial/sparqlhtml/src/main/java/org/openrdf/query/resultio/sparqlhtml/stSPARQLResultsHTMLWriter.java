@@ -24,10 +24,6 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.List;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * 
- */
 public class stSPARQLResultsHTMLWriter implements TupleQueryResultWriter {
 
   public static final String TABLE = "TABLE";

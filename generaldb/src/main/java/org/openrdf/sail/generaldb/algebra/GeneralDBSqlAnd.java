@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL AND expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlAnd extends BinaryGeneralDBOperator {
 

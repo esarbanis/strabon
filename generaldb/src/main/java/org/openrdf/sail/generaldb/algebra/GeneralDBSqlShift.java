@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
  * The SQL binary shift right (>>) expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlShift extends UnaryGeneralDBOperator {
 

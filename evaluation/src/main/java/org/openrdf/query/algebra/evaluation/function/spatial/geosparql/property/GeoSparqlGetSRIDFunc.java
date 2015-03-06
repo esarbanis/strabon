@@ -14,9 +14,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 /**
  * Implementation of the <code>geof:getSRID(geom: ogc:geomLiteral): xsd:anyURI</code> function of
  * GeoSPARQL.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class GeoSparqlGetSRIDFunc extends SpatialPropertyFunc {
 

@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.schema.IdSequence;
 
 /**
  * Creates an {@link GeneralDBEvaluation}.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBEvaluationFactory {
 

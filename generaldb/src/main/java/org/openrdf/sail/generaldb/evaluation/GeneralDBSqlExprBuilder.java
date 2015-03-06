@@ -13,9 +13,6 @@ import java.util.List;
 
 /**
  * Assemblies an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBSqlExprBuilder {
 

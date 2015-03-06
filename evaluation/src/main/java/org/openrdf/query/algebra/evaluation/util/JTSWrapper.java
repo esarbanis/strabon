@@ -32,8 +32,6 @@ import java.io.StringReader;
 
 /**
  * This class is a singleton and provides access to the readers/writers of Java Topology Suite.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class JTSWrapper {
 

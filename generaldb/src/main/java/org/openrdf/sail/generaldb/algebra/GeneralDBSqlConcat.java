@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL concatenate expression (||).
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlConcat extends BinaryGeneralDBOperator {
 

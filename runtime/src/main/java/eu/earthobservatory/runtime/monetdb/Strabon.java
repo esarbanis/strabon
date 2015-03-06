@@ -14,11 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
   private static Logger logger = LoggerFactory

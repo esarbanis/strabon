@@ -30,9 +30,6 @@ import java.util.List;
 
 /**
  * This class is the implementation of a java client for accessing SPARQLEndpoint instances.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr.
  */
 public class SPARQLEndpoint extends HTTPClient {
 

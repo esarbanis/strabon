@@ -31,14 +31,6 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
-/**
- * 
- * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Stella Giannakopoulou <sgian@di.uoa.gr>
- * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
- */
 public class QueryBean extends HttpServlet {
 
   private static final long serialVersionUID = -378175118289907707L;

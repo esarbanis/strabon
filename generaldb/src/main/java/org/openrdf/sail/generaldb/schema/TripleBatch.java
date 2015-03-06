@@ -9,10 +9,6 @@ import org.openrdf.sail.helpers.DefaultSailChangedEvent;
 
 import java.sql.SQLException;
 
-/**
- * 
- * @author James Leigh
- */
 public class TripleBatch extends Batch {
 
   public static int total_rows;

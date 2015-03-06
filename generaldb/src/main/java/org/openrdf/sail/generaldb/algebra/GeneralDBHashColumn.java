@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents the Hash value of a variable.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBHashColumn extends GeneralDBValueColumnBase {
 

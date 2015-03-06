@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL compare expressions (>, <, >=, <=).
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlCompare extends BinaryGeneralDBOperator {
 

@@ -23,9 +23,6 @@ import static org.openrdf.sail.rdbms.managers.LiteralManager.getCalendarValue;
 
 /**
  * Creates an SQL expression for a literal's time value.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBTimeExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

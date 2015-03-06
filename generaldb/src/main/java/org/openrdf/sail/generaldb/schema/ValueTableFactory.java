@@ -14,9 +14,6 @@ import static java.sql.Types.*;
 
 /**
  * Factory class used to create or load the database tables.
- * 
- * @author Initial rdbms version: James Leigh
- * @author generaldb version: Manos Karpathiotakis
  */
 public class ValueTableFactory {
 

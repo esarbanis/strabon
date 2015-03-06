@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL Rcc8's spatial relations test.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class Rcc8SpatialRelationsTest extends TemplateTest {
 }

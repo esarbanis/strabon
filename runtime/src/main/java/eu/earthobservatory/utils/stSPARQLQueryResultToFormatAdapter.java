@@ -24,9 +24,6 @@ import java.io.OutputStream;
 /**
  * This is a factory class for creating stSPARQLQueryResultWriter instances according to a format in
  * {@link org.openrdf.query.resultio.sparqlxml.Format}.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class stSPARQLQueryResultToFormatAdapter {
 

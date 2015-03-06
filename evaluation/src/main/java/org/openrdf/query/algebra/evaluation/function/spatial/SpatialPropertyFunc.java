@@ -21,9 +21,6 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  * 
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property}
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  *
  */
 public abstract class SpatialPropertyFunc implements Function {

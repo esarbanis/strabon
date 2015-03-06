@@ -11,9 +11,6 @@ import java.sql.SQLException;
 
 /**
  * Empty iteration that extends {@link GeneralDBStatementIteration}.
- * 
- * @author James Leigh
- * 
  */
 public class EmptyGeneralDBStatementIteration extends GeneralDBStatementIteration {
 

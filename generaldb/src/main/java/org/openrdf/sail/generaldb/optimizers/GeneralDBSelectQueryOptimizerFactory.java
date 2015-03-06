@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.schema.IdSequence;
 
 /**
  * Initialises the {@link GeneralDBSelectQueryOptimizer} with the SQL expression factories.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSelectQueryOptimizerFactory {
 

@@ -7,9 +7,6 @@ package org.openrdf.sail.generaldb.algebra.base;
 
 /**
  * A boolean value of true or false.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBBooleanValue extends GeneralDBSqlConstant<Boolean> {
 

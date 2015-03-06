@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL Geometry Properties test.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class GeometryPropertiesTest extends TemplateTest {
 }

@@ -12,9 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the basic functions of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class BasicFunctionsTest extends TemplateTest {
 }

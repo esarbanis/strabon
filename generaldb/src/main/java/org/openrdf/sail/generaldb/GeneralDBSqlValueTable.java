@@ -11,9 +11,6 @@ import java.sql.Types;
 
 /**
  * Optimises prepared insert statements for PostgreSQL and overrides the DOUBLE column type.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlValueTable extends ValueTable {
 

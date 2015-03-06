@@ -15,9 +15,6 @@ import java.util.Map;
 
 /**
  * Manages the life-cycle of the rows in a single predicate table.
- * 
- * @author James Leigh
- * 
  */
 public class TripleTable {
 

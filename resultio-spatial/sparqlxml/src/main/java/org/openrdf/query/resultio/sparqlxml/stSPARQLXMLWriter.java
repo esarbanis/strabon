@@ -15,10 +15,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class stSPARQLXMLWriter extends XMLWriter {
 
   /**

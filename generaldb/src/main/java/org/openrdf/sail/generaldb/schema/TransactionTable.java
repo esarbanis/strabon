@@ -17,9 +17,6 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Manages a temporary table used when uploading new statements with the same predicate into the
  * database.
- * 
- * @author James Leigh
- * 
  */
 public class TransactionTable {
 

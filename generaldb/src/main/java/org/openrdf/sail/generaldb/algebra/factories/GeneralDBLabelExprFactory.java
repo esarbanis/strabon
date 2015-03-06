@@ -20,9 +20,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates a SQl expression of a literal label.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBLabelExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

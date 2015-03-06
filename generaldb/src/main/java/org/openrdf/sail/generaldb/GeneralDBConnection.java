@@ -38,9 +38,6 @@ import java.util.Collection;
 /**
  * Coordinates the triple store, namespace manager, optimizer, and evaluation strategy into the
  * {@link SailConnection} interface.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public class GeneralDBConnection extends SailConnectionBase {
 

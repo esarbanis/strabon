@@ -22,9 +22,6 @@ import java.sql.SQLException;
 
 /**
  * Converts a {@link ResultSet} into a {@link RdbmsStatement} in an iteration.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBStatementIteration extends RdbmIterationBase<RdbmsStatement, SailException> {
 

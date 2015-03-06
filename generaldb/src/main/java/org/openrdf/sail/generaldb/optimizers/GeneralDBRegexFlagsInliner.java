@@ -18,9 +18,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * Moves the regular expression flags into the pattern string as per the PostgreSQL syntax.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBRegexFlagsInliner extends GeneralDBQueryModelVisitorBase<RuntimeException>
     implements QueryOptimizer {

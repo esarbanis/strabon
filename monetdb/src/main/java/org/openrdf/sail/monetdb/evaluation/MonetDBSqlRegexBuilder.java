@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlRegexBuilder;
 
 /**
  * Facilitates the building of a regular expression in SQL.
- * 
- * @author James Leigh
- * 
  */
 public class MonetDBSqlRegexBuilder extends GeneralDBSqlRegexBuilder {
 

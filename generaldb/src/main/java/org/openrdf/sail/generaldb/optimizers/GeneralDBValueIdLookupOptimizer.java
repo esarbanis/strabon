@@ -15,9 +15,6 @@ import org.openrdf.sail.generaldb.GeneralDBValueFactory;
 
 /**
  * Iterates through the query and converting the values into RDBMS values.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBValueIdLookupOptimizer implements QueryOptimizer {
 

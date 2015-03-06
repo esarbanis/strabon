@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents a variable's datatype value in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBDatatypeColumn extends GeneralDBValueColumnBase {
 

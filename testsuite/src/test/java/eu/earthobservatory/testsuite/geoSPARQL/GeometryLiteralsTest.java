@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL srid-function, default-crs and empty wkt and gml literal test.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class GeometryLiteralsTest extends TemplateTest {
 }

@@ -13,8 +13,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.geosparql.property.GeoSparqlGetSRIDFunc}
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class GeneralDBSqlGeoSPARQLSrid extends GeneralDBSqlAbstractGeoSrid {
 

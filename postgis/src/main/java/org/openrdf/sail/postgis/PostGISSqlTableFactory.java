@@ -10,9 +10,6 @@ import org.openrdf.sail.rdbms.schema.RdbmsTable;
 
 /**
  * Overrides PostgreSQL specific table commands.
- * 
- * @author James Leigh
- * 
  */
 public class PostGISSqlTableFactory extends GeneralDBSqlTableFactory {
 

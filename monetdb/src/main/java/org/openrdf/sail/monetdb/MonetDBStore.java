@@ -17,8 +17,6 @@ import java.util.Iterator;
  * The RDBMS SAIL for relational database storage in Sesame. This class acts both as a base class
  * for database specific stores as well as a generic store that can infer the type of database
  * through the JDBC connection.
- * 
- * @author James Leigh
  */
 public class MonetDBStore extends GeneralDBStore {
 

@@ -26,8 +26,6 @@ import java.io.Reader;
  * This class extends {@link SailRepositoryConnection} only to allow for overriding insertion of
  * triples by invoking our implementation of {@link RDFInserter} so that GeoSPARQL Entailment
  * Extension is incorporated there in a seamless way.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class GeneralDBSailRepositoryConnection extends SailRepositoryConnection {
 

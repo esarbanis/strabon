@@ -12,9 +12,6 @@ import info.aduna.lang.service.FileFormatServiceRegistry;
 
 /**
  * A registry that keeps track of the available {@link stSPARQLQueryResultParserFactory}s.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class stSPARQLQueryResultParserRegistry extends
     FileFormatServiceRegistry<stSPARQLQueryResultFormat, stSPARQLQueryResultParserFactory> {

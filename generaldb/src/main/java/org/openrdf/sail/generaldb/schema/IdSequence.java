@@ -21,10 +21,6 @@ import java.sql.SQLException;
 import static org.openrdf.model.datatypes.XMLDatatypeUtil.isCalendarDatatype;
 import static org.openrdf.model.datatypes.XMLDatatypeUtil.isNumericDatatype;
 
-/**
- * 
- * @author James Leigh
- */
 public abstract class IdSequence {
 
   private static final String UTF_8 = "UTF-8";

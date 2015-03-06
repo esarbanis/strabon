@@ -32,9 +32,6 @@ import java.util.HashMap;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr.
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBBindingIteration extends
     RdbmIterationBase<BindingSet, QueryEvaluationException> {

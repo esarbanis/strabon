@@ -13,10 +13,6 @@ import java.util.List;
 
 /**
  * Assemblies an SQL expression.
- * 
- * @author James Leigh
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public interface GeneralDBSqlExprBuilderInterface {
   public void appendBoolean(boolean booleanValue);

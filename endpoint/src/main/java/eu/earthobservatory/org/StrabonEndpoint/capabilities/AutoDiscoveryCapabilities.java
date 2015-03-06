@@ -27,9 +27,6 @@ import java.util.List;
  * 2) response messages or HTTP codes that old Strabon Endpoints give on wrong parameters.
  * 
  * The result may not be accurate in every case.
- * 
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class AutoDiscoveryCapabilities implements Capabilities {
 

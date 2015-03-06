@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 
 /**
  * Represents the value false in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBFalseValue extends GeneralDBBooleanValue {
 

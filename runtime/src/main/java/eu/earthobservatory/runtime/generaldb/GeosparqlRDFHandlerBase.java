@@ -33,10 +33,6 @@ import java.util.Hashtable;
  * <a>http://www.opengis.net/spec/geosparql/1.0/req/rdfs-entailment-extension/bgp-rdfs-ent</a>.
  * 
  * With respect to GML class hierarchy, the GML Simple Features Profile 2.0 is only supported.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class GeosparqlRDFHandlerBase extends RDFInserter {
 

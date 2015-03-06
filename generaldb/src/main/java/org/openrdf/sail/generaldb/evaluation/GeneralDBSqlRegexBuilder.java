@@ -7,9 +7,6 @@ package org.openrdf.sail.generaldb.evaluation;
 
 /**
  * Facilitates the building of a regular expression in SQL.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBSqlRegexBuilder {
 

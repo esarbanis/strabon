@@ -12,9 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * A test for the spatial analysis functions of stSPARQL.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
-
 public class SpatialAnalysisFunctionsTest extends TemplateTest {
 }

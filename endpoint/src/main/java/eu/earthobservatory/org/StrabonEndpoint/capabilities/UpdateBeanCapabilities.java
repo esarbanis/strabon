@@ -11,10 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 import java.util.List;
 
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class UpdateBeanCapabilities implements RequestCapabilities {
 
   private static UpdateBeanCapabilities caps;

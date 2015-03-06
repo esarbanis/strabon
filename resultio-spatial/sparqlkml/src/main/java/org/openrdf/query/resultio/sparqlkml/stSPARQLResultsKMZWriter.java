@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class stSPARQLResultsKMZWriter implements TupleQueryResultWriter {
 
   /**

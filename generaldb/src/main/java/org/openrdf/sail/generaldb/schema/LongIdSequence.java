@@ -14,10 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * 
- * @author James Leigh
- */
 public class LongIdSequence extends IdSequence {
 
   private long SPAN = 1152921504606846975l;

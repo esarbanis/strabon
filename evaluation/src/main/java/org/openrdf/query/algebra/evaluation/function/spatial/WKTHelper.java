@@ -13,12 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
- *
- */
 public class WKTHelper {
 
   private static Logger logger = LoggerFactory

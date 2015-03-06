@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 
 /**
  * A spatial function returning the type of a geometry.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeometryTypeFunc extends SpatialPropertyFunc {
 

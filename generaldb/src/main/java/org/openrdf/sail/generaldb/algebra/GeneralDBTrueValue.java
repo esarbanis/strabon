@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 
 /**
  * The boolean SQL expression of true.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBTrueValue extends GeneralDBBooleanValue {
 

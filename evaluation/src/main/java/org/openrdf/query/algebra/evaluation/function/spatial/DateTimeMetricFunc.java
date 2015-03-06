@@ -18,8 +18,6 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  * calculating the difference between two xsd:dateTime values).
  * 
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.metric}
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public abstract class DateTimeMetricFunc implements Function {
 

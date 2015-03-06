@@ -15,8 +15,6 @@ import org.openrdf.sail.monetdb.MonetDBStore;
 
 /**
  * A {@link SailFactory} that creates {@link GeneralDBStore}s based on RDF configuration data.
- * 
- * @author James Leigh
  */
 public class MonetDBStoreFactory extends GeneralDBStoreFactory {
 

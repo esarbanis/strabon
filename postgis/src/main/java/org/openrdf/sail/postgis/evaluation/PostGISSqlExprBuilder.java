@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.evaluation.GeneralDBSqlExprBuilder;
 
 /**
  * Assemblies an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class PostGISSqlExprBuilder extends GeneralDBSqlExprBuilder {
 

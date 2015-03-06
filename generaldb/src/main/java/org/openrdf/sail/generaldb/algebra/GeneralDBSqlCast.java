@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
  * The SQL IS CAST expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlCast extends UnaryGeneralDBOperator {
 

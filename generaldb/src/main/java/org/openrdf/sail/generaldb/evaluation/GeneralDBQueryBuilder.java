@@ -20,9 +20,6 @@ import java.util.List;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public abstract class GeneralDBQueryBuilder {
 
@@ -895,14 +892,9 @@ public abstract class GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   protected abstract void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
       throws UnsupportedRdbmsOperatorException;
-
-  /***/
 
   // Spatial Metric Functions
   protected abstract void append(GeneralDBSqlGeoDistance expr, GeneralDBSqlExprBuilder filter)
@@ -1001,9 +993,6 @@ public abstract class GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   protected void appendCastToEpoch(GeneralDBSqlExprBuilder filter) {
     // filter.epochCastBefore();

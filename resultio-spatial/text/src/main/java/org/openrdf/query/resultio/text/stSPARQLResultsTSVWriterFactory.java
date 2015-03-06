@@ -15,10 +15,6 @@ import org.openrdf.query.resultio.text.tsv.SPARQLResultsTSVWriterFactory;
 
 import java.io.OutputStream;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class stSPARQLResultsTSVWriterFactory extends SPARQLResultsTSVWriterFactory {
 
   @Override

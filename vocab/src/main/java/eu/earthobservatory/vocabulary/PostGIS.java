@@ -8,9 +8,6 @@
  */
 package eu.earthobservatory.vocabulary;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class PostGIS {
 
   public static final String NAMESPACE = "http://postgis.net/";

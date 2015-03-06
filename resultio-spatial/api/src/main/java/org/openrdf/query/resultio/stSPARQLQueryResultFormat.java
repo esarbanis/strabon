@@ -26,9 +26,6 @@ import java.util.List;
  * projected variables in a stSPARQL/GeoSPARQL query are not included in the beginning of these
  * formats. Instead, they are provided as an additional description for a feature (e.g., a tuple
  * query result with a projected variable corresponding to a geometry).
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class stSPARQLQueryResultFormat extends TupleQueryResultFormat {
 

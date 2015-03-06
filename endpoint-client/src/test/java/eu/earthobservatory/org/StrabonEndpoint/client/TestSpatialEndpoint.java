@@ -17,10 +17,6 @@ import org.openrdf.query.resultio.UnsupportedQueryResultFormatException;
 
 import java.io.IOException;
 
-/**
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
- *
- */
 public class TestSpatialEndpoint {
 
   private SpatialEndpoint endpoint;

@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 
 /**
  * A spatial function returning a geometry as text (in WKT format).
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class AsTextFunc extends SpatialPropertyFunc {
 

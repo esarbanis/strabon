@@ -23,10 +23,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * 
- * @author James Leigh
- */
 public class HashManager extends ManagerBase {
 
   public static HashManager instance;

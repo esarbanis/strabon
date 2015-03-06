@@ -9,11 +9,6 @@ import org.openrdf.sail.rdbms.model.RdbmsValue;
 
 import java.io.IOException;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- *
- */
 public class GeneralDBPolyhedron extends RdbmsValue {
 
   private static final long serialVersionUID = -7751266742783048766L;

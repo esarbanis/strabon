@@ -12,8 +12,6 @@ import org.openrdf.sail.generaldb.GeneralDBStore;
 
 /**
  * A {@link SailFactory} that creates {@link GeneralDBStore}s based on RDF configuration data.
- * 
- * @author James Leigh
  */
 public abstract class GeneralDBStoreFactory implements SailFactory {
 

@@ -17,9 +17,6 @@ import java.sql.SQLException;
 
 /**
  * Converts a {@link ResultSet} into a {@link RdbmsResource} in an iteration.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBResourceIteration extends RdbmIterationBase<RdbmsResource, SailException> {
 

@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL Simple Features' spatial relations test.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class SfSpatialRelationsTest extends TemplateTest {
 }

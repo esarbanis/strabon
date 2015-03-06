@@ -10,10 +10,6 @@ package org.openrdf.sail.generaldb.algebra;
 
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class GeneralDBSqlST_Centroid extends GeneralDBSqlSpatialConstructUnary {
 
   public GeneralDBSqlST_Centroid(GeneralDBSqlExpr expr, String resultType) {

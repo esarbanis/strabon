@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents a variable's Long URI value in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBLongURIColumn extends GeneralDBValueColumnBase {
 

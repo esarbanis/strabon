@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 
 /**
  * A spatial function returning the dimension of a geometry.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class DimensionFunc extends SpatialPropertyFunc {
 

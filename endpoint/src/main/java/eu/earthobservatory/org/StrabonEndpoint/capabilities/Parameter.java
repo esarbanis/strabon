@@ -11,10 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class Parameter {
 
   private String name;

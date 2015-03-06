@@ -13,8 +13,6 @@ import java.util.List;
 /**
  * Interface that exposes the kind of requests that clients of Strabon Endpoint can access its
  * services, i.e., Query, Store, Update, Browse, etc.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public interface RequestCapabilities {
 

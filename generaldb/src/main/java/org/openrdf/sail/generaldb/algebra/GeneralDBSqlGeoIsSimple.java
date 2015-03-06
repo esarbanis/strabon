@@ -12,8 +12,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 /**
  * 
  * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsSimpleFunc}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeneralDBSqlGeoIsSimple extends GeneralDBSqlSpatialProperty {
 

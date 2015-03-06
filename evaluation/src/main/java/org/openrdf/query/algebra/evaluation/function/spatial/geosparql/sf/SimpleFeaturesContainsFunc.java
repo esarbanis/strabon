@@ -11,10 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.sf;
 import eu.earthobservatory.constants.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlRelation;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class SimpleFeaturesContainsFunc extends GeoSparqlRelation {
 
   @Override

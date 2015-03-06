@@ -22,9 +22,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates a datatype SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBDatatypeExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

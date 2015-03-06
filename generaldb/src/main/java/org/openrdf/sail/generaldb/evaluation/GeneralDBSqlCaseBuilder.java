@@ -7,9 +7,6 @@ package org.openrdf.sail.generaldb.evaluation;
 
 /**
  * Facilitates the creation of a CASE expression in SQL.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlCaseBuilder {
 

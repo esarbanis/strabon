@@ -19,9 +19,6 @@ import java.net.URI;
  * This class generalizes WKT literal values that can be given according to the specification of
  * stRDF/stSPARQL or GeoSPARQL. Notice that no actual parsing is carried out, so the representation
  * at this point might not be valid.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class AbstractWKT {
 

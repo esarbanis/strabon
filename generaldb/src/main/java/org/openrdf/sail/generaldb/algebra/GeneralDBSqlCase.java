@@ -16,9 +16,6 @@ import java.util.List;
 
 /**
  * The SQL CASE WHEN THEN END expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlCase extends GeneralDBQueryModelNodeBase implements GeneralDBSqlExpr {
 

@@ -28,8 +28,6 @@ import java.sql.SQLException;
 /**
  * Responsible to initialise and wire all components together that will be needed to satisfy any
  * sail connection request.
- * 
- * @author James Leigh
  */
 public abstract class GeneralDBConnectionFactory {
 

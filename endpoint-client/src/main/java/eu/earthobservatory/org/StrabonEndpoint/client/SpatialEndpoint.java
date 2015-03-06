@@ -22,9 +22,6 @@ import java.io.InputStream;
 /**
  * SpatialEndpoint is a SPARQLEndpoint which can store and query for spatial data. It also supports
  * KML format for this kind of data.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  */
 public class SpatialEndpoint extends SPARQLEndpoint {
 

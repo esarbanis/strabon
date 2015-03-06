@@ -12,10 +12,6 @@ import org.openrdf.generaldb.managers.base.ManagerBase;
 
 import java.sql.SQLException;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class TripleManager extends ManagerBase {
 
   public static TripleManager instance;

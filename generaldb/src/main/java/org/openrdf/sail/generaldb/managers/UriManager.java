@@ -13,9 +13,6 @@ import java.sql.SQLException;
 
 /**
  * Manages URIs. Including creating, inserting, and looking up their IDs.
- * 
- * @author James Leigh
- * 
  */
 public class UriManager extends ValueManagerBase<RdbmsURI> {
 

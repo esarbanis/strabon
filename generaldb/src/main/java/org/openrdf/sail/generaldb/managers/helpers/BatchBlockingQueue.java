@@ -11,10 +11,6 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 
- * @author James Leigh
- */
 public class BatchBlockingQueue extends AbstractQueue<Batch> implements BlockingQueue<Batch> {
 
   private LinkedHashSet<Batch> queue;

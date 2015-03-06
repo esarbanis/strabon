@@ -18,8 +18,6 @@ import static org.openrdf.sail.generaldb.config.GeneralDBStoreSchema.*;
 
 /**
  * Holds the JDBC Driver, URL, user and password, as well as the database layout.
- * 
- * @author James Leigh
  */
 public class GeneralDBStoreConfig extends SailImplConfigBase {
 

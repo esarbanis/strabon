@@ -22,8 +22,6 @@ import java.util.Iterator;
  * A template test. It: 1) creates a database 2) stores a dataset 3) poses a query 4) checks if the
  * results of the query are the expected If you use ORDER BY do NOT use this class. 5) drops the
  * database
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public abstract class TemplateTest {
   private final static String TEST_PATH_TEMPLATE = "/%s/%s/";

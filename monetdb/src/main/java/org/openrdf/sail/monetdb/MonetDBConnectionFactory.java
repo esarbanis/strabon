@@ -33,10 +33,6 @@ import java.sql.SQLException;
 
 import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
-/**
- * @author George Garbis <ggarbis@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class MonetDBConnectionFactory extends GeneralDBConnectionFactory {
 
   @Override

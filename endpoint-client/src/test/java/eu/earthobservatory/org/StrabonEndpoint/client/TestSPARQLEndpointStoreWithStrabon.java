@@ -18,10 +18,6 @@ import java.net.URL;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
- *
- */
 public class TestSPARQLEndpointStoreWithStrabon {
 
   private SPARQLEndpoint endpoint;

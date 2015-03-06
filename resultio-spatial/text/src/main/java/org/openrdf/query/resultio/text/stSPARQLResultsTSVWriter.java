@@ -19,10 +19,6 @@ import org.openrdf.sail.generaldb.model.GeneralDBPolyhedron;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * 
- */
 public class stSPARQLResultsTSVWriter extends SPARQLResultsTSVWriter {
 
   public stSPARQLResultsTSVWriter(OutputStream out) {

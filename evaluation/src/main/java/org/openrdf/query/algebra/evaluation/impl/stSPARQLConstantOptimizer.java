@@ -29,8 +29,6 @@ import java.util.List;
 
 /**
  * A query optimizer that optimizes constant value expressions for stSPARQL.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLConstantOptimizer implements QueryOptimizer {
 
@@ -154,12 +152,7 @@ public class stSPARQLConstantOptimizer implements QueryOptimizer {
       if (!(function instanceof SpatialConstructFunc) && !(function instanceof SpatialMetricFunc)
           && !(function instanceof SpatialPropertyFunc)
           && !(function instanceof SpatialRelationshipFunc)
-          /**
-           * Addition for datetime metric functions
-           * 
-           * @author George Garbis <ggarbis@di.uoa.gr>
-           * 
-           */
+          // Addition for datetime metric functions
           && !(function instanceof DateTimeMetricFunc)) {
         super.meet(functionCall);
 

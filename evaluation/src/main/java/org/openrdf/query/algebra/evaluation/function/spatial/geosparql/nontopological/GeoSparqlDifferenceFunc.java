@@ -11,10 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopol
 import eu.earthobservatory.constants.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.geosparql.GeoSparqlNonTopologicalConstruct;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class GeoSparqlDifferenceFunc extends GeoSparqlNonTopologicalConstruct {
 
   @Override

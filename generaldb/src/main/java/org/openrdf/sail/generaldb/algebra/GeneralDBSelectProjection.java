@@ -13,9 +13,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * A collection of SQL expressions that form an RDF value binding.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSelectProjection extends GeneralDBQueryModelNodeBase {
 

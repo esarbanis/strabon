@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * The SQL OR expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlOr extends BinaryGeneralDBOperator {
 

@@ -19,9 +19,6 @@ import java.util.TimeZone;
 
 /**
  * Manages RDBMS Literals. Including creation, id lookup, and inserting them into the database.
- * 
- * @author James Leigh
- * 
  */
 public class LiteralManager extends ValueManagerBase<RdbmsLiteral> {
 

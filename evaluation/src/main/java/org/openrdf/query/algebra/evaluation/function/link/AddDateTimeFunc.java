@@ -25,8 +25,6 @@ import java.util.GregorianCalendar;
 /**
  * Defines a function that advances a date-time value (first argument) by a given integer number
  * representing minutes (second argument).
- * 
- * @author Konstantina Bereta <Konstantina.Bereta@di.uoa.gr>
  */
 public class AddDateTimeFunc implements Function {
 

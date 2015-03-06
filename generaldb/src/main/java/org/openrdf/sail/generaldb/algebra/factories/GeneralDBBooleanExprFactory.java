@@ -36,9 +36,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 /**
  * Boolean SQL expression factory. This factory can convert a number of core algebra nodes into an
  * SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBBooleanExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {
@@ -101,9 +98,6 @@ public class GeneralDBBooleanExprFactory extends
       }
       /**
        * Addition for datetime metric functions
-       * 
-       * @author George Garbis <ggarbis@di.uoa.gr>
-       * 
        */
       else if (function instanceof DateTimeMetricFunc) {
         // Edw prepei na epistrafei ena GenearalDBSqlDiffDateTime me parent=null
@@ -132,9 +126,6 @@ public class GeneralDBBooleanExprFactory extends
       }
       /**
        * Addition for datetime metric functions
-       * 
-       * @author George Garbis <ggarbis@di.uoa.gr>
-       * 
        */
       else if (function instanceof DateTimeMetricFunc) {
         // Edw prepei na epistrafei ena GenearalDBSqlDiffDateTime me parent=null
@@ -566,9 +557,6 @@ public class GeneralDBBooleanExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public GeneralDBSqlExpr dateTimeFunction(FunctionCall functionCall)
       throws UnsupportedRdbmsOperatorException {
@@ -682,9 +670,6 @@ public class GeneralDBBooleanExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   GeneralDBSqlExpr dateTimeMetricFunction(FunctionCall functionCall, Function function)
       throws UnsupportedRdbmsOperatorException {
@@ -929,13 +914,10 @@ public class GeneralDBBooleanExprFactory extends
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
-   *         FIXME don't check function using getURI(); use instanceof instead
    */
   GeneralDBSqlExpr dateTimeMetricPicker(Function function, GeneralDBSqlExpr leftArg,
       GeneralDBSqlExpr rightArg) {
+    // FIXME don't check function using getURI(); use instanceof instead
     if (function.getURI().equals(GeoConstants.diffDateTime)) {
       return diffDateTime(leftArg, rightArg);
     }

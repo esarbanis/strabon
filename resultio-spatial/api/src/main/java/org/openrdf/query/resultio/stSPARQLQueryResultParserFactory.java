@@ -13,9 +13,6 @@ package org.openrdf.query.resultio;
  * tuple query result format.
  * 
  * @see {@link TupleQueryResultParserFactory}
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public interface stSPARQLQueryResultParserFactory {
   /**

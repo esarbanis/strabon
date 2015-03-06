@@ -20,9 +20,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates a binary SQL expression for a dateTime zoned value.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBZonedExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

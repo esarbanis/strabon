@@ -4,10 +4,6 @@ import org.openrdf.sail.generaldb.algebra.base.BinaryGeneralDBOperator;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBQueryModelVisitorBase;
 import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
-/**
- *
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class GeneralDBSqlSpatialConstructBinary extends BinaryGeneralDBOperator {
   private String resultType;
 

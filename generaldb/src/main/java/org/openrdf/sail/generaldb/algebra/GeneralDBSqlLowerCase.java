@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.UnaryGeneralDBOperator;
 
 /**
  * The SQL LOWER function.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlLowerCase extends UnaryGeneralDBOperator {
 

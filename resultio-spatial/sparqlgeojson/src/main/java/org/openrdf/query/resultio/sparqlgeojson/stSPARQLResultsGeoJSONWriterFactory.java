@@ -15,10 +15,6 @@ import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 
 import java.io.OutputStream;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class stSPARQLResultsGeoJSONWriterFactory implements TupleQueryResultWriterFactory {
 
   @Override

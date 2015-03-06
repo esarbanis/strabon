@@ -35,10 +35,6 @@ import java.io.IOException;
  * 
  * In case of an error, an appropriate message is wrapped in an XML document (see also
  * {@link ResponseMessages}).
- * 
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * 
  */
 public class DescribeBean extends HttpServlet {
 

@@ -10,9 +10,6 @@ package org.openrdf.sail.generaldb;
 
 /**
  * Checks the database product name and version to be compatible with this Sesame store.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public abstract class GeneralDBProvider {
 

@@ -8,10 +8,6 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint.client;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class EndpointResult {
 
   private int statusCode;

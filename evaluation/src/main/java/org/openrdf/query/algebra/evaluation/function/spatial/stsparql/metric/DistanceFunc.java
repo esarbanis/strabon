@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 
 /**
  * A spatial function computing the distance between two geometries.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class DistanceFunc extends SpatialMetricFunc {
 

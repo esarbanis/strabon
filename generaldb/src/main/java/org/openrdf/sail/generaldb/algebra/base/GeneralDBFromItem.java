@@ -14,9 +14,6 @@ import java.util.List;
 
 /**
  * An item in the SQL from clause.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBFromItem extends GeneralDBQueryModelNodeBase {
 

@@ -9,10 +9,6 @@
 package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class CapabilitiesDelegateBean implements org.springframework.beans.factory.DisposableBean {
 
   private static Capabilities caps;

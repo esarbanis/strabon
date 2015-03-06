@@ -16,9 +16,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Localises variables to use an available column in the current variable scope.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBVarColumnLookupOptimizer extends
     GeneralDBQueryModelVisitorBase<RuntimeException> implements QueryOptimizer {

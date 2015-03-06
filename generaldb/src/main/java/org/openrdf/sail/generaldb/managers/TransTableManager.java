@@ -20,9 +20,6 @@ import java.util.concurrent.BlockingQueue;
 
 /**
  * Manages and delegates to a collection of {@link TransactionTable}s.
- * 
- * @author James Leigh
- * 
  */
 public class TransTableManager {
 
@@ -216,10 +213,6 @@ public class TransTableManager {
     synchronized (tables) {
       TransactionTable table = tables.get(pred);
       if (table == null) {
-        /**
-         * @author charnik
-         * @see method {@link TripleTableManager#flushManagers()} for details
-         */
         triples.flushManagers();
 
         TripleTable predicate = triples.getPredicateTable(pred);

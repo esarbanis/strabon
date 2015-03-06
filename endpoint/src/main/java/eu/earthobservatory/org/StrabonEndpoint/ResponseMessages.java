@@ -11,9 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 /**
  * This class holds the methods constructing the various responses to a client issuing a query,
  * update, or store request.
- * 
- * @author charnik
- *
  */
 public class ResponseMessages {
 

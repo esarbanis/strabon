@@ -12,9 +12,6 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 /**
  * Boolean SQL expression factory. This factory can convert a number of core algebra nodes into an
  * SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlExprFactory {
 

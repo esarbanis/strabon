@@ -22,10 +22,6 @@ import org.openrdf.sail.rdbms.exceptions.UnsupportedRdbmsOperatorException;
 
 import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.unsupported;
 
-/**
- * 
- * @author James Leigh
- */
 public class GeneralDBHashExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {
 

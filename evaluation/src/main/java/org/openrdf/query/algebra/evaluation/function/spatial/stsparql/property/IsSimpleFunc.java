@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 
 /**
  * A spatial function for testing whether a geometry is simple.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class IsSimpleFunc extends SpatialPropertyFunc {
 

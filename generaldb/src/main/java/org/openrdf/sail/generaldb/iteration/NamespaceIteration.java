@@ -15,9 +15,6 @@ import java.util.Iterator;
 
 /**
  * {@link Namespace} typed {@link Iteration}.
- * 
- * @author James Leigh
- * 
  */
 public class NamespaceIteration extends IteratorIteration<Namespace, SailException> implements
     CloseableIteration<Namespace, SailException> {

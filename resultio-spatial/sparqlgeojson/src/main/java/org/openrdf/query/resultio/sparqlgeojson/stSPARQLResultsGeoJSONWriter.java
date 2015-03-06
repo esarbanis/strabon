@@ -45,9 +45,6 @@ import java.util.List;
 /**
  * A TupleQueryResultWriter that writes query results in the <a
  * href="http://www.geojson.org/geojson-spec.html/">GeoJSON Format</a>.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class stSPARQLResultsGeoJSONWriter implements TupleQueryResultWriter {
 

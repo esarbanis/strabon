@@ -20,9 +20,6 @@ import org.openrdf.query.algebra.evaluation.function.Function;
  * @see package {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.construct} and
  *      {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.aggregage} and
  *      {@link org.openrdf.query.algebra.evaluation.function.spatial.postgis.construct}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public abstract class SpatialConstructFunc implements Function {
 

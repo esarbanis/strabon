@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 
 /**
  * A particular column in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBIdColumn extends GeneralDBQueryModelNodeBase implements GeneralDBSqlExpr {
 

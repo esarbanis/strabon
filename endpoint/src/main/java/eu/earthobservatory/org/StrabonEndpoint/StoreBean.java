@@ -27,12 +27,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
- *
- */
 public class StoreBean extends HttpServlet {
 
   private static final long serialVersionUID = -7541662133934957148L;

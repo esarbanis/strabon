@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlConstant;
 
 /**
  * A static long value in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBNumberValue extends GeneralDBSqlConstant<Number> {
 

@@ -71,10 +71,6 @@ import java.util.*;
 /**
  * Extends the default strategy by accepting {@link GeneralDBSelectQuery} and evaluating them on a
  * database.
- * 
- * @author Dimitrianos Savva <dimis@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
 
@@ -816,9 +812,6 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
     }
     /**
      * Addition for datetime metric functions
-     * 
-     * @author George Garbis <ggarbis@di.uoa.gr>
-     * 
      */
     else if (expr instanceof GeneralDBSqlDateTimeMetricBinary) {
       locateColumnVars(((GeneralDBSqlDateTimeMetricBinary) expr).getLeftArg(), allKnown);
@@ -1101,14 +1094,8 @@ public abstract class GeneralDBEvaluation extends EvaluationStrategyImpl {
     else if (expr instanceof GeneralDBSqlSpatialMetricBinary
         || expr instanceof GeneralDBSqlSpatialMetricUnary || expr instanceof GeneralDBSqlMathExpr
         || expr instanceof GeneralDBSqlSpatialMetricTriple ||
-        /**
-         * Addition for datetime metric functions
-         * 
-         * @author George Garbis <ggarbis@di.uoa.gr>
-         *
-         */
+        // Addition for datetime metric functions
         expr instanceof GeneralDBSqlDateTimeMetricBinary
-    /***/
     ) {
       return ResultType.DOUBLE;
     } else if (expr instanceof GeneralDBSqlGeoSpatial) {

@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL Spatial Object Class test. A Geometry is also a Spatial Object.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class SpatialObjectClassTest extends TemplateTest {
   public SpatialObjectClassTest() {

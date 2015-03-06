@@ -17,9 +17,6 @@ import java.util.List;
 
 /**
  * Keeps common variables shared by beans and .jsp pages.
- *
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
  */
 public class Common {
 

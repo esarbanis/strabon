@@ -19,9 +19,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFun
  * 
  * @see package
  *      {@link org.openrdf.query.algebra.evaluation.function.spatial.geosparql.nontopological}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public abstract class GeoSparqlNonTopologicalConstruct extends SpatialConstructFunc {
 

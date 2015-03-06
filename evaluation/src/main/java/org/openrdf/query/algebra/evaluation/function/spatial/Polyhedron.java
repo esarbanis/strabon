@@ -11,10 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial;
 import java.io.Serializable;
 
 
-/**
- * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
- *
- */
 public class Polyhedron implements Serializable {
 
   private static final long serialVersionUID = 76255052985367749L;

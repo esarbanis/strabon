@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.GeneralDBColumnVar;
 
 /**
  * A column in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public abstract class GeneralDBValueColumnBase extends GeneralDBQueryModelNodeBase implements
     GeneralDBSqlExpr {

@@ -13,8 +13,6 @@ package eu.earthobservatory.constants;
  * This is class contains constants that represent type of geometries that can be found in a WKT
  * literal, not necessarily compliant with GeoSPARQL or strdf. This is to "catch"the cases where
  * geometries are represented using WKT literals
- * 
- * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
  */
 
 public class WKTConstants {

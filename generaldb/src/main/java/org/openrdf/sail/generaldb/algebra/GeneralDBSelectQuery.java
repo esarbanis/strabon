@@ -14,9 +14,6 @@ import java.util.*;
 
 /**
  * An SQL query.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSelectQuery extends GeneralDBQueryModelNodeBase implements TupleExpr {
 

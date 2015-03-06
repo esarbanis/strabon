@@ -16,9 +16,6 @@ import java.sql.SQLException;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public class PostGISBindingIteration extends GeneralDBBindingIteration {
 

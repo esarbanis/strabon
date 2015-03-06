@@ -10,9 +10,6 @@ package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 
 import java.util.List;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class RequestCapabilitiesImpl implements RequestCapabilities {
 
   private Parameters params;

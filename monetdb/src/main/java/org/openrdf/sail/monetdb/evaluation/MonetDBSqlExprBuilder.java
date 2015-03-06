@@ -12,9 +12,6 @@ import java.math.BigDecimal;
 
 /**
  * Assemblies an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class MonetDBSqlExprBuilder extends GeneralDBSqlExprBuilder {
 

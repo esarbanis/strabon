@@ -12,8 +12,6 @@ import org.openrdf.query.TupleQueryResultHandler;
 
 /**
  * The interface of objects that writer query results in a specific query result format.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public interface stSPARQLQueryResultWriter extends TupleQueryResultHandler {
 

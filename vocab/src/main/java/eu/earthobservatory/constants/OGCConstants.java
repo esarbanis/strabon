@@ -15,8 +15,6 @@ import java.util.List;
 /**
  * This class contains several OGC constants that are mainly URIs. These can be found at the OGC
  * Definition Service located at <a>http://www.opengis.net/def/</a>.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class OGCConstants {
 

@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents a variable's label value in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBLabelColumn extends GeneralDBValueColumnBase {
 

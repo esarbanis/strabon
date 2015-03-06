@@ -13,9 +13,6 @@ import java.util.List;
 
 /**
  * An SQL join.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBJoinItem extends GeneralDBFromItem {
 

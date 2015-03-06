@@ -23,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * A set of simple tests on SPARQL query functionality
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class SimpleTests {
 

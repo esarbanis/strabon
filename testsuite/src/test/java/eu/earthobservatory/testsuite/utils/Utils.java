@@ -30,9 +30,6 @@ import static org.junit.Assert.*;
 
 /**
  * A class with useful methods for the tests.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
- * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class Utils {
   private static final String dbPropertiesFile = "/databases.properties";

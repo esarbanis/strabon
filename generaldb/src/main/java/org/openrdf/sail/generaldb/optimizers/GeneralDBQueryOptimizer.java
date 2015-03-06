@@ -22,8 +22,6 @@ import java.util.List;
 
 /**
  * Facade to the underlying RDBMS optimizations.
- * 
- * @author James Leigh
  */
 public class GeneralDBQueryOptimizer {
 

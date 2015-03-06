@@ -15,9 +15,6 @@ import org.openrdf.query.TupleQueryResultHandler;
 /**
  * Base class for {@link stSPARQLQueryResultParser}s offering common functionality for query result
  * parsers.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public abstract class stSPARQLQueryResultParserBase implements stSPARQLQueryResultParser {
 

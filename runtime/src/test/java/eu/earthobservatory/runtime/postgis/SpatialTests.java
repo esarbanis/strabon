@@ -15,8 +15,6 @@ import java.sql.SQLException;
 
 /**
  * A set of simple tests on SPARQL query functionality
- * 
- * @author George Garbis <ggarbis@di.uoa.gr>
  */
 
 public class SpatialTests extends eu.earthobservatory.runtime.generaldb.SpatialTests {

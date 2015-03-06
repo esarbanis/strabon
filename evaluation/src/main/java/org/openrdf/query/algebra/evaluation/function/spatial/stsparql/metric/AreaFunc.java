@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialMetricFunc;
 
 /**
  * A spatial function computing the area of a geometry.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class AreaFunc extends SpatialMetricFunc {
 

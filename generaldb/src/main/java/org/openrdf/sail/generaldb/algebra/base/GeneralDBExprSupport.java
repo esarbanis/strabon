@@ -19,10 +19,6 @@ import java.sql.Types;
 
 /**
  * Support method to create SQL expressions.
- *
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author James Leigh
- *
  */
 public class GeneralDBExprSupport {
 
@@ -341,9 +337,6 @@ public class GeneralDBExprSupport {
 
   /**
    * Addition for datetime metric functions
-   *
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   *
    */
   public static GeneralDBSqlExpr extDiffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 
@@ -354,9 +347,6 @@ public class GeneralDBExprSupport {
 
   /**
    * Addition for datetime metric functions
-   *
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   *
    */
   public static GeneralDBSqlExpr diffDateTime(GeneralDBSqlExpr left, GeneralDBSqlExpr right) {
 

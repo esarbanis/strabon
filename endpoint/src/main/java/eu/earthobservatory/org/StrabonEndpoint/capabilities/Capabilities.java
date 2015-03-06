@@ -13,8 +13,6 @@ import java.util.List;
 
 /**
  * Interface that exposes the capabilities of a Strabon Endpoint.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public interface Capabilities {
 

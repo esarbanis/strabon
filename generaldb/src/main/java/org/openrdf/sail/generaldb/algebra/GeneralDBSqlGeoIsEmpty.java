@@ -11,8 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
 /**
  * 
  * @see {@link org.openrdf.query.algebra.evaluation.function.spatial.stsparql.property.IsEmptyFunc}
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeneralDBSqlGeoIsEmpty extends GeneralDBSqlSpatialProperty {
 

@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * GeoSPARQL Query Functions test.
- * 
- * @author Panayiotis Smeros <psmeros@di.uoa.gr
  */
 public class QueryFunctionsTest extends TemplateTest {
 }

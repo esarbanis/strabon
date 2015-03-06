@@ -19,9 +19,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * @author James Leigh
- */
 public class MonetDBLockManager extends DatabaseLockManager {
 
   private static final String CREATE_LOCKED = "CREATE TABLE \"locked\" ( process VARCHAR(128) )";

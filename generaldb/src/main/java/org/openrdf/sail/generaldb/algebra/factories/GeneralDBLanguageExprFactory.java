@@ -18,9 +18,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 
 /**
  * Creates an SQL expression of a literal's language.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBLanguageExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

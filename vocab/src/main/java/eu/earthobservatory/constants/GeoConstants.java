@@ -19,10 +19,6 @@ import java.util.List;
  * This class is a placeholder for various constants around geometries. These constants range from
  * URIs of namespaces, functions, representations, etc., to other constants, such as the default
  * spatial reference system (SRID) that is assumed in Strabon.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
- * @author Kallirroi Dogani <kallirroi@di.uoa.gr>
  */
 public class GeoConstants {
   /**
@@ -255,9 +251,6 @@ public class GeoConstants {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public static final String diffDateTime =
       "http://strdf.di.uoa.gr/extensions/ontology#diffDateTime";

@@ -13,8 +13,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialPropertyFunc
 
 /**
  * A spatial function for testing whether a geometry is empty.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class IsEmptyFunc extends SpatialPropertyFunc {
 

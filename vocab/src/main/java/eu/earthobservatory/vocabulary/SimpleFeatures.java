@@ -11,8 +11,6 @@ package eu.earthobservatory.vocabulary;
 /**
  * The vocabulary corresponding to the Simple Features Access, mainly the SF namespace and the URIs
  * for the class hierarchy.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class SimpleFeatures {
 

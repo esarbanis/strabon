@@ -37,9 +37,6 @@ import java.util.*;
 /**
  * Facade to {@link GeneralDBTransTableManager}, {@link URITable}, {@link BNodeTable} and
  * {@link LiteralTable} for adding, removing, and retrieving statements from the database.
- * 
- * @author Manos Karpathiotatis <mk@di.uoa.gr>
- * @author James Leigh
  */
 public abstract class GeneralDBTripleRepository {
 
@@ -442,8 +439,6 @@ public abstract class GeneralDBTripleRepository {
   }
 
   /**
-   * @author Manos Karpathiotatis <mk@di.uoa.gr>
-   * 
    * @throws RdbmsException
    */
   public void clearGeoValues() throws RdbmsException {

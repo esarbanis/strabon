@@ -36,8 +36,6 @@ import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
 /**
  * Responsible to initialise and wire all components together that will be needed to satisfy any
  * sail connection request.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class PostGISConnectionFactory extends GeneralDBConnectionFactory {
 

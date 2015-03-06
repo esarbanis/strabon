@@ -18,9 +18,6 @@ import java.util.Map;
 
 /**
  * An SQL UNION expression between two {@link GeneralDBFromItem}s.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBUnionItem extends GeneralDBFromItem {
 

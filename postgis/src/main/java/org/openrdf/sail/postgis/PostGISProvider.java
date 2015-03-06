@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.GeneralDBProvider;
 
 /**
  * Checks the database product name and version to be compatible with this Sesame store.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * 
  */
 public class PostGISProvider extends GeneralDBProvider {
 

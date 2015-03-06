@@ -11,10 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint.capabilities;
 import java.util.Collection;
 import java.util.Hashtable;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class Parameters {
 
   private Hashtable<String, Parameter> params;

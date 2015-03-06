@@ -17,9 +17,6 @@ import java.sql.SQLException;
 
 /**
  * Converts a {@link ResultSet} into a {@link BindingSet} in an iteration.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr.
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class MonetDBBindingIteration extends GeneralDBBindingIteration {
 

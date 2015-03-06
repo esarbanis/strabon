@@ -21,10 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class CapabilitiesBean extends HttpServlet {
 
   private static final long serialVersionUID = -8941754144139158506L;

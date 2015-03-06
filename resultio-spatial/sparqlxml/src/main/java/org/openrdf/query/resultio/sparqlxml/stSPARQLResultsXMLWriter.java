@@ -31,9 +31,6 @@ import static org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLConstants.*;
 /**
  * A {@link TupleQueryResultWriter} that writes tuple query results in the <a
  * href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML Format</a>.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class stSPARQLResultsXMLWriter implements TupleQueryResultWriter {
 

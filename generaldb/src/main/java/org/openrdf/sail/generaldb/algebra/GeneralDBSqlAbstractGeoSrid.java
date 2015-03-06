@@ -17,8 +17,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlExpr;
  * the types of the returning results, so we do not want to duplicate code for computing them.
  * Instead, we will compute them based on this abstract function, and then, when converting the
  * result set, we will differentiate our behavior based on the actual instantiation.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class GeneralDBSqlAbstractGeoSrid extends GeneralDBSqlSpatialProperty {
 

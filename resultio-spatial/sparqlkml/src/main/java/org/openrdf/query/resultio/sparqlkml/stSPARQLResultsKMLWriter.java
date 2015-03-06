@@ -38,12 +38,6 @@ import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Panayiotis Smeros <psmeros@di.uoa.gr>
- * @author Konstantina Bereta <konstantina.bereta@di.uoa.gr>
- */
 public class stSPARQLResultsKMLWriter implements TupleQueryResultWriter {
   private static final Logger logger = LoggerFactory
       .getLogger(org.openrdf.query.resultio.sparqlkml.stSPARQLResultsKMLWriter.class);

@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents a variables language value in an SQL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBLanguageColumn extends GeneralDBValueColumnBase {
 

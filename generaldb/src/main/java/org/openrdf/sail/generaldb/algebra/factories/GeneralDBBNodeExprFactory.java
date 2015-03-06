@@ -20,9 +20,6 @@ import static org.openrdf.sail.generaldb.algebra.base.GeneralDBExprSupport.*;
 /**
  * BNode expression factory - creates a {@link GeneralDBBNodeColumn} or a
  * {@link GeneralDBStringValue} of the BNode ID.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBBNodeExprFactory extends
     QueryModelVisitorBase<UnsupportedRdbmsOperatorException> {

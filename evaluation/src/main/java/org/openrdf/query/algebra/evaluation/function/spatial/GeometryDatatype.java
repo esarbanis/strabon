@@ -13,9 +13,6 @@ import eu.earthobservatory.constants.GeoConstants;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public enum GeometryDatatype {
   /**
    * stRDF WKT literal

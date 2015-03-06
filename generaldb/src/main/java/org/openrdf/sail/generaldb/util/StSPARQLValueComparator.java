@@ -24,9 +24,6 @@ import java.util.Comparator;
 /**
  * A comparator that compares values according the SPARQL value ordering as specified in <A
  * href="http://www.w3.org/TR/rdf-sparql-query/#modOrderBy">SPARQL Query Language for RDF</a>.
- * 
- * @author james
- * @author Arjohn Kampman
  */
 public class StSPARQLValueComparator implements Comparator<Value> {
 

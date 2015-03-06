@@ -11,10 +11,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.stsparql.relation;
 import eu.earthobservatory.constants.GeoConstants;
 import org.openrdf.query.algebra.evaluation.function.spatial.SpatialRelationshipFunc;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class DisjointFunc extends SpatialRelationshipFunc {
 
   @Override

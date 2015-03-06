@@ -22,9 +22,6 @@ import java.util.regex.Pattern;
 
 /**
  * Manages and delegates to the collection of {@link TripleTable}.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class TripleTableManager {
 
@@ -420,15 +417,13 @@ public class TripleTableManager {
   }
 
   /**
-   * @author charnik This method should be used only for flushing prepared statements related to
-   *         hash values. Introduced to avoid exceptions in MonetDB when a new predicate has to be
-   *         inserted and the underlying relational table does not exist. In such a case, the
-   *         prepared statement for the creation of the table was making MonetDB to release all
-   *         prepared statements that have already been created but not executed.
+   * This method should be used only for flushing prepared statements related to hash values.
+   * Introduced to avoid exceptions in MonetDB when a new predicate has to be inserted and the
+   * underlying relational table does not exist. In such a case, the prepared statement for the
+   * creation of the table was making MonetDB to release all prepared statements that have already
+   * been created but not executed.
    * 
    * @see {@link TransTableManager#getTable(Number)}
-   * 
-   *      FIXME: Should it throw those exceptions?
    */
   public void flushManagers() {
     if (conn instanceof nl.cwi.monetdb.jdbc.MonetConnection) {
@@ -437,7 +432,7 @@ public class TripleTableManager {
         bnodes.flush();
         uris.flush();
         literals.flush();
-
+        // FIXME: Should it throw those exceptions?
       } catch (SQLException e) {
         e.printStackTrace();
 

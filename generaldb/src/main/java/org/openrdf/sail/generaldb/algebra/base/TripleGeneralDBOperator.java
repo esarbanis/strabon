@@ -11,9 +11,7 @@ import org.openrdf.query.algebra.helpers.QueryModelTreePrinter;
 import org.openrdf.sail.generaldb.optimizers.GeneralDBSqlConstantOptimizer;
 
 /**
- * @author manolee A new type of operator , used to accommodate the need for Triple operators such
- *         as relate(geo1,geo2,2)
- * 
+ * A new type of operator , used to accommodate the need for Triple operators such as relate(geo1,geo2,2)
  */
 public abstract class TripleGeneralDBOperator extends GeneralDBQueryModelNodeBase implements
     GeneralDBSqlExpr {

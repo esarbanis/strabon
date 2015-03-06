@@ -25,8 +25,6 @@ import java.util.*;
 
 /**
  * A query optimizer that re-orders nested Joins.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class SpatialJoinOptimizer
 // implements QueryOptimizer //Removed it consciously

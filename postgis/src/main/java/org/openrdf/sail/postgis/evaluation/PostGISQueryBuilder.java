@@ -26,9 +26,6 @@ import java.util.List;
 
 /**
  * Constructs an SQL query from {@link GeneralDBSqlExpr}s and {@link GeneralDBFromItem}s.
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Dimitrianos Savva <dimis@di.uoa.gr>
  */
 public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
@@ -86,9 +83,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   public enum DateTimeFunctionPostGIS {
     Difference;
@@ -597,9 +591,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   @Override
   protected void append(GeneralDBSqlDiffDateTime expr, GeneralDBSqlExprBuilder filter)
@@ -1133,9 +1124,6 @@ public class PostGISQueryBuilder extends GeneralDBQueryBuilder {
 
   /**
    * Addition for datetime metric functions
-   * 
-   * @author George Garbis <ggarbis@di.uoa.gr>
-   * 
    */
   protected void appendGeneralDBDateTimeFunctionBinary(BinaryGeneralDBOperator expr,
       GeneralDBSqlExprBuilder filter, DateTimeFunctionPostGIS func)

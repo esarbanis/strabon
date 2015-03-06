@@ -10,10 +10,6 @@ package org.openrdf.query.algebra.evaluation.function.spatial.geosparql;
 
 import eu.earthobservatory.constants.GeoConstants;
 
-/**
- * 
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- */
 public class GeoSparqlRelateFunc extends GeoSparqlRelation {
 
   @Override

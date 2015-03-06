@@ -12,9 +12,6 @@ import org.openrdf.sail.generaldb.optimizers.GeneralDBSqlConstantOptimizer;
 
 /**
  * An abstract binary sql operator with two arguments.
- * 
- * @author James Leigh
- * 
  */
 public abstract class BinaryGeneralDBOperator extends GeneralDBQueryModelNodeBase implements
     GeneralDBSqlExpr {

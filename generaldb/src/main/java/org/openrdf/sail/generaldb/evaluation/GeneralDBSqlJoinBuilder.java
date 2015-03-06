@@ -10,9 +10,6 @@ import java.util.List;
 
 /**
  * Facilitates the building of a JOIN or FROM clause in SQL.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlJoinBuilder {
 

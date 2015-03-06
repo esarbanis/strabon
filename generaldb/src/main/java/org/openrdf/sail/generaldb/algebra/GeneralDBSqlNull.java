@@ -10,9 +10,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBSqlConstant;
 
 /**
  * The SQL NULL expression.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBSqlNull extends GeneralDBSqlConstant<Object> {
 

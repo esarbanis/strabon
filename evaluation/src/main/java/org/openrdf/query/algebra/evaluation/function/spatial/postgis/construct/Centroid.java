@@ -14,9 +14,6 @@ import org.openrdf.query.algebra.evaluation.function.spatial.SpatialConstructFun
 /**
  * This SPARQL extension function corresponds to the PostGIS <code>ST_Centroid(geometry geom)</code>
  * function as described in <a>http://postgis.org/docs/ST_Centroid.html</a>.
- *
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
  */
 public class Centroid extends SpatialConstructFunc {
 

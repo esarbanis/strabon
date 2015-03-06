@@ -38,11 +38,6 @@ import java.util.ArrayList;
  * {@link StrabonPolyhedron} offers constructors and methods for getting a {@link StrabonPolyhedron}
  * instance through any kind of representation and of course getting a {@link StrabonPolyhedron}
  * instance in a specific representation.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
- * @author Kostis Kyzirakos <kk@di.uoa.gr>
- *
  */
 public class StrabonPolyhedron implements Value {
 

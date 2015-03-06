@@ -7,9 +7,6 @@ package org.openrdf.sail.generaldb.evaluation;
 
 /**
  * Prints round brackets in an SQL query.
- * 
- * @author James Leigh
- * 
  */
 public interface GeneralDBSqlBracketBuilder extends GeneralDBSqlExprBuilderInterface {
 

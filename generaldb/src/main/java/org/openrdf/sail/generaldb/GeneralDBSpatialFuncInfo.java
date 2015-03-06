@@ -6,9 +6,6 @@ import org.openrdf.sail.generaldb.evaluation.GeneralDBEvaluation.ResultType;
  * Class used to store all info needed about a spatial construct / metric / property located in
  * select clause. Currently storing info about the name of the field that has to be retrieved from
  * the Result Set, as well as the type of the spatial function.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author Manos Karpathiotakis <mk@di.uoa.gr>
  */
 public class GeneralDBSpatialFuncInfo {
 

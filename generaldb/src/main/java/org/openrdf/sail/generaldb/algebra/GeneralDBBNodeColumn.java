@@ -11,9 +11,6 @@ import org.openrdf.sail.generaldb.algebra.base.GeneralDBValueColumnBase;
 
 /**
  * Represents the BNode value of a variable.
- * 
- * @author James Leigh
- * 
  */
 public class GeneralDBBNodeColumn extends GeneralDBValueColumnBase {
 

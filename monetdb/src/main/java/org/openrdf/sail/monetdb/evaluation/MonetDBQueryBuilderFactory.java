@@ -9,9 +9,6 @@ import org.openrdf.sail.generaldb.evaluation.*;
 
 /**
  * Creates the SQL query building components.
- * 
- * @author James Leigh
- * 
  */
 public class MonetDBQueryBuilderFactory extends GeneralDBQueryBuilderFactory {
 

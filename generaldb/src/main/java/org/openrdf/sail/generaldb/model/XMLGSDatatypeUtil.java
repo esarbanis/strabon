@@ -21,7 +21,6 @@ public class XMLGSDatatypeUtil {
    * 
    * @param value
    * @return
-   * @author Charalampos Nikolaou <charniK@di.uoa.gr>
    */
   public static boolean isGeometryValue(Value value) {
     if (value instanceof Literal) {

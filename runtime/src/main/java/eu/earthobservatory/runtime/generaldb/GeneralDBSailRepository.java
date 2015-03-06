@@ -19,8 +19,6 @@ import org.openrdf.sail.SailException;
  * class {@link GeneralDBSailRepositoryConnection} instead of Sesame's
  * {@link SailRepositoryConnection}. See class {@link GeneralDBSailRepositoryConnection} for the
  * reason behind this extension.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class GeneralDBSailRepository extends SailRepository {
 

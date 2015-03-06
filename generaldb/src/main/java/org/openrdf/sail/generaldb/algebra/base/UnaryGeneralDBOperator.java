@@ -14,9 +14,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An SQL operator with one argument.
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- * @author James Leigh
  */
 public abstract class UnaryGeneralDBOperator extends GeneralDBQueryModelNodeBase implements
     GeneralDBSqlExpr {

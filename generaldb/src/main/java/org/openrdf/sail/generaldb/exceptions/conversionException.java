@@ -1,10 +1,6 @@
 package org.openrdf.sail.generaldb.exceptions;
 
 
-/**
- * @author kkyzir
- * 
- */
 public class conversionException extends Exception {
 
   String error;

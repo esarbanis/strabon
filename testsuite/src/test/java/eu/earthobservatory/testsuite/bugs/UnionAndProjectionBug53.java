@@ -12,8 +12,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * Test for Bug 53 (http://bug.strabon.di.uoa.gr/ticket/53)
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class UnionAndProjectionBug53 extends TemplateTest {
 }

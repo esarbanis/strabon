@@ -13,8 +13,6 @@ import eu.earthobservatory.testsuite.utils.TemplateTest;
 
 /**
  * Test for Bug #34 (http://bug.strabon.di.uoa.gr/ticket/34).
- * 
- * @author Dimitrianos Savva <dimis@di.uoa.gr
  */
 public class RelationalFunctionInSelectTest extends TemplateTest {
 }

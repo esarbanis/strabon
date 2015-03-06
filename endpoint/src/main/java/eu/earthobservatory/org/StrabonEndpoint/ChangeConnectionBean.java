@@ -20,10 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- *
- */
 public class ChangeConnectionBean extends HttpServlet {
 
   private static final long serialVersionUID = 2175155067582174020L;

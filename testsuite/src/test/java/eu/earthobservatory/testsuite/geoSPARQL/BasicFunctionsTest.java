@@ -10,8 +10,5 @@ package eu.earthobservatory.testsuite.geoSPARQL;
 
 import eu.earthobservatory.testsuite.utils.TemplateTest;
 
-/**
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
- */
 public class BasicFunctionsTest extends TemplateTest {
 }

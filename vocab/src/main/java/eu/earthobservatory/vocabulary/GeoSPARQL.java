@@ -13,8 +13,6 @@ package eu.earthobservatory.vocabulary;
 /**
  * GeoSPARQL vocabulary, version 1.0.1, Document 11-052r4
  * <a>http://schemas.opengis.net/geosparql/geosparql-1_0_1.zip</a>
- * 
- * @author Charalampos Nikolaou <charnik@di.uoa.gr>
  */
 public class GeoSPARQL {
 
