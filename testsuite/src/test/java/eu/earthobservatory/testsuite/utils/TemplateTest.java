@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,45 +23,21 @@ import java.util.Iterator;
  * database
  */
 public abstract class TemplateTest {
-  private final static String TEST_PATH_TEMPLATE = "/%s/%s/";
-  protected String datasetFile;
-  protected ArrayList<String> queryFile;
-  protected ArrayList<String> resultsFile;
+  protected ArrayList<String> queries = new ArrayList<String>();
+  protected ArrayList<String> results = new ArrayList<String>();
   protected Boolean inference;
   protected Boolean orderResults;
 
+  private TestFileLoader testFileLoader;
+
   public TemplateTest() {
-    queryFile = new ArrayList<String>();
-    resultsFile = new ArrayList<String>();
-
-    String testname = this.getClass().getSimpleName();
-
-    String testpackage =
-        this.getClass().getPackage().getName()
-            .substring(this.getClass().getPackage().getName().lastIndexOf('.') + 1);
-    File testfolder = null;
+    testFileLoader = new TestFileLoader(this.getClass(), queries, results);
 
     try {
-      testfolder =
-          new File(this.getClass()
-              .getResource(String.format(TEST_PATH_TEMPLATE, testpackage, testname)).toURI());
+      testFileLoader.loadFolder();
     } catch (URISyntaxException e) {
       e.printStackTrace();
       System.exit(1);
-    }
-
-    String[] files = testfolder.list();
-
-    for (String file : files) {
-      if (file.endsWith(".nt") || file.endsWith(".nq")) {
-        datasetFile =
-            File.separator + testpackage + File.separator + testname + File.separator + file;
-      } else if (file.endsWith(".rq")) {
-        queryFile.add(File.separator + testpackage + File.separator + testname + File.separator
-            + file);
-        resultsFile.add(File.separator + testpackage + File.separator + testname + File.separator
-            + file.substring(0, file.length() - 3) + ".srx");
-      }
     }
 
     inference = false;
@@ -72,13 +47,13 @@ public abstract class TemplateTest {
   @Before
   public void before() throws Exception {
     Utils.createdb();
-    Utils.storeDataset(datasetFile, inference);
+    Utils.storeDataset(testFileLoader.loadedDataSet(), inference);
   }
 
   @Test
   public void test() throws Exception {
-    Iterator<String> queryFileIterator = queryFile.iterator();
-    Iterator<String> resultsFileIterator = resultsFile.iterator();
+    Iterator<String> queryFileIterator = queries.iterator();
+    Iterator<String> resultsFileIterator = results.iterator();
 
     while (queryFileIterator.hasNext() && resultsFileIterator.hasNext()) {
       Utils.testQuery(queryFileIterator.next(), resultsFileIterator.next(), orderResults);
