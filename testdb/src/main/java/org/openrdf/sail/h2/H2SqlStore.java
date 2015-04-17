@@ -2,7 +2,6 @@ package org.openrdf.sail.h2;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.openrdf.sail.SailException;
-import org.openrdf.sail.rdbms.exceptions.RdbmsException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -84,21 +83,8 @@ public class H2SqlStore extends H2Store {
 
   @Override
   public void initialize() throws SailException {
-    try {
-      Class.forName("org.h2.Driver");
-    } catch (ClassNotFoundException e) {
-      throw new RdbmsException(e.toString(), e);
-    }
     StringBuilder url = new StringBuilder();
-    url.append("jdbc:h2:");
-    if (serverName != null) {
-      url.append("//").append(serverName);
-      if (portNumber > 0) {
-        url.append(":").append(portNumber);
-      }
-      url.append("/");
-    }
-    url.append(databaseName);
+    url.append("jdbc:h2:file:~/.strabon/").append(databaseName);
     Iterator<Entry<String, String>> iter;
     iter = getProperties().entrySet().iterator();
     if (iter.hasNext()) {
