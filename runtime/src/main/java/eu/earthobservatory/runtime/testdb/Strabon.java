@@ -26,6 +26,20 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
   protected void initiate(String databaseName, String user, String password, int port,
       String serverName) {
+
+    initJdbcDriver();
+
+    initSqlStore(databaseName, user, password, port, serverName);
+
+    initGIS();
+
+    init();
+
+    logger.info("[Strabon] Initialization completed.");
+  }
+
+  private void initSqlStore(String databaseName, String user, String password, int port,
+      String serverName) {
     db_store = new H2SqlStore();
 
     H2SqlStore h2SqlStore = (H2SqlStore) db_store;
@@ -36,8 +50,36 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
     h2SqlStore.setPortNumber(port);
     h2SqlStore.setServerName(serverName);
     h2SqlStore.setMaxNumberOfTripleTables(2048);
-    init();
-    logger.info("[Strabon] Initialization completed.");
+  }
+
+  private void initJdbcDriver() {
+    try {
+      Class.forName("org.h2.Driver");
+    } catch (ClassNotFoundException e) {
+      logger.error("[Strabon.initialise] Could not load jdbc driver: "
+          + e.getMessage());
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void initGIS() {
+    String url = null;
+    try {
+      logger.info("[Strabon] init GIS...");
+      url =
+          "jdbc:h2:file:~/.strabon/" + databaseName;
+      Connection conn = DriverManager.getConnection(url);
+      java.sql.Statement st = conn.createStatement();
+      st.execute("CREATE ALIAS InitGeoDB for \"geodb.GeoDB.InitGeoDB\";CALL InitGeoDB();");
+      st.close();
+      conn.close();
+      logger.info("[Strabon] init GIS Successful.");
+
+    } catch (SQLException e) {
+      logger.error("[Strabon.initGIS] SQL Exception occured. Connection URL is <" + url
+          + ">: " + e.getMessage());
+      throw new RuntimeException(e);
+    }
   }
 
   protected void checkAndDeleteLock(String databaseName, String user, String password, int port,
@@ -45,9 +87,8 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
     String url = "";
     try {
       logger.info("[Strabon] Cleaning...");
-      Class.forName("org.h2.Driver");
       url =
-          "jdbc:h2:mem://" + databaseName;
+          "jdbc:h2:file:~/.strabon/" + databaseName;
       Connection conn = DriverManager.getConnection(url);
       java.sql.Statement st = conn.createStatement();
       st.execute("DROP TABLE IF EXISTS locked;");
@@ -60,10 +101,6 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
           + ">: " + e.getMessage());
       throw e;
 
-    } catch (ClassNotFoundException e) {
-      logger.error("[Strabon.checkAndDeleteLock] Could not load postgres jdbc driver: "
-          + e.getMessage());
-      throw e;
     }
   }
 
@@ -72,7 +109,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
     try {
       logger.info("[Strabon.deregisterDriver] Deregistering JDBC driver...");
       java.sql.Driver driver =
-          DriverManager.getDriver("jdbc:h2:mem://" + databaseName);
+          DriverManager.getDriver("jdbc:h2:file:~/.strabon/" + databaseName);
       DriverManager.deregisterDriver(driver);
       logger.info("[Strabon.deregisterDriver] JDBC driver deregistered successfully.");
 
@@ -90,8 +127,7 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
 
     try {
       logger.info("[Strabon] Checking for locks...");
-      Class.forName("org.h2.Driver");
-      url = "jdbc:h2:mem://" + databaseName;
+      url = "jdbc:h2:file:~/.strabon/" + databaseName;
 
       conn = DriverManager.getConnection(url);
       st = conn.createStatement();
@@ -103,10 +139,6 @@ public class Strabon extends eu.earthobservatory.runtime.generaldb.Strabon {
     } catch (SQLException e) {
       logger.error("[Strabon.isLocked] SQL Exception occured. Connection URL is <{}>: {}", url,
           e.getMessage());
-      throw e;
-
-    } catch (ClassNotFoundException e) {
-      logger.error("[Strabon.isLocked] Could not load postgres jdbc driver: {}", e.getMessage());
       throw e;
 
     } finally {

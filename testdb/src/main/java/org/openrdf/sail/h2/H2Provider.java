@@ -19,7 +19,7 @@ import org.openrdf.sail.generaldb.GeneralDBProvider;
 public class H2Provider extends GeneralDBProvider {
 
   public H2ConnectionFactory createRdbmsConnectionFactory(String dbName, String dbVersion) {
-    if ("PostGIS".equalsIgnoreCase(dbName))
+    if ("h2".equalsIgnoreCase(dbName))
       return new H2ConnectionFactory();
     return null;
   }
