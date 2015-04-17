@@ -257,7 +257,7 @@ public class ValueTable {
     String column = "id";
     StringBuilder expr = new StringBuilder();
     expr.append("MOD((").append(column);
-    expr.append(" >> ").append(shift);
+    expr.append(" / POWER(2, ").append(shift).append(")");
     expr.append(") + ").append(mod).append(", ");
     expr.append(mod);
     expr.append(")");
