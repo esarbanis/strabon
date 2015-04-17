@@ -9,7 +9,7 @@
 package eu.earthobservatory.testsuite.utils;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
-import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.runtime.testdb.Strabon;
 import eu.earthobservatory.utils.Format;
 import org.apache.commons.io.FileUtils;
 import org.openrdf.query.*;
@@ -45,42 +45,31 @@ public class Utils {
   private static String databaseName = null;
 
   private static Strabon strabon = null;
+  private static String dbType;
 
   public static void createdb() throws Exception {
-    String url = "";
-    ArrayList<String> databases = new ArrayList<String>();
-    PreparedStatement pst = null;
-
     // Read properties
-    Properties properties = new Properties();
-    InputStream propertiesStream = Utils.class.getResourceAsStream(dbPropertiesFile);
-    properties.load(propertiesStream);
-
-    if ((databaseTemplateName = System.getProperty("postgis.databaseTemplateName")) == null) {
-      databaseTemplateName = properties.getProperty("postgis.databaseTemplateName");
-    }
-
-    if ((serverName = System.getProperty("postgis.serverName")) == null) {
-      serverName = properties.getProperty("postgis.serverName");
-    }
-
-    if ((username = System.getProperty("postgis.username")) == null) {
-      username = properties.getProperty("postgis.username");
-    }
-
-    if ((password = System.getProperty("postgis.password")) == null) {
-      password = properties.getProperty("postgis.password");
-    }
-
-    if ((port = System.getProperty("postgis.port")) == null) {
-      port = properties.getProperty("postgis.port");
-    }
+    readProperties();
 
     // Connect to server and create the temp database
-    url = "jdbc:postgresql://" + serverName + ":" + port;
-    conn = DriverManager.getConnection(url, username, password);
+    String url = buildJdbcUrl();
+    conn = acquireConnection(url);
 
-    pst = conn.prepareStatement("SELECT * FROM pg_catalog.pg_database");
+    createDatabasesIfNeeded();
+
+    strabon =
+        new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
+  }
+
+  private static void createDatabasesIfNeeded() throws SQLException {
+    if("h2".equals(dbType)) {
+//      loadSpatialExpressions();
+      conn.close();
+      return ;
+    }
+
+    ArrayList<String> databases = new ArrayList<String>();
+    PreparedStatement pst = conn.prepareStatement("SELECT * FROM pg_catalog.pg_database");
     ResultSet rs = pst.executeQuery();
 
     while (rs.next()) {
@@ -100,12 +89,57 @@ public class Utils {
     pst.executeUpdate();
     pst.close();
     conn.close();
+  }
 
-    url = "jdbc:postgresql://" + serverName + ":" + port + "/" + databaseName;
-    conn = DriverManager.getConnection(url, username, password);
+  private static void loadSpatialExpressions() throws SQLException {
+    Scanner s = new Scanner(Utils.class.getResourceAsStream("/jaspa.sql"));
+    s.useDelimiter("(;(\r)?\n)|(--\n)");
+    Statement st = null;
+    try
+    {
+      st = conn.createStatement();
+      while (s.hasNext())
+      {
+        String line = s.next();
+        if (line.startsWith("/*!") && line.endsWith("*/"))
+        {
+          int i = line.indexOf(' ');
+          line = line.substring(i + 1, line.length() - " */".length());
+        }
 
-    strabon =
-        new Strabon(databaseName, username, password, Integer.parseInt(port), serverName, true);
+        if (line.trim().length() > 0)
+        {
+          st.execute(line);
+        }
+      }
+    }
+    finally
+    {
+      if (st != null) st.close();
+    }
+  }
+
+  private static Connection acquireConnection(String url) throws SQLException {
+    return DriverManager.getConnection(url, username, password);
+  }
+
+  private static String buildJdbcUrl() {
+    return JdbcUrlBuilder.forDb(dbType).host(serverName).port(port).databaseName(
+        databaseName).build();
+  }
+
+  private static void readProperties() throws IOException {
+    Properties properties = new Properties();
+    InputStream propertiesStream = Utils.class.getResourceAsStream(dbPropertiesFile);
+    properties.load(propertiesStream);
+
+    dbType = properties.getProperty("db.type");
+    databaseTemplateName = properties.getProperty(dbType +".databaseTemplateName");
+    serverName = properties.getProperty(dbType +".serverName");
+    username = properties.getProperty(dbType +".username");
+    password = properties.getProperty(dbType +".password");
+    port = properties.getProperty(dbType +".port");
+    databaseName = properties.getProperty(dbType+".databaseName");
   }
 
   public static void storeDataset(String datasetFile, Boolean inference) throws RDFParseException,
@@ -191,8 +225,8 @@ public class Utils {
 
     // Drop the temp database
     conn.close();
-    String url = "jdbc:postgresql://" + serverName + ":" + port;
-    conn = DriverManager.getConnection(url, username, password);
+    String url = buildJdbcUrl();
+    conn = acquireConnection(url);
 
     PreparedStatement pst = conn.prepareStatement("DROP DATABASE " + databaseName);
     pst.executeUpdate();
