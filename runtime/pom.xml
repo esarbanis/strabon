@@ -62,6 +62,11 @@
 
         <dependency>
             <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-sail-h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
             <artifactId>sesame-sail-monetdb</artifactId>
         </dependency>
 
