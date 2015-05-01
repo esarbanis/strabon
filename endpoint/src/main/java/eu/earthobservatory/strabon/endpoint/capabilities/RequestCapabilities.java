@@ -21,7 +21,7 @@ public interface RequestCapabilities {
    * 
    * @return
    */
-  public Parameters getParametersObject();
+  Parameters getParametersObject();
 
   /**
    * Get the accepted values of a service parameter.
@@ -29,7 +29,7 @@ public interface RequestCapabilities {
    * @param param
    * @return
    */
-  public List<String> getAcceptedValues(String param);
+  List<String> getAcceptedValues(String param);
 
   /**
    * Determine wether the given parameter is optional and thus can be omitted.
@@ -37,5 +37,5 @@ public interface RequestCapabilities {
    * @param param
    * @return
    */
-  public boolean isOptional(String param);
+  boolean isOptional(String param);
 }

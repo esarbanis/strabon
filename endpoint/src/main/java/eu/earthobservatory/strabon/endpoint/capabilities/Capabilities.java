@@ -21,14 +21,14 @@ public interface Capabilities {
    * 
    * @return
    */
-  public String getVersion();
+  String getVersion();
 
   /**
    * True when the endpoint supports limiting of results.
    * 
    * @return
    */
-  public boolean supportsLimit();
+  boolean supportsLimit();
 
   /**
    * True when the endpoint supports authentication for update operations
@@ -36,42 +36,42 @@ public interface Capabilities {
    * 
    * @return
    */
-  public boolean supportsAuthentication();
+  boolean supportsAuthentication();
 
   /**
    * True when the endpoint supports querying using SPARQL.
    * 
    * @return
    */
-  public boolean supportsQuerying();
+  boolean supportsQuerying();
 
   /**
    * True when the endpoint supports update queries using SPARQL.
    * 
    * @return
    */
-  public boolean supportsUpdating();
+  boolean supportsUpdating();
 
   /**
    * True when the endpoint supports storing of RDF triples.
    * 
    * @return
    */
-  public boolean supportsStoring();
+  boolean supportsStoring();
 
   /**
    * True when the endpoint supports describe queries using SPARQL.
    * 
    * @return
    */
-  public boolean supportsDescribing();
+  boolean supportsDescribing();
 
   /**
    * True when the endpoint supports browsing of RDF resources.
    * 
    * @return
    */
-  public boolean supportsBrowsing();
+  boolean supportsBrowsing();
 
   /**
    * True when the endpoint supports modification of the connection details used for the database
@@ -79,14 +79,14 @@ public interface Capabilities {
    * 
    * @return
    */
-  public boolean supportsConnectionModification();
+  boolean supportsConnectionModification();
 
   /**
    * Return a list of URIs corresponding to the spatial extension functions that stSPARQL supports.
    * 
    * @return
    */
-  public List<String> getstSPARQLSpatialExtensionFunctions();
+  List<String> getstSPARQLSpatialExtensionFunctions();
 
   // TODO
   // public List<String> getstSPARQLTemporalExtensionFunctions();
@@ -96,7 +96,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public List<String> getGeoSPARQLSpatialExtensionFunctions();
+  List<String> getGeoSPARQLSpatialExtensionFunctions();
 
   /**
    * Return a list of URIs corresponding to the units of measure that can be used in an extension
@@ -104,7 +104,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public List<String> getUnitsOfMeasure();
+  List<String> getUnitsOfMeasure();
 
   /**
    * Returns a {@link RequestCapabilities} instance containing the details for how one can query the
@@ -112,7 +112,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public RequestCapabilities getQueryCapabilities();
+  RequestCapabilities getQueryCapabilities();
 
   /**
    * Returns a {@link RequestCapabilities} instance containing the details for how one can query the
@@ -120,7 +120,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public RequestCapabilities getUpdateCapabilities();
+  RequestCapabilities getUpdateCapabilities();
 
   /**
    * Returns a {@link RequestCapabilities} instance containing the details for how one can query the
@@ -128,7 +128,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public RequestCapabilities getStoreCapabilities();
+  RequestCapabilities getStoreCapabilities();
 
   /**
    * Returns a {@link RequestCapabilities} instance containing the details for how one can query the
@@ -136,7 +136,7 @@ public interface Capabilities {
    * 
    * @return
    */
-  public RequestCapabilities getBrowseCapabilities();
+  RequestCapabilities getBrowseCapabilities();
 
   /**
    * Returns a {@link RequestCapabilities} instance containing the details for how one can query the
@@ -144,5 +144,5 @@ public interface Capabilities {
    * 
    * @return
    */
-  public RequestCapabilities getConnectionCapabilities();
+  RequestCapabilities getConnectionCapabilities();
 }
