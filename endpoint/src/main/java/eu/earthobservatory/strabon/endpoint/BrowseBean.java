@@ -43,11 +43,6 @@ public class BrowseBean extends HttpServlet {
       "stSPARQL Query Results Format or SPARQL query are not set or are invalid.";
 
   /**
-   * The context of the servlet
-   */
-  private ServletContext context;
-
-  /**
    * Wrapper over Strabon
    */
   private StrabonBeanWrapper strabonWrapper;
@@ -56,12 +51,9 @@ public class BrowseBean extends HttpServlet {
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
 
-    // get the context of the servlet
-    context = getServletContext();
-
     // get the context of the application
     WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
+        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
     // the the strabon wrapper
     strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");

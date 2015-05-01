@@ -12,7 +12,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +23,6 @@ public class ChangeConnectionBean extends HttpServlet {
   private static final long serialVersionUID = 2175155067582174020L;
 
   /**
-   * The context of the servlet
-   */
-  private ServletContext context;
-
-  /**
    * Wrapper over Strabon
    */
   private StrabonBeanWrapper strabonWrapper;
@@ -37,12 +31,9 @@ public class ChangeConnectionBean extends HttpServlet {
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
 
-    // get the context of the servlet
-    context = getServletContext();
-
     // get the context of the application
     WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
+        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
     // the the strabon wrapper
     strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");

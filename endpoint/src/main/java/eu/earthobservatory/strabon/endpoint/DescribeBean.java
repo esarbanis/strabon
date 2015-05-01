@@ -59,9 +59,8 @@ public class DescribeBean extends HttpServlet {
     super.init(servletConfig);
 
     // get StrabonWrapper
-    ServletContext context = getServletContext();
     WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
+        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
     strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
@@ -117,11 +116,6 @@ public class DescribeBean extends HttpServlet {
       dispatcher.forward(request, response);
 
     } else {
-      // set the query, format and handle to be selected in the rendered page
-      // request.setAttribute("query", URLDecoder.decode(query, "UTF-8"));
-      // request.setAttribute("format", URLDecoder.decode(reqFormat, "UTF-8"));
-      // request.setAttribute("handle", URLDecoder.decode(handle, "UTF-8"));
-
       if ("download".equals(handle)) { // download as attachment
         ServletOutputStream out = response.getOutputStream();
 
@@ -185,9 +179,6 @@ public class DescribeBean extends HttpServlet {
       out.print(ResponseMessages.getXMLFooter());
 
     } else {
-      // do not decode the SPARQL query (see bugs #65 and #49)
-      // query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
-
       response.setContentType(format.getDefaultMIMEType());
       response.setHeader(
           "Content-Disposition",

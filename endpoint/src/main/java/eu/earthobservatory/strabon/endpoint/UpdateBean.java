@@ -56,9 +56,8 @@ public class UpdateBean extends HttpServlet {
     super.init(servletConfig);
 
     // get strabon wrapper
-    ServletContext context = getServletContext();
     WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
+        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
     strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }

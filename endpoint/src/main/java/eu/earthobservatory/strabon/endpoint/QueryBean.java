@@ -61,16 +61,6 @@ public class QueryBean extends HttpServlet {
   private StrabonBeanWrapper strabonWrapper;
 
   /**
-   * The name of the temporary directory to store KML/KMZ files for presentation in Google Maps
-   */
-  private String tempDirectory;
-
-  /**
-   * The absolute path of the temporary directory
-   */
-  private String basePath;
-
-  /**
    * The name of this web application
    */
   private String appName;
@@ -275,6 +265,8 @@ public class QueryBean extends HttpServlet {
           // the temporary KML/KMZ file to create in the server
           String tempKMLFile = temp + "." + queryResultFormat.getDefaultFileExtension();;
 
+          String tempDirectory;
+          String basePath;
           try {
             Date date = new Date();
 

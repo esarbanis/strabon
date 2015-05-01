@@ -26,11 +26,6 @@ public class CapabilitiesBean extends HttpServlet {
   private static final long serialVersionUID = -8941754144139158506L;
 
   /**
-   * The context of the servlet
-   */
-  private ServletContext context;
-
-  /**
    * The name of this web application
    */
   private String appName;
@@ -44,7 +39,7 @@ public class CapabilitiesBean extends HttpServlet {
     super.init(servletConfig);
 
     // get the context of the servlet
-    context = getServletContext();
+    ServletContext context = getServletContext();
 
     // get the context of the application
     WebApplicationContext applicationContext =
