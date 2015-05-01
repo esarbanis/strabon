@@ -8,6 +8,9 @@
  */
 package eu.earthobservatory.org.StrabonEndpoint;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class StrabonBeanWrapperConfiguration {
   private String label;
   private String bean;
@@ -109,4 +112,54 @@ public class StrabonBeanWrapperConfiguration {
     this.isBean = isBean;
   }
 
+
+  public static StrabonBeanWrapperConfiguration create(List<String> list) {
+      Iterator<String> it = list.iterator();
+
+    StrabonBeanWrapperConfiguration entry = null;
+    while (it.hasNext()) {
+        int items = 0;
+        // Header:label
+        // Bean :label bean
+        // Entry :label bean statement format title handle
+        String param1 = "", param2 = "", param3 = "", param4 = "", param5 = "", param6 = "";
+
+        if (it.hasNext()) {
+          param1 = it.next();
+          items++;
+        }
+        if (it.hasNext()) {
+          param2 = it.next();
+          items++;
+        }
+        if (it.hasNext()) {
+          param3 = it.next();
+          items++;
+        }
+        if (it.hasNext()) {
+          param4 = it.next();
+          items++;
+        }
+        if (it.hasNext()) {
+          param5 = it.next();
+          items++;
+        }
+        if (it.hasNext()) {
+          param6 = it.next();
+          items++;
+        }
+
+        if (items == 1) {
+          // the first element corresponds to the label
+          entry = new StrabonBeanWrapperConfiguration(param1);
+        } else if (items == 2) {
+          // the first element corresponds to the label
+          entry = new StrabonBeanWrapperConfiguration(param1, param2);
+        } else if (items == 6) {
+          entry =
+              new StrabonBeanWrapperConfiguration(param3, param1, param4, param2, param5, param6);
+        }
+    }
+    return entry;
+  }
 }

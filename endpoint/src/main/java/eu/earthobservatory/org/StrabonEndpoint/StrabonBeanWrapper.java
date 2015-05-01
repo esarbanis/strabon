@@ -36,12 +36,8 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
   private static final String FILE_PROTOCOL = "file";
 
-  private String serverName;
-  private int port;
-  private String databaseName;
-  private String user;
-  private String password;
-  private String dbBackend;
+  private final StrabonBeanWrapperDBConfiguration dbConfiguration;
+
   private int maxLimit;
   private boolean loadFromFile;
   private String prefixes;
@@ -50,83 +46,35 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
   private String gChartString = " ";
 
-  private boolean checkForLockTable;
   private List<StrabonBeanWrapperConfiguration> entries;
 
   public StrabonBeanWrapper(String databaseName, String user, String password, int port,
       String serverName, boolean checkForLockTable, String dbBackend, int maxLimit,
       boolean loadFromFile, String prefixes, List<List<String>> args) {
-    this.serverName = serverName;
-    this.port = port;
-    this.databaseName = databaseName;
-    this.user = user;
-    this.password = password;
-    this.checkForLockTable = checkForLockTable;
-    this.dbBackend = dbBackend;
+    this.dbConfiguration = new StrabonBeanWrapperDBConfiguration(serverName, port, databaseName, user, password, checkForLockTable, dbBackend);
     this.maxLimit = maxLimit;
     this.loadFromFile = loadFromFile;
     this.prefixes = prefixes;
+
+    initConfigurationEntries(args);
+
+    init();
+  }
+
+  private void initConfigurationEntries(List<List<String>> args) {
     this.entries = new ArrayList<StrabonBeanWrapperConfiguration>(args.size());
 
     Iterator<List<String>> entryit = args.iterator();
 
+    StrabonBeanWrapperConfiguration entry = null;
     while (entryit.hasNext()) {
       List<String> list = entryit.next();
-      Iterator<String> it = list.iterator();
-
-      while (it.hasNext()) {
-        int items = 0;
-        // Header:label
-        // Bean :label bean
-        // Entry :label bean statement format title handle
-        String param1 = "", param2 = "", param3 = "", param4 = "", param5 = "", param6 = "";
-
-        if (it.hasNext()) {
-          param1 = it.next();
-          items++;
-        }
-        if (it.hasNext()) {
-          param2 = it.next();
-          items++;
-        }
-        if (it.hasNext()) {
-          param3 = it.next();
-          items++;
-        }
-        if (it.hasNext()) {
-          param4 = it.next();
-          items++;
-        }
-        if (it.hasNext()) {
-          param5 = it.next();
-          items++;
-        }
-        if (it.hasNext()) {
-          param6 = it.next();
-          items++;
-        }
-
-        if (items == 1) {
-          // the first element corresponds to the label
-          StrabonBeanWrapperConfiguration entry = new StrabonBeanWrapperConfiguration(param1);
-          this.entries.add(entry);
-        } else if (items == 2) {
-          // the first element corresponds to the label
-          StrabonBeanWrapperConfiguration entry =
-              new StrabonBeanWrapperConfiguration(param1, param2);
-          this.entries.add(entry);
-        } else if (items == 6) {
-          StrabonBeanWrapperConfiguration entry =
-              new StrabonBeanWrapperConfiguration(param3, param1, param4, param2, param5, param6);
-          this.entries.add(entry);
-        }
-
-
-      }
+      entry = StrabonBeanWrapperConfiguration.create(list);
+      this.entries.add(entry);
     }
-
-    init();
   }
+
+
 
   public boolean init() {
     if (this.strabon == null) {
@@ -136,23 +84,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
         // logger.info("[StrabonEndpoint] Connection details:\n" + this.getDetails());
 
         // initialize Strabon according to user preference
-        if (Common.DBBACKEND_MONETDB.equalsIgnoreCase(dbBackend)) {
-          this.strabon =
-              new eu.earthobservatory.runtime.monetdb.Strabon(databaseName, user, password, port,
-                  serverName, checkForLockTable);
-
-        } else {
-          // check whether the user typed wrong database backend and report
-          if (!Common.DBBACKEND_POSTGIS.equalsIgnoreCase(dbBackend)) {
-            logger.warn("[StrabonEndpoint] Unknown database backend \"" + dbBackend
-                + "\". Assuming PostGIS.");
-          }
-
-          // use PostGIS as the default database backend
-          this.strabon =
-              new eu.earthobservatory.runtime.postgis.Strabon(databaseName, user, password, port,
-                  serverName, checkForLockTable);
-        }
+        this.strabon = dbConfiguration.initStrabon();
 
         installSIGTERMHandler(this.strabon);
 
@@ -181,8 +113,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
     // register the handler
     Runtime.getRuntime().addShutdownHook(new Thread() {
 
-      @Override
-      public void run() {
+      @Override public void run() {
         // just call the Strabon.close() method
         strabon.close();
       }
@@ -366,8 +297,10 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
    * 
    * Returns true on success, false otherwise.
    * 
-   * @param source_data
+   * @param src
+   * @param context
    * @param format
+   * @param inference
    * @param url
    * @return
    * @throws MalformedQueryException
@@ -407,53 +340,11 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
   public void setConnectionDetails(String dbname, String username, String password, String port,
       String hostname, String dbengine) {
-    this.databaseName = dbname;
-    this.user = username;
-    this.password = password;
-    try {
-      this.port = Integer.valueOf(port);
-    } catch (NumberFormatException e) {
-      this.port = 5432;
-    }
-    this.serverName = hostname;
-    this.dbBackend = dbengine;
-    this.checkForLockTable = true;
-  }
-
-  public String getUsername() {
-    return user;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public String getDatabaseName() {
-    return databaseName;
-  }
-
-  public String getDBEngine() {
-    return dbBackend;
-  }
-
-  public int getPort() {
-    return port;
-  }
-
-  public String getHostName() {
-    return serverName;
+    dbConfiguration.setConnectionDetails(dbname, username, password, port, hostname, dbengine);
   }
 
   private String getDetails() {
-    String details = "-----------------------------------------\n";
-    details += "host     : " + serverName + "\n";
-    details += "port     : " + port + "\n";
-    details += "database : " + databaseName + "\n";
-    details += "user     : " + user + "\n";
-    details += "password : " + password + "\n";
-    details += "-----------------------------------------\n";
-
-    return details;
+    return dbConfiguration.getDetails();
   }
 
   public List<StrabonBeanWrapperConfiguration> getEntries() {
@@ -545,12 +436,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
 
   public void populateRequest(HttpServletRequest request) {
     // pass the current details of the connection
-    request.setAttribute("username", getUsername());
-    request.setAttribute("password", getPassword());
-    request.setAttribute("dbname", getDatabaseName());
-    request.setAttribute("hostname", getHostName());
-    request.setAttribute("port", getPort());
-    request.setAttribute("dbengine", getDBEngine());
+    dbConfiguration.populateWithConnectionDetails(request);
 
     // pass the other parameters as well
     request.setAttribute("query", request.getParameter("query"));
