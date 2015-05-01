@@ -69,11 +69,16 @@ public class DescribeBean extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    doPost(request, response);
+    process(request, response);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    process(request, response);
+  }
+
+  private void process(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     request.setCharacterEncoding("UTF-8");
 

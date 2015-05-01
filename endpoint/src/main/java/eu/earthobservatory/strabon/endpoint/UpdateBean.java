@@ -51,11 +51,6 @@ public class UpdateBean extends HttpServlet {
     return false;
   }
 
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    doPost(request, response);
-  }
-
   @Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
@@ -68,9 +63,19 @@ public class UpdateBean extends HttpServlet {
     strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    process(request, response);
+  }
+
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    process(request, response);
+  }
+
+  private void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     boolean authorized;
 
     request.setCharacterEncoding("UTF-8");

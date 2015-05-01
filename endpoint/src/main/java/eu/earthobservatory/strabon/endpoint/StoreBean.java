@@ -88,23 +88,17 @@ public class StoreBean extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    doPost(request, response);
-  }
-
-  private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
-    // check whether we read from INPUT or URL
-    boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false : true;
-
-    // return "data" value accordingly, but do not decode the RDF input data (see bugs #65 and #49)
-    // return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA),
-    // "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
-    return input ? request.getParameter(Common.PARAM_DATA) : request
-        .getParameter(Common.PARAM_DATA_URL);
+    process(request, response);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    process(request, response);
+  }
+
+  private void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     request.setCharacterEncoding("UTF-8");
 
     boolean authorized;
@@ -132,6 +126,17 @@ public class StoreBean extends HttpServlet {
         processRequest(request, response);
       }
     }
+  }
+
+  private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
+    // check whether we read from INPUT or URL
+    boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false : true;
+
+    // return "data" value accordingly, but do not decode the RDF input data (see bugs #65 and #49)
+    // return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA),
+    // "UTF-8"):request.getParameter(Common.PARAM_DATA_URL);
+    return input ? request.getParameter(Common.PARAM_DATA) : request
+        .getParameter(Common.PARAM_DATA_URL);
   }
 
   /**

@@ -50,10 +50,15 @@ public class ChangeConnectionBean extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    doPost(request, response);
+    process(request, response);
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    process(request, response);
+  }
+
+  private void process(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     request.setCharacterEncoding("UTF-8");
     strabonWrapper.populateRequest(request);
