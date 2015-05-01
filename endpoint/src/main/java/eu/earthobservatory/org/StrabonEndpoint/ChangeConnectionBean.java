@@ -11,7 +11,6 @@ package eu.earthobservatory.org.StrabonEndpoint;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -57,25 +56,12 @@ public class ChangeConnectionBean extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     request.setCharacterEncoding("UTF-8");
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/connection.jsp");
-
-    // pass the current details of the connection
-    request.setAttribute("username", strabonWrapper.getUsername());
-    request.setAttribute("password", strabonWrapper.getPassword());
-    request.setAttribute("dbname", strabonWrapper.getDatabaseName());
-    request.setAttribute("hostname", strabonWrapper.getHostName());
-    request.setAttribute("port", strabonWrapper.getPort());
-    request.setAttribute("dbengine", strabonWrapper.getDBEngine());
-
-    // pass the other parameters as well
-    request.setAttribute("query", request.getParameter("query"));
-    request.setAttribute("format", request.getParameter("format"));
-    request.setAttribute("handle", request.getParameter("handle"));
+    strabonWrapper.populateRequest(request);
 
     // close the currently active connection
     strabonWrapper.closeConnection();
 
     // forward the request
-    dispatcher.forward(request, response);
+    request.getRequestDispatcher("/connection.jsp").forward(request, response);
   }
 }

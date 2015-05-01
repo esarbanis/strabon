@@ -18,6 +18,7 @@ import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -540,5 +541,20 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
       return inputURI.substring(index, endIndex);
 
     }
+  }
+
+  public void populateRequest(HttpServletRequest request) {
+    // pass the current details of the connection
+    request.setAttribute("username", getUsername());
+    request.setAttribute("password", getPassword());
+    request.setAttribute("dbname", getDatabaseName());
+    request.setAttribute("hostname", getHostName());
+    request.setAttribute("port", getPort());
+    request.setAttribute("dbengine", getDBEngine());
+
+    // pass the other parameters as well
+    request.setAttribute("query", request.getParameter("query"));
+    request.setAttribute("format", request.getParameter("format"));
+    request.setAttribute("handle", request.getParameter("handle"));
   }
 }
