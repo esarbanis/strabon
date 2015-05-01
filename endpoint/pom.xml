@@ -127,69 +127,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-				<configuration>
-					<webXml>${basedir}/WebContent/WEB-INF/web.xml</webXml>
-					<webResources>
-						<resource>
-							<targetPath>/WEB-INF</targetPath>
-							<directory>${basedir}/WebContent/WEB-INF</directory>
-							<includes>
-								<include>lib/**</include>
-							</includes>
-						</resource>
-
-						<resource>
-							<targetPath>/WEB-INF</targetPath>
-							<directory>${basedir}</directory>
-							<includes>
-								<include>wsdl/**</include>
-							</includes>
-						</resource>
-
-						<resource>
-							<targetPath>/WEB-INF</targetPath>
-							<directory>${basedir}/WebContent/WEB-INF</directory>
-							<includes>
-								<include>beans.xml</include>
-								<include>connection.properties</include>
-								<include>credentials.properties</include>
-							</includes>
-						</resource>
-
-						<resource>
-							<targetPath>/WEB-INF/classes</targetPath>
-							<directory>${basedir}/src</directory>
-							<includes>
-								<include>log4j.properties</include>
-							</includes>
-						</resource>
-
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${basedir}/WebContent</directory>
-							<includes>
-								<include>style.css</include>
-								<include>style-menu.css</include>
-								<include>store.jsp</include>
-								<include>query.jsp</include>
-								<include>describe.jsp</include>
-								<include>connection.jsp</include>
-								<include>connection.jsp</include>
-								<include>browse.jsp</include>
-								<include>header.html</include>
-							</includes>
-						</resource>
-
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${basedir}/WebContent</directory>
-							<includes>
-								<include>images/**</include>
-								<include>js/**</include>
-							</includes>
-						</resource>
-					</webResources>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
