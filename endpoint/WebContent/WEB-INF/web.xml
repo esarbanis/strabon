@@ -32,7 +32,7 @@
 	<servlet>
 		<display-name>Query</display-name>
 		<servlet-name>Query</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.QueryBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.QueryBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -43,7 +43,7 @@
 	<servlet>
 		<display-name>Store</display-name>
 		<servlet-name>Store</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.StoreBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.StoreBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -54,7 +54,7 @@
 	<servlet>
 		<display-name>Update</display-name>
 		<servlet-name>Update</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.UpdateBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.UpdateBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -65,7 +65,7 @@
     <servlet>
 		<display-name>Describe</display-name>
 		<servlet-name>Describe</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.DescribeBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.DescribeBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -76,7 +76,7 @@
 	<servlet>
 		<display-name>DBConnect</display-name>
 		<servlet-name>DBConnect</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.ConnectionBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.ConnectionBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -87,7 +87,7 @@
 	<servlet>
 		<display-name>ChangeConnection</display-name>
 		<servlet-name>ChangeConnection</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.ChangeConnectionBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.ChangeConnectionBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -98,7 +98,7 @@
 	<servlet>
 		<display-name>Browse</display-name>
 		<servlet-name>Browse</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.BrowseBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.BrowseBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -109,7 +109,7 @@
 	<servlet>
 		<display-name>Capabilities</display-name>
 		<servlet-name>Capabilities</servlet-name>
-		<servlet-class>eu.earthobservatory.org.StrabonEndpoint.capabilities.CapabilitiesBean</servlet-class>
+		<servlet-class>eu.earthobservatory.strabon.endpoint.capabilities.CapabilitiesBean</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

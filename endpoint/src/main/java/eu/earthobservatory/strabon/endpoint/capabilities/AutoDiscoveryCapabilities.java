@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint.capabilities;
+package eu.earthobservatory.strabon.endpoint.capabilities;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -32,8 +32,7 @@ public class AutoDiscoveryCapabilities implements Capabilities {
 
   private static Logger logger =
       LoggerFactory
-          .getLogger(
-              eu.earthobservatory.org.StrabonEndpoint.capabilities.AutoDiscoveryCapabilities.class);
+          .getLogger(AutoDiscoveryCapabilities.class);
 
   /**
    * The host of the endpoint to discovery its capabilities

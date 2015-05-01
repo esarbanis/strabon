@@ -1,7 +1,7 @@
-<%@page import="eu.earthobservatory.org.StrabonEndpoint.Common"%>
+<%@page import="eu.earthobservatory.strabon.endpoint.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"%>
-<%@page import="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapperConfiguration"%>
+<%@page import="eu.earthobservatory.strabon.endpoint.StrabonBeanWrapper"%>
+<%@page import="eu.earthobservatory.strabon.endpoint.StrabonBeanWrapperConfiguration"%>
 <%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@page import="java.net.URLEncoder"%>

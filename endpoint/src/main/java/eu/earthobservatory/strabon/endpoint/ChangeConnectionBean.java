@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;

@@ -12,7 +12,7 @@
 		</property>
 	</bean>
   
-	<bean id="capsBean" class="eu.earthobservatory.org.StrabonEndpoint.capabilities.CapabilitiesDelegateBean" destroy-method="destroy">
+	<bean id="capsBean" class="eu.earthobservatory.strabon.endpoint.capabilities.CapabilitiesDelegateBean" destroy-method="destroy">
 		<!-- specify which implementation of the Capabilities interface shall be used -->
 		<!-- true : AutoDiscoveryCapabilities -->
 		<!-- false: EndpointCapabilities -->
@@ -23,7 +23,7 @@
 	
     <bean
         id="strabonBean"
-        class="eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper"
+        class="eu.earthobservatory.strabon.endpoint.StrabonBeanWrapper"
         destroy-method="destroy">
 
         <constructor-arg type="java.lang.String" >

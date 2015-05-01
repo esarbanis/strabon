@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import java.util.Iterator;
 import java.util.List;

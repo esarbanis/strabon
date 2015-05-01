@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint.capabilities;
+package eu.earthobservatory.strabon.endpoint.capabilities;
 
 import java.util.HashSet;
 import java.util.Set;

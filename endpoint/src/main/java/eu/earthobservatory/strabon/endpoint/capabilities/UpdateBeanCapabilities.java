@@ -6,22 +6,22 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint.capabilities;
+package eu.earthobservatory.strabon.endpoint.capabilities;
 
 import java.util.List;
 
 
-public class QueryBeanCapabilities implements RequestCapabilities {
+public class UpdateBeanCapabilities implements RequestCapabilities {
 
-  private static QueryBeanCapabilities caps;
+  private static UpdateBeanCapabilities caps;
 
-  protected QueryBeanCapabilities() {
+  protected UpdateBeanCapabilities() {
 
   }
 
-  public static synchronized QueryBeanCapabilities getInstance() {
+  public static synchronized UpdateBeanCapabilities getInstance() {
     if (caps == null) {
-      caps = new QueryBeanCapabilities();
+      caps = new UpdateBeanCapabilities();
     }
 
     return caps;
@@ -41,5 +41,4 @@ public class QueryBeanCapabilities implements RequestCapabilities {
   public boolean isOptional(String param) {
     return false;
   }
-
 }

@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import org.apache.commons.codec.binary.Base64;
 

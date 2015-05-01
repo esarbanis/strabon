@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class ConnectionBean extends HttpServlet {
   private static final long serialVersionUID = 2237815345608023368L;
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.ConnectionBean.class);
+      .getLogger(ConnectionBean.class);
 
   /**
    * The filename of the connection.properties file

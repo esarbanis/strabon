@@ -6,22 +6,22 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint.capabilities;
+package eu.earthobservatory.strabon.endpoint.capabilities;
 
 import java.util.List;
 
 
-public class ConnectionBeanCapabilities implements RequestCapabilities {
+public class StoreBeanCapabilities implements RequestCapabilities {
 
-  private static ConnectionBeanCapabilities caps;
+  private static StoreBeanCapabilities caps;
 
-  protected ConnectionBeanCapabilities() {
+  protected StoreBeanCapabilities() {
 
   }
 
-  public static synchronized ConnectionBeanCapabilities getInstance() {
+  public static synchronized StoreBeanCapabilities getInstance() {
     if (caps == null) {
-      caps = new ConnectionBeanCapabilities();
+      caps = new StoreBeanCapabilities();
     }
 
     return caps;

@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import eu.earthobservatory.utils.Format;
 import org.apache.commons.io.FileUtils;
@@ -36,7 +36,7 @@ public class QueryBean extends HttpServlet {
   private static final long serialVersionUID = -378175118289907707L;
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.QueryBean.class);
+      .getLogger(QueryBean.class);
 
   /**
    * Attributes carrying values to be rendered by the query.jsp file
@@ -108,13 +108,7 @@ public class QueryBean extends HttpServlet {
     if (strabonWrapper.getStrabon() == null) {
       RequestDispatcher dispatcher = request.getRequestDispatcher("/connection.jsp");
 
-      // pass the current details of the connection
-      request.setAttribute("username", strabonWrapper.getUsername());
-      request.setAttribute("password", strabonWrapper.getPassword());
-      request.setAttribute("dbname", strabonWrapper.getDatabaseName());
-      request.setAttribute("hostname", strabonWrapper.getHostName());
-      request.setAttribute("port", strabonWrapper.getPort());
-      request.setAttribute("dbengine", strabonWrapper.getDBEngine());
+      strabonWrapper.populateRequest(request);
 
       // pass the other parameters as well
       request.setAttribute("query", request.getParameter("query"));

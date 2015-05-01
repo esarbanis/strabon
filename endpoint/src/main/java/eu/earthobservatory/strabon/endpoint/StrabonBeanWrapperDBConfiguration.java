@@ -1,4 +1,4 @@
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import eu.earthobservatory.runtime.generaldb.Strabon;
 import org.slf4j.Logger;

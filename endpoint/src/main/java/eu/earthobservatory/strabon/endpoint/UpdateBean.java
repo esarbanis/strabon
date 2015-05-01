@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import org.openrdf.query.MalformedQueryException;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class UpdateBean extends HttpServlet {
   private static final long serialVersionUID = -633279376188071670L;
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.UpdateBean.class);
+      .getLogger(UpdateBean.class);
 
   private StrabonBeanWrapper strabonWrapper;
 

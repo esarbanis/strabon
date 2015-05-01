@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import eu.earthobservatory.runtime.generaldb.InvalidDatasetFormatFault;
 import eu.earthobservatory.runtime.generaldb.Strabon;
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class StrabonBeanWrapper implements org.springframework.beans.factory.DisposableBean {
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.StrabonBeanWrapper.class);
+      .getLogger(StrabonBeanWrapper.class);
 
   private static final String FILE_PROTOCOL = "file";
 

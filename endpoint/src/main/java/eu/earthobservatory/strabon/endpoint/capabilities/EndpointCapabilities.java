@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint.capabilities;
+package eu.earthobservatory.strabon.endpoint.capabilities;
 
 import eu.earthobservatory.constants.GeoConstants;
 import eu.earthobservatory.constants.OGCConstants;
@@ -26,7 +26,7 @@ import java.util.Properties;
 public class EndpointCapabilities implements Capabilities {
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.capabilities.EndpointCapabilities.class);
+      .getLogger(EndpointCapabilities.class);
 
   private static final String VERSION_PROPERTIES_FILE = "/version.properties";
   private static final Properties PROPERTIES = new Properties();

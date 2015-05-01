@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -32,7 +32,7 @@ public class StoreBean extends HttpServlet {
   private static final long serialVersionUID = -7541662133934957148L;
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.StoreBean.class);
+      .getLogger(StoreBean.class);
 
   /**
    * Error/Info parameters used in the store.jsp file

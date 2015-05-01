@@ -6,7 +6,7 @@
  * 
  * http://www.strabon.di.uoa.gr/
  */
-package eu.earthobservatory.org.StrabonEndpoint;
+package eu.earthobservatory.strabon.endpoint;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openrdf.query.resultio.TupleQueryResultFormat;
@@ -28,7 +28,7 @@ public class BrowseBean extends HttpServlet {
   private static final long serialVersionUID = -378175118289907707L;
 
   private static Logger logger = LoggerFactory
-      .getLogger(eu.earthobservatory.org.StrabonEndpoint.BrowseBean.class);
+      .getLogger(BrowseBean.class);
 
   /**
    * Attributes carrying values to be rendered by the browse.jsp file
@@ -79,23 +79,10 @@ public class BrowseBean extends HttpServlet {
 
     // check connection details
     if (strabonWrapper.getStrabon() == null) {
-      RequestDispatcher dispatcher = request.getRequestDispatcher("/connection.jsp");
-
-      // pass the current details of the connection
-      request.setAttribute("username", strabonWrapper.getUsername());
-      request.setAttribute("password", strabonWrapper.getPassword());
-      request.setAttribute("dbname", strabonWrapper.getDatabaseName());
-      request.setAttribute("hostname", strabonWrapper.getHostName());
-      request.setAttribute("port", strabonWrapper.getPort());
-      request.setAttribute("dbengine", strabonWrapper.getDBEngine());
-
-      // pass the other parameters as well
-      request.setAttribute("query", request.getParameter("query"));
-      request.setAttribute("format", request.getParameter("format"));
-      request.setAttribute("handle", request.getParameter("handle"));
+      strabonWrapper.populateRequest(request);
 
       // forward the request
-      dispatcher.forward(request, response);
+      request.getRequestDispatcher("/connection.jsp").forward(request, response);
 
     } else {
 
