@@ -89,7 +89,7 @@ public class Common {
    * 
    * @return
    */
-  public static final String getHTMLFormat() {
+  public static String getHTMLFormat() {
     return stSPARQLQueryResultFormat.HTML.getName();
   }
 }
