@@ -130,7 +130,7 @@ public class StoreBean extends HttpServlet {
 
   private String getData(HttpServletRequest request) throws UnsupportedEncodingException {
     // check whether we read from INPUT or URL
-    boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false : true;
+    boolean input = (request.getParameter(Common.SUBMIT_URL) == null);
 
     // return "data" value accordingly, but do not decode the RDF input data (see bugs #65 and #49)
     // return input ? URLDecoder.decode(request.getParameter(Common.PARAM_DATA),
@@ -151,7 +151,7 @@ public class StoreBean extends HttpServlet {
       throws ServletException, IOException {
 
     // check whether we read from INPUT or URL
-    boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false : true;
+    boolean input = (request.getParameter(Common.SUBMIT_URL) == null);
 
     // get the dispatcher for forwarding the rendering of the response
     RequestDispatcher dispatcher = request.getRequestDispatcher("store.jsp");
@@ -206,7 +206,7 @@ public class StoreBean extends HttpServlet {
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     // check whether we read from INPUT or URL
-    boolean input = (request.getParameter(Common.SUBMIT_URL) != null) ? false : true;
+    boolean input = (request.getParameter(Common.SUBMIT_URL) == null);
 
     // graph
     String graph =
