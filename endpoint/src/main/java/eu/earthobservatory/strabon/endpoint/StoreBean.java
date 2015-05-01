@@ -59,9 +59,8 @@ public class StoreBean extends HttpServlet {
 
   // Check for localHost. Works with ipV4 and ipV6
   public static boolean isLocalClient(HttpServletRequest request) {
-    HttpServletRequest testRequest = request;
     try {
-      InetAddress remote = InetAddress.getByName(testRequest.getRemoteAddr());
+      InetAddress remote = InetAddress.getByName(request.getRemoteAddr());
       if (remote.isLoopbackAddress()) {
         return true;
       }
