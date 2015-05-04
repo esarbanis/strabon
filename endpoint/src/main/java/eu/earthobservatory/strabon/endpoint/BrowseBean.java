@@ -62,8 +62,8 @@ public class BrowseBean extends QueryProcessingServlet {
     request.setCharacterEncoding("UTF-8");
 
     // check connection details
-    if (getStabonWrapper().getStrabon() == null) {
-      getStabonWrapper().populateRequest(request);
+    if (!isStrabonInitialized()) {
+      populateRequest(request);
 
       // forward the request
       request.getRequestDispatcher("/connection.jsp").forward(request, response);
@@ -94,7 +94,7 @@ public class BrowseBean extends QueryProcessingServlet {
 
     response.setContentType(format.getDefaultMIMEType());
     try {
-      getStabonWrapper().query(query, format.getName(), out);
+      query(query, format.getName(), out);
       response.setStatus(HttpServletResponse.SC_OK);
 
     } catch (Exception e) {
@@ -138,7 +138,7 @@ public class BrowseBean extends QueryProcessingServlet {
       request.setAttribute("resource", request.getParameter("resource"));
 
       try {
-        getStabonWrapper().query(query, format, bos);
+        query(query, format, bos);
         if (format.equals(Common.getHTMLFormat())) {
           request.setAttribute(RESPONSE, bos.toString());
         } else {

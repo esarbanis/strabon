@@ -53,11 +53,6 @@ public class QueryBean extends QueryProcessingServlet {
   private ServletContext context;
 
   /**
-   * Wrapper over Strabon
-   */
-  private StrabonBeanWrapper strabonWrapper;
-
-  /**
    * The name of this web application
    */
   private String appName;
@@ -68,8 +63,6 @@ public class QueryBean extends QueryProcessingServlet {
 
     // get the context of the servlet
     context = getServletContext();
-
-    strabonWrapper = StrabonBeanWrapper.resolve(context);
 
     // get the name of this web application
     appName = context.getContextPath().replace("/", "");
@@ -91,10 +84,10 @@ public class QueryBean extends QueryProcessingServlet {
     request.setCharacterEncoding("UTF-8");
 
     // check connection details
-    if (strabonWrapper.getStrabon() == null) {
+    if (!isStrabonInitialized()) {
       RequestDispatcher dispatcher = request.getRequestDispatcher("/connection.jsp");
 
-      strabonWrapper.populateRequest(request);
+      populateRequest(request);
 
       // pass the other parameters as well
       request.setAttribute("query", request.getParameter("query"));
@@ -143,8 +136,8 @@ public class QueryBean extends QueryProcessingServlet {
     response.setContentType(format.getDefaultMIMEType());
 
     try {
-      query = strabonWrapper.addLimit(query, maxLimit);
-      strabonWrapper.query(query, format.getName(), out);
+      query = addLimit(query, maxLimit);
+      query(query, format.getName(), out);
       response.setStatus(HttpServletResponse.SC_OK);
 
     } catch (Exception e) {
@@ -197,7 +190,7 @@ public class QueryBean extends QueryProcessingServlet {
         dispatcher.forward(request, response);
 
       } else {
-        query = strabonWrapper.addLimit(query, maxLimit);
+        query = addLimit(query, maxLimit);
         if ("download".equals(handle)) { // download as attachment
           ServletOutputStream out = response.getOutputStream();
 
@@ -208,7 +201,7 @@ public class QueryBean extends QueryProcessingServlet {
                       + "; " + queryResultFormat.getCharset());
 
           try {
-            strabonWrapper.query(query, format, out);
+            query(query, format, out);
             response.setStatus(HttpServletResponse.SC_OK);
 
           } catch (Exception e) {
@@ -277,7 +270,7 @@ public class QueryBean extends QueryProcessingServlet {
             try {
               // query and write the result in the temporary KML/KMZ file
               FileOutputStream fos = new FileOutputStream(basePath + tempKMLFile);
-              strabonWrapper.query(query, format, fos);
+              query(query, format, fos);
               fos.close();
 
               if (request.getParameter("handle").toString().contains("timemap")) {
@@ -309,14 +302,14 @@ public class QueryBean extends QueryProcessingServlet {
           ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
           try {
-            strabonWrapper.query(query, format, bos);
+            query(query, format, bos);
             if (format.equals(Common.getHTMLFormat())) {
               request.setAttribute(RESPONSE, bos.toString());
             } else if (format.equals(Format.PIECHART.toString())
                 || format.equals(Format.AREACHART.toString())
                 || format.equals(Format.COLUMNCHART.toString())) {
               request.setAttribute("format", "CHART");
-              request.setAttribute(RESPONSE, strabonWrapper.getgChartString());
+              request.setAttribute(RESPONSE, getgChartString());
             }
 
             else {

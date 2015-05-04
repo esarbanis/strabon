@@ -108,10 +108,9 @@ public class ConnectionBean extends StrabonAwareServlet {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     } else {
       // set new connection details
-      getStabonWrapper().setConnectionDetails(request.getParameter("dbname"),
-          request.getParameter("username"), request.getParameter("password"),
-          request.getParameter("port"), request.getParameter("hostname"),
-          request.getParameter("dbengine"));
+      setConnectionDetails(request.getParameter("dbname"), request.getParameter("username"),
+          request.getParameter("password"), request.getParameter("port"),
+          request.getParameter("hostname"), request.getParameter("dbengine"));
 
       // pass the query, format, and the handle that had been issued to the dispatcher
       request.setAttribute("query", request.getAttribute("query"));
@@ -125,7 +124,7 @@ public class ConnectionBean extends StrabonAwareServlet {
       }
 
       // establish connection
-      if (getStabonWrapper().init()) { // successfully connected, go to query.jsp
+      if (atemptConnection()) { // successfully connected, go to query.jsp
         if (logger.isInfoEnabled()) {
           logger.info("[StrabonEndpoint.ConnectionBean] Connection with database established.");
           logger.info("[StrabonEndpoint.ConnectionBean] Saving new connection details in {}.",

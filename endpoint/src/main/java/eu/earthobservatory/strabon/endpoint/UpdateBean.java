@@ -107,8 +107,7 @@ public class UpdateBean extends StrabonAwareServlet {
       // decode URL
       query = URLDecoder.decode(query, "UTF-8");
 
-      getStabonWrapper().getStrabon()
-          .update(query, getStabonWrapper().getStrabon().getSailRepoConnection());
+     update(query);
       response.setStatus(HttpServletResponse.SC_OK);
       answer = "true";
 
@@ -136,8 +135,7 @@ public class UpdateBean extends StrabonAwareServlet {
       query = URLDecoder.decode(query, "UTF-8");
 
       try {
-        getStabonWrapper().getStrabon().update(query,
-            getStabonWrapper().getStrabon().getSailRepoConnection());
+        update(query);
         request.setAttribute("info", "Update executed succesfully.");
 
       } catch (MalformedQueryException e) {

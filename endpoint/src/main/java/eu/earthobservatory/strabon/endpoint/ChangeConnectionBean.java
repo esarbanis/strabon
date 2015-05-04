@@ -36,10 +36,10 @@ public class ChangeConnectionBean extends StrabonAwareServlet {
   private void process(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     request.setCharacterEncoding("UTF-8");
-    getStabonWrapper().populateRequest(request);
+    populateRequest(request);
 
     // close the currently active connection
-    getStabonWrapper().closeConnection();
+    closeConnection();
 
     // forward the request
     request.getRequestDispatcher("/connection.jsp").forward(request, response);

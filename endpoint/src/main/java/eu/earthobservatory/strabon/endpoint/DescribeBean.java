@@ -10,8 +10,6 @@ package eu.earthobservatory.strabon.endpoint;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openrdf.rio.RDFFormat;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -116,7 +114,7 @@ public class DescribeBean extends QueryProcessingServlet {
                 + rdfFormat.getCharset());
 
         try {
-          getStabonWrapper().describe(query, format, out);
+          describe(query, format, out);
           response.setStatus(HttpServletResponse.SC_OK);
 
         } catch (Exception e) {
@@ -133,7 +131,7 @@ public class DescribeBean extends QueryProcessingServlet {
         try {
           ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-          getStabonWrapper().describe(query, format, bos);
+          describe(query, format, bos);
 
           request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 
@@ -162,7 +160,7 @@ public class DescribeBean extends QueryProcessingServlet {
             + format.getCharset());
 
     try {
-      getStabonWrapper().describe(query, format.getName(), out);
+      describe(query, format.getName(), out);
       response.setStatus(HttpServletResponse.SC_OK);
 
     } catch (Exception e) {

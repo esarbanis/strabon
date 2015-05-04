@@ -170,7 +170,7 @@ public class StoreBean extends StrabonAwareServlet {
 
       // store data
       try {
-        getStabonWrapper().store(data, graph, format.getName(), inference, !input);
+        store(data, graph, format.getName(), inference, !input);
 
         // store was successful, return the respective message
         request.setAttribute(INFO, STORE_OK);
@@ -225,7 +225,7 @@ public class StoreBean extends StrabonAwareServlet {
     // store data
     try {
 
-      getStabonWrapper().store(data, graph, format.getName(), inference, !input);
+      store(data, graph, format.getName(), inference, !input);
 
       // store was successful, return the respective message
       response.sendError(HttpServletResponse.SC_OK);
