@@ -11,28 +11,24 @@ package eu.earthobservatory.strabon.endpoint;
 import org.openrdf.query.MalformedQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
+import java.net.UnknownHostException;
 
-public class UpdateBean extends HttpServlet {
+public class UpdateBean extends StrabonAwareServlet {
 
   private static final long serialVersionUID = -633279376188071670L;
 
   private static Logger logger = LoggerFactory
       .getLogger(UpdateBean.class);
-
-  private StrabonBeanWrapper strabonWrapper;
 
   // Check for localHost. Works with ipV4 and ipV6
   public static boolean isLocalClient(HttpServletRequest request) {
@@ -45,7 +41,8 @@ public class UpdateBean extends HttpServlet {
       String localAddress = localHost.getHostAddress();
       String remoteAddress = remote.getHostAddress();
       return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress));
-    } catch (Exception e) {
+    } catch (UnknownHostException e) {
+      logger.warn(e.getMessage());
     }
     return false;
   }
@@ -53,12 +50,6 @@ public class UpdateBean extends HttpServlet {
   @Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-
-    // get strabon wrapper
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -116,8 +107,8 @@ public class UpdateBean extends HttpServlet {
       // decode URL
       query = URLDecoder.decode(query, "UTF-8");
 
-      strabonWrapper.getStrabon()
-          .update(query, strabonWrapper.getStrabon().getSailRepoConnection());
+      getStabonWrapper().getStrabon()
+          .update(query, getStabonWrapper().getStrabon().getSailRepoConnection());
       response.setStatus(HttpServletResponse.SC_OK);
       answer = "true";
 
@@ -145,8 +136,8 @@ public class UpdateBean extends HttpServlet {
       query = URLDecoder.decode(query, "UTF-8");
 
       try {
-        strabonWrapper.getStrabon().update(query,
-            strabonWrapper.getStrabon().getSailRepoConnection());
+        getStabonWrapper().getStrabon().update(query,
+            getStabonWrapper().getStrabon().getSailRepoConnection());
         request.setAttribute("info", "Update executed succesfully.");
 
       } catch (MalformedQueryException e) {

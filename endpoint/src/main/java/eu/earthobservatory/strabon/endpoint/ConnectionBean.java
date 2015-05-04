@@ -11,14 +11,11 @@ package eu.earthobservatory.strabon.endpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -28,7 +25,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Properties;
 
-public class ConnectionBean extends HttpServlet {
+public class ConnectionBean extends StrabonAwareServlet {
 
   private static final long serialVersionUID = 2237815345608023368L;
 
@@ -44,11 +41,6 @@ public class ConnectionBean extends HttpServlet {
    * Lock for updating connection.properties file
    */
   private static Object lock;
-
-  /**
-   * Wrapper over Strabon
-   */
-  private StrabonBeanWrapper strabonWrapper;
 
   /**
    * The context of the servlet
@@ -77,13 +69,6 @@ public class ConnectionBean extends HttpServlet {
 
     // get the context of the servlet
     context = getServletContext();
-
-    // get the context of the application
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
-
-    // the strabon wrapper
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
 
     // initialize lock
     lock = new Object();
@@ -123,7 +108,7 @@ public class ConnectionBean extends HttpServlet {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     } else {
       // set new connection details
-      strabonWrapper.setConnectionDetails(request.getParameter("dbname"),
+      getStabonWrapper().setConnectionDetails(request.getParameter("dbname"),
           request.getParameter("username"), request.getParameter("password"),
           request.getParameter("port"), request.getParameter("hostname"),
           request.getParameter("dbengine"));
@@ -140,7 +125,7 @@ public class ConnectionBean extends HttpServlet {
       }
 
       // establish connection
-      if (strabonWrapper.init()) { // successfully connected, go to query.jsp
+      if (getStabonWrapper().init()) { // successfully connected, go to query.jsp
         if (logger.isInfoEnabled()) {
           logger.info("[StrabonEndpoint.ConnectionBean] Connection with database established.");
           logger.info("[StrabonEndpoint.ConnectionBean] Saving new connection details in {}.",

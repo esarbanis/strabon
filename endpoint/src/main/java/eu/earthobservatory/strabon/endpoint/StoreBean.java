@@ -12,14 +12,11 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 
-public class StoreBean extends HttpServlet {
+public class StoreBean extends StrabonAwareServlet {
 
   private static final long serialVersionUID = -7541662133934957148L;
 
@@ -46,11 +43,6 @@ public class StoreBean extends HttpServlet {
   private static final String STORE_ERROR = "An error occurred while storing input data!";
   private static final String PARAM_ERROR = "RDF format or input data are not set or are invalid!";
   private static final String STORE_OK = "Data stored successfully!";
-
-  /**
-   * Strabon wrapper
-   */
-  private StrabonBeanWrapper strabon;
 
   /**
    * The context of the servlet
@@ -79,9 +71,6 @@ public class StoreBean extends HttpServlet {
 
     // get strabon wrapper
     context = getServletContext();
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
-    strabon = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 
   @Override
@@ -181,7 +170,7 @@ public class StoreBean extends HttpServlet {
 
       // store data
       try {
-        strabon.store(data, graph, format.getName(), inference, !input);
+        getStabonWrapper().store(data, graph, format.getName(), inference, !input);
 
         // store was successful, return the respective message
         request.setAttribute(INFO, STORE_OK);
@@ -236,7 +225,7 @@ public class StoreBean extends HttpServlet {
     // store data
     try {
 
-      strabon.store(data, graph, format.getName(), inference, !input);
+      getStabonWrapper().store(data, graph, format.getName(), inference, !input);
 
       // store was successful, return the respective message
       response.sendError(HttpServletResponse.SC_OK);

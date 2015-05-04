@@ -16,8 +16,6 @@ import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -71,13 +69,7 @@ public class QueryBean extends QueryProcessingServlet {
     // get the context of the servlet
     context = getServletContext();
 
-    // get the context of the application
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(context);
-
-    // the the strabon wrapper
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-
+    strabonWrapper = StrabonBeanWrapper.resolve(context);
 
     // get the name of this web application
     appName = context.getContextPath().replace("/", "");

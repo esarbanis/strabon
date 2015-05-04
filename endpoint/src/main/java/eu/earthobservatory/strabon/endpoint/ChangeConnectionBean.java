@@ -8,35 +8,19 @@
  */
 package eu.earthobservatory.strabon.endpoint;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ChangeConnectionBean extends HttpServlet {
+public class ChangeConnectionBean extends StrabonAwareServlet {
 
   private static final long serialVersionUID = 2175155067582174020L;
-
-  /**
-   * Wrapper over Strabon
-   */
-  private StrabonBeanWrapper strabonWrapper;
 
 
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-
-    // get the context of the application
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-    // the the strabon wrapper
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,10 +36,10 @@ public class ChangeConnectionBean extends HttpServlet {
   private void process(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     request.setCharacterEncoding("UTF-8");
-    strabonWrapper.populateRequest(request);
+    getStabonWrapper().populateRequest(request);
 
     // close the currently active connection
-    strabonWrapper.closeConnection();
+    getStabonWrapper().closeConnection();
 
     // forward the request
     request.getRequestDispatcher("/connection.jsp").forward(request, response);

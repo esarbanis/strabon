@@ -51,17 +51,9 @@ public class DescribeBean extends QueryProcessingServlet {
   private static final String PARAM_ERROR =
       "RDF format or SPARQL query are not set or are invalid.";
 
-  private StrabonBeanWrapper strabonWrapper;
-
   @Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-
-    // get StrabonWrapper
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 
   @Override
@@ -124,7 +116,7 @@ public class DescribeBean extends QueryProcessingServlet {
                 + rdfFormat.getCharset());
 
         try {
-          strabonWrapper.describe(query, format, out);
+          getStabonWrapper().describe(query, format, out);
           response.setStatus(HttpServletResponse.SC_OK);
 
         } catch (Exception e) {
@@ -141,7 +133,7 @@ public class DescribeBean extends QueryProcessingServlet {
         try {
           ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-          strabonWrapper.describe(query, format, bos);
+          getStabonWrapper().describe(query, format, bos);
 
           request.setAttribute(RESPONSE, StringEscapeUtils.escapeHtml(bos.toString()));
 
@@ -170,7 +162,7 @@ public class DescribeBean extends QueryProcessingServlet {
             + format.getCharset());
 
     try {
-      strabonWrapper.describe(query, format.getName(), out);
+      getStabonWrapper().describe(query, format.getName(), out);
       response.setStatus(HttpServletResponse.SC_OK);
 
     } catch (Exception e) {

@@ -13,8 +13,6 @@ import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.query.resultio.stSPARQLQueryResultFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -44,22 +42,9 @@ public class BrowseBean extends QueryProcessingServlet {
   private static final String PARAM_ERROR =
       "stSPARQL Query Results Format or SPARQL query are not set or are invalid.";
 
-  /**
-   * Wrapper over Strabon
-   */
-  private StrabonBeanWrapper strabonWrapper;
-
 
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-
-    // get the context of the application
-    WebApplicationContext applicationContext =
-        WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-    // the the strabon wrapper
-    strabonWrapper = (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
-
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,8 +62,8 @@ public class BrowseBean extends QueryProcessingServlet {
     request.setCharacterEncoding("UTF-8");
 
     // check connection details
-    if (strabonWrapper.getStrabon() == null) {
-      strabonWrapper.populateRequest(request);
+    if (getStabonWrapper().getStrabon() == null) {
+      getStabonWrapper().populateRequest(request);
 
       // forward the request
       request.getRequestDispatcher("/connection.jsp").forward(request, response);
@@ -109,7 +94,7 @@ public class BrowseBean extends QueryProcessingServlet {
 
     response.setContentType(format.getDefaultMIMEType());
     try {
-      strabonWrapper.query(query, format.getName(), out);
+      getStabonWrapper().query(query, format.getName(), out);
       response.setStatus(HttpServletResponse.SC_OK);
 
     } catch (Exception e) {
@@ -153,7 +138,7 @@ public class BrowseBean extends QueryProcessingServlet {
       request.setAttribute("resource", request.getParameter("resource"));
 
       try {
-        strabonWrapper.query(query, format, bos);
+        getStabonWrapper().query(query, format, bos);
         if (format.equals(Common.getHTMLFormat())) {
           request.setAttribute(RESPONSE, bos.toString());
         } else {

@@ -17,7 +17,10 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -442,5 +445,13 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
     request.setAttribute("query", request.getParameter("query"));
     request.setAttribute("format", request.getParameter("format"));
     request.setAttribute("handle", request.getParameter("handle"));
+  }
+
+  static StrabonBeanWrapper resolve(ServletContext context) {
+    // get strabon wrapper
+    WebApplicationContext applicationContext =
+        WebApplicationContextUtils.getWebApplicationContext(context);
+
+    return (StrabonBeanWrapper) applicationContext.getBean("strabonBean");
   }
 }

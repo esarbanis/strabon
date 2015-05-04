@@ -1,7 +1,6 @@
 package eu.earthobservatory.strabon.endpoint;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -9,7 +8,7 @@ import java.io.IOException;
 /**
  * @author efthymis
  */
-public abstract class QueryProcessingServlet extends HttpServlet {
+public abstract class QueryProcessingServlet extends StrabonAwareServlet {
 
     /**
      * Error returned by BrowseBean
