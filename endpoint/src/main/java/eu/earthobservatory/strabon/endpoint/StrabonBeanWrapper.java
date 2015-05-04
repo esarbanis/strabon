@@ -127,7 +127,7 @@ public class StrabonBeanWrapper implements org.springframework.beans.factory.Dis
     }
   }
 
-  public Strabon getStrabon() {
+  public Strabon unwrap() {
     return strabon;
   }
 

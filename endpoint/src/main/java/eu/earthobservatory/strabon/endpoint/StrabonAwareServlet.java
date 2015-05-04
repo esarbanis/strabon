@@ -35,7 +35,7 @@ public abstract class StrabonAwareServlet extends HttpServlet {
     }
 
     boolean isStrabonInitialized() {
-        return strabonWrapper.getStrabon() != null;
+        return strabonWrapper.unwrap() != null;
     }
 
     void query(String query, String name, OutputStream out)
@@ -69,7 +69,7 @@ public abstract class StrabonAwareServlet extends HttpServlet {
     }
 
     void update(String query) throws MalformedQueryException {
-        Strabon strabon = strabonWrapper.getStrabon();
+        Strabon strabon = strabonWrapper.unwrap();
         strabon
             .update(query, strabon.getSailRepoConnection());
     }
