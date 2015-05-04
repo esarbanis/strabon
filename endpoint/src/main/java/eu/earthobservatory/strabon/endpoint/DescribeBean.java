@@ -14,7 +14,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +35,7 @@ import java.io.IOException;
  * In case of an error, an appropriate message is wrapped in an XML document (see also
  * {@link ResponseMessages}).
  */
-public class DescribeBean extends HttpServlet {
+public class DescribeBean extends QueryProcessingServlet {
 
   private static final long serialVersionUID = -7541662133934957148L;
 
@@ -154,14 +153,7 @@ public class DescribeBean extends HttpServlet {
     }
   }
 
-  /**
-   * Processes the request made by a client of the endpoint that uses it as a service.
-   * 
-   * @param request
-   * @param response
-   * @throws IOException
-   */
-  private void processRequest(HttpServletRequest request, HttpServletResponse response)
+  void doProcessRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     ServletOutputStream out = response.getOutputStream();
 
@@ -171,32 +163,23 @@ public class DescribeBean extends HttpServlet {
     // get the query
     String query = request.getParameter("query");
 
-    // check for required parameters
-    if (format == null || query == null) {
+    response.setContentType(format.getDefaultMIMEType());
+    response.setHeader(
+        "Content-Disposition",
+        "attachment; filename=describe." + format.getDefaultFileExtension() + "; "
+            + format.getCharset());
+
+    try {
+      strabonWrapper.describe(query, format.getName(), out);
+      response.setStatus(HttpServletResponse.SC_OK);
+
+    } catch (Exception e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       out.print(ResponseMessages.getXMLHeader());
-      out.print(ResponseMessages.getXMLException(PARAM_ERROR));
+      out.print(ResponseMessages.getXMLException(e.getMessage()));
       out.print(ResponseMessages.getXMLFooter());
-
-    } else {
-      response.setContentType(format.getDefaultMIMEType());
-      response.setHeader(
-          "Content-Disposition",
-          "attachment; filename=describe." + format.getDefaultFileExtension() + "; "
-              + format.getCharset());
-
-      try {
-        strabonWrapper.describe(query, format.getName(), out);
-        response.setStatus(HttpServletResponse.SC_OK);
-
-      } catch (Exception e) {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        out.print(ResponseMessages.getXMLHeader());
-        out.print(ResponseMessages.getXMLException(e.getMessage()));
-        out.print(ResponseMessages.getXMLFooter());
-      }
+    } finally {
+      out.flush();
     }
-
-    out.flush();
   }
 }

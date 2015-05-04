@@ -20,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +30,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
-public class QueryBean extends HttpServlet {
+public class QueryBean extends QueryProcessingServlet {
 
   private static final long serialVersionUID = -378175118289907707L;
 
@@ -133,58 +132,38 @@ public class QueryBean extends HttpServlet {
     }
   }
 
-  /**
-   * Processes the request made by a client of the endpoint that uses it as a service.
-   * 
-   * @param request
-   * @param response
-   * @throws IOException
-   */
-  private void processRequest(HttpServletRequest request, HttpServletResponse response)
+  void doProcessRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     ServletOutputStream out = response.getOutputStream();
+
 
     // get desired formats (we check only the Accept header)
     List<stSPARQLQueryResultFormat> formats =
         parseMultiValuedAcceptHeader(request.getHeader("accept"));
+    // just use the first specified format
+    stSPARQLQueryResultFormat format = formats.get(0);
 
-    // get the query and the limit
+    // do not decode the SPARQL query (see bugs #65 and #49)
+    // query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
     String query = request.getParameter("query");
     String maxLimit = request.getParameter("maxLimit");
 
-    // check for required parameters
-    if (formats.size() == 0 || query == null) {
-      logger.error("[StrabonEndpoint.QueryBean] {}", PARAM_ERROR);
+    response.setContentType(format.getDefaultMIMEType());
+
+    try {
+      query = strabonWrapper.addLimit(query, maxLimit);
+      strabonWrapper.query(query, format.getName(), out);
+      response.setStatus(HttpServletResponse.SC_OK);
+
+    } catch (Exception e) {
+      logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       out.print(ResponseMessages.getXMLHeader());
-      out.print(ResponseMessages.getXMLException(PARAM_ERROR));
+      out.print(ResponseMessages.getXMLException(e.getMessage()));
       out.print(ResponseMessages.getXMLFooter());
-
-    } else {
-      // just use the first specified format
-      stSPARQLQueryResultFormat format = formats.get(0);
-
-      // do not decode the SPARQL query (see bugs #65 and #49)
-      // query = URLDecoder.decode(request.getParameter("query"), "UTF-8");
-      query = request.getParameter("query");
-
-      response.setContentType(format.getDefaultMIMEType());
-
-      try {
-        query = strabonWrapper.addLimit(query, maxLimit);
-        strabonWrapper.query(query, format.getName(), out);
-        response.setStatus(HttpServletResponse.SC_OK);
-
-      } catch (Exception e) {
-        logger.error("[StrabonEndpoint.QueryBean] Error during querying.", e);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        out.print(ResponseMessages.getXMLHeader());
-        out.print(ResponseMessages.getXMLException(e.getMessage()));
-        out.print(ResponseMessages.getXMLFooter());
-      }
+    } finally {
+      out.flush();
     }
-
-    out.flush();
   }
 
   /**
