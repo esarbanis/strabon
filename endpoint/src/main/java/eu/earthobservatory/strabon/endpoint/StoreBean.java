@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,35 +42,6 @@ public class StoreBean extends StrabonAwareServlet {
   private static final String PARAM_ERROR = "RDF format or input data are not set or are invalid!";
   private static final String STORE_OK = "Data stored successfully!";
 
-  /**
-   * The context of the servlet
-   */
-  private ServletContext context;
-
-  // Check for localHost. Works with ipV4 and ipV6
-  public static boolean isLocalClient(HttpServletRequest request) {
-    try {
-      InetAddress remote = InetAddress.getByName(request.getRemoteAddr());
-      if (remote.isLoopbackAddress()) {
-        return true;
-      }
-      InetAddress localHost = InetAddress.getLocalHost();
-      String localAddress = localHost.getHostAddress();
-      String remoteAddress = remote.getHostAddress();
-      return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress));
-    } catch (Exception e) {
-    }
-    return false;
-  }
-
-  @Override
-  public void init(ServletConfig servletConfig) throws ServletException {
-    super.init(servletConfig);
-
-    // get strabon wrapper
-    context = getServletContext();
-  }
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -95,7 +64,7 @@ public class StoreBean extends StrabonAwareServlet {
       Authenticate authenticate = new Authenticate();
       String authorization = request.getHeader("Authorization");
 
-      authorized = authenticate.authenticateUser(authorization, context);
+      authorized = authenticate.authenticateUser(authorization, getServletContext());
 
     } else {
       authorized = true;
@@ -129,7 +98,7 @@ public class StoreBean extends StrabonAwareServlet {
 
   /**
    * Processes the request made from the HTML visual interface of Strabon Endpoint.
-   * 
+   *
    * @param request
    * @param response
    * @throws ServletException
@@ -186,7 +155,7 @@ public class StoreBean extends StrabonAwareServlet {
 
   /**
    * Processes the request made by a client of the endpoint that uses it as a service.
-   * 
+   *
    * @param request
    * @param response
    * @throws IOException
@@ -240,5 +209,21 @@ public class StoreBean extends StrabonAwareServlet {
 
       logger.error("[StrabonEndpoint.StoreBean] " + e.getMessage());
     }
+  }
+
+  // Check for localHost. Works with ipV4 and ipV6
+  public static boolean isLocalClient(HttpServletRequest request) {
+    try {
+      InetAddress remote = InetAddress.getByName(request.getRemoteAddr());
+      if (remote.isLoopbackAddress()) {
+        return true;
+      }
+      InetAddress localHost = InetAddress.getLocalHost();
+      String localAddress = localHost.getHostAddress();
+      String remoteAddress = remote.getHostAddress();
+      return (remoteAddress != null && remoteAddress.equalsIgnoreCase(localAddress));
+    } catch (Exception e) {
+    }
+    return false;
   }
 }

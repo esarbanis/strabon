@@ -8,7 +8,6 @@
  */
 package eu.earthobservatory.strabon.endpoint;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,11 +16,6 @@ import java.io.IOException;
 public class ChangeConnectionBean extends StrabonAwareServlet {
 
   private static final long serialVersionUID = 2175155067582174020L;
-
-
-  public void init(ServletConfig servletConfig) throws ServletException {
-    super.init(servletConfig);
-  }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {

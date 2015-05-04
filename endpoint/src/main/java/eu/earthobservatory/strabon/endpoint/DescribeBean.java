@@ -50,11 +50,6 @@ public class DescribeBean extends QueryProcessingServlet {
       "RDF format or SPARQL query are not set or are invalid.";
 
   @Override
-  public void init(ServletConfig servletConfig) throws ServletException {
-    super.init(servletConfig);
-  }
-
-  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     process(request, response);

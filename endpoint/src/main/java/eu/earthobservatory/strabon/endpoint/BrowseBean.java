@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -41,11 +40,6 @@ public class BrowseBean extends QueryProcessingServlet {
    */
   private static final String PARAM_ERROR =
       "stSPARQL Query Results Format or SPARQL query are not set or are invalid.";
-
-
-  public void init(ServletConfig servletConfig) throws ServletException {
-    super.init(servletConfig);
-  }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {

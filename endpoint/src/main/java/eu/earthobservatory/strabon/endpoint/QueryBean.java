@@ -48,11 +48,6 @@ public class QueryBean extends QueryProcessingServlet {
       "stSPARQL Query Results Format or SPARQL query are not set or are invalid.";
 
   /**
-   * The context of the servlet
-   */
-  private ServletContext context;
-
-  /**
    * The name of this web application
    */
   private String appName;
@@ -61,11 +56,8 @@ public class QueryBean extends QueryProcessingServlet {
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
 
-    // get the context of the servlet
-    context = getServletContext();
-
     // get the name of this web application
-    appName = context.getContextPath().replace("/", "");
+    appName = getServletContext().getContextPath().replace("/", "");
 
   }
 
@@ -238,7 +230,7 @@ public class QueryBean extends QueryProcessingServlet {
             if (!request.getParameter("handle").toString().contains("timemap")) {
               tempDirectory = appName + "-temp";
 
-              basePath = context.getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
+              basePath = getServletContext().getRealPath("/") + "/../ROOT/" + tempDirectory + "/";
               // fix the temporary directory for this web application
 
               FileUtils.forceMkdir(new File(basePath));
@@ -253,7 +245,7 @@ public class QueryBean extends QueryProcessingServlet {
               }
             } else { // timemap case
               tempDirectory = "js/timemap";
-              basePath = context.getRealPath("/") + tempDirectory + "/";
+              basePath = getServletContext().getRealPath("/") + tempDirectory + "/";
               // fix the temporary directory for this web application
             }
 
