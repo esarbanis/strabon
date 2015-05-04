@@ -5,9 +5,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 /**
- * @author efthymis
+ * An abstract servlet responsible for strabon related operations.
  */
-public class StrabonAwareServlet extends HttpServlet {
+public abstract class StrabonAwareServlet extends HttpServlet {
 
     /**
      * Wrapper over Strabon

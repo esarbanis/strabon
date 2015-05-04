@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author efthymis
+ * An abstract Servlet responsible for processing query requests.
  */
 public abstract class QueryProcessingServlet extends StrabonAwareServlet {
 
