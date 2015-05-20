@@ -18,11 +18,18 @@ public abstract class StrabonAwareServlet extends HttpServlet {
      * Wrapper over Strabon
      */
     private StrabonBeanWrapper strabonWrapper;
+    private Authenticate authenticate;
 
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
         strabonWrapper = StrabonBeanWrapper.resolve(getServletContext());
+        super.init(servletConfig);
+        String credentialsFile = servletConfig.getInitParameter(Authenticate.CREDENTIALS_PROPERTIES_FILE);
+        if (credentialsFile == null) {
+            throw new ServletException("init-param: CREDENTIALS_PROPERTIES_FILE was not set!");
+        }
+        this.authenticate = new Authenticate(credentialsFile);
     }
 
 
@@ -72,5 +79,9 @@ public abstract class StrabonAwareServlet extends HttpServlet {
         Strabon strabon = strabonWrapper.unwrap();
         strabon
             .update(query, strabon.getSailRepoConnection());
+    }
+
+    Authenticate getAuthenticate() {
+        return authenticate;
     }
 }

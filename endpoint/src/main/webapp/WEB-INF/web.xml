@@ -44,6 +44,10 @@
 		<display-name>Store</display-name>
 		<servlet-name>Store</servlet-name>
 		<servlet-class>eu.earthobservatory.strabon.endpoint.StoreBean</servlet-class>
+		<init-param>
+			<param-name>CREDENTIALS_PROPERTIES_FILE</param-name>
+			<param-value>/WEB-INF/credentials.properties</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -55,6 +59,10 @@
 		<display-name>Update</display-name>
 		<servlet-name>Update</servlet-name>
 		<servlet-class>eu.earthobservatory.strabon.endpoint.UpdateBean</servlet-class>
+		<init-param>
+			<param-name>CREDENTIALS_PROPERTIES_FILE</param-name>
+			<param-value>/WEB-INF/credentials.properties</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

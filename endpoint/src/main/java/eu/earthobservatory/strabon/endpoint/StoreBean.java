@@ -61,10 +61,10 @@ public class StoreBean extends StrabonAwareServlet {
     boolean authorized;
 
     if (!isLocalClient(request)) {
-      Authenticate authenticate = new Authenticate();
+
       String authorization = request.getHeader("Authorization");
 
-      authorized = authenticate.authenticateUser(authorization, getServletContext());
+      authorized = getAuthenticate().authenticateUser(authorization, getServletContext());
 
     } else {
       authorized = true;

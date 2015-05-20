@@ -22,10 +22,13 @@ import java.util.regex.Pattern;
  */
 public class Authenticate {
 
-  /**
-   * The filename of the credentials.properties file
-   */
-  private static final String CREDENTIALS_PROPERTIES_FILE = "/WEB-INF/credentials.properties";
+  static final String CREDENTIALS_PROPERTIES_FILE = "CREDENTIALS_PROPERTIES_FILE";
+
+  private final String credentialsFile;
+
+  Authenticate(String credentialsFile) {
+    this.credentialsFile = credentialsFile;
+  }
 
   /**
    * Authenticate user
@@ -48,7 +51,7 @@ public class Authenticate {
     Pattern pattern = Pattern.compile(":");
     String[] credentials = pattern.split(userpassDecoded);
     // get credentials.properties as input stream
-    InputStream input = new FileInputStream(context.getRealPath(CREDENTIALS_PROPERTIES_FILE));
+    InputStream input = new FileInputStream(context.getRealPath(credentialsFile));
 
     // load the properties
     properties.load(input);

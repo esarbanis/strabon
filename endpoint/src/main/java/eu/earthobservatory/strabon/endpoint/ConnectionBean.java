@@ -95,10 +95,9 @@ public class ConnectionBean extends StrabonAwareServlet {
     boolean authorized;
 
     if (!isLocalClient(request)) {
-      Authenticate authenticate = new Authenticate();
       String authorization = request.getHeader("Authorization");
 
-      authorized = authenticate.authenticateUser(authorization, context);
+      authorized = getAuthenticate().authenticateUser(authorization, context);
     } else
       authorized = true;
 

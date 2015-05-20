@@ -64,10 +64,9 @@ public class UpdateBean extends StrabonAwareServlet {
     request.setCharacterEncoding("UTF-8");
     ServletContext context = getServletContext();
     if (!isLocalClient(request)) {
-      Authenticate authenticate = new Authenticate();
       String authorization = request.getHeader("Authorization");
 
-      authorized = authenticate.authenticateUser(authorization, context);
+      authorized = getAuthenticate().authenticateUser(authorization, context);
     } else
       authorized = true;
 
